@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("Sales", "Index", "SalesOrders", new { area = "" }, new { @class = "navbar-brand" })
+            @Html.ActionLink("Customers", "Index", "Customer", new { area = "" }, new { @class = "navbar-brand" })
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("About", "About", "Home")</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="container body-content">
+    @RenderBody()
+</div>
+<footer>
+
+    @{ 
+        // Retrieve the ConnectionString from App.config 
+        string connectString = System.Configuration.ConfigurationManager.ConnectionStrings["AdventureWorks"].ToString();
+        var builder = new System.Data.SqlClient.SqlConnectionStringBuilder(connectString);
+        // Retrieve the DataSource property.    
+        string IPAddress = builder.DataSource;
+        string Database = builder.InitialCatalog;
+    }
+    <span>Server:</span>
+    <a href="https://msftdbprodsamples.codeplex.com/releases/view/125550" target="_blank"
+       title="SQL Server Adventure Works 2014">@(IPAddress)</a> |
+
+    <span>Database:</span>
+    <a href="https://msftdbprodsamples.codeplex.com/releases/view/125550" target="_blank"
+       title="SQL Server Adventure Works">@(Database)</a> |
+    |
+    <span>Source:</span>
+    <a href="https://github.com/RandomFractals/AdventureWorks" target="_blank"
+       title="RFI/Adventure Works project github">RFI/Adventure Works</a>
+    <span>v. 0.0.1 | &copy;Random Fractals Inc. 2016</span>
+</footer>
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+@RenderSection("scripts", required: false)
+</body>
+<Script language="javascript">
+    var url = Math.random() > 0.5 ? "/WebPages/HealthCheck.aspx" : "/HealthCheck/IsOK";
+    if (Math.random() < 0.05) url = "/no-way/no-such-page";
+    url = url + "?" + (+ new Date());
+    var isOk = fetch(url).then().catch();
+</Script>
+</html>

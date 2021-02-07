@@ -1,0 +1,97 @@
+html {
+  /* overflow: -moz-scrollbars-vertical !important; */
+  overflow-y: scroll !important;;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.rt-tr .rt-th {
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+  font-size: 16px
+}
+
+.rt-tr-group:last-child .rt-tr {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.8);
+}
+
+.ReactTable .rt-thead.-header {
+  box-shadow: 0 1px 0px 0 rgba(0, 0, 0, 0.8) !important;
+}
+
+.ReactTable .rt-thead {
+  background-color: #F2F2F2;
+  color: #111;
+}
+
+.ReactTable .multiline-cell {
+  white-space: normal !important;
+  overflow: auto !important;;
+  text-overflow: fade !important;;
+}
+
+.right-aligned {
+  text-align: right;
+}
+
+.center-aligned {
+  text-align: center !important;
+}
+
+div[role='tabpanel'] > div {
+  padding: 4px
+}
+
+table.SqlStatements {
+  border-collapse: collapse;
+  border: 1px solid #CCC;
+}
+
+table.SqlStatements .sql-error { width: 60px; max-width: 60px; min-width: 60px; text-align: center }
+table.SqlStatements tr.damn .sql-error { background-color: #D3225A; color: white; }
+table.SqlStatements .sql-code { width: 500px; min-width:500px; max-width:500px; padding-top: 0px; padding-bottom: 0px;  }
+table.SqlStatements .sql-code pre { width: 100%; min-width:100%; max-width:100%; padding-top: 0px; padding-bottom: 0px;  }
+table.SqlStatements .sql-cpu { width: 120px; max-width: 120px; min-width: 120px }
+table.SqlStatements .sql-io { width: 120px; max-width: 120px; min-width: 120px }
+/*table.SqlStatements td.sql-error { border-right: 1px solid #BBB }*/
+table.SqlStatements td { padding-left: 5px; padding-right: 5px; border: 1px solid #CCC }
+
+.sql-code pre { white-space: pre-wrap !important; overflow-wrap: break-word !important; background-color: transparent !important; padding-top: 0px !important; padding-bottom: 0px !important; overflow-x: hidden !important; }
+.sql-code code { white-space: pre-wrap !important; overflow-wrap: break-word !important; }

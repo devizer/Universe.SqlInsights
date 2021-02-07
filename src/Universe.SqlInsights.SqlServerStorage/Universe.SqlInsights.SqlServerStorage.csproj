@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net35;net40;net45;netstandard2.0;netstandard1.3</TargetFrameworks>
+        <OutputType>Library</OutputType>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net35'">
+        <AssemblyAttribute Include="System.Runtime.Versioning.TargetFrameworkAttribute">
+            <_Parameter1>.NETFramework,Version=v3.5</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net30'">
+        <AssemblyAttribute Include="System.Runtime.Versioning.TargetFrameworkAttribute">
+            <_Parameter1>.NETFramework,Version=v3.0</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net20'">
+        <AssemblyAttribute Include="System.Runtime.Versioning.TargetFrameworkAttribute">
+            <_Parameter1>.NETFramework,Version=v2.0</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net35' Or '$(TargetFramework)' == 'net30' Or '$(TargetFramework)' == 'net20' ">
+        <PackageReference Include="Theraot.Core" Version="3.2.1" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard1.3' ">
+        <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+        <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard1.3' ">
+        <PackageReference Include="Dapper" Version="1.60.6" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard2.0' And '$(TargetFramework)' != 'netstandard1.3' ">
+        <PackageReference Include="Dapper" Version="1.42.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Universe.SqlInsights.Shared\Universe.SqlInsights.Shared.csproj" />
+    </ItemGroup>
+    
+    
+
+</Project>

@@ -1,0 +1,83 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <!-- Import Project="..\Shared\Targeting.props" / -->
+
+    <Target Name="DisplayInfo">
+        <Message Text="Project File Name = $(MSBuildProjectFile)" />
+        <Message Text="Project Extension = $(MSBuildProjectExtension)" />
+        <Message Text="OS                = $(OS)" />
+        <Message Text="TargetFramework   = $(TargetFramework)" />
+    </Target>
+
+    <PropertyGroup>
+        <TargetFrameworks>net35;net40;net45</TargetFrameworks>
+        <DebugType>Full</DebugType>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <LangVersion>latest</LangVersion>
+        <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+            
+        <NoWarn>1701;1702;CS0162;CS0414;CS1591;NU5048</NoWarn>
+
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <OutputType>Library</OutputType>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <PackageId>Universe.SqlTrace.AspNetLegacy</PackageId>
+        <Title>Universe.SqlTrace.AspNetLegacy</Title>
+        <Authors>Volodymyr Hoida</Authors>
+        <Product>Universe.SqlTrace.AspNetLegacy</Product>
+        <Description>MS SQL Profiler API Integration into ASP.NET</Description>
+        <PackageProjectUrl>https://github.com/devizer/Universe.SqlTrace</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/devizer/Universe.SqlTrace</RepositoryUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <!--PackageIconUrl>https://raw.githubusercontent.com/devizer/Universe.SqlTrace/master/Icon/v1.png</PackageIconUrl-->
+        <PackageTags></PackageTags>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net35'">
+        <AssemblyAttribute Include="System.Runtime.Versioning.TargetFrameworkAttribute">
+            <_Parameter1>.NETFramework,Version=v3.5</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net30'">
+        <AssemblyAttribute Include="System.Runtime.Versioning.TargetFrameworkAttribute">
+            <_Parameter1>.NETFramework,Version=v3.0</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net20'">
+        <AssemblyAttribute Include="System.Runtime.Versioning.TargetFrameworkAttribute">
+            <_Parameter1>.NETFramework,Version=v2.0</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net35' Or '$(TargetFramework)' == 'net30' Or '$(TargetFramework)' == 'net20' ">
+        <PackageReference Include="Theraot.Core" Version="3.2.1" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+        <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+        <PackageReference Include="Universe.SqlTrace" Version="1.6.5" />
+        <PackageReference Include="Dapper" Version="1.42.0" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <Reference Include="System.Web" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <ProjectReference Include="..\Universe.SqlInsights.Shared\Universe.SqlInsights.Shared.csproj" />
+      <ProjectReference Include="..\Universe.SqlInsights.SqlServerStorage\Universe.SqlInsights.SqlServerStorage.csproj" />
+    </ItemGroup>
+
+</Project>
