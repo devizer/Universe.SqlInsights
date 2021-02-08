@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
+using Universe.SqlInsights.NetCore;
 using Universe.SqlInsights.Shared;
 
 namespace Universe.SqlInsights.W3Api.SqlInsightsIntegration
@@ -31,4 +35,43 @@ namespace Universe.SqlInsights.W3Api.SqlInsightsIntegration
 
         private SqlInsightsConfiguration() {}
     }
+    
+    public class CustomGroupingActionFilter : IActionFilter
+    {
+        private KeyPathHolder KeyPathHolder;
+
+        public CustomGroupingActionFilter(KeyPathHolder keyPathHolder)
+        {
+            KeyPathHolder = keyPathHolder;
+        }
+
+        public void OnActionExecuting(ActionExecutingContext context)
+        {
+            object action = context.RouteData.Values["action"];
+            object controller = context.RouteData.Values["controller"];
+            List<string> keys = new List<string>
+            {
+                "ASP.NET Core",
+                controller == null ? "<null>" : Convert.ToString(controller),
+                action == null ? "<null>" : Convert.ToString(action)
+            };
+
+            if (action == null || controller == null)
+            {
+                keys.Clear();
+                keys.Add("ASP.NET Core");
+                keys.Add(context.HttpContext.Request.Path);
+            }
+            keys.Add($"[{context.HttpContext.Request.Method}]");
+            SqlInsightsActionKeyPath keyPath = new SqlInsightsActionKeyPath(keys.ToArray());
+
+            KeyPathHolder.KeyPath = keyPath;
+        }
+
+        public void OnActionExecuted(ActionExecutedContext context)
+        {
+        }
+
+    }
+
 }

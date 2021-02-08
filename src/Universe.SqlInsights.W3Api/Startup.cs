@@ -1,12 +1,13 @@
 using System;
 using System.Data.SqlClient;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Universe.SqlInsights.AspNetLegacy;
 using Universe.SqlInsights.NetCore;
 using Universe.SqlInsights.Shared;
 using Universe.SqlInsights.SqlServerStorage;
@@ -39,7 +40,6 @@ namespace Universe.SqlInsights.W3Api
                     });
             });
 
-            services.AddSingleton<SqlInsightsReport>(new SqlInsightsReport());
             services.AddScoped<DbOptions>(provider =>
             {
                 var config = provider.GetRequiredService<ISqlInsightsConfiguration>();
@@ -50,9 +50,6 @@ namespace Universe.SqlInsights.W3Api
                 };
                 return new DbOptions() {ConnectionString = builder.ConnectionString};
             });
-            services.AddScoped<ActionIdHolder>();
-            services.AddScoped<ExceptionHolder>();
-            services.AddScoped<ISqlInsightsConfiguration>(provider => new SqlInsightsConfiguration(Configuration));
             services.AddScoped<ISqlInsightsStorage>(provider =>
             {
                 var dbOptions = provider.GetRequiredService<DbOptions>();
@@ -61,11 +58,38 @@ namespace Universe.SqlInsights.W3Api
                 
                 return new SqlServerSqlInsightsStorage(dbOptions.ConnectionString);
             });
+
+            services.AddSingleton<SqlInsightsReport>(new SqlInsightsReport());
+            services.AddScoped<ActionIdHolder>();
+            services.AddScoped<ExceptionHolder>();
+            services.AddScoped<KeyPathHolder>();
+            services.AddScoped<ISqlInsightsConfiguration>(provider => new SqlInsightsConfiguration(Configuration));
+
+            Task.Run(() =>
+            {
+                Stopwatch sw = Stopwatch.StartNew();
+                string error;
+                try
+                {
+                    var history = new SqlServerSqlInsightsStorage(Configuration.GetConnectionString("SqlInsights"));
+                    history.GetAliveSessions();
+                    history.GetActionsSummaryTimestamp(-1);
+                    history.GetKeyPathTimestampOfDetails(-1, new SqlInsightsActionKeyPath());
+                    error = "Ok";
+                }
+                catch (Exception ex)
+                {
+                    error = $"{ex.GetType().Name} {ex.Message}";
+                }
+                Console.WriteLine($"Pre-jit of ISqlInsightsStorage completed in {sw.Elapsed}, {error}");
+            });
             
             services.AddControllers(options =>
             {
                 options.Filters.Add(typeof(CustomExceptionFilter));
+                options.Filters.Add(typeof(CustomGroupingActionFilter));
             });
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Universe.SqlInsights.W3Api", Version = "v1"});

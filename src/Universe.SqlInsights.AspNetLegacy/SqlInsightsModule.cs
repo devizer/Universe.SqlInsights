@@ -159,7 +159,7 @@ namespace Universe.SqlInsights.AspNetLegacy
                 // TODO: Dump to file
                 // newLine.Actions.AddLast(actionDetails);  
 
-                if (!LegacySqlProfiler.SqlInsightsConfiguration.Enabled)
+                if (LegacySqlProfiler.SqlInsightsConfiguration.Enabled)
                 {
                     bool needSummarize = SqlInsightsReport.Instance.Add(actionDetails);
 

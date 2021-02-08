@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Universe.CpuUsage;
-using Universe.SqlInsights.AspNetLegacy;
 using Universe.SqlInsights.Shared;
 using Universe.SqlTrace;
 
@@ -28,6 +27,11 @@ namespace Universe.SqlInsights.NetCore
         public Exception Error { get; set; }
     }
 
+    public class KeyPathHolder
+    {
+        public SqlInsightsActionKeyPath KeyPath { get; set; }
+    }
+
     public static class SqlInsightsCoreExtensions
     {
         // Exception .NET Core 1.1+
@@ -40,6 +44,7 @@ namespace Universe.SqlInsights.NetCore
             {
                 var serviceProvider = context.RequestServices;
                 var idHolder = serviceProvider.GetRequiredService<ActionIdHolder>();
+                var keyPathHolder = serviceProvider.GetRequiredService<KeyPathHolder>();
                 idHolder.Id = Guid.NewGuid();
                 var config = serviceProvider.GetRequiredService<ISqlInsightsConfiguration>();
                 
@@ -74,24 +79,7 @@ namespace Universe.SqlInsights.NetCore
                     watcherTotals = watcherTotals + (cpuUsageAfter - cpuUsageBefore).GetValueOrDefault();
                 }
 
-                
-                object action = context.GetRouteValue("action");
-                object controller = context.GetRouteValue("controller");
-                List<string> keys = new List<string>
-                {
-                    "ASP.NET Core",
-                    controller == null ? "<null>" : Convert.ToString(controller),
-                    action == null ? "<null>" : Convert.ToString(action)
-                };
-
-                if (action == null || controller == null)
-                {
-                    keys.Clear();
-                    keys.Add("ASP.NET Core");
-                    keys.Add(context.Request.Path);
-                }
-                keys.Add($"[{context.Request.Method}]");
-                SqlInsightsActionKeyPath keyPath = new SqlInsightsActionKeyPath(keys.ToArray());
+                var keyPath = keyPathHolder.KeyPath;
 
                 var sqlSummary = details.Summary;
 #if DEBUG                
@@ -143,7 +131,6 @@ namespace Universe.SqlInsights.NetCore
                     actionDetails.ExceptionAsString = lastError.ToString();
                     actionDetails.BriefException = lastError.GetBriefExceptionKey();
                 }
-                
 
                 SqlInsightsReport r = serviceProvider.GetRequiredService<SqlInsightsReport>();
                 bool needSummarize = r.Add(actionDetails);

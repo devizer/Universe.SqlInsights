@@ -91,12 +91,13 @@ namespace Universe.SqlInsights.SqlServerStorage
                     con.Execute(sqlUpsert, new {KeyPath = keyPath, IdSession = idSession, Data = dataSummary});
 
                     // DETAILS: SqlInsightsAction
-                    const string sqlDetail = "Insert SqlInsightsAction(At, IdSession, KeyPath, Data) Values(@At, @IdSession, @KeyPath, @Data)";
+                    const string sqlDetail = "Insert SqlInsightsAction(At, IdSession, KeyPath, IsOK, Data) Values(@At, @IdSession, @KeyPath, @IsOK, @Data)";
                     var detail = reqAction;
                     var dataDetail = JsonConvert.SerializeObject(detail, DefaultSettings);
                     con.Execute(sqlDetail, new
                     {
                         At = detail.At,
+                        IsOK = string.IsNullOrEmpty(detail.BriefException),
                         IdSession = idSession,
                         KeyPath = keyPath,
                         Data = dataDetail,
@@ -189,7 +190,7 @@ namespace Universe.SqlInsights.SqlServerStorage
 
         public IEnumerable<ActionDetailsWithCounters> GetActionsByKeyPath(long idSession, SqlInsightsActionKeyPath keyPath)
         {
-            const string sql = "Select Top 100 Data From SqlInsightsAction Where KeyPath = @KeyPath  And IdSession = @IdSession Order By At Desc";
+            const string sql = "Select Top 100 Data From SqlInsightsAction Where KeyPath = @KeyPath And IdSession = @IdSession Order By At Desc";
             using (var con = GetConnection())
             {
                 var query = con

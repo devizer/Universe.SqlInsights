@@ -40,7 +40,9 @@ namespace Universe.SqlInsights.W3Api.Controllers
             public static void CheckHealth(IDbConnection con)
             {
                 if (con.State != ConnectionState.Open) con.Open();
-                var ver = con.Query($"Select @@Version as [Ping] /* {CaseCounter:n0} */").FirstOrDefault();
+                const string sqlWrite =
+                    "Declare @i int = 12; Create Table #T1(dump ntext); Insert #T1(dump) Values('abc'); while @i > 0 Begin Insert #T1(dump) Select Dump From #T1; set @i = @i - 1; End; Drop Table #T1;";
+                var ver = con.Query($"Select @@Version as [Ping] /* {CaseCounter:n0} */; ").FirstOrDefault();
 
                 int next;
                 lock (Sync) next = CaseCounter = (CaseCounter + 1) % 10;

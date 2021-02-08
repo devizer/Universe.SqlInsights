@@ -1,17 +1,15 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Universe.SqlInsights.Shared;
 using Universe.SqlInsights.Shared.Internals;
 
-namespace Universe.SqlInsights.AspNetLegacy
+namespace Universe.SqlInsights.Shared
 {
     public class SqlInsightsReport
     {
