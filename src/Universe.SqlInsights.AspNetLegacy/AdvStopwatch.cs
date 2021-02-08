@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Universe.SqlInsights.Shared.Internals;
 
 namespace Universe.SqlInsights.AspNetLegacy
 {

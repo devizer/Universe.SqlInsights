@@ -73,7 +73,7 @@ namespace AdventureWorks.SqlInsightsIntegration
         public void Init(HttpApplication context)
         {
             SqlInsightsModule.BindApp(context, SqlInsightsConfiguration.Instance);
-            SqlInsightsReport.AutoFlush();
+            SqlInsightsReport.AutoFlush(SqlInsightsConfiguration.Instance.ReportFullFileName, (int) SqlInsightsConfiguration.Instance.AutoFlushDelay);
 
             context.PostMapRequestHandler += (sender, args) =>
             {

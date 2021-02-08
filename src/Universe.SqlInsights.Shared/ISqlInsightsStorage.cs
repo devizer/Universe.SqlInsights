@@ -7,7 +7,6 @@ namespace Universe.SqlInsights.Shared
         // To Inject (NET 3.5 +) 
         void AddAction(ActionDetailsWithCounters reqAction);
         IEnumerable<long> GetAliveSessions();
-        
 
         // For universe.sqltrace.w3app
         IEnumerable<ActionSummaryCounters> GetActionsSummary(long idSession);

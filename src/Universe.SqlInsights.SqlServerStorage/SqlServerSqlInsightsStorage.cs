@@ -115,7 +115,6 @@ namespace Universe.SqlInsights.SqlServerStorage
             }
         }
 
-
         public IEnumerable<ActionSummaryCounters> GetActionsSummary(long idSession)
         {
             const string sql = "Select KeyPath, Data From SqlInsightsKeyPathSummary Where IdSession = @IdSession";

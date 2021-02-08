@@ -1,4 +1,4 @@
-﻿namespace Universe.SqlInsights.AspNetLegacy
+﻿namespace Universe.SqlInsights.Shared
 {
     public interface ISqlInsightsConfiguration
     {

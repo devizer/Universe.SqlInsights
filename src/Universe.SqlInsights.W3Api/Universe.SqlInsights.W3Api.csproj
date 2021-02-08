@@ -1,21 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>netcoreapp5.0</TargetFramework>
         <RootNamespace>Universe.SqlInsights.W3Api</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-<!--
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.11"  />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="3.1.11"  />
--->
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
         <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
         <PackageReference Include="Universe.CpuUsage" Version="2.2.497.598" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Universe.SqlInsights.NetCore\Universe.SqlInsights.NetCore.csproj" />
       <ProjectReference Include="..\Universe.SqlInsights.Shared\Universe.SqlInsights.Shared.csproj" />
       <ProjectReference Include="..\Universe.SqlInsights.SqlServerStorage\Universe.SqlInsights.SqlServerStorage.csproj" />
     </ItemGroup>

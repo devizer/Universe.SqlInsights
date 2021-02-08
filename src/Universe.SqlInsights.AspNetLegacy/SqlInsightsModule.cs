@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 using Universe.SqlInsights.Shared;
+using Universe.SqlInsights.SqlServerStorage;
 using Universe.SqlTrace;
 
 namespace Universe.SqlInsights.AspNetLegacy
@@ -157,7 +158,22 @@ namespace Universe.SqlInsights.AspNetLegacy
 
                 // TODO: Dump to file
                 // newLine.Actions.AddLast(actionDetails);  
-                SqlInsightsReport.Instance.Add(actionDetails);
+
+                if (!LegacySqlProfiler.SqlInsightsConfiguration.Enabled)
+                {
+                    bool needSummarize = SqlInsightsReport.Instance.Add(actionDetails);
+
+                    if (needSummarize)
+                    {
+                        var hcs = LegacySqlProfiler.SqlInsightsConfiguration.HistoryConnectionString;
+                        if (hcs != null)
+                        {
+                            var history = new SqlServerSqlInsightsStorage(hcs);
+                            history.AddAction(actionDetails);
+                        }
+                    }
+                }
+
                 LegacySqlProfilerContext.Instance.ActionId = null;
                 LegacySqlProfilerContext.Instance.ActionKeyPath = null;
                 LegacySqlProfilerContext.Instance = null;

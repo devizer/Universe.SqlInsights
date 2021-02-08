@@ -1,14 +1,15 @@
 using System;
+using System.Data.SqlClient;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Universe.CpuUsage;
+using Universe.SqlInsights.NetCore;
 using Universe.SqlInsights.Shared;
 using Universe.SqlInsights.SqlServerStorage;
+using Universe.SqlInsights.W3Api.SqlInsightsIntegration;
 
 namespace Universe.SqlInsights.W3Api
 {
@@ -20,7 +21,6 @@ namespace Universe.SqlInsights.W3Api
         {
             Configuration = configuration;
         }
-
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -37,11 +37,20 @@ namespace Universe.SqlInsights.W3Api
                             .AllowAnyMethod();
                     });
             });
-            
-            services.AddSingleton<ISqlInsightsStorage>(provider =>
+
+            services.AddScoped<ActionIdHolder>();
+            services.AddScoped<ISqlInsightsConfiguration>(provider => new SqlInsightsConfiguration(Configuration));
+            services.AddScoped<ISqlInsightsStorage>(provider =>
             {
-                return new SqlServerSqlInsightsStorage(Configuration.GetConnectionString("SqlInsights"));
+                var config = provider.GetRequiredService<ISqlInsightsConfiguration>();
+                var idHolder = provider.GetRequiredService<ActionIdHolder>();
+                SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(Configuration.GetConnectionString("SqlInsights"))
+                {
+                    ApplicationName = string.Format(config.SqlClientAppNameFormat, idHolder.Id.ToString("N"))
+                };
+                return new SqlServerSqlInsightsStorage(builder.ConnectionString);
             });
+            
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -52,13 +61,8 @@ namespace Universe.SqlInsights.W3Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.Use(async (context, next) =>
-            {
-                CpuUsageAsyncWatcher watcher = new CpuUsageAsyncWatcher();
-                await next.Invoke();
-                watcher.Stop();
-                Console.WriteLine($"Cpu Usage by http request is {watcher.GetSummaryCpuUsage()} {context.Request.Path} {context.Request.Method}");
-            });
+            
+            app.UseSqlInsights();
             
             if (env.IsDevelopment())
             {
@@ -82,5 +86,6 @@ namespace Universe.SqlInsights.W3Api
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
+
     }
 }

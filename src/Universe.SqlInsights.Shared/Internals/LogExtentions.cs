@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace Universe.SqlInsights.AspNetLegacy
+namespace Universe.SqlInsights.Shared.Internals
 {
     public static class LogExtentions
     {
@@ -39,6 +39,3 @@ namespace Universe.SqlInsights.AspNetLegacy
 
     }
 }
-
-
-
