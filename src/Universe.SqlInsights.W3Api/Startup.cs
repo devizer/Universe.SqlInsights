@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Universe.SqlInsights.AspNetLegacy;
 using Universe.SqlInsights.NetCore;
 using Universe.SqlInsights.Shared;
 using Universe.SqlInsights.SqlServerStorage;
@@ -38,6 +39,7 @@ namespace Universe.SqlInsights.W3Api
                     });
             });
 
+            services.AddSingleton<SqlInsightsReport>(new SqlInsightsReport());
             services.AddScoped<ActionIdHolder>();
             services.AddScoped<ISqlInsightsConfiguration>(provider => new SqlInsightsConfiguration(Configuration));
             services.AddScoped<ISqlInsightsStorage>(provider =>

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -33,14 +35,6 @@ namespace Universe.SqlInsights.NetCore
                 // DEBUG
                 var storage = serviceProvider.GetRequiredService<ISqlInsightsStorage>();
 
-                object action = context.GetRouteValue("action");
-                object controller = context.GetRouteValue("controller");
-
-                SqlInsightsActionKeyPath keyPath = new SqlInsightsActionKeyPath(
-                    "ASP.NET Core",
-                    controller == null ? "<null>" : Convert.ToString(controller),
-                    action == null ? "<null>" : Convert.ToString(action)
-                );
                 
                 SqlTraceReader traceReader = new SqlTraceReader();
                 traceReader.MaxFileSize = config.MaxTraceFileSizeKb;
@@ -54,19 +48,50 @@ namespace Universe.SqlInsights.NetCore
                 
                 CpuUsageAsyncWatcher watcher = new CpuUsageAsyncWatcher();
                 Stopwatch stopwatch = Stopwatch.StartNew();
+                var idThreadBefore = Thread.CurrentThread.ManagedThreadId;
+                var cpuUsageBefore = CpuUsage.CpuUsage.GetByThread();
                 
                 await next.Invoke();
+                
+                var idThreadAfter = Thread.CurrentThread.ManagedThreadId;
                 watcher.Stop();
                 TraceDetailsReport details = traceReader.ReadDetailsReport();
+                CpuUsage.CpuUsage watcherTotals = watcher.Totals.GetSummaryCpuUsage();
+                if (watcher.Totals.Count == 0 && idThreadAfter == idThreadBefore)
+                {
+                    var cpuUsageAfter = CpuUsage.CpuUsage.GetByThread();
+                    watcherTotals = watcherTotals + (cpuUsageAfter - cpuUsageBefore).GetValueOrDefault();
+                }
+
                 
+                object action = context.GetRouteValue("action");
+                object controller = context.GetRouteValue("controller");
+                List<string> keys = new List<string>
+                {
+                    "ASP.NET Core",
+                    controller == null ? "<null>" : Convert.ToString(controller),
+                    action == null ? "<null>" : Convert.ToString(action)
+                };
+
+                if (action == null || controller == null)
+                {
+                    keys.Clear();
+                    keys.Add("ASP.NET Core");
+                    keys.Add(context.Request.Path);
+                }
+                keys.Add($"[{context.Request.Method}]");
+                SqlInsightsActionKeyPath keyPath = new SqlInsightsActionKeyPath(keys.ToArray());
+
                 var sqlSummary = details.Summary;
-                Console.WriteLine($@"On EndRequest for «{keyPath}»:
+#if DEBUG                
+                Console.WriteLine($@"On EndRequest for «{keyPath}» ({idThreadBefore} -> {idThreadAfter}):
 {((char)160)} Sql Side Details (columns are '{details.IncludedColumns}'): {sqlSummary}
+{((char)160)} CPU usage including possible sync execution: {watcherTotals}
 {((char)160)} App Side details: {watcher.ToHumanString()}");
+#endif
                 
                 traceReader.Stop();
                 traceReader.Dispose();
-                var watcherTotals = watcher.Totals.GetSummaryCpuUsage();
 
                 Exception lastError = null;
                 ActionDetailsWithCounters actionDetails = new ActionDetailsWithCounters()
@@ -76,10 +101,9 @@ namespace Universe.SqlInsights.NetCore
                     Key = keyPath,
                     At = DateTime.Now,
                     IsOK = lastError == null,
-                    AppDuration = stopwatch.ElapsedTicks / (double) Stopwatch.Frequency,
+                    AppDuration = stopwatch.ElapsedTicks / (double) Stopwatch.Frequency * 1000d,
                     AppKernelUsage = watcherTotals.KernelUsage.TotalMicroSeconds / 1000L,
                     AppUserUsage = watcherTotals.UserUsage.TotalMicroSeconds / 1000L,
-                    
                 };
                 
                 actionDetails.SqlStatements.AddRange(details.Select(x => new ActionDetailsWithCounters.SqlStatement()
@@ -91,7 +115,7 @@ namespace Universe.SqlInsights.NetCore
                     SqlErrorText = x.SqlErrorText,
                 }));
 
-                SqlInsightsReport r = null;
+                SqlInsightsReport r = serviceProvider.GetRequiredService<SqlInsightsReport>();
                 bool needSummarize = r.Add(actionDetails);
                 
                 if (needSummarize)

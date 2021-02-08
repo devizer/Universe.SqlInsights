@@ -1,0 +1,34 @@
+﻿
+fail: Microsoft.AspNetCore.Server.Kestrel[13]
+      Connection id "0HM6C1SH78N67", Request id "0HM6C1SH78N67:00000003": An unhandled exception was thrown by the application.
+      System.Data.SqlClient.SqlException (0x80131904): Violation of PRIMARY KEY constraint 'PK_SqlInsightsKeyPathSummary'. Cannot insert duplicate key in object 'dbo.SqlInsightsKeyPathSummary'. The duplicate key value is (ASP.NET Core<null><null>).
+      The statement has been terminated.
+         at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+         at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+         at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+         at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+         at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+         at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+         at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite, String method)
+         at System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, Boolean sendToPipe, Int32 timeout, Boolean asyncWrite, String methodName)
+         at System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+         at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in C:\projects\dapper\Dapper\SqlMapper.cs:line 2827
+         at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in C:\projects\dapper\Dapper\SqlMapper.cs:line 570
+         at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in C:\projects\dapper\Dapper\SqlMapper.cs:line 443
+         at Universe.SqlInsights.SqlServerStorage.SqlServerSqlInsightsStorage.AddAction(ActionDetailsWithCounters reqAction) in U:\_GIT\Universe.SqlInsights\src\Universe.SqlInsights.SqlServerStorage\SqlServerSqlInsightsStorage.cs:line 91
+         at Universe.SqlInsights.NetCore.SqlInsightsCoreExtensions.<>c.<<UseSqlInsights>b__0_0>d.MoveNext() in U:\_GIT\Universe.SqlInsights\src\Universe.SqlInsights.NetCore\SqlInsightsCoreExtensions.cs:line 99
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpProtocol.ProcessRequests[TContext](IHttpApplication`1 application)
+      ClientConnectionId:d18599b8-b215-4aea-9779-c552716329af
+      Error Number:2627,State:1,Class:14
+On EndRequest for <ASP.NET Core  <null>  <null>>:
+  Sql Side Details (columns are 'Sql, Application'): {Duration: 0, CPU: 0, Reads: 0, Writes: 0, RowCounts: 0, Requests: 0}
+  App Side details: Total Cpu Usage is {0.000 = 0.000 [user] + 0.000 [kernel] milliseconds}. Thread switches are:
+
+On EndRequest for <ASP.NET Core  <null>  <null>>:
+  Sql Side Details (columns are 'Sql, Application'): {Duration: 0, CPU: 0, Reads: 0, Writes: 0, RowCounts: 0, Requests: 0}
+  App Side details: Total Cpu Usage is {0.000 = 0.000 [user] + 0.000 [kernel] milliseconds}. Thread switches are:
+
+On EndRequest for <ASP.NET Core  <null>  <null>>:
+  Sql Side Details (columns are 'Sql, Application'): {Duration: 0, CPU: 0, Reads: 0, Writes: 0, RowCounts: 0, Requests: 0}
+  App Side details: Total Cpu Usage is {0.000 = 0.000 [user] + 0.000 [kernel] milliseconds}. Thread switches are:
