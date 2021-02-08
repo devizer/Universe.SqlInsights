@@ -1,0 +1,10 @@
+﻿<head>
+  <meta http-equiv="refresh" content="1">
+<Script language="javascript">
+    var url = "http://localhost:50420/api/v1/FakeHealthCheck/IsOK";
+    if (Math.random() < 0.05) url = "/no-way/no-such-page";
+    url = url + "?" + (+ new Date());
+    var isOk = fetch(url).then().catch();
+</Script>
+
+</head>

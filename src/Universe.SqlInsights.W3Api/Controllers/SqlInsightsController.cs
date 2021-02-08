@@ -80,6 +80,5 @@ namespace Universe.SqlInsights.W3Api.Controllers
                 ContentType = "application/json",
             };
         }
-
-    }
+   }
 }

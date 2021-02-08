@@ -46,6 +46,7 @@ Create Table SqlInsightsKeyPathSummary(
     Data nvarchar(max) Not Null,
     Constraint PK_SqlInsightsKeyPathSummary Primary Key (KeyPath, IdSession),
     Constraint FK_SqlInsightsKeyPathSummary_SqlInsightsSession FOREIGN KEY (IdSession) REFERENCES SqlInsightsSession(IdSession)
+               ON DELETE CASCADE    -- Used for debugging only, not necessary in runtime        
 )
 Create Index IX_SqlInsightsKeyPathSummary_Version On SqlInsightsKeyPathSummary(Version Desc)
 End
@@ -60,8 +61,10 @@ Create Table SqlInsightsAction(
     KeyPath nvarchar(450) Not Null,
     Data nvarchar(max) Not Null,
     Constraint PK_SqlInsightsAction Primary Key (IdAction),
-    Constraint FK_SqlInsightsAction_SqlInsightsSession FOREIGN KEY (IdSession) REFERENCES SqlInsightsSession(IdSession),
-    Constraint FK_SqlInsightsAction_SqlInsightsKeyPathSummary FOREIGN KEY (KeyPath, IdSession) REFERENCES SqlInsightsKeyPathSummary(KeyPath, IdSession),
+    Constraint FK_SqlInsightsAction_SqlInsightsSession FOREIGN KEY (IdSession) REFERENCES SqlInsightsSession(IdSession)
+        ON DELETE CASCADE,  -- Used for debugging only, not necessary in runtime
+    Constraint FK_SqlInsightsAction_SqlInsightsKeyPathSummary FOREIGN KEY (KeyPath, IdSession) REFERENCES SqlInsightsKeyPathSummary(KeyPath, IdSession)
+        ON DELETE CASCADE   -- Used for debugging only, not necessary in runtime 
 )
 Create Index IX_SqlInsightsAction_KeyPath_At On SqlInsightsAction(KeyPath, At)
 End 

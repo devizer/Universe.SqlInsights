@@ -40,9 +40,7 @@ namespace Universe.SqlInsights.W3Api
             });
 
             services.AddSingleton<SqlInsightsReport>(new SqlInsightsReport());
-            services.AddScoped<ActionIdHolder>();
-            services.AddScoped<ISqlInsightsConfiguration>(provider => new SqlInsightsConfiguration(Configuration));
-            services.AddScoped<ISqlInsightsStorage>(provider =>
+            services.AddScoped<DbOptions>(provider =>
             {
                 var config = provider.GetRequiredService<ISqlInsightsConfiguration>();
                 var idHolder = provider.GetRequiredService<ActionIdHolder>();
@@ -50,10 +48,24 @@ namespace Universe.SqlInsights.W3Api
                 {
                     ApplicationName = string.Format(config.SqlClientAppNameFormat, idHolder.Id.ToString("N"))
                 };
-                return new SqlServerSqlInsightsStorage(builder.ConnectionString);
+                return new DbOptions() {ConnectionString = builder.ConnectionString};
+            });
+            services.AddScoped<ActionIdHolder>();
+            services.AddScoped<ExceptionHolder>();
+            services.AddScoped<ISqlInsightsConfiguration>(provider => new SqlInsightsConfiguration(Configuration));
+            services.AddScoped<ISqlInsightsStorage>(provider =>
+            {
+                var dbOptions = provider.GetRequiredService<DbOptions>();
+                if (string.IsNullOrEmpty(dbOptions.ConnectionString))
+                    throw new InvalidOperationException("Misconfigured DbOptions.ConnectionString");
+                
+                return new SqlServerSqlInsightsStorage(dbOptions.ConnectionString);
             });
             
-            services.AddControllers();
+            services.AddControllers(options =>
+            {
+                options.Filters.Add(typeof(CustomExceptionFilter));
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Universe.SqlInsights.W3Api", Version = "v1"});
@@ -89,5 +101,10 @@ namespace Universe.SqlInsights.W3Api
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
 
+    }
+
+    public class DbOptions
+    {
+        public string ConnectionString { get; set; }
     }
 }

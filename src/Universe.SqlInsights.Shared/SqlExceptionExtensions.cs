@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
-using System.Web;
 
-namespace Universe.SqlInsights.AspNetLegacy
+namespace Universe.SqlInsights.Shared
 {
     public static class SqlExceptionExtensions
     {
@@ -37,7 +36,7 @@ namespace Universe.SqlInsights.AspNetLegacy
         public static string GetBriefExceptionKey(this Exception ex)
         {
             StringBuilder ret = new StringBuilder();
-            var list = AsPlainExceptionList(ex).Where(x => !(x is HttpUnhandledException));
+            var list = AsPlainExceptionList(ex).Where(x => x?.GetType().Name != "HttpUnhandledException");
             foreach (var exception in list)
             {
                 if (ret.Length > 0) ret.Append(" → ");

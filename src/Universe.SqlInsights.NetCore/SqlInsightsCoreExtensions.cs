@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Universe.CpuUsage;
@@ -20,8 +23,16 @@ namespace Universe.SqlInsights.NetCore
         public Guid Id { get; set; }
     }
 
+    public class ExceptionHolder
+    {
+        public Exception Error { get; set; }
+    }
+
     public static class SqlInsightsCoreExtensions
     {
+        // Exception .NET Core 1.1+
+        // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/error-handling?view=aspnetcore-5.0
+        
 
         public static IApplicationBuilder UseSqlInsights(this IApplicationBuilder app)
         {
@@ -93,7 +104,8 @@ namespace Universe.SqlInsights.NetCore
                 traceReader.Stop();
                 traceReader.Dispose();
 
-                Exception lastError = null;
+                Exception lastError = serviceProvider.GetRequiredService<ExceptionHolder>().Error;
+                
                 ActionDetailsWithCounters actionDetails = new ActionDetailsWithCounters()
                 {
                     AppName = config.AppName,
@@ -114,6 +126,24 @@ namespace Universe.SqlInsights.NetCore
                     SqlErrorCode = x.SqlErrorCode,
                     SqlErrorText = x.SqlErrorText,
                 }));
+                
+                // ERROR
+                SqlException sqlException = lastError.GetSqlError();
+                if (sqlException != null)
+                {
+                    actionDetails.BriefSqlError = new BriefSqlError()
+                    {
+                        Message = sqlException.Message,
+                        SqlErrorCode = sqlException.Number,
+                    };
+                }
+
+                if (lastError != null)
+                {
+                    actionDetails.ExceptionAsString = lastError.ToString();
+                    actionDetails.BriefException = lastError.GetBriefExceptionKey();
+                }
+                
 
                 SqlInsightsReport r = serviceProvider.GetRequiredService<SqlInsightsReport>();
                 bool needSummarize = r.Add(actionDetails);
@@ -128,5 +158,22 @@ namespace Universe.SqlInsights.NetCore
             
             return app;
         }  
+    }
+    
+    public class CustomExceptionFilter : IExceptionFilter
+    {
+        private readonly IModelMetadataProvider ModelMetadataProvider;
+        private ExceptionHolder ErrorHolder;
+
+        public CustomExceptionFilter(IModelMetadataProvider modelMetadataProvider, ExceptionHolder errorHolder)
+        {
+            ModelMetadataProvider = modelMetadataProvider;
+            ErrorHolder = errorHolder;
+        }
+
+        public void OnException(ExceptionContext context)
+        {
+            ErrorHolder.Error = context.Exception;
+        }
     }
 }
