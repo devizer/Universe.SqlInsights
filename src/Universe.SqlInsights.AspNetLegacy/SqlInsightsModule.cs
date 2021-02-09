@@ -13,7 +13,7 @@ namespace Universe.SqlInsights.AspNetLegacy
 {
     public static class SqlInsightsModule
     {
-        public static void BindApp(HttpApplication app, ISqlInsightsConfiguration sqlInsightsConfiguration)
+        public static void BindSqlInsights(this HttpApplication app, ISqlInsightsConfiguration sqlInsightsConfiguration)
         {
             LegacySqlProfiler.SqlInsightsConfiguration =
                 sqlInsightsConfiguration ?? throw new ArgumentNullException(nameof(sqlInsightsConfiguration));
