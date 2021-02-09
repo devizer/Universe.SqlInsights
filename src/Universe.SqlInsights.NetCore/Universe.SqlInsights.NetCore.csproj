@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
+        <TargetFrameworks>netstandard2.0;netcoreapp1.1;netcoreapp1.0</TargetFrameworks>
         <OutputType>Library</OutputType>
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
@@ -10,8 +10,15 @@
       <ProjectReference Include="..\Universe.SqlInsights.Shared\Universe.SqlInsights.Shared.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp1.1' Or '$(TargetFramework)' == 'netcoreapp1.0' ">
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="1.1.8" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Universe.CpuUsage" Version="2.2.497.598" />
         <PackageReference Include="Universe.SqlTrace" Version="1.6.5" />
     </ItemGroup>

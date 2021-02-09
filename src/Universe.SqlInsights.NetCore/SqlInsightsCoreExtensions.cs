@@ -7,8 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Universe.CpuUsage;
@@ -42,6 +41,8 @@ namespace Universe.SqlInsights.NetCore
         {
             app.Use(middleware: async delegate(HttpContext context, Func<Task> next)
             {
+                var aboutRequest = $"{context.Request?.GetDisplayUrl()} {context.Request?.Method}, {context.TraceIdentifier}";
+                Console.WriteLine($"⚠ Processing {aboutRequest}");
                 var serviceProvider = context.RequestServices;
                 var idHolder = serviceProvider.GetRequiredService<ActionIdHolder>();
                 var keyPathHolder = serviceProvider.GetRequiredService<KeyPathHolder>();
@@ -68,76 +69,93 @@ namespace Universe.SqlInsights.NetCore
                 var cpuUsageBefore = CpuUsage.CpuUsage.GetByThread();
                 
                 await next.Invoke();
-                
-                var idThreadAfter = Thread.CurrentThread.ManagedThreadId;
-                watcher.Stop();
-                TraceDetailsReport details = traceReader.ReadDetailsReport();
-                CpuUsage.CpuUsage watcherTotals = watcher.Totals.GetSummaryCpuUsage();
-                if (watcher.Totals.Count == 0 && idThreadAfter == idThreadBefore)
+
+                try
                 {
-                    var cpuUsageAfter = CpuUsage.CpuUsage.GetByThread();
-                    watcherTotals = watcherTotals + (cpuUsageAfter - cpuUsageBefore).GetValueOrDefault();
-                }
+                    var idThreadAfter = Thread.CurrentThread.ManagedThreadId;
+                    watcher.Stop();
+                    TraceDetailsReport details = traceReader.ReadDetailsReport();
+                    CpuUsage.CpuUsage watcherTotals = watcher.Totals.GetSummaryCpuUsage();
+                    if (watcher.Totals.Count == 0 && idThreadAfter == idThreadBefore)
+                    {
+                        var cpuUsageAfter = CpuUsage.CpuUsage.GetByThread();
+                        watcherTotals = watcherTotals + (cpuUsageAfter - cpuUsageBefore).GetValueOrDefault();
+                    }
 
-                var keyPath = keyPathHolder.KeyPath;
+                    var keyPath = keyPathHolder.KeyPath;
+                    if (keyPath == null)
+                    {
+                        var httpPath = context.Request?.Path;
+                        var httpMethod = context.Request?.Method;
+                        keyPath = new SqlInsightsActionKeyPath("Misc", httpPath, $"[{httpMethod}]");
+                    }
 
-                var sqlSummary = details.Summary;
-#if DEBUG                
+                    var sqlSummary = details.Summary;
+#if DEBUG && false
                 Console.WriteLine($@"On EndRequest for «{keyPath}» ({idThreadBefore} -> {idThreadAfter}):
 {((char)160)} Sql Side Details (columns are '{details.IncludedColumns}'): {sqlSummary}
 {((char)160)} CPU usage including possible sync execution: {watcherTotals}
 {((char)160)} App Side details: {watcher.ToHumanString()}");
 #endif
-                
-                traceReader.Stop();
-                traceReader.Dispose();
 
-                Exception lastError = serviceProvider.GetRequiredService<ExceptionHolder>().Error;
-                
-                ActionDetailsWithCounters actionDetails = new ActionDetailsWithCounters()
-                {
-                    AppName = config.AppName,
-                    HostId = Environment.MachineName,
-                    Key = keyPath,
-                    At = DateTime.Now,
-                    IsOK = lastError == null,
-                    AppDuration = stopwatch.ElapsedTicks / (double) Stopwatch.Frequency * 1000d,
-                    AppKernelUsage = watcherTotals.KernelUsage.TotalMicroSeconds / 1000L,
-                    AppUserUsage = watcherTotals.UserUsage.TotalMicroSeconds / 1000L,
-                };
-                
-                actionDetails.SqlStatements.AddRange(details.Select(x => new ActionDetailsWithCounters.SqlStatement()
-                {
-                    Counters = x.Counters,
-                    Sql = x.Sql,
-                    SpName = x.SpName,
-                    SqlErrorCode = x.SqlErrorCode,
-                    SqlErrorText = x.SqlErrorText,
-                }));
-                
-                // ERROR
-                SqlException sqlException = lastError.GetSqlError();
-                if (sqlException != null)
-                {
-                    actionDetails.BriefSqlError = new BriefSqlError()
+                    traceReader.Stop();
+                    traceReader.Dispose();
+
+                    Exception lastError = serviceProvider.GetRequiredService<ExceptionHolder>().Error;
+
+                    ActionDetailsWithCounters actionDetails = new ActionDetailsWithCounters()
                     {
-                        Message = sqlException.Message,
-                        SqlErrorCode = sqlException.Number,
+                        AppName = config.AppName,
+                        HostId = Environment.MachineName,
+                        Key = keyPath,
+                        At = DateTime.Now,
+                        IsOK = lastError == null,
+                        AppDuration = stopwatch.ElapsedTicks / (double) Stopwatch.Frequency * 1000d,
+                        AppKernelUsage = watcherTotals.KernelUsage.TotalMicroSeconds / 1000L,
+                        AppUserUsage = watcherTotals.UserUsage.TotalMicroSeconds / 1000L,
                     };
-                }
 
-                if (lastError != null)
-                {
-                    actionDetails.ExceptionAsString = lastError.ToString();
-                    actionDetails.BriefException = lastError.GetBriefExceptionKey();
-                }
+                    actionDetails.SqlStatements.AddRange(details.Select(x =>
+                        new ActionDetailsWithCounters.SqlStatement()
+                        {
+                            Counters = x.Counters,
+                            Sql = x.Sql,
+                            SpName = x.SpName,
+                            SqlErrorCode = x.SqlErrorCode,
+                            SqlErrorText = x.SqlErrorText,
+                        }));
 
-                SqlInsightsReport r = serviceProvider.GetRequiredService<SqlInsightsReport>();
-                bool canSummarize = r.Add(actionDetails);
-                
-                if (canSummarize)
+                    // ERROR
+                    SqlException sqlException = lastError.GetSqlError();
+                    if (sqlException != null)
+                    {
+                        actionDetails.BriefSqlError = new BriefSqlError()
+                        {
+                            Message = sqlException.Message,
+                            SqlErrorCode = sqlException.Number,
+                        };
+                    }
+
+                    if (lastError != null)
+                    {
+                        actionDetails.ExceptionAsString = lastError.ToString();
+                        actionDetails.BriefException = lastError.GetBriefExceptionKey();
+                    }
+
+                    SqlInsightsReport r = serviceProvider.GetRequiredService<SqlInsightsReport>();
+                    bool canSummarize = r.Add(actionDetails);
+
+                    if (canSummarize || true)
+                    {
+                        storage?.AddAction(actionDetails);
+                        Console.WriteLine($"Storage is {storage?.GetType().Name}");
+                    }
+
+                    Console.WriteLine($"⚠ Processed  {aboutRequest}");
+                }
+                catch (Exception ex)
                 {
-                    storage?.AddAction(actionDetails);
+                    Console.WriteLine("ERROR " + Environment.NewLine + ex);
                 }
 
                 // Console.WriteLine($"Cpu Usage by http request is {watcher.GetSummaryCpuUsage()} {context.Request.Path} {context.Request.Method}");
@@ -145,22 +163,5 @@ namespace Universe.SqlInsights.NetCore
             
             return app;
         }  
-    }
-    
-    public class CustomExceptionFilter : IExceptionFilter
-    {
-        private readonly IModelMetadataProvider ModelMetadataProvider;
-        private ExceptionHolder ErrorHolder;
-
-        public CustomExceptionFilter(IModelMetadataProvider modelMetadataProvider, ExceptionHolder errorHolder)
-        {
-            ModelMetadataProvider = modelMetadataProvider;
-            ErrorHolder = errorHolder;
-        }
-
-        public void OnException(ExceptionContext context)
-        {
-            ErrorHolder.Error = context.Exception;
-        }
     }
 }
