@@ -125,11 +125,9 @@ namespace Universe.SqlInsights.Shared
             TimeStamp = Guid.NewGuid();
             var asSummary = req.AsSummary();
 
-            bool isFirst;
             lock (Sync)
             {
-                ActionSummaryCounters first;
-                if (!First.TryGetValue(req.Key, out first))
+                if (!First.TryGetValue(req.Key, out var first))
                 {
                     First[req.Key] = asSummary;
                     return false;
@@ -139,12 +137,10 @@ namespace Universe.SqlInsights.Shared
                 if (!Avg.TryGetValue(req.Key, out sum))
                 {
                     Avg[req.Key] = asSummary;
-                    isFirst = true;
                 }
                 else
                 {
                     sum.Add(asSummary);
-                    isFirst = false;
                 }
             }
 

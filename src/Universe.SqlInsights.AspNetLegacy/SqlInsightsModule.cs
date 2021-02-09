@@ -161,9 +161,9 @@ namespace Universe.SqlInsights.AspNetLegacy
 
                 if (LegacySqlProfiler.SqlInsightsConfiguration.Enabled)
                 {
-                    bool needSummarize = SqlInsightsReport.Instance.Add(actionDetails);
+                    bool canSummarize = SqlInsightsReport.Instance.Add(actionDetails);
 
-                    if (needSummarize)
+                    if (canSummarize)
                     {
                         var hcs = LegacySqlProfiler.SqlInsightsConfiguration.HistoryConnectionString;
                         if (hcs != null)

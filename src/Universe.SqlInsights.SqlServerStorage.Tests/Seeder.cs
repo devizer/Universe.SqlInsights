@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using Universe.SqlInsights.Shared;
 using Universe.SqlTrace;
@@ -15,16 +16,16 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             ConnectionString = connectionString;
         }
 
-        public void Seed()
+        public async Task Seed()
         {
             
             SqlServerSqlInsightsStorage storage = new SqlServerSqlInsightsStorage(ConnectionString);
-            var sessions = storage.GetSessions();
+            var sessions = await storage.GetSessions();
             if (sessions.Count(x => !x.IsFinished) < 2)
             {
                 Console.WriteLine("Create 2 Sessions: limited and unlimited");
-                var session1 = storage.CreateSession("Snapshot Un-Limited" + DateTime.UtcNow, null);
-                var session2 = storage.CreateSession("Snapshot Limited" + DateTime.UtcNow, 60*24*7);
+                var session1 = await storage.CreateSession("Snapshot Un-Limited" + DateTime.UtcNow, null);
+                var session2 = await storage.CreateSession("Snapshot Limited" + DateTime.UtcNow, 60*24*7);
                 Assert.AreNotEqual(session1, 0, "Session1 is not zero");
                 Assert.AreNotEqual(session2, 0, "Session2 is not zero");
             }

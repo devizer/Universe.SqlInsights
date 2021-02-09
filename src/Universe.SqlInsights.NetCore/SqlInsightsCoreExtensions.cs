@@ -133,9 +133,9 @@ namespace Universe.SqlInsights.NetCore
                 }
 
                 SqlInsightsReport r = serviceProvider.GetRequiredService<SqlInsightsReport>();
-                bool needSummarize = r.Add(actionDetails);
+                bool canSummarize = r.Add(actionDetails);
                 
-                if (needSummarize)
+                if (canSummarize)
                 {
                     storage?.AddAction(actionDetails);
                 }

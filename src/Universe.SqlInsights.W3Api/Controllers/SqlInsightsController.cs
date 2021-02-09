@@ -24,7 +24,7 @@ namespace Universe.SqlInsights.W3Api.Controllers
         public async Task<ActionResult<string>> ActionsTimestamp(KeyPathModel key)
         {
             var keyPath = ParseActionKeyPath(key.Path);
-            string timestamp = _Storage.GetKeyPathTimestampOfDetails(IdSessionStub, keyPath);
+            string timestamp = await _Storage.GetKeyPathTimestampOfDetails(IdSessionStub, keyPath);
             return ToJsonResult(timestamp);
         }
 
@@ -32,21 +32,21 @@ namespace Universe.SqlInsights.W3Api.Controllers
         public async Task<ActionResult<IEnumerable<ActionDetailsWithCounters>>> ActionsByKey(KeyPathModel key)
         {
             SqlInsightsActionKeyPath keyPath = ParseActionKeyPath(key.Path);
-            IEnumerable<ActionDetailsWithCounters> ret = _Storage.GetActionsByKeyPath(IdSessionStub, keyPath);
+            IEnumerable<ActionDetailsWithCounters> ret = await _Storage.GetActionsByKeyPath(IdSessionStub, keyPath);
             return ToJsonResult(ret);
         }
 
         [HttpPost]
         public async Task<ActionResult<IEnumerable<ActionSummaryCounters>>> Summary()
         {
-            IEnumerable<ActionSummaryCounters> ret = _Storage.GetActionsSummary(IdSessionStub);
+            IEnumerable<ActionSummaryCounters> ret = await _Storage.GetActionsSummary(IdSessionStub);
             return ToJsonResult(ret);
         }
 
         [HttpPost]
         public async Task<ActionResult<IEnumerable<ActionSummaryCounters>>> SummaryTimeStamp()
         {
-            string ret = _Storage.GetActionsSummaryTimestamp(IdSessionStub);
+            string ret = await _Storage.GetActionsSummaryTimestamp(IdSessionStub);
             return ToJsonResult(ret);
         }
 

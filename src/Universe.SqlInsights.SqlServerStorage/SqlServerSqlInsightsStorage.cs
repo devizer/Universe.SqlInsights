@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading.Tasks;
 using Dapper;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -13,6 +14,9 @@ namespace Universe.SqlInsights.SqlServerStorage
     public class SqlServerSqlInsightsStorage : ISqlInsightsStorage
     {
         public readonly string ConnectionString;
+
+        private static volatile bool AreMigrationsChecked = false;
+        private static readonly object SyncMigrations = new object();
 
         public SqlServerSqlInsightsStorage(string connectionString)
         {
@@ -44,6 +48,11 @@ namespace Universe.SqlInsights.SqlServerStorage
             var ret = new SqlConnection(ConnectionString);
             ret.Open();
             return ret;
+        }
+
+        class SelectDataResult
+        {
+            public string Data { get; set; }
         }
 
         public void AddAction(ActionDetailsWithCounters reqAction)
@@ -115,13 +124,26 @@ namespace Universe.SqlInsights.SqlServerStorage
                 return query.ToList();
             }
         }
+        
+        static string SerializeKeyPath(SqlInsightsActionKeyPath keyPath)
+        {
+            return keyPath == null || keyPath.Path == null ? null : string.Join("\x2192", keyPath.Path);
+        }
 
-        public IEnumerable<ActionSummaryCounters> GetActionsSummary(long idSession)
+        static SqlInsightsActionKeyPath ParseKeyPath(string keyPath)
+        {
+            return keyPath == null ? null : new SqlInsightsActionKeyPath(keyPath.Split((char) 0x2192));
+        }
+
+
+
+#if NETSTANDARD
+        public async Task<IEnumerable<ActionSummaryCounters>> GetActionsSummary(long idSession)
         {
             const string sql = "Select KeyPath, Data From SqlInsightsKeyPathSummary Where IdSession = @IdSession";
             using (var con = GetConnection())
             {
-                IEnumerable<SelectDataResult> resultSet = con.Query<SelectDataResult>(sql, new {IdSession = idSession});
+                IEnumerable<SelectDataResult> resultSet = await con.QueryAsync<SelectDataResult>(sql, new {IdSession = idSession});
                 var query = resultSet.Select(x =>
                 {
                     return JsonConvert.DeserializeObject<ActionSummaryCounters>(x.Data, DefaultSettings);
@@ -131,12 +153,12 @@ namespace Universe.SqlInsights.SqlServerStorage
             }
         }
 
-        public string GetActionsSummaryTimestamp(long idSession)
+        public async Task<string> GetActionsSummaryTimestamp(long idSession)
         {
             const string sql = "Select Top 1 Version From SqlInsightsKeyPathSummary Where IdSession = @IdSession Order By Version Desc";
             using (var con = GetConnection())
             {
-                var query = con.Query<SelectVersionResult>(sql, new { IdSession = idSession});
+                var query = await con.QueryAsync<SelectVersionResult>(sql, new { IdSession = idSession});
                 byte[] binaryVersion = query.FirstOrDefault()?.Version;
                 ulong? version = RowVersion2Int64(binaryVersion);
                 return version == null ? "" : version.Value.ToString();
@@ -163,11 +185,6 @@ namespace Universe.SqlInsights.SqlServerStorage
             return null;
         }
 
-        class SelectDataResult
-        {
-            public string Data { get; set; }
-        }
-
         class SelectIdActionResult
         {
             public long IdAction { get; set; }
@@ -177,55 +194,44 @@ namespace Universe.SqlInsights.SqlServerStorage
             public byte[] Version { get; set; }
         }
 
-        public string GetKeyPathTimestampOfDetails(long idSession, SqlInsightsActionKeyPath keyPath)
+        public async Task<string> GetKeyPathTimestampOfDetails(long idSession, SqlInsightsActionKeyPath keyPath)
         {
             const string sql = "Select Top 1 IdAction From SqlInsightsAction Where KeyPath = @KeyPath And IdSession = @IdSession Order By At Desc";
             using (var con = GetConnection())
             {
-                var query = con.Query<SelectIdActionResult>(sql, new {KeyPath = SerializeKeyPath(keyPath), IdSession = idSession});
+                var query = await con.QueryAsync<SelectIdActionResult>(sql, new {KeyPath = SerializeKeyPath(keyPath), IdSession = idSession});
                 long? ret = query.FirstOrDefault()?.IdAction;
                 return ret.HasValue ? ret.Value.ToString() : "";
             }
         }
 
-        public IEnumerable<ActionDetailsWithCounters> GetActionsByKeyPath(long idSession, SqlInsightsActionKeyPath keyPath)
+        public async Task<IEnumerable<ActionDetailsWithCounters>> GetActionsByKeyPath(long idSession, SqlInsightsActionKeyPath keyPath)
         {
             const string sql = "Select Top 100 Data From SqlInsightsAction Where KeyPath = @KeyPath And IdSession = @IdSession Order By At Desc";
             using (var con = GetConnection())
             {
-                var query = con
-                    .Query<SelectDataResult>(sql, new {KeyPath = SerializeKeyPath(keyPath), IdSession = idSession})
+                var query = await con
+                    .QueryAsync<SelectDataResult>(sql, new {KeyPath = SerializeKeyPath(keyPath), IdSession = idSession});
+
+                var ret = query
                     .Select(x => JsonConvert.DeserializeObject<ActionDetailsWithCounters>(x.Data, DefaultSettings));
 
-                return query.ToList();
+                return ret.ToList();
             }
         }
 
-        static string SerializeKeyPath(SqlInsightsActionKeyPath keyPath)
-        {
-            return keyPath == null || keyPath.Path == null ? null : string.Join("\x2192", keyPath.Path);
-        }
-
-        static SqlInsightsActionKeyPath ParseKeyPath(string keyPath)
-        {
-            return keyPath == null ? null : new SqlInsightsActionKeyPath(keyPath.Split((char) 0x2192));
-        }
-
-        public static volatile bool AreMigrationsChecked = false;
-        public static readonly object SyncMigrations = new object();
-
-        public IEnumerable<SqlInsightsSession> GetSessions()
+        public async Task<IEnumerable<SqlInsightsSession>> GetSessions()
         {
             const string sql = "Select IdSession, StartedAt, EndedAt, IsFinished, Caption, MaxDurationMinutes From SqlInsightsSession";
             using (var con = GetConnection())
             {
-                var query = con.Query<SqlInsightsSession>(sql, null);
+                var query = await con.QueryAsync<SqlInsightsSession>(sql, null);
                 return query.ToList();
             }
         }
 
 
-        public long CreateSession(string caption, int? maxDurationMinutes)
+        public async Task<long> CreateSession(string caption, int? maxDurationMinutes)
         {
             const string sql = @"
 Insert SqlInsightsSession(StartedAt, IsFinished, Caption, MaxDurationMinutes) Values(
@@ -239,13 +245,13 @@ Select SCOPE_IDENTITY();
 
             using (var con = GetConnection())
             {
-                var query = con.Query<long>(sql, new {Caption = caption, MaxDurationMinutes = maxDurationMinutes});
-                return query.First();
+                var ret = await con.ExecuteScalarAsync<long>(sql, new {Caption = caption, MaxDurationMinutes = maxDurationMinutes});
+                return ret;
             }
             
         }
 
-        public void DeleteSession(long idSession)
+        public async Task DeleteSession(long idSession)
         {
             const string sql = @"
 Delete From SqlInsightsAction Where IdSession = @IdSession;
@@ -255,27 +261,30 @@ Delete From SqlInsightsSession Where IdSession = @IdSession;
         
             using (var con = GetConnection())
             {
-                con.Execute(sql, new {IdSession = idSession});
+                await con.ExecuteAsync(sql, new {IdSession = idSession});
             }
         }
 
-        public void RenameSession(long idSession, string caption)
+        public async Task RenameSession(long idSession, string caption)
         {
             const string sql = @"Update SqlInsightsSession Set Caption = @Caption Where IdSession = @IdSession;"; 
             using (var con = GetConnection())
             {
-                con.Execute(sql, new {IdSession = idSession});
+                await con.ExecuteAsync(sql, new {IdSession = idSession});
             }
         }
 
-        public void FinishSession(long idSession)
+        public async Task FinishSession(long idSession)
         {
             if (idSession == 0) return;
             const string sql = @"Update SqlInsightsSession Set IsFinished = (1), EndedAt = GETUTCDATE() Where IdSession = @IdSession;"; 
             using (var con = GetConnection())
             {
-                con.Execute(sql, new {IdSession = idSession});
+                await con.ExecuteAsync(sql, new {IdSession = idSession});
             }
         }
+        
+#endif
+        
     }
 }
