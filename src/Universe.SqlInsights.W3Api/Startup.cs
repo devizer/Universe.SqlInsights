@@ -86,7 +86,7 @@ namespace Universe.SqlInsights.W3Api
             
             services.AddControllers(options =>
             {
-                // options.Filters.Add(typeof(CustomExceptionFilter));
+                options.Filters.Add(typeof(CustomExceptionFilter));
                 options.Filters.Add(typeof(CustomGroupingActionFilter));
             });
             
