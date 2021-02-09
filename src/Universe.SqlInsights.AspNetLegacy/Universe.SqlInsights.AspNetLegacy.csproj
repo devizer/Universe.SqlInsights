@@ -11,35 +11,9 @@
 
     <PropertyGroup>
         <TargetFrameworks>net35;net40;net45</TargetFrameworks>
-        <DebugType>Full</DebugType>
-        <IncludeSymbols>true</IncludeSymbols>
-        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <LangVersion>latest</LangVersion>
-        <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-            
-        <NoWarn>1701;1702;CS0162;CS0414;CS1591;NU5048</NoWarn>
-
-        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-        <OutputType>Library</OutputType>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-
     </PropertyGroup>
 
-    <PropertyGroup>
-        <PackageId>Universe.SqlTrace.AspNetLegacy</PackageId>
-        <Title>Universe.SqlTrace.AspNetLegacy</Title>
-        <Authors>Volodymyr Hoida</Authors>
-        <Product>Universe.SqlTrace.AspNetLegacy</Product>
-        <Description>MS SQL Profiler API Integration into ASP.NET</Description>
-        <PackageProjectUrl>https://github.com/devizer/Universe.SqlTrace</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/devizer/Universe.SqlTrace</RepositoryUrl>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <!--PackageIconUrl>https://raw.githubusercontent.com/devizer/Universe.SqlTrace/master/Icon/v1.png</PackageIconUrl-->
-        <PackageTags></PackageTags>
-        <LangVersion>latest</LangVersion>
-    </PropertyGroup>
+    <Import Project="..\Shared.props" />
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net35'">
         <AssemblyAttribute Include="System.Runtime.Versioning.TargetFrameworkAttribute">

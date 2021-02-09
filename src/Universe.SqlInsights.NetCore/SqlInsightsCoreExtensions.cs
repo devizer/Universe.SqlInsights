@@ -35,14 +35,30 @@ namespace Universe.SqlInsights.NetCore
     {
         // Exception .NET Core 1.1+
         // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/error-handling?view=aspnetcore-5.0
-        
 
+        public static IApplicationBuilder ValidateSqlInsightsServices(this IApplicationBuilder app)
+        {
+            
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var serviceProvider = scope.ServiceProvider;
+                var idHolder = serviceProvider.GetRequiredService<ActionIdHolder>();
+                var keyPathHolder = serviceProvider.GetRequiredService<KeyPathHolder>();
+                var config = serviceProvider.GetRequiredService<ISqlInsightsConfiguration>();
+                var storage = serviceProvider.GetRequiredService<ISqlInsightsStorage>();
+                var exceptionHolder = serviceProvider.GetRequiredService<ExceptionHolder>();
+                var report = serviceProvider.GetRequiredService<SqlInsightsReport>();
+            }
+
+            return app;
+        }
+        
         public static IApplicationBuilder UseSqlInsights(this IApplicationBuilder app)
         {
             app.Use(middleware: async delegate(HttpContext context, Func<Task> next)
             {
-                var aboutRequest = $"{context.Request?.GetDisplayUrl()} {context.Request?.Method}, {context.TraceIdentifier}";
-                Console.WriteLine($"⚠ Processing {aboutRequest}");
+                // var aboutRequest = $"{context.Request?.GetDisplayUrl()} {context.Request?.Method}, {context.TraceIdentifier}";
+                // Console.WriteLine($"⚠ Processing {aboutRequest}");
                 var serviceProvider = context.RequestServices;
                 var idHolder = serviceProvider.GetRequiredService<ActionIdHolder>();
                 var keyPathHolder = serviceProvider.GetRequiredService<KeyPathHolder>();
@@ -145,13 +161,12 @@ namespace Universe.SqlInsights.NetCore
                     SqlInsightsReport r = serviceProvider.GetRequiredService<SqlInsightsReport>();
                     bool canSummarize = r.Add(actionDetails);
 
-                    if (canSummarize || true)
+                    if (canSummarize)
                     {
                         storage?.AddAction(actionDetails);
-                        Console.WriteLine($"Storage is {storage?.GetType().Name}");
                     }
 
-                    Console.WriteLine($"⚠ Processed  {aboutRequest}");
+                    // Console.WriteLine($"⚠ Processed  {aboutRequest}");
                 }
                 catch (Exception ex)
                 {

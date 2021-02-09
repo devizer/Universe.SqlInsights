@@ -1,0 +1,37 @@
+﻿<Project>
+
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <LangVersion>latest</LangVersion>
+        <DebugType>Full</DebugType>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+        <RootNamespace>$(MSBuildProjectName)</RootNamespace>
+        <LangVersion>latest</LangVersion>
+        <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <NoWarn>1701;1702;CS0162;CS0414;CS1591;NU5048</NoWarn>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <OutputType>Library</OutputType>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <IsPackable>true</IsPackable>
+        <PackageId>$(MSBuildProjectName)</PackageId>
+        <Title>$(MSBuildProjectName)</Title>
+        <Authors>Volodymyr Hoida</Authors>
+        <Product>$(MSBuildProjectName)</Product>
+        <Description>Reference implementation for integration</Description>
+        <PackageProjectUrl>https://github.com/devizer/Universe.SqlInsights</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/devizer/Universe.SqlInsights</RepositoryUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIconUrl>https://raw.githubusercontent.com/devizer/Universe.SqlTrace/master/Icon/v1.png</PackageIconUrl>
+        <PackageTags>mssql SqlInsights</PackageTags>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+</Project>

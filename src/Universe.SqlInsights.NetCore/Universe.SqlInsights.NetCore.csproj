@@ -2,9 +2,9 @@
 
     <PropertyGroup>
         <TargetFrameworks>netstandard2.0;netcoreapp1.1;netcoreapp1.0</TargetFrameworks>
-        <OutputType>Library</OutputType>
-        <LangVersion>latest</LangVersion>
     </PropertyGroup>
+
+    <Import Project="..\Shared.props" />
 
     <ItemGroup>
       <ProjectReference Include="..\Universe.SqlInsights.Shared\Universe.SqlInsights.Shared.csproj" />

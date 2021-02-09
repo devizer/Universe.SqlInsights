@@ -99,7 +99,8 @@ namespace Universe.SqlInsights.W3Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            
+
+            app.ValidateSqlInsightsServices();
             app.UseSqlInsights();
             
             if (env.IsDevelopment())
