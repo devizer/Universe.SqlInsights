@@ -73,5 +73,26 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             Assert.AreEqual(0, aliveSessionsCount2, "Alive Session count (except default one) should be 0");
 
         }
+
+        [Test]
+        public async Task Test4_DeleteSession()
+        {
+            SqlServerSqlInsightsStorage storage = new SqlServerSqlInsightsStorage(ConnectionString);
+            SqlInsightsSession targetSession = (await storage.GetSessions())
+                .Where(x => x.IsFinished && x.IdSession != 0)
+                .OrderByDescending(x => x.StartedAt)
+                .FirstOrDefault();
+            
+            if (targetSession == null)
+                Assert.Fail("DeleteSession() test needs finished session");
+
+            await storage.DeleteSession(targetSession.IdSession);
+            var sessionsAfter = await storage.GetSessions();
+            Assert.IsNull(sessionsAfter.FirstOrDefault(x => x.IdSession == targetSession.IdSession));
+
+
+
+        }
+
     }
 }
