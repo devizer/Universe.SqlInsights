@@ -1,7 +1,4 @@
 variables:
-    buildConfiguration: "Debug"
-    testProject: "Universe.CpuUsage.Tests/Universe.CpuUsage.Tests.csproj"
-    solution: "Universe.CpuUsage.sln"
 
 jobs:
 
@@ -9,7 +6,7 @@ jobs:
     variables:
       OS: Windows
       SQL: 'SqlServer 2019 Developer: MSSQLSERVER'
-    timeoutInMinutes: 99
+    timeoutInMinutes: 30
     cancelTimeoutInMinutes: 1
     pool:
       vmImage: 'windows-latest'
@@ -20,7 +17,7 @@ jobs:
     variables:
       OS: Windows
       SQL: 'SqlServer 2008R2 Express: MSSQLSERVER'
-    timeoutInMinutes: 99
+    timeoutInMinutes: 30
     cancelTimeoutInMinutes: 1
     pool:
       vmImage: 'windows-latest'
