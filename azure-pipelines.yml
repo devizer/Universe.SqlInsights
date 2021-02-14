@@ -5,7 +5,7 @@ variables:
 
 jobs:
 
-  - job: WIN2019_VS2019
+  - job: WIN1809
     variables:
       OS: Windows
     timeoutInMinutes: 99
