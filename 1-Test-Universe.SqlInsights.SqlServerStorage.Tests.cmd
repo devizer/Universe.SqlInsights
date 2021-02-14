@@ -1,3 +1,3 @@
 pushd src\Universe.SqlInsights.SqlServerStorage.Tests
-dotnet test
+dotnet test --collect:"XPlat Code Coverage" --logger trx
 popd
