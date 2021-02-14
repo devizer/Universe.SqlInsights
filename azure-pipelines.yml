@@ -1,4 +1,6 @@
 variables:
+  Project: 'Universe.SqlInsights'
+ 
 
 jobs:
 
