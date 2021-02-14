@@ -44,10 +44,10 @@ steps:
        (new-object System.Net.WebClient).DownloadFile('https://raw.githubusercontent.com/devizer/glist/master/bin/SQL-Express/Sql-Setup-Bootstrap.ps1', "$Work\Sql-Setup-Bootstrap.ps1")
        pushd $Work; . .\Sql-Setup-Bootstrap.ps1; popd
 
-       Say "Target Sql Server Version: $(SQL)"
+       Say "Target Sql Server Version <$(SQL)>"
        Show-SqlServers
 
-       $todo = Parse-SqlServers "$SQL"
+       $todo = Parse-SqlServers "$(SQL)"
        $todo | % { Install-SqlServer $_ }
 
        Show-SqlServers
