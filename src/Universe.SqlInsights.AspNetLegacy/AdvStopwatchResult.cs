@@ -1,6 +1,6 @@
 namespace Universe.SqlInsights.AspNetLegacy
 {
-    public class StopwatchResult
+    public class AdvStopwatchResult
     {
         public double Time { get; private set; }
 
@@ -12,16 +12,16 @@ namespace Universe.SqlInsights.AspNetLegacy
             get { return KernelUsage + UserUsage; }
         }
 
-        public StopwatchResult(double time, double kernelUsage, double userUsage)
+        public AdvStopwatchResult(double time, double kernelUsage, double userUsage)
         {
             Time = time;
             KernelUsage = kernelUsage;
             UserUsage = userUsage;
         }
 
-        public static StopwatchResult Substruct(StopwatchResult one, StopwatchResult another)
+        public static AdvStopwatchResult Substruct(AdvStopwatchResult one, AdvStopwatchResult another)
         {
-            return new StopwatchResult(
+            return new AdvStopwatchResult(
                 one.Time - another.Time,
                 one.KernelUsage - another.KernelUsage,
                 one.UserUsage - another.UserUsage);
@@ -31,19 +31,19 @@ namespace Universe.SqlInsights.AspNetLegacy
 
     public static class StopwatchResultExtensions
     {
-        static StopwatchResult Zero = new StopwatchResult(0,0,0);
-        public static StopwatchResult Add(this StopwatchResult one, StopwatchResult another)
+        static AdvStopwatchResult Zero = new AdvStopwatchResult(0,0,0);
+        public static AdvStopwatchResult Add(this AdvStopwatchResult one, AdvStopwatchResult another)
         {
             if (one == null && another == null)
                 return null;
 
-            return new StopwatchResult(
+            return new AdvStopwatchResult(
                 (one ?? Zero).Time + (another ?? Zero).Time,
                 (one ?? Zero).KernelUsage + (another ?? Zero).KernelUsage,
                 (one ?? Zero).UserUsage + (another ?? Zero).UserUsage);
         }
 
-        public static StopwatchResult GetOptionalResult(this AdvStopwatch arg)
+        public static AdvStopwatchResult GetOptionalResult(this AdvStopwatch arg)
         {
             if (arg == null || !arg.IsRunning)
                 return null;
@@ -51,7 +51,7 @@ namespace Universe.SqlInsights.AspNetLegacy
             return arg.Result;
         }
 
-        public static string ToHumanString(this StopwatchResult swr)
+        public static string ToHumanString(this AdvStopwatchResult swr)
         {
             if (swr == null) return "";
             return $"{{Duration: {swr.Time}, CPU: {swr.CpuUsage} = {swr.UserUsage} [user] + {swr.KernelUsage} [kernel]}}";

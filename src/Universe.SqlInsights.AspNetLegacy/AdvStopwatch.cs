@@ -25,14 +25,14 @@ namespace Universe.SqlInsights.AspNetLegacy
             }
         }
 
-        public StopwatchResult Result
+        public AdvStopwatchResult Result
         {
             get
             {
                 double kernel;
                 double user;
                 CpuUsageInterop.GetThreadTimes(out kernel, out user);
-                return new StopwatchResult(
+                return new AdvStopwatchResult(
                     _stopWatch.GetMilliseconds(),
                     kernel - _kernel,
                     user - _user);

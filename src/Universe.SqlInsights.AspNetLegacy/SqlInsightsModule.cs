@@ -90,8 +90,8 @@ namespace Universe.SqlInsights.AspNetLegacy
 
                 AdvStopwatch stopwatch = (AdvStopwatch) app.Context.Items["Advanced Stopwatch"];
                 Exception lastError = (Exception) app.Context.Items["App Exception"];
-                StopwatchResult swResult = stopwatch.GetOptionalResult();
-                swResult ??= new StopwatchResult(0, 0, 0);
+                AdvStopwatchResult swResult = stopwatch.GetOptionalResult();
+                swResult ??= new AdvStopwatchResult(0, 0, 0);
                 
                 ActionSummaryCounters newLine = new ActionSummaryCounters()
                 {

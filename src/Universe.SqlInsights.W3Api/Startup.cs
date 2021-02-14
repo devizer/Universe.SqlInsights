@@ -1,12 +1,14 @@
 using System;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Universe.SqlInsights.NetCore;
 using Universe.SqlInsights.Shared;
@@ -65,24 +67,6 @@ namespace Universe.SqlInsights.W3Api
             services.AddScoped<KeyPathHolder>();
             services.AddScoped<ISqlInsightsConfiguration>(provider => new SqlInsightsConfiguration(Configuration));
 
-            Task.Run(() =>
-            {
-                Stopwatch sw = Stopwatch.StartNew();
-                string error;
-                try
-                {
-                    var history = new SqlServerSqlInsightsStorage(Configuration.GetConnectionString("SqlInsights"));
-                    history.GetAliveSessions();
-                    history.GetActionsSummaryTimestamp(-1);
-                    history.GetKeyPathTimestampOfDetails(-1, new SqlInsightsActionKeyPath());
-                    error = "Ok";
-                }
-                catch (Exception ex)
-                {
-                    error = $"{ex.GetType().Name} {ex.Message}";
-                }
-                Console.WriteLine($"Pre-jit of ISqlInsightsStorage completed in {sw.Elapsed}, {error}");
-            });
             
             services.AddControllers(options =>
             {
@@ -97,9 +81,9 @@ namespace Universe.SqlInsights.W3Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
-
+            PreJit(logger);
             app.ValidateSqlInsightsServices();
             app.UseSqlInsights();
             
@@ -124,6 +108,29 @@ namespace Universe.SqlInsights.W3Api
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+        }
+
+        void PreJit(ILogger logger)
+        {
+            Task.Run(async () =>
+            {
+                Stopwatch sw = Stopwatch.StartNew();
+                try
+                {
+                    var history = new SqlServerSqlInsightsStorage(Configuration.GetConnectionString("SqlInsights"));
+                    history.GetAliveSessions();
+                    await history.GetActionsSummaryTimestamp(0);
+                    var summary = await history.GetActionsSummary(0);
+                    var keyPath = summary.FirstOrDefault()?.Key ?? new SqlInsightsActionKeyPath();
+                    await history.GetKeyPathTimestampOfDetails(0, keyPath);
+                    await history.GetActionsByKeyPath(0, keyPath);
+                    logger.LogInformation($"Pre-jit of ISqlInsightsStorage completed in {sw.Elapsed}");
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"Pre-jit of ISqlInsightsStorage tool {sw.Elapsed} and failed");
+                }
+            });
         }
 
     }

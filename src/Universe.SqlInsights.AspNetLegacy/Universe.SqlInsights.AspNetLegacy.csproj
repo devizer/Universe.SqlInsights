@@ -45,7 +45,8 @@
 
 
     <ItemGroup>
-      <Reference Include="System.Web" />
+        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+        <Reference Include="System.Web" />
     </ItemGroup>
 
 
