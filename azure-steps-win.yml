@@ -46,7 +46,7 @@ steps:
        Say "Target Sql Server Version <$(SQL)>"
        Show-SqlServers
 
-       $ErrorActionPreference = 'SilentlyContinue'
+       # $ErrorActionPreference = 'SilentlyContinue'
        $todo = Parse-SqlServers "$(SQL)"
        $todo | % { Install-SqlServer $_ }
 
