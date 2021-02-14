@@ -20,7 +20,7 @@ steps:
        & bash -c "Say ENVIRONMENT; printenv | sort"; $true
 
        pushd "C:\Program Files (x86)\Microsoft Visual Studio\"
-       dir /b /s
+       & cmd /c dir /b /s
        popd
     displayName: 'system info (pwsh)'
 
