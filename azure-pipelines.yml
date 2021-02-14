@@ -1,0 +1,24 @@
+variables:
+    buildConfiguration: "Debug"
+    testProject: "Universe.CpuUsage.Tests/Universe.CpuUsage.Tests.csproj"
+    solution: "Universe.CpuUsage.sln"
+
+jobs:
+
+  - job: WIN2019_VS2019
+    variables:
+      OS: Windows
+    timeoutInMinutes: 99
+    cancelTimeoutInMinutes: 1
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+      - template: azure-steps-win.yml
+
+trigger:
+  - master
+
+pr:
+  branches:
+    exclude:
+      - '*'

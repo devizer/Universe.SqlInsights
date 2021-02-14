@@ -1,0 +1,22 @@
+# AGENT_OS=Linux|Darwin|Windows_NT
+# condition: eq(variables['Agent.OS'], 'Linux|Darwin|Windows_NT')
+
+steps:
+
+  - bash: |
+      echo $BASH_VERSION
+    displayName: 'Show'
+
+  - powershell: |
+       $ErrorActionPreference = "SilentlyContinue"
+       & dotnet --info
+       "PATH: [" + [Environment]::GetEnvironmentVariable("PATH") + "]"
+       & bash -c "Say ENVIRONMENT; printenv | sort"; $true
+    displayName: 'system info (pwsh)'
+
+  - script: |
+      call 0-Rebuild-All.cmd 
+      call 1-Test-Universe.SqlInsights.SqlServerStorage.Tests.cmd       
+    condition: eq(variables['Agent.OS'], 'Windows_NT')
+    displayName: 'dotnet test on Windows'
+
