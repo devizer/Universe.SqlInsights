@@ -18,6 +18,10 @@ steps:
        & dotnet --info
        "PATH: [" + [Environment]::GetEnvironmentVariable("PATH") + "]"
        & bash -c "Say ENVIRONMENT; printenv | sort"; $true
+
+       pushd "C:\Program Files (x86)\Microsoft Visual Studio\"
+       dir /b /s
+       popd
     displayName: 'system info (pwsh)'
 
 
@@ -41,6 +45,7 @@ steps:
   
   
   - script: |
+      set PATH="C:\Program Files\Microsoft Visual Studio\Community\MSBuild\Current\Bin\amd64\MSBuild.exe;%PATH%;"
       call 0-Rebuild-All.cmd
       call 1-Test-Universe.SqlInsights.SqlServerStorage.Tests.cmd
     condition: eq(variables['Agent.OS'], 'Windows_NT')
