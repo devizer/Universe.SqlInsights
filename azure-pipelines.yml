@@ -24,6 +24,17 @@ jobs:
     steps:
       - template: azure-steps-win.yml
 
+  - job: SQL2005
+    variables:
+      OS: Windows
+      SQL: 'SqlServer 2005 Express: MSSQLSERVER'
+    timeoutInMinutes: 30
+    cancelTimeoutInMinutes: 1
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+      - template: azure-steps-win.yml
+
 trigger:
   - master
 
