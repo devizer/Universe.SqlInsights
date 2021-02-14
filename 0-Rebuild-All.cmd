@@ -1,9 +1,9 @@
 If Not Defined VER Set VER=0.1.2.3
 for %%d in (Universe.SqlInsights.AspNetLegacy Universe.SqlInsights.NetCore Universe.SqlInsights.Shared Universe.SqlInsights.SqlServerStorage) DO (
   echo Clean src\%%d\bin
-  rd /q /s src\%%d\bin
+  if exist src\%%d\bin rd /q /s src\%%d\bin
   echo Clean src\%%d\obj
-  rd /q /s src\%%d\obj
+  if exist src\%%d\obj rd /q /s src\%%d\obj
 )
 
 pushd src\
