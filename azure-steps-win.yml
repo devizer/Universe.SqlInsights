@@ -3,6 +3,15 @@
 
 steps:
 
+  - script: |
+      echo PATH1: %PATH%
+      if exist "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\amd64" Set PATH="C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\amd64;%PATH%;"
+      nuget help
+      msbuild /version
+      echo PATH2: %PATH%
+    condition: eq(variables['Agent.OS'], 'Windows_NT')
+    displayName: 'PATH?'
+
   - bash: |
       echo $BASH_VERSION
     displayName: 'Show'
