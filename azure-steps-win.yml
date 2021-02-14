@@ -9,6 +9,7 @@ steps:
       nuget help
       msbuild /version
       echo PATH2: %PATH%
+      exit 0
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     displayName: 'PATH?'
 
