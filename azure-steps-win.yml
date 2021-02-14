@@ -9,6 +9,12 @@ steps:
 
   - powershell: |
        $ErrorActionPreference = "SilentlyContinue"
+       
+       $nuget = nuget help | select -First 1
+       Write-Host "NUGET: $nuget"
+       $msbuild = msbuild help | select -First 1
+       Write-Host "MSBUILD: $msbuild"
+
        & dotnet --info
        "PATH: [" + [Environment]::GetEnvironmentVariable("PATH") + "]"
        & bash -c "Say ENVIRONMENT; printenv | sort"; $true
