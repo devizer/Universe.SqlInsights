@@ -20,7 +20,7 @@ steps:
        & bash -c "Say ENVIRONMENT; printenv | sort"; $true
 
        pushd "C:\Program Files (x86)\Microsoft Visual Studio\"
-       & cmd /c dir /b /s
+       # & cmd /c dir /b /s
        popd
     displayName: 'system info (pwsh)'
 
@@ -45,7 +45,7 @@ steps:
   
   
   - script: |
-      set PATH="C:\Program Files\Microsoft Visual Studio\Community\MSBuild\Current\Bin\amd64\MSBuild.exe;%PATH%;"
+      set PATH="C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Community\MSBuild\Current\Bin\amd64\MSBuild.exe;%PATH%;"
       call 0-Rebuild-All.cmd
       call 1-Test-Universe.SqlInsights.SqlServerStorage.Tests.cmd
     condition: eq(variables['Agent.OS'], 'Windows_NT')
