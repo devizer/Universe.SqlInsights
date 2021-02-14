@@ -5,9 +5,21 @@ variables:
 
 jobs:
 
-  - job: WIN1809
+  - job: SQL2019
     variables:
       OS: Windows
+      SQL: 'SqlServer 2019 Developer: MSSQLSERVER'
+    timeoutInMinutes: 99
+    cancelTimeoutInMinutes: 1
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+      - template: azure-steps-win.yml
+
+  - job: SQL2008R2
+    variables:
+      OS: Windows
+      SQL: 'SqlServer 2008R2 Express: MSSQLSERVER'
     timeoutInMinutes: 99
     cancelTimeoutInMinutes: 1
     pool:
