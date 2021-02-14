@@ -45,7 +45,7 @@ steps:
   
   
   - script: |
-      if exist "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\amd64" Set PATH="C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\amd64;%PATH%;"
+      rem if exist "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\amd64" Set PATH="C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\amd64;%PATH%;"
       call 0-Rebuild-All.cmd
       call 1-Test-Universe.SqlInsights.SqlServerStorage.Tests.cmd
     condition: eq(variables['Agent.OS'], 'Windows_NT')
