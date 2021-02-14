@@ -23,6 +23,8 @@ steps:
        pushd $Work; . .\Sql-Setup-Bootstrap.ps1; popd
 
        Show-SqlServers
+       Say "ALL THE SERVICES"
+       get-wmiobject win32_service | sort-object -Property "DisplayName" | ft State, Name, DisplayName, StartMode, StartName
     displayName: 'Prepare SQL Server'
   
   
