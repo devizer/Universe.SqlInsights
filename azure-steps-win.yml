@@ -10,7 +10,9 @@ steps:
       powershell -c "nuget help | Select -First 1; msbuild /version | Select -First 1;"
       node --version
       npm --version
+      npm install --global yarn
       yarn --version
+      npx --version
       exit 0
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     displayName: "PATH's Patch"
@@ -57,12 +59,12 @@ steps:
     displayName: 'Prepare SQL Server'
   
   
-  
   - script: |
       rem if exist "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\amd64" Set PATH=C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\amd64;%PATH%;
       echo PATH: %PATH%
       call 0-Rebuild-All.cmd
       call 1-Test-Universe.SqlInsights.SqlServerStorage.Tests.cmd
+      call 2-Build-and-Serve-SqlInsights-Prod.cmd
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     displayName: 'dotnet test on Windows'
 
