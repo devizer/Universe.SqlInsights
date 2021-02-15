@@ -38,7 +38,8 @@
     "build": "npm run build:react",
     "build:react": "react-scripts build",
     "build:bundle": "webpack --config webpack.config.js",
-    "test": "react-scripts test",
+    "test:prev": "react-scripts test",
+    "test": "cross-env CI=false react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -61,6 +62,7 @@
     ]
   },
   "devDependencies": {
-    "webpack-cli": "^4.3.1"
+    "webpack-cli": "^4.3.1",
+    "cross-env": "^7.0.3"
   }
 }
