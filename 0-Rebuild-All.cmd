@@ -7,6 +7,8 @@ for %%d in (Universe.SqlInsights.AspNetLegacy Universe.SqlInsights.NetCore Unive
 )
 
 pushd src\
+Echo msbuild Restore
+msbuild /t:Restore
 Echo Nuget Restore
 nuget restore -verbosity quiet
 for %%c in (Release Debug) Do (
