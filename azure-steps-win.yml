@@ -7,12 +7,13 @@ steps:
       echo PATH1: %PATH%
       if exist "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\amd64" Set PATH=C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\amd64;%PATH%;
       echo "##vso[task.setvariable variable=PATH]%PATH%"
-      nuget help
-      msbuild /version
-      echo PATH2: %PATH%
+      powershell -c "nuget help | Select -First 1; msbuild /version | Select -First 1;"
+      node --version
+      npm --version
+      yarn --version
       exit 0
     condition: eq(variables['Agent.OS'], 'Windows_NT')
-    displayName: 'PATH?'
+    displayName: "PATH's Patch"
 
   - bash: |
       echo $BASH_VERSION
