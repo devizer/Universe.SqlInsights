@@ -9,7 +9,7 @@ namespace Universe.SqlInsights.SqlServerStorage
     {
         public readonly DbProviderFactory ProviderFactory;
         public readonly string ConnectionString;
-        public bool ThrowOnError { get; set; } = false;
+        public bool ThrowOnDbCreationError { get; set; } = false;
 
         public SqlServerSqlInsightsMigrations(DbProviderFactory providerFactory, string connectionString)
         {
@@ -88,7 +88,7 @@ End
                 {
                     con.Execute(sqlMigration, null);
                 }
-               }
+            }
         }
 
         private void CreateDatabaseIfNotExists()
@@ -111,7 +111,6 @@ End";
             {
                 var con = ProviderFactory.CreateConnection();
                 con.ConnectionString = master.ConnectionString;
-                // con = new SqlConnection(master.ConnectionString);
                 using (con)
                 {
                     con.Execute(sqlCommands, null);
@@ -121,7 +120,7 @@ End";
             {
                 // It's OK. Not enough permissions to the master DB or existing database.
                 // SqlMigrations scripts will show such reason.
-                if (ThrowOnError) throw;
+                if (ThrowOnDbCreationError) throw;
             }
         }
     }

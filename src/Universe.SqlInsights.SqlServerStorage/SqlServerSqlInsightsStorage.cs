@@ -39,6 +39,7 @@ namespace Universe.SqlInsights.SqlServerStorage
 
         IDbConnection GetConnection()
         {
+            // Migrations here for development only
             // TODO: Multiple Storages per app?
             if (!AreMigrationsChecked)
                 lock(SyncMigrations)
@@ -50,7 +51,6 @@ namespace Universe.SqlInsights.SqlServerStorage
 
             var ret = ProviderFactory.CreateConnection();
             ret.ConnectionString = ConnectionString;
-            // ret = new SqlConnection(ConnectionString);
             ret.Open();
             return ret;
         }
