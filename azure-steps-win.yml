@@ -61,6 +61,7 @@ steps:
     displayName: 'dotnet test SqlServerStorage'
 
   - script: |
+      echo network-timeout 600000 >> %USERPROFILE%\.yarnrc
       call 2-Build-and-Serve-SqlInsights-Prod.cmd
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     displayName: 'yarn test w3app'
