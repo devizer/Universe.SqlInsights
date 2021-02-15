@@ -50,7 +50,7 @@ namespace Universe.SqlInsights.SqlServerStorage
 
             var ret = ProviderFactory.CreateConnection();
             ret.ConnectionString = ConnectionString;
-            ret = new SqlConnection(ConnectionString);
+            // ret = new SqlConnection(ConnectionString);
             ret.Open();
             return ret;
         }

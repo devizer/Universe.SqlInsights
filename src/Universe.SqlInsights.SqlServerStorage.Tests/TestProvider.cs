@@ -25,7 +25,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                 ConnectionString = TheConnectionString
             };
 
-            yield break;
+            // yield break;
 
             yield return new TestProvider()
             {
