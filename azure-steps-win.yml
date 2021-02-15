@@ -8,11 +8,6 @@ steps:
       if exist "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\amd64" Set PATH=C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\amd64;%PATH%;
       echo "##vso[task.setvariable variable=PATH]%PATH%"
       powershell -c "nuget help | Select -First 1; msbuild /version | Select -First 1;"
-      call node --version
-      call npm --version
-      rem call npm install --global yarn
-      call yarn --version
-      call npx --version
       exit 0
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     displayName: "PATH's Patch"
@@ -60,13 +55,15 @@ steps:
   
   
   - script: |
-      rem if exist "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\amd64" Set PATH=C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\amd64;%PATH%;
-      echo PATH: %PATH%
       call 0-Rebuild-All.cmd
       call 1-Test-Universe.SqlInsights.SqlServerStorage.Tests.cmd
+    condition: eq(variables['Agent.OS'], 'Windows_NT')
+    displayName: 'dotnet test SqlServerStorage'
+
+  - script: |
       call 2-Build-and-Serve-SqlInsights-Prod.cmd
     condition: eq(variables['Agent.OS'], 'Windows_NT')
-    displayName: 'dotnet test on Windows'
+    displayName: 'yarn test w3app'
 
   - task: PublishTestResults@2
     condition: succeededOrFailed()
