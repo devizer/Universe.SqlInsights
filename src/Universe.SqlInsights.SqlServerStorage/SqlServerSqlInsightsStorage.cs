@@ -270,7 +270,7 @@ Delete From SqlInsightsSession Where IdSession = @IdSession;
             const string sql = @"Update SqlInsightsSession Set Caption = @Caption Where IdSession = @IdSession;"; 
             using (var con = GetConnection())
             {
-                await con.ExecuteAsync(sql, new {IdSession = idSession});
+                await con.ExecuteAsync(sql, new {IdSession = idSession, Caption = caption});
             }
         }
 

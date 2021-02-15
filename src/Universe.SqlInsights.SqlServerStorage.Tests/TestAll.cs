@@ -75,7 +75,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         }
 
         [Test]
-        public async Task Test4_DeleteSession()
+        public async Task Test4_Rename_and_Delete_Session()
         {
             SqlServerSqlInsightsStorage storage = new SqlServerSqlInsightsStorage(ConnectionString);
             SqlInsightsSession targetSession = (await storage.GetSessions())
@@ -86,6 +86,14 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             if (targetSession == null)
                 Assert.Fail("DeleteSession() test needs finished session");
 
+            var expectedName = $"Tmp Sess {Guid.NewGuid()}";
+            await storage.RenameSession(targetSession.IdSession, expectedName);
+            var actualName = (await storage.GetSessions())
+                .Where(x => x.IdSession == targetSession.IdSession)
+                .FirstOrDefault()?.Caption;
+
+            Assert.AreEqual(expectedName, actualName, "Renaming Session");
+            
             await storage.DeleteSession(targetSession.IdSession);
             var sessionsAfter = await storage.GetSessions();
             Assert.IsNull(sessionsAfter.FirstOrDefault(x => x.IdSession == targetSession.IdSession));
