@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Data.SqlClient;
+using System.Web.Mvc;
 using AdventureWorks.Repository;
 using AdventureWorks.SqlInsightsIntegration;
 using Autofac;
@@ -32,7 +33,7 @@ namespace AdventureWorks
             });
 
             builder
-                .Register(c => new SqlServerSqlInsightsStorage(SqlInsightsConfiguration.Instance.HistoryConnectionString))
+                .Register(c => new SqlServerSqlInsightsStorage(SqlClientFactory.Instance, SqlInsightsConfiguration.Instance.HistoryConnectionString))
                 .As<ISqlInsightsStorage>();
         
             var container = builder.Build();

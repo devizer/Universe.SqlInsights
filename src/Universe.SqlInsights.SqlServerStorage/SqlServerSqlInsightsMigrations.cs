@@ -1,15 +1,19 @@
-﻿using System.Data.SqlClient;
+﻿using System;
+using System.Data.Common;
+using System.Data.SqlClient;
 using Dapper;
 
 namespace Universe.SqlInsights.SqlServerStorage
 {
     public class SqlServerSqlInsightsMigrations
     {
+        public readonly DbProviderFactory ProviderFactory;
         public readonly string ConnectionString;
 
-        public SqlServerSqlInsightsMigrations(string connectionString)
+        public SqlServerSqlInsightsMigrations(DbProviderFactory providerFactory, string connectionString)
         {
-            ConnectionString = connectionString;
+            ProviderFactory = providerFactory ?? throw new ArgumentNullException(nameof(providerFactory));
+            ConnectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
         }
 
         public static readonly string[] SqlMigrations = new[]
@@ -104,7 +108,9 @@ End";
 
             try
             {
-                using (var con = new SqlConnection(master.ConnectionString))
+                var con = ProviderFactory.CreateConnection();
+                con.ConnectionString = ConnectionString;
+                using (con)
                 {
                     con.Execute(sqlCommands, null);
                 }

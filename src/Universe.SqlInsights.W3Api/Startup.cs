@@ -58,7 +58,7 @@ namespace Universe.SqlInsights.W3Api
                 if (string.IsNullOrEmpty(dbOptions.ConnectionString))
                     throw new InvalidOperationException("Misconfigured DbOptions.ConnectionString");
                 
-                return new SqlServerSqlInsightsStorage(dbOptions.ConnectionString);
+                return new SqlServerSqlInsightsStorage(SqlClientFactory.Instance, dbOptions.ConnectionString);
             });
 
             services.AddSingleton<SqlInsightsReport>(new SqlInsightsReport());
@@ -117,7 +117,7 @@ namespace Universe.SqlInsights.W3Api
                 Stopwatch sw = Stopwatch.StartNew();
                 try
                 {
-                    var history = new SqlServerSqlInsightsStorage(Configuration.GetConnectionString("SqlInsights"));
+                    var history = new SqlServerSqlInsightsStorage(SqlClientFactory.Instance, Configuration.GetConnectionString("SqlInsights"));
                     history.GetAliveSessions();
                     await history.GetActionsSummaryTimestamp(0);
                     var summary = await history.GetActionsSummary(0);

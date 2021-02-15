@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -9,17 +10,19 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
 {
     class Seeder
     {
+        public readonly DbProviderFactory ProviderFactory;
         public readonly string ConnectionString;
 
-        public Seeder(string connectionString)
+        public Seeder(DbProviderFactory providerFactory, string connectionString)
         {
+            ProviderFactory = providerFactory;
             ConnectionString = connectionString;
         }
 
         public async Task Seed()
         {
             
-            SqlServerSqlInsightsStorage storage = new SqlServerSqlInsightsStorage(ConnectionString);
+            SqlServerSqlInsightsStorage storage = new SqlServerSqlInsightsStorage(ProviderFactory, ConnectionString);
             var sessions = await storage.GetSessions();
             if (sessions.Count(x => !x.IsFinished) < 2)
             {

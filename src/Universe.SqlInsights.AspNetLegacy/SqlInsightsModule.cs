@@ -168,7 +168,7 @@ namespace Universe.SqlInsights.AspNetLegacy
                         var hcs = LegacySqlProfiler.SqlInsightsConfiguration.HistoryConnectionString;
                         if (hcs != null)
                         {
-                            var history = new SqlServerSqlInsightsStorage(hcs);
+                            var history = new SqlServerSqlInsightsStorage(SqlClientFactory.Instance, hcs);
                             history.AddAction(actionDetails);
                         }
                     }

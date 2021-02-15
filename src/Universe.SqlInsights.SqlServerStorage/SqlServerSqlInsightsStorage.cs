@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,13 +14,15 @@ namespace Universe.SqlInsights.SqlServerStorage
 {
     public class SqlServerSqlInsightsStorage : ISqlInsightsStorage
     {
+        public readonly DbProviderFactory ProviderFactory;
         public readonly string ConnectionString;
 
         private static volatile bool AreMigrationsChecked = false;
         private static readonly object SyncMigrations = new object();
 
-        public SqlServerSqlInsightsStorage(string connectionString)
+        public SqlServerSqlInsightsStorage(DbProviderFactory providerFactory, string connectionString)
         {
+            ProviderFactory = providerFactory ?? throw new ArgumentNullException(nameof(providerFactory));
             ConnectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
         }
 
@@ -41,11 +44,12 @@ namespace Universe.SqlInsights.SqlServerStorage
                 lock(SyncMigrations)
                     if (!AreMigrationsChecked)
                     {
-                        new SqlServerSqlInsightsMigrations(ConnectionString).Migrate();
+                        new SqlServerSqlInsightsMigrations(ProviderFactory, ConnectionString).Migrate();
                         AreMigrationsChecked = true;
                     }
 
-            var ret = new SqlConnection(ConnectionString);
+            var ret = ProviderFactory.CreateConnection();
+            ret.ConnectionString = ConnectionString;
             ret.Open();
             return ret;
         }

@@ -1,4 +1,5 @@
 using System;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -8,29 +9,27 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
 {
     public class Tests
     {
-        // private string ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Database=SqlServerSqlInsightsStorage_Tests; Integrated Security=SSPI";
-        private string ConnectionString = "Data Source=(local);Database=SqlServerSqlInsightsStorage_Tests; Integrated Security=SSPI";
 
         [OneTimeSetUp]
         public void Setup()
         {
         }
 
-        [Test]
-        public async Task Test1_Seed()
+        [Test, TestCaseSource(typeof(TestProvider), nameof(TestProvider.GetList))]
+        public async Task Test1_Seed(TestProvider provider)
         {
-            SqlServerSqlInsightsStorage storage = new SqlServerSqlInsightsStorage(ConnectionString);
+            SqlServerSqlInsightsStorage storage = new SqlServerSqlInsightsStorage(provider.Provider, provider.ConnectionString);
             var sessions = await storage.GetSessions();
             Console.WriteLine($"Sessions on-start: {sessions.Count()}");
-            Seeder seeder = new Seeder(storage.ConnectionString);
+            Seeder seeder = new Seeder(SqlClientFactory.Instance, storage.ConnectionString);
             await seeder.Seed();
             Console.WriteLine($"Sessions on-end: {(await storage.GetSessions()).Count()}");
         }
 
-        [Test]
-        public async Task Test2_LoadAll()
+        [Test, TestCaseSource(typeof(TestProvider), nameof(TestProvider.GetList))]
+        public async Task Test2_LoadAll(TestProvider provider)
         {
-            SqlServerSqlInsightsStorage storage = new SqlServerSqlInsightsStorage(ConnectionString);
+            SqlServerSqlInsightsStorage storage = new SqlServerSqlInsightsStorage(provider.Provider, provider.ConnectionString);
             var sessions = await storage.GetSessions();
             int countCommands = 1;
             foreach (SqlInsightsSession session in sessions)
@@ -50,11 +49,12 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             Console.WriteLine($"Commands: {countCommands}");
         }
 
-        [Test]
-        public async Task Test3_FinishAllSessions()
+        [Test, TestCaseSource(typeof(TestProvider), nameof(TestProvider.GetList))]
+        public async Task Test3_FinishAllSessions(TestProvider provider)
         {
             // Finish a single session
-            SqlServerSqlInsightsStorage storage = new SqlServerSqlInsightsStorage(ConnectionString);
+            SqlServerSqlInsightsStorage storage = new SqlServerSqlInsightsStorage(provider.Provider, provider.ConnectionString);
+            var id = await storage.CreateSession("Test Session", null);
             var aliveSessions = (await storage.GetSessions()).Where(x => !x.IsFinished).ToList();
             
             if (aliveSessions.Count < 2)
@@ -64,6 +64,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             {
                 Console.WriteLine($"Ending session {session.IdSession}");
                 await storage.FinishSession(session.IdSession);
+                // break;
             }
 
             int aliveSessionsCount = storage.GetAliveSessions().Count();
@@ -74,10 +75,10 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
 
         }
 
-        [Test]
-        public async Task Test4_Rename_and_Delete_Session()
+        [Test, TestCaseSource(typeof(TestProvider), nameof(TestProvider.GetList))]
+        public async Task Test4_Rename_and_Delete_Session(TestProvider provider)
         {
-            SqlServerSqlInsightsStorage storage = new SqlServerSqlInsightsStorage(ConnectionString);
+            SqlServerSqlInsightsStorage storage = new SqlServerSqlInsightsStorage(provider.Provider, provider.ConnectionString);
             SqlInsightsSession targetSession = (await storage.GetSessions())
                 .Where(x => x.IsFinished && x.IdSession != 0)
                 .OrderByDescending(x => x.StartedAt)
@@ -97,8 +98,6 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             await storage.DeleteSession(targetSession.IdSession);
             var sessionsAfter = await storage.GetSessions();
             Assert.IsNull(sessionsAfter.FirstOrDefault(x => x.IdSession == targetSession.IdSession));
-
-
 
         }
 
