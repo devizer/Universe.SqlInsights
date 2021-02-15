@@ -38,5 +38,8 @@ jobs:
       - template: azure-steps-win.yml
 
 trigger:
-  - master
+  batch: false
+  branches:
+    include:
+      - master
 
