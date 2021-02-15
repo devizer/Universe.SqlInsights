@@ -10,7 +10,7 @@ steps:
       powershell -c "nuget help | Select -First 1; msbuild /version | Select -First 1;"
       call node --version
       call npm --version
-      call npm install --global yarn
+      rem call npm install --global yarn
       call yarn --version
       call npx --version
       exit 0
