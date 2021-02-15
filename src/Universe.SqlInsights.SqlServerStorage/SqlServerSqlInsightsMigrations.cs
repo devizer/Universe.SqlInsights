@@ -9,6 +9,7 @@ namespace Universe.SqlInsights.SqlServerStorage
     {
         public readonly DbProviderFactory ProviderFactory;
         public readonly string ConnectionString;
+        public bool ThrowOnError { get; set; } = false;
 
         public SqlServerSqlInsightsMigrations(DbProviderFactory providerFactory, string connectionString)
         {
@@ -120,6 +121,7 @@ End";
             {
                 // It's OK. Not enough permissions to the master DB or existing database.
                 // SqlMigrations scripts will show such reason.
+                if (ThrowOnError) throw;
             }
         }
     }

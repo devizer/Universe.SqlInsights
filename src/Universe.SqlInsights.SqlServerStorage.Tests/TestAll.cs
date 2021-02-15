@@ -17,6 +17,11 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
 
         SqlServerSqlInsightsStorage CreateStorage(TestProvider provider)
         {
+            var migrations = new SqlServerSqlInsightsMigrations(provider.Provider, provider.ConnectionString)
+            {
+                ThrowOnError = true
+            };
+            migrations.Migrate();
             return new SqlServerSqlInsightsStorage(provider.Provider, provider.ConnectionString);
         }
 
