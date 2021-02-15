@@ -4,32 +4,20 @@ variables:
 
 jobs:
 
-  - job: SQL2019
+  - job: ALL
+    strategy:
+      maxParallel: 6
+      matrix:
+        SQL2019:
+          SQL: 'SqlServer 2019 Developer: MSSQLSERVER'
+        SQL2008R2:
+          SQL: 'SqlServer 2008R2 Express: MSSQLSERVER'
+        SQL2005:
+          SQL: 'SqlServer 2005 Express: MSSQLSERVER'
+
     variables:
       OS: Windows
       SQL: 'SqlServer 2019 Developer: MSSQLSERVER'
-    timeoutInMinutes: 30
-    cancelTimeoutInMinutes: 1
-    pool:
-      vmImage: 'windows-latest'
-    steps:
-      - template: azure-steps-win.yml
-
-  - job: SQL2008R2
-    variables:
-      OS: Windows
-      SQL: 'SqlServer 2008R2 Express: MSSQLSERVER'
-    timeoutInMinutes: 30
-    cancelTimeoutInMinutes: 1
-    pool:
-      vmImage: 'windows-latest'
-    steps:
-      - template: azure-steps-win.yml
-
-  - job: SQL2005
-    variables:
-      OS: Windows
-      SQL: 'SqlServer 2005 Express: MSSQLSERVER'
     timeoutInMinutes: 30
     cancelTimeoutInMinutes: 1
     pool:
