@@ -110,6 +110,7 @@ End";
             {
                 var con = ProviderFactory.CreateConnection();
                 con.ConnectionString = ConnectionString;
+                con = new SqlConnection(ConnectionString);
                 using (con)
                 {
                     con.Execute(sqlCommands, null);
