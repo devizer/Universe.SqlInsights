@@ -25,6 +25,8 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                 ConnectionString = TheConnectionString
             };
 
+            yield break;
+
             yield return new TestProvider()
             {
                 Provider = Microsoft.Data.SqlClient.SqlClientFactory.Instance,
