@@ -56,6 +56,10 @@ steps:
        get-wmiobject win32_service | sort-object -Property "DisplayName" | ft State, Name, DisplayName, StartMode, StartName
     displayName: 'Prepare SQL Server'
   
+  - publish: $(System.DefaultWorkingDirectory)/Setup.Logs
+    condition: succeededOrFailed()
+    displayName: 'Publish Setup.Logs'
+    artifact: 'Setup.Logs-$(Agent.JobName)'
   
   - script: |
       call 0-Rebuild-All.cmd
