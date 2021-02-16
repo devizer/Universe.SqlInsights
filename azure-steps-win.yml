@@ -45,6 +45,7 @@ steps:
        Show-SqlServers
 
        # $ErrorActionPreference = 'SilentlyContinue'
+       $Env:SQL_SETUP_LOG_FOLDER = "$(System.DefaultWorkingDirectory)/Setup.Logs"
        $todo = Parse-SqlServers "$(SQL)"
        $todo | % { Install-SqlServer $_ }
 
@@ -66,7 +67,11 @@ steps:
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     displayName: 'yarn test w3app'
 
-  - task: PublishTestResults@2
+  - publish: $(System.DefaultWorkingDirectory)
+    condition: succeededOrFailed()
+    artifact: Working
+  
+    - task: PublishTestResults@2
     condition: succeededOrFailed()
     inputs:
       testRunner: VSTest
