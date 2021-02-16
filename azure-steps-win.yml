@@ -46,7 +46,7 @@ steps:
 
        # $ErrorActionPreference = 'SilentlyContinue'
        $Env:SQL_SETUP_LOG_FOLDER = "$(System.DefaultWorkingDirectory)/Setup.Logs"
-       New-Item -ItemType Directory -Force -Path $Env:SQL_SETUP_LOG_FOLDER
+       New-Item -ItemType Directory -Force -Path $Env:SQL_SETUP_LOG_FOLDER -ErrorAction Continue 1> $null
 
        $todo = Parse-SqlServers "$(SQL)"
        $todo | % { Install-SqlServer $_ }
