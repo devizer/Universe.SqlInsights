@@ -134,7 +134,7 @@ namespace Universe.SqlInsights.SqlServerStorage
         
         static string SerializeKeyPath(SqlInsightsActionKeyPath keyPath)
         {
-            return keyPath == null || keyPath.Path == null ? null : string.Join("\x2192", keyPath.Path);
+            return keyPath?.Path == null ? null : string.Join("\x2192", keyPath.Path);
         }
 
         static SqlInsightsActionKeyPath ParseKeyPath(string keyPath)
@@ -212,13 +212,14 @@ namespace Universe.SqlInsights.SqlServerStorage
             }
         }
 
-        public async Task<IEnumerable<ActionDetailsWithCounters>> GetActionsByKeyPath(long idSession, SqlInsightsActionKeyPath keyPath)
+        public async Task<IEnumerable<ActionDetailsWithCounters>> GetActionsByKeyPath(long idSession, SqlInsightsActionKeyPath keyPath, int lastN = 100)
         {
-            const string sql = "Select Top 100 Data From SqlInsightsAction Where KeyPath = @KeyPath And IdSession = @IdSession Order By At Desc";
+            if (lastN < 1) throw new ArgumentOutOfRangeException(nameof(lastN));
+            const string sql = "Select Top (@N) Data From SqlInsightsAction Where KeyPath = @KeyPath And IdSession = @IdSession Order By At Desc";
             using (var con = GetConnection())
             {
                 var query = await con
-                    .QueryAsync<SelectDataResult>(sql, new {KeyPath = SerializeKeyPath(keyPath), IdSession = idSession});
+                    .QueryAsync<SelectDataResult>(sql, new {KeyPath = SerializeKeyPath(keyPath), IdSession = idSession, N = lastN});
 
                 var ret = query
                     .Select(x => JsonConvert.DeserializeObject<ActionDetailsWithCounters>(x.Data, DefaultSettings));

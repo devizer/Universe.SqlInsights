@@ -13,7 +13,7 @@ namespace Universe.SqlInsights.Shared
 #if NETSTANDARD        
         Task<IEnumerable<ActionSummaryCounters>> GetActionsSummary(long idSession);
         Task<string> GetActionsSummaryTimestamp(long idSession);
-        Task<IEnumerable<ActionDetailsWithCounters>> GetActionsByKeyPath(long idSession, SqlInsightsActionKeyPath keyPath);
+        Task<IEnumerable<ActionDetailsWithCounters>> GetActionsByKeyPath(long idSession, SqlInsightsActionKeyPath keyPath, int lastN);
         Task<string> GetKeyPathTimestampOfDetails(long idSession, SqlInsightsActionKeyPath keyPath);
 
         Task<IEnumerable<SqlInsightsSession>> GetSessions();
