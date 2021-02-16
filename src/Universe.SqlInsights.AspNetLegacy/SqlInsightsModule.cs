@@ -44,7 +44,6 @@ namespace Universe.SqlInsights.AspNetLegacy
                 }
                 
                 app.Context.Items["Advanced Stopwatch"] = AdvStopwatch.StartNew();
-                
 
             };
 

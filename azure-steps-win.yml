@@ -71,7 +71,7 @@ steps:
 
   - publish: $(System.DefaultWorkingDirectory)
     condition: succeededOrFailed()
-    artifact: Working
+    artifact: 'Working-$(Agent.JobName)'
   
   - task: PublishTestResults@2
     condition: succeededOrFailed()
