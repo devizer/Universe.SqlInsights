@@ -1,4 +1,3 @@
-using System;
 using Universe.SqlTrace;
 
 namespace Universe.SqlInsights.Shared
@@ -29,15 +28,4 @@ namespace Universe.SqlInsights.Shared
             this.SqlErrors += other.SqlErrors;
         }
     }
-
-    public class SqlInsightsSession
-    {
-        public long IdSession { get; set; }
-        public DateTime StartedAt { get; set; }
-        public DateTime? EndedAt { get; set; }
-        public bool IsFinished { get; set; }
-        public string Caption { get; set; }
-        public int? MaxDurationMinutes { get; set; }
-    }
-
 }

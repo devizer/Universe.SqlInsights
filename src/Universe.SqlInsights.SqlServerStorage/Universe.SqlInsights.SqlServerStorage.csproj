@@ -39,9 +39,16 @@
         <PackageReference Include="Dapper" Version="1.60.6" />
     </ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard2.0' And '$(TargetFramework)' != 'netstandard1.3' ">
+    <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard2.0' And '$(TargetFramework)' != 'netstandard1.3' And '$(TargetFramework)' != 'net20' And '$(TargetFramework)' != 'net30'">
         <PackageReference Include="Dapper" Version="1.42.0" />
     </ItemGroup>
+
+<!--
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net20' Or '$(TargetFramework)' == 'net30' ">
+        It is a for .NET 3.5
+        <PackageReference Include="Dapper.Net20" Version="1.42.0.1" />
+    </ItemGroup>
+-->
 
     <ItemGroup>
       <ProjectReference Include="..\Universe.SqlInsights.Shared\Universe.SqlInsights.Shared.csproj" />

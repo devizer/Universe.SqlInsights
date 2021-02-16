@@ -77,8 +77,10 @@ namespace Universe.SqlInsights.SqlServerStorage
 
                     // SUMMARY: SqlInsightsKeyPathSummary
                     ActionSummaryCounters actionActionSummary = reqAction.AsSummary();
-                    string rawDataPrev = con
-                        .Query<SelectDataResult>(sqlSelect, new {IdSession = idSession, KeyPath = keyPath})
+                    var query = con
+                        .Query<SelectDataResult>(sqlSelect, new {IdSession = idSession, KeyPath = keyPath});
+
+                    string rawDataPrev = query
                         .FirstOrDefault()?
                         .Data;
 
