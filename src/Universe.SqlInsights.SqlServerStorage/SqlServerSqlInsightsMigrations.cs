@@ -95,6 +95,9 @@ End
         {
             SqlConnectionStringBuilder master = new SqlConnectionStringBuilder(ConnectionString);
             var dbName = master.InitialCatalog;
+            if (string.IsNullOrEmpty(dbName))
+                return;
+            
             master.InitialCatalog = "";
             
             string sqlCommands = @$"
