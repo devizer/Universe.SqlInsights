@@ -8,11 +8,11 @@ jobs:
     strategy:
       maxParallel: 7
       matrix:
-        Sql2019Dev:
+        Sql2019_Dev:
           SQL: 'SqlServer 2019 Developer: MSSQLSERVER'
-        Sql2008r2:
+        Sql2008_R2:
           SQL: 'SqlServer 2008R2 Express: MSSQLSERVER'
-        Sql2008r2:
+        Sql2008:
           SQL: 'SqlServer 2008 Express: MSSQLSERVER'
         Sql2012:
           SQL: 'SqlServer 2012 Express: MSSQLSERVER'
@@ -20,7 +20,7 @@ jobs:
           SQL: 'SqlServer 2005 Express: MSSQLSERVER'
         Sql2014:
           SQL: 'SqlServer 2014 Express: MSSQLSERVER'
-        Sql2017Dev:
+        Sql2017_Dev:
           SQL: 'SqlServer 2017 Developer: MSSQLSERVER'
         Sql2016:
           SQL: 'SqlServer 2016 Express: MSSQLSERVER'
