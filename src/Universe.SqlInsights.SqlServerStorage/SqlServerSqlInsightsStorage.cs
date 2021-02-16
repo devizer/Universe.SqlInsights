@@ -124,7 +124,7 @@ namespace Universe.SqlInsights.SqlServerStorage
         
         public IEnumerable<long> GetAliveSessions()
         {
-            const string sql = "Select IdSession From SqlInsightsSession Where IsFinished = (0)";
+            const string sql = @"Select IdSession From SqlInsightsSession Where IsFinished = (0) And (MaxDurationMinutes Is Null Or DateAdd(minute,MaxDurationMinutes,StartedAt) >= GetUtcDate())";
             using (var con = GetConnection())
             {
                 var query = con.Query<long>(sql, null);
