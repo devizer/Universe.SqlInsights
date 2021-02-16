@@ -24,7 +24,7 @@ If Object_ID('SqlInsightsSession') Is Null
 Begin
 Create Table SqlInsightsSession(
     IdSession bigint Identity Not Null,
-	StartedAt DateTime Not Null,
+    StartedAt DateTime Not Null,
     EndedAt DateTime Null,
     IsFinished bit Not Null,
     Caption nvarchar(1000) Not Null,
@@ -47,7 +47,7 @@ Begin
 Create Table SqlInsightsKeyPathSummary(
     KeyPath nvarchar(450) Not Null,
     IdSession bigint Not Null,
-	Version RowVersion Not Null,
+    Version RowVersion Not Null,
     Data nvarchar(max) Not Null,
     Constraint PK_SqlInsightsKeyPathSummary Primary Key (KeyPath, IdSession),
     Constraint FK_SqlInsightsKeyPathSummary_SqlInsightsSession FOREIGN KEY (IdSession) REFERENCES SqlInsightsSession(IdSession)
@@ -95,8 +95,6 @@ End
         {
             SqlConnectionStringBuilder master = new SqlConnectionStringBuilder(ConnectionString);
             var dbName = master.InitialCatalog;
-            master.Remove("Initial Catalog");
-            master.Remove("Database");
             master.InitialCatalog = "";
             
             string sqlCommands = @$"
