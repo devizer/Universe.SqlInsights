@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Universe.SqlInsights.SqlServerStorage.Tests
 {
-    public class TestProvider
+    public class TestCaseProvider
     {
         // private string ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Database=SqlServerSqlInsightsStorage_Tests; Integrated Security=SSPI";
         private static string TheConnectionString = "Data Source=(local);Database=SqlServerSqlInsightsStorage_Tests; Integrated Security=SSPI";
@@ -17,9 +17,9 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             return Path.GetFileNameWithoutExtension(Provider.GetType().Assembly.Location);
         }
 
-        public static IEnumerable<TestProvider> GetList()
+        public static IEnumerable<TestCaseProvider> GetList()
         {
-            yield return new TestProvider()
+            yield return new TestCaseProvider()
             {
                 Provider = System.Data.SqlClient.SqlClientFactory.Instance,
                 ConnectionString = TheConnectionString
@@ -27,7 +27,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
 
             // yield break;
 
-            yield return new TestProvider()
+            yield return new TestCaseProvider()
             {
                 Provider = Microsoft.Data.SqlClient.SqlClientFactory.Instance,
                 ConnectionString = TheConnectionString

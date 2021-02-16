@@ -15,20 +15,20 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         {
         }
 
-        SqlServerSqlInsightsStorage CreateStorage(TestProvider provider)
+        SqlServerSqlInsightsStorage CreateStorage(TestCaseProvider testCase)
         {
-            var migrations = new SqlServerSqlInsightsMigrations(provider.Provider, provider.ConnectionString)
+            var migrations = new SqlServerSqlInsightsMigrations(testCase.Provider, testCase.ConnectionString)
             {
                 ThrowOnDbCreationError = true
             };
             migrations.Migrate();
-            return new SqlServerSqlInsightsStorage(provider.Provider, provider.ConnectionString);
+            return new SqlServerSqlInsightsStorage(testCase.Provider, testCase.ConnectionString);
         }
 
-        [Test, TestCaseSource(typeof(TestProvider), nameof(TestProvider.GetList))]
-        public async Task Test1_Seed(TestProvider provider)
+        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
+        public async Task Test1_Seed(TestCaseProvider testCase)
         {
-            SqlServerSqlInsightsStorage storage = CreateStorage(provider);
+            SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
             var sessions = await storage.GetSessions();
             Console.WriteLine($"Sessions on-start: {sessions.Count()}");
             Seeder seeder = new Seeder(SqlClientFactory.Instance, storage.ConnectionString);
@@ -36,10 +36,10 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             Console.WriteLine($"Sessions on-end: {(await storage.GetSessions()).Count()}");
         }
 
-        [Test, TestCaseSource(typeof(TestProvider), nameof(TestProvider.GetList))]
-        public async Task Test2_LoadAll(TestProvider provider)
+        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
+        public async Task Test2_LoadAll(TestCaseProvider testCase)
         {
-            SqlServerSqlInsightsStorage storage = CreateStorage(provider);
+            SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
             var sessions = await storage.GetSessions();
             int countCommands = 1;
             foreach (SqlInsightsSession session in sessions)
@@ -59,11 +59,11 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             Console.WriteLine($"Commands: {countCommands}");
         }
 
-        [Test, TestCaseSource(typeof(TestProvider), nameof(TestProvider.GetList))]
-        public async Task Test3_FinishAllSessions(TestProvider provider)
+        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
+        public async Task Test3_FinishAllSessions(TestCaseProvider testCase)
         {
             // Finish a single session
-            SqlServerSqlInsightsStorage storage = CreateStorage(provider);
+            SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
             var id = await storage.CreateSession("Test Session", null);
             var aliveSessions = (await storage.GetSessions()).Where(x => !x.IsFinished).ToList();
             
@@ -85,10 +85,10 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
 
         }
 
-        [Test, TestCaseSource(typeof(TestProvider), nameof(TestProvider.GetList))]
-        public async Task Test4_Rename_and_Delete_Session(TestProvider provider)
+        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
+        public async Task Test4_Rename_and_Delete_Session(TestCaseProvider testCase)
         {
-            SqlServerSqlInsightsStorage storage = CreateStorage(provider);
+            SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
             SqlInsightsSession targetSession = (await storage.GetSessions())
                 .Where(x => x.IsFinished && x.IdSession != 0)
                 .OrderByDescending(x => x.StartedAt)

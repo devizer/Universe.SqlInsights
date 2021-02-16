@@ -27,8 +27,8 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             if (sessions.Count(x => !x.IsFinished) < 2)
             {
                 Console.WriteLine("Create 2 Sessions: limited and unlimited");
-                var session1 = await storage.CreateSession("Snapshot Un-Limited" + DateTime.UtcNow, null);
-                var session2 = await storage.CreateSession("Snapshot Limited" + DateTime.UtcNow, 60*24*7);
+                var session1 = await storage.CreateSession("Snapshot Un-Limited " + DateTime.UtcNow, null);
+                var session2 = await storage.CreateSession("Snapshot Limited " + DateTime.UtcNow, 60*24*7);
                 Assert.AreNotEqual(session1, 0, "Session1 is not zero");
                 Assert.AreNotEqual(session2, 0, "Session2 is not zero");
             }
