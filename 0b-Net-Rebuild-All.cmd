@@ -7,12 +7,6 @@ for %%d in (Universe.SqlInsights.AspNetLegacy Universe.SqlInsights.NetCore Unive
 )
 
 pushd src\
-Echo dotnet Restore
-dotnet restore /v:q
-Echo msbuild Restore
-msbuild /t:Restore /v:m
-Echo Nuget Restore
-nuget restore -verbosity quiet
 for %%c in (Release Debug) Do (
   echo MSBuild %%c
   msbuild /t:Restore,Rebuild /v:m /p:Configuration=%%c /p:Version=%VER% /p:VersionSuffix=beta Universe.SqlInsights.sln

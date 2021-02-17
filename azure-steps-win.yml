@@ -62,13 +62,25 @@ steps:
     artifact: 'Setup.Logs-$(Agent.JobName)'
   
   - script: |
-      call 0-Rebuild-All.cmd
+      call 0a-Net-Restore-All.cmd
+    condition: eq(variables['Agent.OS'], 'Windows_NT')
+    displayName: 'dotnet restore'
+
+  - script: |
+      call 0b-Net-Rebuild-All.cmd
       call 1-Test-Universe.SqlInsights.SqlServerStorage.Tests.cmd
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     displayName: 'dotnet test SqlServerStorage'
 
   - script: |
       echo network-timeout 600000 >> %USERPROFILE%\.yarnrc
+      pushd src\universe.sqlinsights.w3app
+      If Not Exist node_modules (call yarn install)
+      popd
+    condition: eq(variables['Agent.OS'], 'Windows_NT')
+    displayName: 'yarn install'
+
+  - script: |
       call 2-Build-and-Serve-SqlInsights-Prod.cmd
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     displayName: 'yarn test w3app'
