@@ -32,7 +32,7 @@ namespace Universe.SqlInsights.W3Api.Controllers
         public async Task<ActionResult<IEnumerable<ActionDetailsWithCounters>>> ActionsByKey(KeyPathModel key)
         {
             SqlInsightsActionKeyPath keyPath = ParseActionKeyPath(key.Path);
-            IEnumerable<ActionDetailsWithCounters> ret = await _Storage.GetActionsByKeyPath(IdSessionStub, keyPath);
+            IEnumerable<ActionDetailsWithCounters> ret = await _Storage.GetActionsByKeyPath(IdSessionStub, keyPath, 100);
             return ToJsonResult(ret);
         }
 
