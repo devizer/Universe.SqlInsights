@@ -3,6 +3,7 @@
     public interface ISqlInsightsConfiguration
     {
         string AppName { get; }
+        string HostId { get; }
         bool Enabled { get; }
         bool MeasureSqlMetrics { get; }
         decimal AutoFlushDelay { get; }

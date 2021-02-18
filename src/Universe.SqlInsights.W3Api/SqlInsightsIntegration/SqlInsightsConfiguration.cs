@@ -18,6 +18,7 @@ namespace Universe.SqlInsights.W3Api.SqlInsightsIntegration
         }
 
         public string AppName { get; } = "SqlInsights";
+        public string HostId => Environment.MachineName;
         public bool Enabled { get; } = true;
         public bool MeasureSqlMetrics { get; } = true;
         public decimal AutoFlushDelay { get; } = 1000;

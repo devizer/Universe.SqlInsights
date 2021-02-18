@@ -110,6 +110,25 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             Assert.IsNull(sessionsAfter.FirstOrDefault(x => x.IdSession == targetSession.IdSession));
 
         }
+        
+        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
+        public async Task Test5_Select_AppNames(TestCaseProvider testCase)
+        {
+            SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
+            var appNames = await storage.GetAppNames();
+            Console.WriteLine(string.Join("; ", appNames.Select(x => $"{x.Id}='{x.Value}'")));
+            bool contains = appNames.Any(x => x.Value == Seeder.TestAppName);
+            Assert.True(contains, $"storage.GetAppNames() should return '{Seeder.TestAppName}'");
+        }
 
+        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
+        public async Task Test6_Select_HostIds(TestCaseProvider testCase)
+        {
+            SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
+            var strings = await storage.GetHostIds();
+            Console.WriteLine(string.Join("; ", strings.Select(x => $"{x.Id}='{x.Value}'")));
+            bool contains = strings.Any(x => x.Value == Environment.MachineName);
+            Assert.True(contains, $"storage.GetAppNames() should return '{Environment.MachineName}'");
+        }
     }
 }

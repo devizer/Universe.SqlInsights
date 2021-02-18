@@ -11,16 +11,25 @@ namespace Universe.SqlInsights.Shared
 
         // For universe.sqltrace.w3app
 #if NETSTANDARD        
-        Task<IEnumerable<ActionSummaryCounters>> GetActionsSummary(long idSession);
-        Task<string> GetActionsSummaryTimestamp(long idSession);
-        Task<IEnumerable<ActionDetailsWithCounters>> GetActionsByKeyPath(long idSession, SqlInsightsActionKeyPath keyPath, int lastN);
-        Task<string> GetKeyPathTimestampOfDetails(long idSession, SqlInsightsActionKeyPath keyPath);
+        Task<IEnumerable<ActionSummaryCounters>> GetActionsSummary(long idSession, string optionalApp, string optionalHost);
+        Task<string> GetActionsSummaryTimestamp(long idSession, string optionalApp, string optionalHost);
+        Task<IEnumerable<ActionDetailsWithCounters>> GetActionsByKeyPath(long idSession, SqlInsightsActionKeyPath keyPath, int lastN, string optionalApp, string optionalHost);
+        Task<string> GetKeyPathTimestampOfDetails(long idSession, SqlInsightsActionKeyPath keyPath, string optionalApp, string optionalHost);
 
         Task<IEnumerable<SqlInsightsSession>> GetSessions();
         Task<long> CreateSession(string caption, int? maxDurationMinutes);
         Task DeleteSession(long idSession);
         Task RenameSession(long idSession, string caption);
         Task FinishSession(long idSession);
+
+        Task<IEnumerable<LongAndString>> GetAppNames();
+        Task<IEnumerable<LongAndString>> GetHostIds();
 #endif
+    }
+
+    public class LongAndString
+    {
+        public long Id { get; set; }
+        public string Value { get; set; }
     }
 }

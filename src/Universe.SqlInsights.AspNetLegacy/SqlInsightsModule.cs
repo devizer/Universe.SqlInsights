@@ -121,7 +121,7 @@ namespace Universe.SqlInsights.AspNetLegacy
                 ActionDetailsWithCounters actionDetails = new ActionDetailsWithCounters()
                 {
                     AppName = sqlInsightsConfiguration.AppName,
-                    HostId = Environment.MachineName,
+                    HostId = sqlInsightsConfiguration.HostId,
                     Key = LegacySqlProfilerContext.Instance.ActionKeyPath,
                     At = DateTime.Now,
                     IsOK = lastError == null,

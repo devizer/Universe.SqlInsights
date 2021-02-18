@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Diagnostics;
@@ -13,6 +14,7 @@ namespace AdventureWorks.SqlInsightsIntegration
     public class SqlInsightsConfiguration : ISqlInsightsConfiguration
     {
         public string AppName { get; } = "AdventureWorks";
+        public string HostId => Environment.MachineName;
         public bool Enabled { get; } = true;
         public bool MeasureSqlMetrics { get; } = true;
         public decimal AutoFlushDelay { get; } = 1000;

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Data.SqlClient;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Dapper;
 using Newtonsoft.Json;
@@ -63,22 +63,34 @@ namespace Universe.SqlInsights.SqlServerStorage
         public void AddAction(ActionDetailsWithCounters reqAction)
         {
 
+            if (reqAction.AppName == null) throw new ArgumentException("Missing reqAction.AppName");
+
             const string
-                sqlSelect = "Select Data From SqlInsightsKeyPathSummary Where KeyPath = @KeyPath And IdSession = @IdSession",
-                sqlInsert = "Insert SqlInsightsKeyPathSummary(KeyPath, IdSession, Data) Values(@KeyPath, @IdSession, @Data);",
-                sqlUpdate = "Update SqlInsightsKeyPathSummary Set Data = @Data Where KeyPath = @KeyPath And IdSession = @IdSession";
+                sqlSelect = "Select Data From SqlInsightsKeyPathSummary Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession",
+                sqlInsert = "Insert SqlInsightsKeyPathSummary(KeyPath, IdSession, AppName, HostId, Data) Values(@KeyPath, @IdSession, @AppName, @HostId, @Data);",
+                sqlUpdate = "Update SqlInsightsKeyPathSummary Set Data = @Data Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession";
 
             var aliveSessions = GetAliveSessions();
             foreach (var idSession in aliveSessions)
             {
                 using (IDbConnection con = GetConnection())
                 {
+                    StringsStorage stringStorage = new StringsStorage(con);
+                    var idAppName = stringStorage.AcquireString(StringKind.AppName, reqAction.AppName);
+                    var idHostId = stringStorage.AcquireString(StringKind.HostId, reqAction.HostId);
+                    
                     var keyPath = SerializeKeyPath(reqAction.Key);
 
                     // SUMMARY: SqlInsightsKeyPathSummary
                     ActionSummaryCounters actionActionSummary = reqAction.AsSummary();
                     var query = con
-                        .Query<SelectDataResult>(sqlSelect, new {IdSession = idSession, KeyPath = keyPath});
+                        .Query<SelectDataResult>(sqlSelect, new
+                        {
+                            IdSession = idSession, 
+                            KeyPath = keyPath,
+                            AppName = idAppName,
+                            HostId = idHostId,
+                        });
 
                     string rawDataPrev = query
                         .FirstOrDefault()?
@@ -104,10 +116,17 @@ namespace Universe.SqlInsights.SqlServerStorage
                     // next.Key = actionActionSummary.Key;
                     var sqlUpsert = exists ? sqlUpdate : sqlInsert;
                     var dataSummary = JsonConvert.SerializeObject(next, DefaultSettings);
-                    con.Execute(sqlUpsert, new {KeyPath = keyPath, IdSession = idSession, Data = dataSummary});
+                    con.Execute(sqlUpsert, new
+                    {
+                        KeyPath = keyPath, 
+                        IdSession = idSession, 
+                        Data = dataSummary,
+                        AppName = idAppName,
+                        HostId = idHostId,
+                    });
 
                     // DETAILS: SqlInsightsAction
-                    const string sqlDetail = "Insert SqlInsightsAction(At, IdSession, KeyPath, IsOK, Data) Values(@At, @IdSession, @KeyPath, @IsOK, @Data)";
+                    const string sqlDetail = "Insert SqlInsightsAction(At, IdSession, KeyPath, IsOK, AppName, HostId, Data) Values(@At, @IdSession, @KeyPath, @IsOK, @AppName, @HostId, @Data)";
                     var detail = reqAction;
                     var dataDetail = JsonConvert.SerializeObject(detail, DefaultSettings);
                     con.Execute(sqlDetail, new
@@ -117,6 +136,8 @@ namespace Universe.SqlInsights.SqlServerStorage
                         IdSession = idSession,
                         KeyPath = keyPath,
                         Data = dataDetail,
+                        AppName = idAppName,
+                        HostId = idHostId,
                     });
                 }
             }
@@ -143,9 +164,8 @@ namespace Universe.SqlInsights.SqlServerStorage
         }
 
 
-
 #if NETSTANDARD
-        public async Task<IEnumerable<ActionSummaryCounters>> GetActionsSummary(long idSession)
+        public async Task<IEnumerable<ActionSummaryCounters>> GetActionsSummary(long idSession, string optionalApp = null, string optionalHost = null)
         {
             const string sql = "Select KeyPath, Data From SqlInsightsKeyPathSummary Where IdSession = @IdSession";
             using (var con = GetConnection())
@@ -160,7 +180,7 @@ namespace Universe.SqlInsights.SqlServerStorage
             }
         }
 
-        public async Task<string> GetActionsSummaryTimestamp(long idSession)
+        public async Task<string> GetActionsSummaryTimestamp(long idSession, string optionalApp = null, string optionalHost = null)
         {
             const string sql = "Select Top 1 Version From SqlInsightsKeyPathSummary Where IdSession = @IdSession Order By Version Desc";
             using (var con = GetConnection())
@@ -172,6 +192,7 @@ namespace Universe.SqlInsights.SqlServerStorage
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static UInt64? RowVersion2Int64(byte[] binaryVersion)
         {
             if (binaryVersion != null && binaryVersion.Length == 8)
@@ -201,9 +222,9 @@ namespace Universe.SqlInsights.SqlServerStorage
             public byte[] Version { get; set; }
         }
 
-        public async Task<string> GetKeyPathTimestampOfDetails(long idSession, SqlInsightsActionKeyPath keyPath)
+        public async Task<string> GetKeyPathTimestampOfDetails(long idSession, SqlInsightsActionKeyPath keyPath, string optionalApp = null, string optionalHost = null)
         {
-            const string sql = "Select Top 1 IdAction From SqlInsightsAction Where KeyPath = @KeyPath And IdSession = @IdSession Order By At Desc";
+            const string sql = "Select Top 1 IdAction From SqlInsightsAction Where KeyPath = @KeyPath And IdSession = @IdSession Order By IdAction Desc";
             using (var con = GetConnection())
             {
                 var query = await con.QueryAsync<SelectIdActionResult>(sql, new {KeyPath = SerializeKeyPath(keyPath), IdSession = idSession});
@@ -212,10 +233,10 @@ namespace Universe.SqlInsights.SqlServerStorage
             }
         }
 
-        public async Task<IEnumerable<ActionDetailsWithCounters>> GetActionsByKeyPath(long idSession, SqlInsightsActionKeyPath keyPath, int lastN = 100)
+        public async Task<IEnumerable<ActionDetailsWithCounters>> GetActionsByKeyPath(long idSession, SqlInsightsActionKeyPath keyPath, int lastN = 100, string optionalApp = null, string optionalHost = null)
         {
             if (lastN < 1) throw new ArgumentOutOfRangeException(nameof(lastN));
-            const string sql = "Select Top (@N) Data From SqlInsightsAction Where KeyPath = @KeyPath And IdSession = @IdSession Order By At Desc";
+            const string sql = "Select Top (@N) Data From SqlInsightsAction Where KeyPath = @KeyPath And IdSession = @IdSession Order By IdAction Desc";
             using (var con = GetConnection())
             {
                 var query = await con
@@ -291,7 +312,19 @@ Delete From SqlInsightsSession Where IdSession = @IdSession;
                 await con.ExecuteAsync(sql, new {IdSession = idSession});
             }
         }
-        
+
+        public async Task<IEnumerable<LongAndString>> GetAppNames()
+        {
+            StringsStorage strings = new StringsStorage(GetConnection());
+            return await strings.GetAllStringsByKind(StringKind.AppName);
+        }
+
+        public async Task<IEnumerable<LongAndString>> GetHostIds()
+        {
+            StringsStorage strings = new StringsStorage(GetConnection());
+            return await strings.GetAllStringsByKind(StringKind.HostId);
+        }
+
 #endif
         
     }

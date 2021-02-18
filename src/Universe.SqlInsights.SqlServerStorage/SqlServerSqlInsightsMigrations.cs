@@ -20,6 +20,16 @@ namespace Universe.SqlInsights.SqlServerStorage
         public static readonly string[] SqlMigrations = new[]
         {
             @"
+If Object_ID('SqlInsightsString') Is Null
+Create Table SqlInsightsString(
+    IdString bigint Identity Not Null,
+    Kind tinyint Not Null, -- 1: KeyPath, 2: AppName, 3: HostId
+    StartsWith nvarchar(450) Not Null,
+    Tail nvarchar(max) Null,
+    Constraint PK_SqlInsightsString Primary Key (IdString)
+)
+",
+            @"
 If Object_ID('SqlInsightsSession') Is Null
 Begin
 Create Table SqlInsightsSession(
@@ -46,6 +56,8 @@ If Object_ID('SqlInsightsKeyPathSummary') Is Null
 Begin
 Create Table SqlInsightsKeyPathSummary(
     KeyPath nvarchar(450) Not Null,
+    AppName bigint Not Null,
+    HostId bigint Not Null,
     IdSession bigint Not Null,
     Version RowVersion Not Null,
     Data nvarchar(max) Not Null,
@@ -64,6 +76,8 @@ Create Table SqlInsightsAction(
     IdSession bigint Not Null,
     At DateTime Not Null,
     KeyPath nvarchar(450) Not Null,
+    AppName bigint Not Null,
+    HostId bigint Not Null,
     IsOK bit Not Null,
     Data nvarchar(max) Not Null,
     Constraint PK_SqlInsightsAction Primary Key (IdAction),

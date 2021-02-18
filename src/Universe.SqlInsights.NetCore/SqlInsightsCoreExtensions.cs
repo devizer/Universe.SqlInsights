@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
@@ -7,8 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Universe.CpuUsage;
 using Universe.SqlInsights.Shared;
@@ -122,9 +119,9 @@ namespace Universe.SqlInsights.NetCore
                     ActionDetailsWithCounters actionDetails = new ActionDetailsWithCounters()
                     {
                         AppName = config.AppName,
-                        HostId = Environment.MachineName,
+                        HostId = config.HostId,
                         Key = keyPath,
-                        At = DateTime.Now,
+                        At = DateTime.UtcNow,
                         IsOK = lastError == null,
                         AppDuration = stopwatch.ElapsedTicks / (double) Stopwatch.Frequency * 1000d,
                         AppKernelUsage = watcherTotals.KernelUsage.TotalMicroSeconds / 1000L,

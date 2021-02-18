@@ -92,19 +92,6 @@ export default class ActionList extends Component {
     }
     
 
-    static createRequest(action, body) {
-        return new Request(`${API_URL}/${action}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-            /*
-                        mode: 'cors',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, 
-                        redirect: 'follow', 
-            */
-            body: JSON.stringify(body)
-        });
-    }
-    
     checkActionsTimestamp() {
         Helper.toConsole("Requesting TIMESTAMP of", this.props.keyPath);
         if (!this.props.keyPath) return;
@@ -112,7 +99,7 @@ export default class ActionList extends Component {
         // const apiTimestamp=`${API_URL}/ActionsTimestamp?key=${this.props.keyPath.join(Helper.keyPathSeparator.char)}`;
         const apiTimestamp=`${API_URL}/ActionsTimestamp`;
         try {
-            const req = ActionList.createRequest('ActionsTimestamp', {Path: this.props.keyPath})
+            const req = Helper.createRequest('ActionsTimestamp', {Path: this.props.keyPath, IdSession: 0, AppName: null, HostId: null})
             fetch(req)
                 .then(response => {
                     return response.ok ? response.json() : {error: response.status, details: response.json()}
@@ -139,7 +126,7 @@ export default class ActionList extends Component {
         // const apiUrl=`${API_URL}/ActionsByKey?key=${this.props.keyPath.join(Helper.keyPathSeparator.char)}`;
         const apiUrl=`${API_URL}/ActionsByKey`;
         try {
-            const req = ActionList.createRequest('ActionsByKey', {Path: this.props.keyPath})
+            const req = Helper.createRequest('ActionsByKey', {Path: this.props.keyPath, IdSession: 0, AppName: null, HostId: null})
             fetch(req)
                 .then(response => {
                     // console.log(`Response.Status for ${apiUrl} obtained: ${response.status}`);

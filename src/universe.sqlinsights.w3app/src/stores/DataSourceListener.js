@@ -21,9 +21,10 @@ class DataSourceListener {
     }
 
     watchdogTick() {
+        const req = Helper.createRequest('Summary', {IdSession: 0, AppName: null, HostId: null});
         let apiUrl = `${API_URL}/Summary`;
         try {
-            fetch(apiUrl, {method:'POST'})
+            fetch(req)
                 .then(response => {
                     // console.log(`Response.Status for ${apiUrl} obtained: ${response.status}`);
                     // console.log(response);

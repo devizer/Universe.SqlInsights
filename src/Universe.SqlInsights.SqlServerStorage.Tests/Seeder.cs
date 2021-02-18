@@ -10,6 +10,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
 {
     class Seeder
     {
+        public const string TestAppName = "Tests";
         public readonly DbProviderFactory ProviderFactory;
         public readonly string ConnectionString;
 
@@ -36,7 +37,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             // Seed actions
             for (int i = 65; i < 90; i++)
             {
-                SqlInsightsActionKeyPath key = new SqlInsightsActionKeyPath("TESTS", "Act " + ((char)i));
+                SqlInsightsActionKeyPath key = new SqlInsightsActionKeyPath(TestAppName, "Act " + ((char)i));
                 ActionDetailsWithCounters.SqlStatement stm = new ActionDetailsWithCounters.SqlStatement()
                 {
                     Counters = new SqlCounters() {Duration = 42}
