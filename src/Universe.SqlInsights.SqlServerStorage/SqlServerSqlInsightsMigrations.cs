@@ -21,6 +21,7 @@ namespace Universe.SqlInsights.SqlServerStorage
         {
             @"
 If Object_ID('SqlInsightsString') Is Null
+Begin
 Create Table SqlInsightsString(
     IdString bigint Identity Not Null,
     Kind tinyint Not Null, -- 1: KeyPath, 2: AppName, 3: HostId
@@ -28,6 +29,8 @@ Create Table SqlInsightsString(
     Tail nvarchar(max) Null,
     Constraint PK_SqlInsightsString Primary Key (IdString)
 )
+Create Index IX_SqlInsightsString_StartsWith On SqlInsightsString(StartsWith) 
+End
 ",
             @"
 If Object_ID('SqlInsightsSession') Is Null
@@ -62,8 +65,9 @@ Create Table SqlInsightsKeyPathSummary(
     Version RowVersion Not Null,
     Data nvarchar(max) Not Null,
     Constraint PK_SqlInsightsKeyPathSummary Primary Key (KeyPath, IdSession),
-    Constraint FK_SqlInsightsKeyPathSummary_SqlInsightsSession FOREIGN KEY (IdSession) REFERENCES SqlInsightsSession(IdSession)
-               -- ON DELETE CASCADE ON UPDATE NO ACTION    -- Used for debugging only, not necessary in runtime        
+    Constraint FK_SqlInsightsKeyPathSummary_SqlInsightsSession FOREIGN KEY (IdSession) REFERENCES SqlInsightsSession(IdSession),
+    Constraint FK_SqlInsightsKeyPathSummary_AppName FOREIGN KEY (AppName) REFERENCES SqlInsightsString(IdString),
+    Constraint FK_SqlInsightsKeyPathSummary_HostId FOREIGN KEY (HostId) REFERENCES SqlInsightsString(IdString)
 )
 Create Index IX_SqlInsightsKeyPathSummary_Version On SqlInsightsKeyPathSummary(Version Desc)
 End
@@ -83,8 +87,10 @@ Create Table SqlInsightsAction(
     Constraint PK_SqlInsightsAction Primary Key (IdAction),
     Constraint FK_SqlInsightsAction_SqlInsightsSession FOREIGN KEY (IdSession) REFERENCES SqlInsightsSession(IdSession)
         , -- ON DELETE CASCADE ON UPDATE NO ACTION,  -- Used for debugging only, not necessary in runtime
-    Constraint FK_SqlInsightsAction_SqlInsightsKeyPathSummary FOREIGN KEY (KeyPath, IdSession) REFERENCES SqlInsightsKeyPathSummary(KeyPath, IdSession)
-        -- ON DELETE CASCADE ON UPDATE NO ACTION   -- Used for debugging only, not necessary in runtime 
+    Constraint FK_SqlInsightsAction_SqlInsightsKeyPathSummary FOREIGN KEY (KeyPath, IdSession) REFERENCES SqlInsightsKeyPathSummary(KeyPath, IdSession),
+        -- ON DELETE CASCADE ON UPDATE NO ACTION   -- Used for debugging only, not necessary in runtime
+    Constraint FK_SqlInsightsAction_AppName FOREIGN KEY (AppName) REFERENCES SqlInsightsString(IdString), 
+    Constraint FK_SqlInsightsAction_HostId FOREIGN KEY (HostId) REFERENCES SqlInsightsString(IdString), 
 )
 Create Index IX_SqlInsightsAction_KeyPath_At On SqlInsightsAction(KeyPath, At)
 End 

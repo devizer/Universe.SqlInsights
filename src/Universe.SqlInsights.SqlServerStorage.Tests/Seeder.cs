@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -33,6 +34,10 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                 Assert.AreNotEqual(session1, 0, "Session1 is not zero");
                 Assert.AreNotEqual(session2, 0, "Session2 is not zero");
             }
+
+            int aliveSessionsCount = storage.GetAliveSessions().Count();
+            Stopwatch sw = Stopwatch.StartNew();
+            int total = 0;
             
             // Seed actions
             for (int i = 65; i < 90; i++)
@@ -45,6 +50,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
 
                 for (int j = 0; j < 10 * (i - 65); j++)
                 {
+                    total += aliveSessionsCount;
                     storage.AddAction(new ActionDetailsWithCounters()
                     {
                         Key = key,
@@ -57,7 +63,10 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                     });
                 }
             }
-            
+
+            var ops = (double) total / sw.Elapsed.TotalSeconds;
+            Console.WriteLine($"OPS = {ops:n6}");
+
         }
     }
 }

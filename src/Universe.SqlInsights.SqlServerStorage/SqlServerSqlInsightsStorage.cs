@@ -66,79 +66,88 @@ namespace Universe.SqlInsights.SqlServerStorage
             if (reqAction.AppName == null) throw new ArgumentException("Missing reqAction.AppName");
 
             const string
-                sqlSelect = "Select Data From SqlInsightsKeyPathSummary Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession",
+                sqlSelect = "Select Data From SqlInsightsKeyPathSummary WITH (UPDLOCK) Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession",
                 sqlInsert = "Insert SqlInsightsKeyPathSummary(KeyPath, IdSession, AppName, HostId, Data) Values(@KeyPath, @IdSession, @AppName, @HostId, @Data);",
                 sqlUpdate = "Update SqlInsightsKeyPathSummary Set Data = @Data Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession";
 
-            var aliveSessions = GetAliveSessions();
-            foreach (var idSession in aliveSessions)
+            var aliveSessions = GetAliveSessions().ToList();
+            if (aliveSessions.Count <= 0) return;
+            
+            using (IDbConnection con = GetConnection())
             {
-                using (IDbConnection con = GetConnection())
+                var tran = con.BeginTransaction(IsolationLevel.ReadCommitted);
+                using (tran)
                 {
-                    StringsStorage stringStorage = new StringsStorage(con);
-                    var idAppName = stringStorage.AcquireString(StringKind.AppName, reqAction.AppName);
-                    var idHostId = stringStorage.AcquireString(StringKind.HostId, reqAction.HostId);
-                    
-                    var keyPath = SerializeKeyPath(reqAction.Key);
+                    foreach (var idSession in aliveSessions)
+                    {
+                        StringsStorage stringStorage = new StringsStorage(con, tran);
+                        var idAppName = stringStorage.AcquireString(StringKind.AppName, reqAction.AppName);
+                        var idHostId = stringStorage.AcquireString(StringKind.HostId, reqAction.HostId);
 
-                    // SUMMARY: SqlInsightsKeyPathSummary
-                    ActionSummaryCounters actionActionSummary = reqAction.AsSummary();
-                    var query = con
-                        .Query<SelectDataResult>(sqlSelect, new
+                        var keyPath = SerializeKeyPath(reqAction.Key);
+
+                        // SUMMARY: SqlInsightsKeyPathSummary
+                        ActionSummaryCounters actionActionSummary = reqAction.AsSummary();
+                        var query = con
+                            .Query<SelectDataResult>(sqlSelect, new
+                            {
+                                IdSession = idSession,
+                                KeyPath = keyPath,
+                                AppName = idAppName,
+                                HostId = idHostId,
+                            }, tran);
+
+                        string rawDataPrev = query
+                            .FirstOrDefault()?
+                            .Data;
+
+                        bool exists = rawDataPrev != null;
+                        ActionSummaryCounters
+                            next,
+                            prev = !exists
+                                ? new ActionSummaryCounters()
+                                : JsonConvert.DeserializeObject<ActionSummaryCounters>(rawDataPrev, DefaultSettings);
+
+                        if (exists)
                         {
-                            IdSession = idSession, 
+                            prev.Add(actionActionSummary);
+                            next = prev;
+                        }
+                        else
+                        {
+                            next = actionActionSummary;
+                        }
+
+                        // next.Key = actionActionSummary.Key;
+                        var sqlUpsert = exists ? sqlUpdate : sqlInsert;
+                        var dataSummary = JsonConvert.SerializeObject(next, DefaultSettings);
+                        con.Execute(sqlUpsert, new
+                        {
                             KeyPath = keyPath,
+                            IdSession = idSession,
+                            Data = dataSummary,
                             AppName = idAppName,
                             HostId = idHostId,
-                        });
+                        }, tran);
 
-                    string rawDataPrev = query
-                        .FirstOrDefault()?
-                        .Data;
-
-                    bool exists = rawDataPrev != null;
-                    ActionSummaryCounters
-                        next,
-                        prev = !exists
-                            ? new ActionSummaryCounters()
-                            : JsonConvert.DeserializeObject<ActionSummaryCounters>(rawDataPrev, DefaultSettings);
-
-                    if (exists)
-                    {
-                        prev.Add(actionActionSummary);
-                        next = prev;
+                        // DETAILS: SqlInsightsAction
+                        const string sqlDetail =
+                            "Insert SqlInsightsAction(At, IdSession, KeyPath, IsOK, AppName, HostId, Data) Values(@At, @IdSession, @KeyPath, @IsOK, @AppName, @HostId, @Data)";
+                        var detail = reqAction;
+                        var dataDetail = JsonConvert.SerializeObject(detail, DefaultSettings);
+                        con.Execute(sqlDetail, new
+                        {
+                            At = detail.At,
+                            IsOK = string.IsNullOrEmpty(detail.BriefException),
+                            IdSession = idSession,
+                            KeyPath = keyPath,
+                            Data = dataDetail,
+                            AppName = idAppName,
+                            HostId = idHostId,
+                        }, tran);
                     }
-                    else
-                    {
-                        next = actionActionSummary;
-                    }
-
-                    // next.Key = actionActionSummary.Key;
-                    var sqlUpsert = exists ? sqlUpdate : sqlInsert;
-                    var dataSummary = JsonConvert.SerializeObject(next, DefaultSettings);
-                    con.Execute(sqlUpsert, new
-                    {
-                        KeyPath = keyPath, 
-                        IdSession = idSession, 
-                        Data = dataSummary,
-                        AppName = idAppName,
-                        HostId = idHostId,
-                    });
-
-                    // DETAILS: SqlInsightsAction
-                    const string sqlDetail = "Insert SqlInsightsAction(At, IdSession, KeyPath, IsOK, AppName, HostId, Data) Values(@At, @IdSession, @KeyPath, @IsOK, @AppName, @HostId, @Data)";
-                    var detail = reqAction;
-                    var dataDetail = JsonConvert.SerializeObject(detail, DefaultSettings);
-                    con.Execute(sqlDetail, new
-                    {
-                        At = detail.At,
-                        IsOK = string.IsNullOrEmpty(detail.BriefException),
-                        IdSession = idSession,
-                        KeyPath = keyPath,
-                        Data = dataDetail,
-                        AppName = idAppName,
-                        HostId = idHostId,
-                    });
+                    
+                    tran.Commit();
                 }
             }
         }
@@ -315,13 +324,13 @@ Delete From SqlInsightsSession Where IdSession = @IdSession;
 
         public async Task<IEnumerable<LongAndString>> GetAppNames()
         {
-            StringsStorage strings = new StringsStorage(GetConnection());
+            StringsStorage strings = new StringsStorage(GetConnection(), null);
             return await strings.GetAllStringsByKind(StringKind.AppName);
         }
 
         public async Task<IEnumerable<LongAndString>> GetHostIds()
         {
-            StringsStorage strings = new StringsStorage(GetConnection());
+            StringsStorage strings = new StringsStorage(GetConnection(), null);
             return await strings.GetAllStringsByKind(StringKind.HostId);
         }
 

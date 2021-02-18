@@ -12,13 +12,15 @@ namespace Universe.SqlInsights.SqlServerStorage
     {
         
         readonly IDbConnection Connection;
+        readonly IDbTransaction Transaction;
         private const int MaxStart = 450;
         private static Dictionary<CacheKey, long> Cache = new Dictionary<CacheKey, long>();
         private static object SyncCache = new object();
 
-        public StringsStorage(IDbConnection connection)
+        public StringsStorage(IDbConnection connection, IDbTransaction transaction)
         {
             Connection = connection;
+            Transaction = transaction;
         }
 
         public long? AcquireString(StringKind kind, string value)
@@ -53,54 +55,47 @@ namespace Universe.SqlInsights.SqlServerStorage
         
         const string SqlSelect = "Select IdString, StartsWith, Tail From SqlInsightsString WITH (UPDLOCK) Where Kind = @Kind and StartsWith = @StartsWith";
         const string SqlInsert = "Insert SqlInsightsString(Kind, StartsWith, Tail) Values(@Kind, @StartsWith,@Tail); Select Scope_Identity();";
-        
+
         private bool AcquireString_Impl(StringKind kind, string value, out long? idString)
         {
             if (value == null)
             {
                 idString = null;
                 return false;
-            };
-
-            var tran = Connection.BeginTransaction(IsolationLevel.ReadUncommitted);
-
-            using (tran)
-            {
-
-                var doesFit = value.Length <= MaxStart;
-                var startsWith = !doesFit ? value.Substring(0, MaxStart) : value;
-                var query = Connection.Query<SelectStringsResult>(SqlSelect, new
-                {
-                    Kind = (byte) kind,
-                    StartsWith = startsWith
-                }, tran);
-                
-                foreach (SelectStringsResult str in query)
-                {
-                    if (IsIt(startsWith, doesFit, value, str))
-                    {
-                        idString = str.IdString;
-                        return false;
-                    }
-                }
-
-                var queryInsert = Connection.Query<long>(SqlInsert, new
-                {
-                    Kind = (byte) kind,
-                    StartsWith = startsWith,
-                    Tail = doesFit ? null : value.Substring(MaxStart)
-                }, tran);
-
-                idString = queryInsert.FirstOrDefault();
-
-                if (!idString.HasValue)
-                    throw new InvalidOperationException("Lost Scope_Identity() on Insert into SqlInsightsString");
-
-                tran.Commit();
-                return true;
             }
+
+            var doesFit = value.Length <= MaxStart;
+            var startsWith = !doesFit ? value.Substring(0, MaxStart) : value;
+            var query = Connection.Query<SelectStringsResult>(SqlSelect, new
+            {
+                Kind = (byte) kind,
+                StartsWith = startsWith
+            }, Transaction);
+
+            foreach (SelectStringsResult str in query)
+            {
+                if (IsIt(startsWith, doesFit, value, str))
+                {
+                    idString = str.IdString;
+                    return false;
+                }
+            }
+
+            var queryInsert = Connection.Query<long>(SqlInsert, new
+            {
+                Kind = (byte) kind,
+                StartsWith = startsWith,
+                Tail = doesFit ? null : value.Substring(MaxStart)
+            }, Transaction);
+
+            idString = queryInsert.FirstOrDefault();
+
+            if (!idString.HasValue)
+                throw new InvalidOperationException("Lost Scope_Identity() on Insert into SqlInsightsString");
+
+            return true;
         }
-        
+
 #if NETSTANDARD
         public async Task<IEnumerable<LongAndString>> GetAllStringsByKind(StringKind kind)
         {
