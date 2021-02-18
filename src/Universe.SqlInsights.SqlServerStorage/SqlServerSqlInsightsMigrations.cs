@@ -21,7 +21,6 @@ namespace Universe.SqlInsights.SqlServerStorage
         {
             @"
 If Object_ID('SqlInsightsString') Is Null
-Begin
 Create Table SqlInsightsString(
     IdString bigint Identity Not Null,
     Kind tinyint Not Null, -- 1: KeyPath, 2: AppName, 3: HostId
@@ -29,9 +28,18 @@ Create Table SqlInsightsString(
     Tail nvarchar(max) Null,
     Constraint PK_SqlInsightsString Primary Key (IdString)
 )
-Create Index IX_SqlInsightsString_StartsWith On SqlInsightsString(StartsWith) 
-End
 ",
+            
+            // This is workaround for memory optimized SqlInsightsKeyPathSummary 
+            @"
+If Object_ID('SqlInsightsKeyPathSummaryTimestamp') Is Null
+Create Table SqlInsightsKeyPathSummaryTimestamp(
+    Version BigInt Not Null,
+    Guid UniqueIdentifier Not Null,
+    Constraint PK_SqlInsightsKeyPathSummaryTimestamp Primary Key (Guid)
+);
+Insert SqlInsightsKeyPathSummaryTimestamp(Version, Guid) Values(0, NewId())",
+            
             @"
 If Object_ID('SqlInsightsSession') Is Null
 Begin
@@ -62,8 +70,7 @@ Create Table SqlInsightsKeyPathSummary(
     AppName bigint Not Null,
     HostId bigint Not Null,
     IdSession bigint Not Null,
-    Version Uniqueidentifier Not Null,
-    -- Version binary(8) Null,
+    Version BigInt Not Null,
     Data nvarchar(max) Not Null,
     Constraint PK_SqlInsightsKeyPathSummary Primary Key (KeyPath, IdSession, AppName, HostId),
     Constraint FK_SqlInsightsKeyPathSummary_SqlInsightsSession FOREIGN KEY (IdSession) REFERENCES SqlInsightsSession(IdSession),
@@ -107,7 +114,14 @@ End
             {
                 foreach (var sqlMigration in SqlMigrations)
                 {
-                    con.Execute(sqlMigration, null);
+                    try
+                    {
+                        con.Execute(sqlMigration, null);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new InvalidOperationException($"Migration failed{Environment.NewLine}{sqlMigration}", ex);
+                    }
                 }
             }
         }

@@ -71,6 +71,11 @@ namespace Universe.SqlInsights.SqlServerStorage
 
             if (reqAction.AppName == null) throw new ArgumentException("Missing reqAction.AppName");
 
+            const string sqlNextVersion = @"
+Update SqlInsightsKeyPathSummaryTimestamp Set Guid = NewId(), Version = Version + 1;
+Select Top 1 Version From SqlInsightsKeyPathSummaryTimestamp;
+";
+
             const string
                 sqlSelect = "Select Data From SqlInsightsKeyPathSummary WITH (UPDLOCK) Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession",
                 sqlInsert = "Insert SqlInsightsKeyPathSummary(KeyPath, IdSession, AppName, HostId, Data, Version) Values(@KeyPath, @IdSession, @AppName, @HostId, @Data, @Version);",
@@ -84,6 +89,8 @@ namespace Universe.SqlInsights.SqlServerStorage
                 var tran = con.BeginTransaction(IsolationLevel.ReadCommitted);
                 using (tran)
                 {
+                    IEnumerable<long> nextVersionQuery = con.Query<long>(sqlNextVersion, null, tran);
+                    var nextVersion = nextVersionQuery.FirstOrDefault() + 1; 
                     foreach (var idSession in aliveSessions)
                     {
                         StringsStorage stringStorage = new StringsStorage(con, tran);
@@ -134,7 +141,7 @@ namespace Universe.SqlInsights.SqlServerStorage
                             Data = dataSummary,
                             AppName = idAppName,
                             HostId = idHostId,
-                            Version = Guid.NewGuid(),
+                            Version = nextVersion,
                         }, tran);
 
                         // DETAILS: SqlInsightsAction
@@ -187,7 +194,7 @@ namespace Universe.SqlInsights.SqlServerStorage
             using (var con = GetConnection())
             {
                 StringsStorage strings = new StringsStorage(con, null);
-                Dapper.DynamicParameters sqlParams = new DynamicParameters();
+                var sqlParams = new DynamicParameters();
                 sqlParams.Add("IdSession", idSession);
                 if (optionalApp != null)
                 {
@@ -235,11 +242,28 @@ namespace Universe.SqlInsights.SqlServerStorage
 
         public async Task<string> GetActionsSummaryTimestamp(long idSession, string optionalApp = null, string optionalHost = null)
         {
-            const string sql = "Select Top 1 Version From SqlInsightsKeyPathSummary Where IdSession = @IdSession Order By Version Desc";
+            StringBuilder sqlWhere = new StringBuilder();
             using (var con = GetConnection())
             {
-                var query = await con.QueryAsync<Guid>(sql, new { IdSession = idSession});
-                Guid binaryVersion = query.FirstOrDefault();
+                StringsStorage strings = new StringsStorage(con, null);
+                var sqlParams = new DynamicParameters();
+                sqlParams.Add("IdSession", idSession);
+                if (optionalApp != null)
+                {
+                    long? idAppName = strings.AcquireString(StringKind.AppName, optionalApp);
+                    sqlParams.Add("AppName", idAppName.Value);
+                    sqlWhere.Append(" And AppName = @AppName");
+                }
+                if (optionalHost != null)
+                {
+                    long? idHost = strings.AcquireString(StringKind.HostId, optionalHost);
+                    sqlParams.Add("HostId", idHost.Value);
+                    sqlWhere.Append(" And HostId = @HostId");
+                }
+
+                var sql = $"Select Max(Version) From SqlInsightsKeyPathSummary Where IdSession = @IdSession {sqlWhere}";
+                var query = await con.QueryAsync<long>(sql, sqlParams);
+                var binaryVersion = query.FirstOrDefault();
                 return binaryVersion.ToString();
             }
         }
