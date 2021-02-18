@@ -62,9 +62,10 @@ Create Table SqlInsightsKeyPathSummary(
     AppName bigint Not Null,
     HostId bigint Not Null,
     IdSession bigint Not Null,
-    Version RowVersion Not Null,
+    Version Uniqueidentifier Not Null,
+    -- Version binary(8) Null,
     Data nvarchar(max) Not Null,
-    Constraint PK_SqlInsightsKeyPathSummary Primary Key (KeyPath, IdSession),
+    Constraint PK_SqlInsightsKeyPathSummary Primary Key (KeyPath, IdSession, AppName, HostId),
     Constraint FK_SqlInsightsKeyPathSummary_SqlInsightsSession FOREIGN KEY (IdSession) REFERENCES SqlInsightsSession(IdSession),
     Constraint FK_SqlInsightsKeyPathSummary_AppName FOREIGN KEY (AppName) REFERENCES SqlInsightsString(IdString),
     Constraint FK_SqlInsightsKeyPathSummary_HostId FOREIGN KEY (HostId) REFERENCES SqlInsightsString(IdString)
@@ -87,7 +88,7 @@ Create Table SqlInsightsAction(
     Constraint PK_SqlInsightsAction Primary Key (IdAction),
     Constraint FK_SqlInsightsAction_SqlInsightsSession FOREIGN KEY (IdSession) REFERENCES SqlInsightsSession(IdSession)
         , -- ON DELETE CASCADE ON UPDATE NO ACTION,  -- Used for debugging only, not necessary in runtime
-    Constraint FK_SqlInsightsAction_SqlInsightsKeyPathSummary FOREIGN KEY (KeyPath, IdSession) REFERENCES SqlInsightsKeyPathSummary(KeyPath, IdSession),
+    Constraint FK_SqlInsightsAction_SqlInsightsKeyPathSummary FOREIGN KEY (KeyPath, IdSession, AppName, HostId) REFERENCES SqlInsightsKeyPathSummary(KeyPath, IdSession, AppName, HostId),
         -- ON DELETE CASCADE ON UPDATE NO ACTION   -- Used for debugging only, not necessary in runtime
     Constraint FK_SqlInsightsAction_AppName FOREIGN KEY (AppName) REFERENCES SqlInsightsString(IdString), 
     Constraint FK_SqlInsightsAction_HostId FOREIGN KEY (HostId) REFERENCES SqlInsightsString(IdString), 

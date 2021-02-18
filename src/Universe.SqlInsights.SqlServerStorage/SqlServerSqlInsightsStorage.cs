@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 using Newtonsoft.Json;
@@ -55,6 +56,11 @@ namespace Universe.SqlInsights.SqlServerStorage
             return ret;
         }
 
+        class SelectKeyAndDataResult
+        {
+            public string KeyPath { get; set; }
+            public string Data { get; set; }
+        }
         class SelectDataResult
         {
             public string Data { get; set; }
@@ -67,8 +73,8 @@ namespace Universe.SqlInsights.SqlServerStorage
 
             const string
                 sqlSelect = "Select Data From SqlInsightsKeyPathSummary WITH (UPDLOCK) Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession",
-                sqlInsert = "Insert SqlInsightsKeyPathSummary(KeyPath, IdSession, AppName, HostId, Data) Values(@KeyPath, @IdSession, @AppName, @HostId, @Data);",
-                sqlUpdate = "Update SqlInsightsKeyPathSummary Set Data = @Data Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession";
+                sqlInsert = "Insert SqlInsightsKeyPathSummary(KeyPath, IdSession, AppName, HostId, Data, Version) Values(@KeyPath, @IdSession, @AppName, @HostId, @Data, @Version);",
+                sqlUpdate = "Update SqlInsightsKeyPathSummary Set Data = @Data, Version = @Version Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession";
 
             var aliveSessions = GetAliveSessions().ToList();
             if (aliveSessions.Count <= 0) return;
@@ -128,6 +134,7 @@ namespace Universe.SqlInsights.SqlServerStorage
                             Data = dataSummary,
                             AppName = idAppName,
                             HostId = idHostId,
+                            Version = Guid.NewGuid(),
                         }, tran);
 
                         // DETAILS: SqlInsightsAction
@@ -176,10 +183,47 @@ namespace Universe.SqlInsights.SqlServerStorage
 #if NETSTANDARD
         public async Task<IEnumerable<ActionSummaryCounters>> GetActionsSummary(long idSession, string optionalApp = null, string optionalHost = null)
         {
-            const string sql = "Select KeyPath, Data From SqlInsightsKeyPathSummary Where IdSession = @IdSession";
+            StringBuilder sql = new StringBuilder("Select KeyPath, Data From SqlInsightsKeyPathSummary Where IdSession = @IdSession");
             using (var con = GetConnection())
             {
-                IEnumerable<SelectDataResult> resultSet = await con.QueryAsync<SelectDataResult>(sql, new {IdSession = idSession});
+                StringsStorage strings = new StringsStorage(con, null);
+                Dapper.DynamicParameters sqlParams = new DynamicParameters();
+                sqlParams.Add("IdSession", idSession);
+                if (optionalApp != null)
+                {
+                    long? idAppName = strings.AcquireString(StringKind.AppName, optionalApp);
+                    sqlParams.Add("AppName", idAppName.Value);
+                    sql.Append(" And AppName = @AppName");
+                }
+                if (optionalHost != null)
+                {
+                    long? idHost = strings.AcquireString(StringKind.HostId, optionalHost);
+                    sqlParams.Add("HostId", idHost.Value);
+                    sql.Append(" And HostId = @HostId");
+                }
+                
+                IEnumerable<SelectKeyAndDataResult> resultSet = await con.QueryAsync<SelectKeyAndDataResult>(sql.ToString(), sqlParams);
+
+                // Ok: Group By x.KeyPath and sum all
+                var groups = resultSet.GroupBy(x => x.KeyPath, x => x.Data);
+                List<ActionSummaryCounters> ret = new List<ActionSummaryCounters>();
+                foreach (var src in groups)
+                {
+                    ActionSummaryCounters next = new ActionSummaryCounters();
+                    SqlInsightsActionKeyPath key = null;
+                    foreach (var raw in src)
+                    {
+                        var deserialized = JsonConvert.DeserializeObject<ActionSummaryCounters>(raw, DefaultSettings);
+                        key = deserialized.Key;
+                        next.Add(deserialized);
+                    }
+
+                    next.Key = key;
+                    ret.Add(next);
+                }
+
+                return ret;
+                
                 var query = resultSet.Select(x =>
                 {
                     return JsonConvert.DeserializeObject<ActionSummaryCounters>(x.Data, DefaultSettings);
@@ -194,10 +238,9 @@ namespace Universe.SqlInsights.SqlServerStorage
             const string sql = "Select Top 1 Version From SqlInsightsKeyPathSummary Where IdSession = @IdSession Order By Version Desc";
             using (var con = GetConnection())
             {
-                var query = await con.QueryAsync<SelectVersionResult>(sql, new { IdSession = idSession});
-                byte[] binaryVersion = query.FirstOrDefault()?.Version;
-                ulong? version = RowVersion2Int64(binaryVersion);
-                return version == null ? "" : version.Value.ToString();
+                var query = await con.QueryAsync<Guid>(sql, new { IdSession = idSession});
+                Guid binaryVersion = query.FirstOrDefault();
+                return binaryVersion.ToString();
             }
         }
 
