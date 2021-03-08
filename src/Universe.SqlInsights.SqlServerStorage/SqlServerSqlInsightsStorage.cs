@@ -168,14 +168,24 @@ Select Top 1 Version From SqlInsightsKeyPathSummaryTimestamp;
         
         public IEnumerable<long> GetAliveSessions()
         {
-            const string sql = @"Select IdSession From SqlInsightsSession Where IsFinished = (0) And (MaxDurationMinutes Is Null Or DateAdd(minute,MaxDurationMinutes,StartedAt) >= GetUtcDate())";
+            const string sql = @"Declare @UtcNow datetime; Set @UtcNow = GetUtcDate(); Select IdSession From SqlInsightsSession Where IsFinished = (0) And (MaxDurationMinutes Is Null Or DateAdd(minute,MaxDurationMinutes,StartedAt) >= @UtcNow)";
             using (var con = GetConnection())
             {
                 var query = con.Query<long>(sql, null);
                 return query.ToList();
             }
         }
-        
+
+        public bool AnyAliveSession()
+        {
+            const string sql = @"Declare @UtcNow datetime; Set @UtcNow = GetUtcDate(); If Exists(Select IdSession From SqlInsightsSession Where IsFinished = (0) And (MaxDurationMinutes Is Null Or DateAdd(minute,MaxDurationMinutes,StartedAt) >= @UtcNow)) Select 1 [Any]";
+            using (var con = GetConnection())
+            {
+                int? queryResult = con.ExecuteScalar<int?>(sql, null, null, null, CommandType.Text);
+                return queryResult.HasValue && queryResult.Value != 0;
+            }
+        }
+
         static string SerializeKeyPath(SqlInsightsActionKeyPath keyPath)
         {
             return keyPath?.Path == null ? null : string.Join("\x2192", keyPath.Path);

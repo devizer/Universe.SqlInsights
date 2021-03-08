@@ -37,6 +37,14 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         }
 
         [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
+        public void Test1b_Any_Alive_Session_Exists(TestCaseProvider testCase)
+        {
+            SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
+            bool anyAliveSession = storage.AnyAliveSession();
+            Assert.IsTrue(anyAliveSession);
+        }
+
+        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
         public async Task Test2_LoadAll(TestCaseProvider testCase)
         {
             SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
@@ -58,6 +66,17 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             
             Console.WriteLine($"Commands: {countCommands}");
         }
+
+        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
+        [Ignore("Doesn't work. idSession == 0 check is on data access level")]
+        public async Task Test3b_No_AliveSessions(TestCaseProvider testCase)
+        {
+            SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
+            await storage.FinishSession(0);
+            bool anyAliveSession = storage.AnyAliveSession();
+            Assert.IsFalse(anyAliveSession);
+        }
+        
 
         [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
         public async Task Test3_FinishAllSessions(TestCaseProvider testCase)

@@ -1,0 +1,3 @@
+﻿start new session
+
+Time (At) | Caption | Duration | Limit | Stop | Delete | Resume

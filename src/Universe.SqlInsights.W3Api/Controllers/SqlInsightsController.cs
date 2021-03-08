@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Universe.SqlInsights.Shared;
 
 namespace Universe.SqlInsights.W3Api.Controllers
 {
     [ApiController]
     [Route("api/" + ApiVer.V1 + "/SqlInsights/[action]")]
-    public class SqlInsightsController : ControllerBase
+    public partial class SqlInsightsController : ControllerBase
     {
         private readonly ISqlInsightsStorage _Storage;
         private const long IdSessionStub = 0;
@@ -25,7 +24,7 @@ namespace Universe.SqlInsights.W3Api.Controllers
         {
             var keyPath = ParseActionKeyPath(args.Path);
             string timestamp = await _Storage.GetKeyPathTimestampOfDetails(args.IdSession, keyPath, args.AppName, args.HostId);
-            return ToJsonResult(timestamp);
+            return timestamp.ToJsonResult();
         }
 
         [HttpPost]
@@ -33,7 +32,7 @@ namespace Universe.SqlInsights.W3Api.Controllers
         {
             SqlInsightsActionKeyPath keyPath = ParseActionKeyPath(args.Path);
             IEnumerable<ActionDetailsWithCounters> ret = await _Storage.GetActionsByKeyPath(args.IdSession, keyPath, 100, args.AppName, args.HostId);
-            return ToJsonResult(ret);
+            return ret.ToJsonResult();
         }
 
         public class ActionsParameters
@@ -56,14 +55,14 @@ namespace Universe.SqlInsights.W3Api.Controllers
         public async Task<ActionResult<IEnumerable<ActionSummaryCounters>>> Summary(ActionsSummaryParameters args)
         {
             IEnumerable<ActionSummaryCounters> ret = await _Storage.GetActionsSummary(args.IdSession, args.AppName, args.HostId);
-            return ToJsonResult(ret);
+            return ret.ToJsonResult();
         }
 
         [HttpPost]
         public async Task<ActionResult<IEnumerable<ActionSummaryCounters>>> SummaryTimeStamp(ActionsSummaryParameters args)
         {
             string ret = await _Storage.GetActionsSummaryTimestamp(args.IdSession, args.AppName, args.HostId);
-            return ToJsonResult(ret);
+            return ret.ToJsonResult();
         }
 
         public class KeyPathModel
@@ -83,18 +82,6 @@ namespace Universe.SqlInsights.W3Api.Controllers
             return new SqlInsightsActionKeyPath(path);
         }
         
-        private static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings
-        {
-            NullValueHandling = NullValueHandling.Ignore
-        };
 
-        private static ActionResult ToJsonResult(object obj)
-        {
-            return new ContentResult()
-            {
-                Content = obj == null ? "null" : JsonConvert.SerializeObject(obj, SerializerSettings),
-                ContentType = "application/json",
-            };
-        }
    }
 }

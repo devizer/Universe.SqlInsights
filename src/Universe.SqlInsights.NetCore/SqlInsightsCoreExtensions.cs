@@ -64,7 +64,12 @@ namespace Universe.SqlInsights.NetCore
                 
                 // DEBUG
                 var storage = serviceProvider.GetRequiredService<ISqlInsightsStorage>();
-
+                var anyAliveSession = storage.AnyAliveSession();
+                if (!anyAliveSession)
+                {
+                    await next.Invoke();
+                    return;
+                }
                 
                 SqlTraceReader traceReader = new SqlTraceReader();
                 traceReader.MaxFileSize = config.MaxTraceFileSizeKb;

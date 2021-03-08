@@ -20,9 +20,17 @@ namespace Universe.SqlInsights.AspNetLegacy
 
             app.BeginRequest += (sender, args) =>
             {
+
                 LegacySqlProfilerContext.Instance = new LegacySqlProfilerContext();
-                
                 var actionId = LegacySqlProfilerContext.Instance.ActionId = Guid.NewGuid().ToString("N");
+                
+                var hcs = LegacySqlProfiler.SqlInsightsConfiguration.HistoryConnectionString;
+                if (hcs != null)
+                {
+                    var history = new SqlServerSqlInsightsStorage(SqlClientFactory.Instance, hcs);
+                    if (!history.AnyAliveSession()) return;
+                }
+
                 
                 if (sqlInsightsConfiguration.MeasureSqlMetrics)
                 {
@@ -116,6 +124,10 @@ namespace Universe.SqlInsights.AspNetLegacy
                     newLine.SqlErrors = details.Count(x => x.SqlErrorCode.HasValue);
                     traceReader.Stop();
                     traceReader.Dispose();
+                }
+                else
+                {
+                    return;
                 }
 
                 ActionDetailsWithCounters actionDetails = new ActionDetailsWithCounters()
