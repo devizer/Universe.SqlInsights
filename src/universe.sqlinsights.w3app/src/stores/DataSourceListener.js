@@ -13,11 +13,6 @@ class DataSourceListener {
         this.timerId = setInterval(this.watchdogTick, 1000);
         
         setTimeout(this.watchdogTick);
-
-/*
-        if (window && window.requestIdleCallback)
-            window.requestIdleCallback(this.watchdogTick);
-*/
     }
 
     watchdogTick() {

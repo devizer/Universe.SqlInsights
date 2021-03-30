@@ -47,8 +47,5 @@ export default class SessionsTable extends Component {
                 </div>                
             </React.Fragment>
         )
-        
-        
-        
     }
 }
