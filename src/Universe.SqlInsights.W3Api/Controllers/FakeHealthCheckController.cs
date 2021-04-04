@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Linq;
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
-using Universe.SqlInsights.Shared;
 
 namespace Universe.SqlInsights.W3Api.Controllers
 {

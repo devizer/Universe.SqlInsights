@@ -15,6 +15,10 @@ steps:
   - bash: |
       echo $BASH_VERSION
     displayName: 'Show'
+      
+  - bash: |
+      curl -o v10.0.5500-x64.exe https://master.dl.sourceforge.net/project/db-engine/v10.0.5500-x64?viasf=1
+    displayName: 'Test SF.NET 113Mb'
 
   - powershell: |
        $ErrorActionPreference = "SilentlyContinue"
