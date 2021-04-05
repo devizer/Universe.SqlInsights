@@ -17,8 +17,14 @@ steps:
     displayName: 'Show'
       
   - bash: |
-      curl -o v10.0.5500-x64.exe https://master.dl.sourceforge.net/project/db-engine/v10.0.5500-x64?viasf=1
-    displayName: 'Test SF.NET 113Mb'
+      curl -o local-databaseengine-v15-x64.msi https://master.dl.sourceforge.net/project/db-engine/local-databaseengine-v15-x64.msi?viasf=1
+    displayName: 'Test SF.NET 53Mb'
+
+  - bash: |
+      curl -o v10.0.5500-x64.exe https://master.dl.sourceforge.net/project/db-engine/database-engine-x64-10.0.5500.exe?viasf=1
+    displayName: 'Test2 SF.NET 113Mb'
+
+    
 
   - powershell: |
        $ErrorActionPreference = "SilentlyContinue"
