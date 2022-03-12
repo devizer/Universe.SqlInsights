@@ -1,3 +1,4 @@
+taskkill /F /T /IM chromedriver.exe
 If Not Defined VER Set VER=0.1.2.3
 for %%d in (Universe.SqlInsights.AspNetLegacy Universe.SqlInsights.NetCore Universe.SqlInsights.Shared Universe.SqlInsights.SqlServerStorage) DO (
   echo Clean src\%%d\bin
