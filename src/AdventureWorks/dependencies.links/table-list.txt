@@ -1,0 +1,10 @@
+Sales.SalesOrderDetail
+Production.Product
+OrderDetail.ProductID
+
+Sales.Customer 
+Sales.SalesOrderHeader
+Person.Person
+Person.[Address]
+Person.vStateProvinceCountryRegion
+Purchasing.ShipMethod
