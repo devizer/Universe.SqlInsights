@@ -1,0 +1,1 @@
+@powershell -f Install-and-Patch-AdventureWorks2014.ps1
