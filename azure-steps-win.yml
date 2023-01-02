@@ -67,7 +67,7 @@ steps:
     displayName: 'Prepare SQL Server'
 
   - script: |
-       sqlcmd /?
+       sqlcmd /? | find "Version"
        sqlcmd -S . -h-1 -s"," -E -W -w 10000 -Q "SET NOCOUNT ON; Select CONVERT(VARCHAR(128), SERVERPROPERTY ('productversion'))"
        sqlcmd -S . -h-1 -s"," -E -W -w 10000 -Q "SET NOCOUNT ON; Select @@Version"
     displayName: 'Show SQL Info'
