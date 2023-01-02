@@ -16,16 +16,15 @@ steps:
       echo $BASH_VERSION
     displayName: 'Show'
       
-  - bash: |
-      curl -o local-databaseengine-v15-x64.msi https://master.dl.sourceforge.net/project/db-engine/local-databaseengine-v15-x64.msi?viasf=1
-    displayName: 'Test SF.NET 53Mb'
+  # - bash: |
+  #     curl -o local-databaseengine-v15-x64.msi https://master.dl.sourceforge.net/project/db-engine/local-databaseengine-v15-x64.msi?viasf=1
+  #   displayName: 'Test SF.NET 53Mb'
 
-  - bash: |
-      curl -o v10.0.5500-x64.exe https://master.dl.sourceforge.net/project/db-engine/database-engine-x64-10.0.5500.exe?viasf=1
-    displayName: 'Test2 SF.NET 113Mb'
+  # - bash: |
+  #     curl -o v10.0.5500-x64.exe https://master.dl.sourceforge.net/project/db-engine/database-engine-x64-10.0.5500.exe?viasf=1
+  #   displayName: 'Test2 SF.NET 113Mb'
 
     
-
   - powershell: |
        $ErrorActionPreference = "SilentlyContinue"
        
@@ -100,6 +99,15 @@ steps:
       call 2b-Build-and-Serve-SqlInsights-Prod.cmd
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     displayName: 'yarn test w3app'
+
+  - bash: |
+      echo Testing Apps
+      1-Run-W3Api.cmd
+      2b-Build-and-Serve-SqlInsights-Prod.cmd
+      sleep 5
+    condition: eq(variables['TEST_APPS'], 'true')
+    displayName: 'Test Apps (optional)'
+
 
   - publish: $(System.DefaultWorkingDirectory)
     condition: succeededOrFailed()
