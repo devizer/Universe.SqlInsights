@@ -33,7 +33,7 @@ jobs:
     timeoutInMinutes: 30
     cancelTimeoutInMinutes: 1
     pool:
-      vmImage: 'windows-latest'
+      vmImage: 'windows-2019'
     steps:
       - template: azure-steps-win.yml
 

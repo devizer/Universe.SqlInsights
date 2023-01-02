@@ -64,8 +64,8 @@ namespace Universe.SqlInsights.SqlServerStorage
                 return false;
             }
 
-            var doesFit = value.Length <= MaxStart;
-            var startsWith = !doesFit ? value.Substring(0, MaxStart) : value;
+            bool doesFit = value.Length <= MaxStart;
+            string startsWith = !doesFit ? value.Substring(0, MaxStart) : value;
             var query = Connection.Query<SelectStringsResult>(SqlSelect, new
             {
                 Kind = (byte) kind,
