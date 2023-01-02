@@ -62,8 +62,8 @@ steps:
        $todo | % { Install-SqlServer $_ }
 
        Show-SqlServers
-       Say "ALL THE SERVICES"
-       get-wmiobject win32_service | sort-object -Property "DisplayName" | ft State, Name, DisplayName, StartMode, StartName
+       Say "ALL THE SQL SERVICES"
+       get-wmiobject win32_service | where {$_.Name.ToLower().IndexOf("sql") -ge 0 -or $_.DisplayName.ToLower().IndexOf("sql") -ge 0 } | sort-object -Property "DisplayName" | ft State, Name, DisplayName, StartMode, StartName
     displayName: 'Prepare SQL Server'
   
   - publish: $(System.DefaultWorkingDirectory)/Setup.Logs
