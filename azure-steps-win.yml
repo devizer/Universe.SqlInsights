@@ -106,13 +106,13 @@ steps:
 
   - bash: |
       echo Testing Apps
-      cd src/Universe.SqlInsights.W3Api
-      dotnet run
+      # cd src/Universe.SqlInsights.W3Api
+      # dotnet run
 
 
 
 
-      
+
       1-Run-W3Api.cmd
       2b-Build-and-Serve-SqlInsights-Prod.cmd
       sleep 15
