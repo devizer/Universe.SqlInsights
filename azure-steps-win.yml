@@ -108,7 +108,14 @@ steps:
       echo Testing Apps
       1-Run-W3Api.cmd
       2b-Build-and-Serve-SqlInsights-Prod.cmd
+
       sleep 15
+      source scripts/wait_for_http.sh
+      echo "Attempt #1: get swagger"
+      curl -I http://localhost:50420/swagger
+      echo "Wait for swagger"
+      wait_for_http "http://localhost:50420/swagger"
+      echo "Attempt #2: get swagger"
       curl -I http://localhost:50420/swagger
       echo finish
     condition: eq(variables['TEST_APPS'], 'true')
