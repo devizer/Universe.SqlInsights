@@ -106,17 +106,11 @@ steps:
 
   - bash: |
       echo Testing Apps
-      # cd src/Universe.SqlInsights.W3Api
-      # dotnet run
-
-
-
-
-
       1-Run-W3Api.cmd
       2b-Build-and-Serve-SqlInsights-Prod.cmd
       sleep 15
       curl -I http://localhost:50420/swagger
+      echo finish
     condition: eq(variables['TEST_APPS'], 'true')
     displayName: 'Test Apps (optional)'
 
