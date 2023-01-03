@@ -109,6 +109,7 @@ steps:
       1-Run-W3Api.cmd
       2b-Build-and-Serve-SqlInsights-Prod.cmd
       sleep 5
+      curl -I http://localhost:50420/swagger
     condition: eq(variables['TEST_APPS'], 'true')
     displayName: 'Test Apps (optional)'
 
