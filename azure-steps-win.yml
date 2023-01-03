@@ -54,7 +54,8 @@ steps:
        Show-SqlServers
 
        # $ErrorActionPreference = 'SilentlyContinue'
-       $Env:SQL_SETUP_LOG_FOLDER = "$(System.DefaultWorkingDirectory)/Setup.Logs"
+       # $Env:SQL_SETUP_LOG_FOLDER = "$(System.DefaultWorkingDirectory)/Setup.Logs"
+       $Env:SQL_SETUP_LOG_FOLDER = "$($Env:Temp)\SQL-Setup.Logs"
        New-Item -ItemType Directory -Force -Path $Env:SQL_SETUP_LOG_FOLDER -ErrorAction Continue 1> $null
 
        $todo = Parse-SqlServers "$(SQL)"
@@ -63,6 +64,9 @@ steps:
        Show-SqlServers
        Say "ALL THE SQL SERVICES"
        get-wmiobject win32_service | where {$_.Name.ToLower().IndexOf("sql") -ge 0 -or $_.DisplayName.ToLower().IndexOf("sql") -ge 0 } | sort-object -Property "DisplayName" | ft State, Name, DisplayName, StartMode, StartName
+
+       Say "Copy log SQL-Setup.Logs"
+       cp "$($Env:Temp)\SQL-Setup.Logs" SQL-Setup.Logs -Force
     displayName: 'Prepare SQL Server'
 
   - script: |
