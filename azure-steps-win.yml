@@ -102,14 +102,13 @@ steps:
   - script: |
       call 2b-Build-and-Serve-SqlInsights-Prod.cmd
     condition: eq(variables['Agent.OS'], 'Windows_NT')
-    displayName: 'yarn test w3app'
+    displayName: 'yarn: build & run w3app'
 
   - bash: |
       echo Testing Apps
       1-Run-W3Api.cmd
-      2b-Build-and-Serve-SqlInsights-Prod.cmd
-
-      sleep 15
+      # 2b-Build-and-Serve-SqlInsights-Prod.cmd
+      # sleep 15
       source scripts/wait_for_http.sh
       echo "Attempt #1: get swagger"
       curl -I http://localhost:50420/swagger
