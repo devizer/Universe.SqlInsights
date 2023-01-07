@@ -1,4 +1,5 @@
 ﻿$osqlBin="C:\Program Files\Microsoft SQL Server\150\Tools\Binn\OSQL.EXE"
+$osqlBin="sqlcmd.exe"
 $aw2014Url="https://github.com/Microsoft/sql-server-samples/releases/download/adventureworks/AdventureWorks2014.bak"
 $dataDir="$($ENV:SYSTEMDRIVE)\SQL\AdventureWorks2014"
 
@@ -32,5 +33,4 @@ $customSqlFiles=@("SalesGetSalesOrders.sql", "SalesGetSalesOrderDetails.sql");
 foreach($customSqlFile in $customSqlFiles) {
   Write-Host "Apply $customSqlFile" -ForeGroundColor DarkYellow
   & $osqlBin -S . -E -i "$customSqlFile"
-  Write-Host ""
 }

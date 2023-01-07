@@ -27,9 +27,11 @@ Create Table SqlInsightsString(
     StartsWith nvarchar(450) Not Null,
     Tail nvarchar(max) Null,
     Constraint PK_SqlInsightsString Primary Key (IdString)
-)
+);
+If Not Exists (Select 1 From sys.indexes Where name='IX_SqlInsightsString_Kind_StartsWith')
+Create Index  IX_SqlInsightsString_Kind_StartsWith On SqlInsightsString(Kind, StartsWith);
 ",
-            
+
             // This is workaround for memory optimized SqlInsightsKeyPathSummary 
             @"
 If Object_ID('SqlInsightsKeyPathSummaryTimestamp') Is Null
