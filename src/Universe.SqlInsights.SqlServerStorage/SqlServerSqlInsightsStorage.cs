@@ -401,16 +401,19 @@ Delete From SqlInsightsSession Where IdSession = @IdSession;
 
         public async Task<IEnumerable<LongAndString>> GetAppNames()
         {
-            using var dbConnection = GetConnection();
-            StringsStorage strings = new StringsStorage(dbConnection, null);
-            return await strings.GetAllStringsByKind(StringKind.AppName);
+            return await GetAllStringsByKind(StringKind.AppName);
         }
 
         public async Task<IEnumerable<LongAndString>> GetHostIds()
         {
+            return await GetAllStringsByKind(StringKind.HostId);
+        }
+
+        private async Task<IEnumerable<LongAndString>> GetAllStringsByKind(StringKind stringKind)
+        {
             using var dbConnection = GetConnection();
             StringsStorage strings = new StringsStorage(dbConnection, null);
-            return await strings.GetAllStringsByKind(StringKind.HostId);
+            return await strings.GetAllStringsByKind(stringKind);
         }
 
 #endif
