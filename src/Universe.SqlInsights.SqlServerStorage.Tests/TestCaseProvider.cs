@@ -8,7 +8,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
     {
         // private string ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Database=SqlServerSqlInsightsStorage_Tests; Integrated Security=SSPI";
         private static readonly string TheConnectionString = "Data Source=(local);Database=SqlServerSqlInsightsStorage_Tests; Integrated Security=SSPI";
-        private static readonly string DbNamePattern = "SqlServerSqlInsightsStorage_{0}_Tests";
+        private static readonly string DbNamePattern = "SqlServerSqlInsightsStorage-{0}-Tests";
 
         public DbProviderFactory Provider { get; set; }
         public string ConnectionString { get; set; }
