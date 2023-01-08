@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -8,13 +9,13 @@ using Universe.SqlInsights.Shared;
 
 namespace Universe.SqlInsights.SqlServerStorage
 {
-    class StringsStorage
+    public class StringsStorage
     {
         
         readonly IDbConnection Connection;
         readonly IDbTransaction Transaction;
-        private const int MaxStart = 450;
-        private static Dictionary<CacheKey, long> Cache = new Dictionary<CacheKey, long>();
+        public const int MaxStartLength = 445;
+        private ConcurrentDictionary<CacheKey, long> Cache = new ConcurrentDictionary<CacheKey, long>();
         private static object SyncCache = new object();
 
         public StringsStorage(IDbConnection connection, IDbTransaction transaction)
@@ -64,8 +65,8 @@ namespace Universe.SqlInsights.SqlServerStorage
                 return false;
             }
 
-            bool doesFit = value.Length <= MaxStart;
-            string startsWith = !doesFit ? value.Substring(0, MaxStart) : value;
+            bool doesFit = value.Length <= MaxStartLength;
+            string startsWith = !doesFit ? value.Substring(0, MaxStartLength) : value;
             var query = Connection.Query<SelectStringsResult>(SqlSelect, new
             {
                 Kind = (byte) kind,
@@ -85,7 +86,7 @@ namespace Universe.SqlInsights.SqlServerStorage
             {
                 Kind = (byte) kind,
                 StartsWith = startsWith,
-                Tail = doesFit ? null : value.Substring(MaxStart)
+                Tail = doesFit ? null : value.Substring(MaxStartLength)
             }, Transaction);
 
             idString = queryInsert.FirstOrDefault();
@@ -151,12 +152,9 @@ namespace Universe.SqlInsights.SqlServerStorage
                 }
             }
         }
-        
-        
-        
     }
 
-    enum StringKind : byte
+    public enum StringKind : byte
     {
         KeyPath = 1,
         AppName = 2,

@@ -19,17 +19,17 @@ namespace Universe.SqlInsights.SqlServerStorage
 
         public static readonly string[] SqlMigrations = new[]
         {
-            @"
+            @$"
 If Object_ID('SqlInsightsString') Is Null
 Create Table SqlInsightsString(
     IdString bigint Identity Not Null,
     Kind tinyint Not Null, -- 1: KeyPath, 2: AppName, 3: HostId
-    StartsWith nvarchar(450) Not Null,
+    StartsWith nvarchar({StringsStorage.MaxStartLength}) Not Null,
     Tail nvarchar(max) Null,
     Constraint PK_SqlInsightsString Primary Key (IdString)
 );
 If Not Exists (Select 1 From sys.indexes Where name='IX_SqlInsightsString_Kind_StartsWith')
-Create Index  IX_SqlInsightsString_Kind_StartsWith On SqlInsightsString(Kind, StartsWith);
+Create Index IX_SqlInsightsString_Kind_StartsWith On SqlInsightsString(Kind, StartsWith);
 ",
 
             // This is workaround for memory optimized SqlInsightsKeyPathSummary 
@@ -112,8 +112,9 @@ End
             CreateDatabaseIfNotExists();
 
             // Object_ID Returns null in case of missed permissions    
-            using (var con = new SqlConnection(ConnectionString))
+            using (var con = this.ProviderFactory.CreateConnection())
             {
+                con.ConnectionString = this.ConnectionString;
                 foreach (var sqlMigration in SqlMigrations)
                 {
                     try
@@ -130,6 +131,8 @@ End
 
         private void CreateDatabaseIfNotExists()
         {
+            // var master = this.ProviderFactory.CreateConnectionStringBuilder();
+            // master.ConnectionString = ConnectionString;
             SqlConnectionStringBuilder master = new SqlConnectionStringBuilder(ConnectionString);
             var dbName = master.InitialCatalog;
             if (string.IsNullOrEmpty(dbName))

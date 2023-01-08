@@ -82,6 +82,9 @@ Select Top 1 Version From SqlInsightsKeyPathSummaryTimestamp;
                 sqlUpdate = "Update SqlInsightsKeyPathSummary Set Data = @Data, Version = @Version Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession";
 
             var aliveSessions = GetAliveSessions().ToList();
+#if DEBUG            
+            Console.WriteLine($"[AddAction] Alive Sessions {string.Join(",", aliveSessions.Select(x => x.ToString()).ToArray())}");
+#endif            
             if (aliveSessions.Count <= 0) return;
             
             using (IDbConnection con = GetConnection())
@@ -134,31 +137,47 @@ Select Top 1 Version From SqlInsightsKeyPathSummaryTimestamp;
                         // next.Key = actionActionSummary.Key;
                         var sqlUpsert = exists ? sqlUpdate : sqlInsert;
                         var dataSummary = JsonConvert.SerializeObject(next, DefaultSettings);
-                        con.Execute(sqlUpsert, new
+                        try
                         {
-                            KeyPath = keyPath,
-                            IdSession = idSession,
-                            Data = dataSummary,
-                            AppName = idAppName,
-                            HostId = idHostId,
-                            Version = nextVersion,
-                        }, tran);
+                            con.Execute(sqlUpsert, new
+                            {
+                                KeyPath = keyPath,
+                                IdSession = idSession,
+                                Data = dataSummary,
+                                AppName = idAppName,
+                                HostId = idHostId,
+                                Version = nextVersion,
+                            }, tran);
+                        }
+                        catch (Exception ex)
+                        {
+                            var exx = ex.ToString();
+                            throw;
+                        }
 
                         // DETAILS: SqlInsightsAction
-                        const string sqlDetail =
-                            "Insert SqlInsightsAction(At, IdSession, KeyPath, IsOK, AppName, HostId, Data) Values(@At, @IdSession, @KeyPath, @IsOK, @AppName, @HostId, @Data)";
+                        const string sqlInsertDetail = @"Insert SqlInsightsAction(At, IdSession, KeyPath, IsOK, AppName, HostId, Data)
+Values(@At, @IdSession, @KeyPath, @IsOK, @AppName, @HostId, @Data)";
+                        
                         var detail = reqAction;
                         var dataDetail = JsonConvert.SerializeObject(detail, DefaultSettings);
-                        con.Execute(sqlDetail, new
+                        try
                         {
-                            At = detail.At,
-                            IsOK = string.IsNullOrEmpty(detail.BriefException),
-                            IdSession = idSession,
-                            KeyPath = keyPath,
-                            Data = dataDetail,
-                            AppName = idAppName,
-                            HostId = idHostId,
-                        }, tran);
+                            con.Execute(sqlInsertDetail, new
+                            {
+                                At = detail.At,
+                                IsOK = string.IsNullOrEmpty(detail.BriefException),
+                                IdSession = idSession,
+                                KeyPath = keyPath,
+                                Data = dataDetail,
+                                AppName = idAppName,
+                                HostId = idHostId,
+                            }, tran);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw;
+                        }
                     }
                     
                     tran.Commit();
@@ -272,8 +291,8 @@ Select Top 1 Version From SqlInsightsKeyPathSummaryTimestamp;
                 }
 
                 var sql = $"Select Max(Version) From SqlInsightsKeyPathSummary Where IdSession = @IdSession {sqlWhere}";
-                var query = await con.QueryAsync<long>(sql, sqlParams);
-                var binaryVersion = query.FirstOrDefault();
+                var query = await con.QueryAsync<long?>(sql, sqlParams);
+                long? binaryVersion = query.FirstOrDefault();
                 return binaryVersion.ToString();
             }
         }
@@ -368,15 +387,19 @@ Select SCOPE_IDENTITY();
 
         public async Task DeleteSession(long idSession)
         {
-            const string sql = @"
-Delete From SqlInsightsAction Where IdSession = @IdSession;
-Delete From SqlInsightsKeyPathSummary Where IdSession = @IdSession;
-Delete From SqlInsightsSession Where IdSession = @IdSession;
-";
+            string[] sqlList = new[]
+            {
+                "Delete From SqlInsightsAction Where IdSession = @IdSession;",
+                "Delete From SqlInsightsKeyPathSummary Where IdSession = @IdSession;",
+                "Delete From SqlInsightsSession Where IdSession = @IdSession;"
+            };
         
             using (var con = GetConnection())
             {
-                await con.ExecuteAsync(sql, new {IdSession = idSession});
+                foreach (var sql in sqlList)
+                {
+                    await con.ExecuteAsync(sql, new {IdSession = idSession});
+                }
             }
         }
 

@@ -7,7 +7,8 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
     public class TestCaseProvider
     {
         // private string ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Database=SqlServerSqlInsightsStorage_Tests; Integrated Security=SSPI";
-        private static string TheConnectionString = "Data Source=(local);Database=SqlServerSqlInsightsStorage_Tests; Integrated Security=SSPI";
+        private static readonly string TheConnectionString = "Data Source=(local);Database=SqlServerSqlInsightsStorage_Tests; Integrated Security=SSPI";
+        private static readonly string DbNamePattern = "SqlServerSqlInsightsStorage_{0}_Tests";
 
         public DbProviderFactory Provider { get; set; }
         public string ConnectionString { get; set; }
@@ -19,21 +20,19 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
 
         public static IEnumerable<TestCaseProvider> GetList()
         {
-            yield return new TestCaseProvider()
-            {
-                Provider = System.Data.SqlClient.SqlClientFactory.Instance,
-                ConnectionString = TheConnectionString
-            };
-
-            // yield break;
-
-            yield return new TestCaseProvider()
-            {
-                Provider = Microsoft.Data.SqlClient.SqlClientFactory.Instance,
-                ConnectionString = TheConnectionString
-            };
-
+            yield return CreateTestCaseProviderByType(System.Data.SqlClient.SqlClientFactory.Instance);
+            yield return CreateTestCaseProviderByType(Microsoft.Data.SqlClient.SqlClientFactory.Instance);
         }
 
+        static TestCaseProvider CreateTestCaseProviderByType(DbProviderFactory dbProviderFactory)
+        {
+            System.Data.SqlClient.SqlConnectionStringBuilder builder = new System.Data.SqlClient.SqlConnectionStringBuilder(TheConnectionString);
+            builder.InitialCatalog = string.Format(DbNamePattern, Path.GetFileNameWithoutExtension(dbProviderFactory.GetType().Assembly.Location));
+            return new TestCaseProvider()
+            {
+                Provider = dbProviderFactory,
+                ConnectionString = builder.ConnectionString,
+            };
+        }
     }
 }

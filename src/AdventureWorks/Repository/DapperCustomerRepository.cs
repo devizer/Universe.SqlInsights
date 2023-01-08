@@ -30,10 +30,9 @@ namespace AdventureWorks.Repository
                 IList<Customer> customerList =
                 sqlConnection.Query<Customer>(
                 @"SELECT TOP 1000 CustomerID, Title, FirstName, LastName
-                        FROM Sales.Customer
-                                JOIN Person.Person
-                                ON Sales.Customer.PersonID = Person.Person.BusinessEntityID
-                            WHERE Title IS NOT NULL").ToList();
+FROM Sales.Customer
+    JOIN Person.Person ON Sales.Customer.PersonID = Person.Person.BusinessEntityID
+WHERE Title IS NOT NULL").ToList();
                 sqlConnection.Close();
                 return customerList.ToList();
             }
@@ -48,14 +47,11 @@ namespace AdventureWorks.Repository
                 Customer customer =
                 sqlConnection.QueryFirst<Customer>(
                 @"SELECT Sales.Customer.CustomerID, Title, FirstName, LastName
-                        FROM Sales.Customer 
-                                JOIN Person.Person
-                                ON Sales.Customer.PersonID = Person.Person.BusinessEntityID
-                        JOIN Sales.SalesOrderHeader
-                                ON Sales.Customer.CustomerID = Sales.SalesOrderHeader.CustomerID 
-                    WHERE Sales.Customer.CustomerID = @CustomerID", parameters
-                );
-                
+FROM Sales.Customer 
+    JOIN Person.Person ON Sales.Customer.PersonID = Person.Person.BusinessEntityID 
+    JOIN Sales.SalesOrderHeader ON Sales.Customer.CustomerID = Sales.SalesOrderHeader.CustomerID
+WHERE Sales.Customer.CustomerID = @CustomerID", 
+                parameters);
                 return customer;
             }
         }

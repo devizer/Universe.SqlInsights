@@ -1,7 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Dapper;
 using NUnit.Framework;
 using Universe.SqlInsights.Shared;
 
@@ -23,6 +27,12 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             };
             migrations.Migrate();
             return new SqlServerSqlInsightsStorage(testCase.Provider, testCase.ConnectionString);
+        }
+
+        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
+        public async Task Test0_Migrate(TestCaseProvider testCase)
+        {
+            SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
         }
 
         [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
@@ -116,7 +126,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             if (targetSession == null)
                 Assert.Fail("DeleteSession() test needs finished session");
 
-            var expectedName = $"Tmp Sess {Guid.NewGuid()}";
+            var expectedName = $"Tmp Session {Guid.NewGuid()}";
             await storage.RenameSession(targetSession.IdSession, expectedName);
             var actualName = (await storage.GetSessions())
                 .Where(x => x.IdSession == targetSession.IdSession)
@@ -149,5 +159,44 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             bool contains = strings.Any(x => x.Value == Environment.MachineName);
             Assert.True(contains, $"storage.GetAppNames() should return '{Environment.MachineName}'");
         }
+
+        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
+        public async Task Test7_Test_Strings_Storage(TestCaseProvider testCase)
+        {
+            using (IDbConnection con = testCase.Provider.CreateConnection())
+            {
+                con.ConnectionString = testCase.ConnectionString;
+                StringsStorage ss = new StringsStorage(con, null);
+                for (int len = StringsStorage.MaxStartLength - 5; len <= StringsStorage.MaxStartLength + 5; len++)
+                {
+                    var expected = GetRandomString(len);
+                    IEnumerable<LongAndString> all = await ss.GetAllStringsByKind(StringKind.AppName);
+                    Assert.IsFalse(all.Any(x => x.Value == expected), $"[Before] String is missing in the storage (len={len}) '{expected}'");
+                    var idString = ss.AcquireString(StringKind.AppName, expected);
+                    try
+                    {
+                        Assert.IsNotNull(idString);
+                        IEnumerable<LongAndString> allAfter = await ss.GetAllStringsByKind(StringKind.AppName);
+                        Assert.IsTrue(allAfter.Any(x => x.Value == expected), $"[After] String exists in the storage (len={len}) '{expected}'");
+                    }
+                    finally
+                    {
+                        await con.ExecuteAsync("Delete From SqlInsightsString Where IdString = @IdString", new { idString });
+                    }
+                }
+            }
+        }
+
+
+        private static Random Rand = new Random(42);
+        static string GetRandomString(int len)
+        {
+            StringBuilder ret = new StringBuilder();
+            for (int i = 0; i < len; i++)
+                ret.Append((char)Rand.Next(32, 96 + 25));
+
+            return ret.ToString();
+        }
+        
     }
 }
