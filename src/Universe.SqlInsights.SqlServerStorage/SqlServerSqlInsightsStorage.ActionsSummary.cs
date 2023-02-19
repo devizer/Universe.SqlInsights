@@ -27,26 +27,15 @@ Select
 From 
     SqlInsightsKeyPathSummary 
 Where 
-    IdSession = @IdSession
-");
+    IdSession = @IdSession");
             
             using (var con = GetConnection())
             {
                 StringsStorage strings = new StringsStorage(con, null);
-                var sqlParams = new DynamicParameters();
+                var optionalParams = BuildOptionalParameterts(strings, optionalApp, optionalHost);
+                var sqlParams = optionalParams.Parameters;
                 sqlParams.Add("IdSession", idSession);
-                if (optionalApp != null)
-                {
-                    long? idAppName = strings.AcquireString(StringKind.AppName, optionalApp);
-                    sqlParams.Add("AppName", idAppName.Value);
-                    sql.Append(" And AppName = @AppName");
-                }
-                if (optionalHost != null)
-                {
-                    long? idHost = strings.AcquireString(StringKind.HostId, optionalHost);
-                    sqlParams.Add("HostId", idHost.Value);
-                    sql.Append(" And HostId = @HostId");
-                }
+                sql.Append(optionalParams.SqlWhere);
                 
                 IEnumerable<SelectKeyAndDataResult> resultSet = await con.QueryAsync<SelectKeyAndDataResult>(sql.ToString(), sqlParams);
 
@@ -81,34 +70,24 @@ Where
 
         public async Task<string> GetActionsSummaryTimestamp(long idSession, string optionalApp = null, string optionalHost = null)
         {
-            StringBuilder sqlWhere = new StringBuilder();
-            using (var con = GetConnection())
-            {
-                StringsStorage strings = new StringsStorage(con, null);
-                var sqlParams = new DynamicParameters();
-                sqlParams.Add("IdSession", idSession);
-                if (optionalApp != null)
-                {
-                    long? idAppName = strings.AcquireString(StringKind.AppName, optionalApp);
-                    sqlParams.Add("AppName", idAppName.Value);
-                    sqlWhere.Append(" And AppName = @AppName");
-                }
-                if (optionalHost != null)
-                {
-                    long? idHost = strings.AcquireString(StringKind.HostId, optionalHost);
-                    sqlParams.Add("HostId", idHost.Value);
-                    sqlWhere.Append(" And HostId = @HostId");
-                }
-
-                var sql = @$"
+            var sql = new StringBuilder(@$"
 Select 
     Max(Version) 
 From 
     SqlInsightsKeyPathSummary 
 Where 
-    IdSession = @IdSession {sqlWhere}";
+    IdSession = @IdSession");
+
+            using (var con = GetConnection())
+            {
+                StringsStorage strings = new StringsStorage(con, null);
+                var optionalParams = BuildOptionalParameterts(strings, optionalApp, optionalHost);
+                var sqlParams = optionalParams.Parameters;
+                sqlParams.Add("IdSession", idSession);
+                sql.Append(optionalParams.SqlWhere);
+                sqlParams.Add("IdSession", idSession);
                 
-                var query = await con.QueryAsync<long?>(sql, sqlParams);
+                var query = await con.QueryAsync<long?>(sql.ToString(), sqlParams);
                 long? binaryVersion = query.FirstOrDefault();
                 return binaryVersion.ToString();
             }
