@@ -17,9 +17,9 @@ steps:
     displayName: 'Show'
 
   - task: NodeTool@0 
-    displayName: 'v14.17.3 Node .js' 
+    displayName: 'v16.x NodeJS' 
     inputs: 
-      versionSpec: '14.17.3'  
+      versionSpec: '16.x'  
       force32bit: false 
       # Optional checkLatest: false
   
