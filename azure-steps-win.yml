@@ -16,7 +16,7 @@ steps:
       echo "Bash Version: $BASH_VERSION"
       for cmd in node yarn npm dotnet sqlcmd sqlcmd head grep awk sed; do
         echo "'$cmd' path: [$(command -v "$cmd")]"
-        echo "'$cmd' version: [$(command -v "$cmd")]"
+        echo "'$cmd' version: [$("$cmd" --version | head -1)]"
       done
     displayName: 'Show'
 
