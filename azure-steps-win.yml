@@ -106,7 +106,8 @@ steps:
 
   - bash: |
       echo Testing Apps
-      1-Run-W3Api.cmd
+      dotnet run
+      # 1-Run-W3Api.cmd
       # 2b-Build-and-Serve-SqlInsights-Prod.cmd
       # sleep 15
       source scripts/wait_for_http.sh
