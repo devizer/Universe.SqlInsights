@@ -2,6 +2,7 @@ using Universe.SqlTrace;
 
 namespace Universe.SqlInsights.Shared
 {
+    // Table SqlInsights KeyPathSummary
     public class ActionSummaryCounters
     {
         public SqlInsightsActionKeyPath Key { get; set; }

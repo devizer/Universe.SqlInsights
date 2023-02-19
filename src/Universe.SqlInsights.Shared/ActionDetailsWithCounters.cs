@@ -4,6 +4,7 @@ using Universe.SqlTrace;
 
 namespace Universe.SqlInsights.Shared
 {
+    // Table SqlInsights Action
     public class ActionDetailsWithCounters
     {
         public string AppName { get; set; }

@@ -19,6 +19,7 @@ namespace Universe.SqlInsights.SqlServerStorage
 
         public static readonly string[] SqlMigrations = new[]
         {
+            // Table SqlInsights String
             @$"
 If Object_ID('SqlInsightsString') Is Null
 Create Table SqlInsightsString(
@@ -32,6 +33,7 @@ If Not Exists (Select 1 From sys.indexes Where name='IX_SqlInsightsString_Kind_S
 Create Index IX_SqlInsightsString_Kind_StartsWith On SqlInsightsString(Kind, StartsWith);
 ",
 
+            // Table SqlInsights KeyPathSummaryTimestamp
             // This is workaround for memory optimized SqlInsightsKeyPathSummary 
             @"
 If Object_ID('SqlInsightsKeyPathSummaryTimestamp') Is Null
@@ -42,6 +44,7 @@ Create Table SqlInsightsKeyPathSummaryTimestamp(
 );
 Insert SqlInsightsKeyPathSummaryTimestamp(Version, Guid) Values(0, NewId())",
             
+            // Table SqlInsights Session 
             @"
 If Object_ID('SqlInsightsSession') Is Null
 Begin
@@ -64,6 +67,8 @@ Insert SqlInsightsSession(IdSession, StartedAt, IsFinished, Caption) Values(
 SET IDENTITY_INSERT SqlInsightsSession OFF;
 End
 ",
+            
+            // SqlInsights KeyPathSummary 
             @"
 If Object_ID('SqlInsightsKeyPathSummary') Is Null
 Begin
@@ -82,6 +87,8 @@ Create Table SqlInsightsKeyPathSummary(
 Create Index IX_SqlInsightsKeyPathSummary_Version On SqlInsightsKeyPathSummary(Version Desc)
 End
 ",
+            
+            // Table SqlInsights Action
             @"
 If Object_ID('SqlInsightsAction') Is Null
 Begin
