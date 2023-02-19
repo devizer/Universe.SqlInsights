@@ -106,7 +106,9 @@ steps:
 
   - bash: |
       echo Testing Apps
-      dotnet run
+      pushd src/Universe.SqlInsights.W3Api
+      dotnet run &
+      popd
       # 1-Run-W3Api.cmd
       # 2b-Build-and-Serve-SqlInsights-Prod.cmd
       # sleep 15
