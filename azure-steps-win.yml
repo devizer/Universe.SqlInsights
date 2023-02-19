@@ -15,7 +15,14 @@ steps:
   - bash: |
       echo $BASH_VERSION
     displayName: 'Show'
-      
+
+  - bash: |
+      dotnet --info
+      export DOTNET_VERSIONS="5.0 6.0 7.0"
+      script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash; 
+      dotnet --info
+    displayName: '.NET Install'
+
   # - bash: |
   #     curl -o local-databaseengine-v15-x64.msi https://master.dl.sourceforge.net/project/db-engine/local-databaseengine-v15-x64.msi?viasf=1
   #   displayName: 'Test SF.NET 53Mb'
@@ -106,10 +113,8 @@ steps:
 
   - bash: |
       echo Testing Apps
-      pushd src/Universe.SqlInsights.W3Api
-      dotnet run &
-      popd
-      # 1-Run-W3Api.cmd
+      # pushd src/Universe.SqlInsights.W3Api; dotnet run & ; popd
+      1-Run-W3Api.cmd
       # 2b-Build-and-Serve-SqlInsights-Prod.cmd
       # sleep 15
       source scripts/wait_for_http.sh
