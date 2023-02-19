@@ -18,8 +18,9 @@ steps:
 
   - bash: |
       node --version
-      choco install nvm -my
-      nvm install 14
+      # choco install nvm -my
+      # nvm install 14
+      choco install nodejs-lts --version=14.21.3 -my
       node --version
     displayName: 'NodeJS Install'
     
