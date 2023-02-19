@@ -13,7 +13,11 @@ steps:
     displayName: "PATH's Patch"
 
   - bash: |
-      echo $BASH_VERSION
+      echo "Bash Version: $BASH_VERSION"
+      for cmd in node yarn npm dotnet sqlcmd sqlcmd head grep awk sed; do
+        echo "'$cmd' path: [$(command -v "$cmd")]"
+        echo "'$cmd' version: [$(command -v "$cmd")]"
+      done
     displayName: 'Show'
 
   - task: NodeTool@0 
@@ -30,6 +34,7 @@ steps:
       # choco install nodejs-lts --version=14.21.3 -my
       winget install -e --id OpenJS.NodeJS --version 14.14.0
       node --version
+
     displayName: 'NodeJS Install'
     
 
