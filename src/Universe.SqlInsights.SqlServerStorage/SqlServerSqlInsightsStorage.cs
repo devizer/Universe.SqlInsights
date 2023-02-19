@@ -13,7 +13,7 @@ using Universe.SqlInsights.Shared;
 
 namespace Universe.SqlInsights.SqlServerStorage
 {
-    public class SqlServerSqlInsightsStorage : ISqlInsightsStorage
+    public partial class SqlServerSqlInsightsStorage : ISqlInsightsStorage
     {
         public readonly DbProviderFactory ProviderFactory;
         public readonly string ConnectionString;
@@ -66,145 +66,7 @@ namespace Universe.SqlInsights.SqlServerStorage
             public string Data { get; set; }
         }
 
-        public void AddAction(ActionDetailsWithCounters reqAction)
-        {
-
-            if (reqAction.AppName == null) throw new ArgumentException("Missing reqAction.AppName");
-
-            const string sqlNextVersion = @"
-Update SqlInsightsKeyPathSummaryTimestamp Set Guid = NewId(), Version = Version + 1;
-Select Top 1 Version From SqlInsightsKeyPathSummaryTimestamp;
-";
-
-            const string
-                sqlSelect = "Select Data From SqlInsightsKeyPathSummary WITH (UPDLOCK) Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession",
-                sqlInsert = "Insert SqlInsightsKeyPathSummary(KeyPath, IdSession, AppName, HostId, Data, Version) Values(@KeyPath, @IdSession, @AppName, @HostId, @Data, @Version);",
-                sqlUpdate = "Update SqlInsightsKeyPathSummary Set Data = @Data, Version = @Version Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession";
-
-            var aliveSessions = GetAliveSessions().ToList();
-#if DEBUG            
-            Console.WriteLine($"[AddAction] Alive Sessions {string.Join(",", aliveSessions.Select(x => x.ToString()).ToArray())}");
-#endif            
-            if (aliveSessions.Count <= 0) return;
-            
-            using (IDbConnection con = GetConnection())
-            {
-                var tran = con.BeginTransaction(IsolationLevel.ReadCommitted);
-                using (tran)
-                {
-                    IEnumerable<long> nextVersionQuery = con.Query<long>(sqlNextVersion, null, tran);
-                    var nextVersion = nextVersionQuery.FirstOrDefault() + 1; 
-                    foreach (var idSession in aliveSessions)
-                    {
-                        StringsStorage stringStorage = new StringsStorage(con, tran);
-                        var idAppName = stringStorage.AcquireString(StringKind.AppName, reqAction.AppName);
-                        var idHostId = stringStorage.AcquireString(StringKind.HostId, reqAction.HostId);
-
-                        var keyPath = SerializeKeyPath(reqAction.Key);
-
-                        // SUMMARY: SqlInsightsKeyPathSummary
-                        ActionSummaryCounters actionActionSummary = reqAction.AsSummary();
-                        var query = con
-                            .Query<SelectDataResult>(sqlSelect, new
-                            {
-                                IdSession = idSession,
-                                KeyPath = keyPath,
-                                AppName = idAppName,
-                                HostId = idHostId,
-                            }, tran);
-
-                        string rawDataPrev = query
-                            .FirstOrDefault()?
-                            .Data;
-
-                        bool exists = rawDataPrev != null;
-                        ActionSummaryCounters
-                            next,
-                            prev = !exists
-                                ? new ActionSummaryCounters()
-                                : JsonConvert.DeserializeObject<ActionSummaryCounters>(rawDataPrev, DefaultSettings);
-
-                        if (exists)
-                        {
-                            prev.Add(actionActionSummary);
-                            next = prev;
-                        }
-                        else
-                        {
-                            next = actionActionSummary;
-                        }
-
-                        // next.Key = actionActionSummary.Key;
-                        var sqlUpsert = exists ? sqlUpdate : sqlInsert;
-                        var dataSummary = JsonConvert.SerializeObject(next, DefaultSettings);
-                        try
-                        {
-                            con.Execute(sqlUpsert, new
-                            {
-                                KeyPath = keyPath,
-                                IdSession = idSession,
-                                Data = dataSummary,
-                                AppName = idAppName,
-                                HostId = idHostId,
-                                Version = nextVersion,
-                            }, tran);
-                        }
-                        catch (Exception ex)
-                        {
-                            var exx = ex.ToString();
-                            throw;
-                        }
-
-                        // DETAILS: SqlInsightsAction
-                        const string sqlInsertDetail = @"Insert SqlInsightsAction(At, IdSession, KeyPath, IsOK, AppName, HostId, Data)
-Values(@At, @IdSession, @KeyPath, @IsOK, @AppName, @HostId, @Data)";
-                        
-                        var detail = reqAction;
-                        var dataDetail = JsonConvert.SerializeObject(detail, DefaultSettings);
-                        try
-                        {
-                            con.Execute(sqlInsertDetail, new
-                            {
-                                At = detail.At,
-                                IsOK = string.IsNullOrEmpty(detail.BriefException),
-                                IdSession = idSession,
-                                KeyPath = keyPath,
-                                Data = dataDetail,
-                                AppName = idAppName,
-                                HostId = idHostId,
-                            }, tran);
-                        }
-                        catch (Exception ex)
-                        {
-                            throw;
-                        }
-                    }
-                    
-                    tran.Commit();
-                }
-            }
-        }
         
-        public IEnumerable<long> GetAliveSessions()
-        {
-            const string sql = @"Declare @UtcNow datetime; Set @UtcNow = GetUtcDate(); Select IdSession From SqlInsightsSession Where IsFinished = (0) And (MaxDurationMinutes Is Null Or DateAdd(minute,MaxDurationMinutes,StartedAt) >= @UtcNow)";
-            using (var con = GetConnection())
-            {
-                var query = con.Query<long>(sql, null);
-                return query.ToList();
-            }
-        }
-
-        public bool AnyAliveSession()
-        {
-            const string sql = @"Declare @UtcNow datetime; Set @UtcNow = GetUtcDate(); If Exists(Select IdSession From SqlInsightsSession Where IsFinished = (0) And (MaxDurationMinutes Is Null Or DateAdd(minute,MaxDurationMinutes,StartedAt) >= @UtcNow)) Select 1 [Any]";
-            using (var con = GetConnection())
-            {
-                int? queryResult = con.ExecuteScalar<int?>(sql, null, null, null, CommandType.Text);
-                return queryResult.HasValue && queryResult.Value != 0;
-            }
-        }
-
         static string SerializeKeyPath(SqlInsightsActionKeyPath keyPath)
         {
             return keyPath?.Path == null ? null : string.Join("\x2192", keyPath.Path);
@@ -351,74 +213,6 @@ Values(@At, @IdSession, @KeyPath, @IsOK, @AppName, @HostId, @Data)";
                     .Select(x => JsonConvert.DeserializeObject<ActionDetailsWithCounters>(x.Data, DefaultSettings));
 
                 return ret.ToList();
-            }
-        }
-
-        public async Task<IEnumerable<SqlInsightsSession>> GetSessions()
-        {
-            const string sql = "Select IdSession, StartedAt, EndedAt, IsFinished, Caption, MaxDurationMinutes From SqlInsightsSession";
-            using (var con = GetConnection())
-            {
-                var query = await con.QueryAsync<SqlInsightsSession>(sql, null);
-                return query.ToList();
-            }
-        }
-
-
-        public async Task<long> CreateSession(string caption, int? maxDurationMinutes)
-        {
-            const string sql = @"
-Insert SqlInsightsSession(StartedAt, IsFinished, Caption, MaxDurationMinutes) Values(
-    GetUtcDate(),
-    (0),
-    @Caption,
-    @MaxDurationMinutes
-);   
-Select SCOPE_IDENTITY();  
-";
-
-            using (var con = GetConnection())
-            {
-                var ret = await con.ExecuteScalarAsync<long>(sql, new {Caption = caption, MaxDurationMinutes = maxDurationMinutes});
-                return ret;
-            }
-            
-        }
-
-        public async Task DeleteSession(long idSession)
-        {
-            string[] sqlList = new[]
-            {
-                "Delete From SqlInsightsAction Where IdSession = @IdSession;",
-                "Delete From SqlInsightsKeyPathSummary Where IdSession = @IdSession;",
-                "Delete From SqlInsightsSession Where IdSession = @IdSession;"
-            };
-        
-            using (var con = GetConnection())
-            {
-                foreach (var sql in sqlList)
-                {
-                    await con.ExecuteAsync(sql, new {IdSession = idSession});
-                }
-            }
-        }
-
-        public async Task RenameSession(long idSession, string caption)
-        {
-            const string sql = @"Update SqlInsightsSession Set Caption = @Caption Where IdSession = @IdSession;"; 
-            using (var con = GetConnection())
-            {
-                await con.ExecuteAsync(sql, new {IdSession = idSession, Caption = caption});
-            }
-        }
-
-        public async Task FinishSession(long idSession)
-        {
-            if (idSession == 0) return;
-            const string sql = @"Update SqlInsightsSession Set IsFinished = (1), EndedAt = GETUTCDATE() Where IdSession = @IdSession;"; 
-            using (var con = GetConnection())
-            {
-                await con.ExecuteAsync(sql, new {IdSession = idSession});
             }
         }
 

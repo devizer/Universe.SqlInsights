@@ -48,7 +48,8 @@ namespace Universe.SqlInsights.W3Api.Controllers
             if (string.IsNullOrEmpty(args?.Caption))
                 throw new ArgumentException("Caption is expected", nameof(args.Caption));
 
-            return (await _Storage.CreateSession(args.Caption, args.MaxDurationMinutes)).ToJsonResult();
+            var idSession = await _Storage.CreateSession(args.Caption, args.MaxDurationMinutes);
+            return idSession.ToJsonResult();
         }
 
         [HttpPost]

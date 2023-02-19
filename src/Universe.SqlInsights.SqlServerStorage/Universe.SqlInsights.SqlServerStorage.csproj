@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <!-- net35;net40;net45; -->
         <TargetFrameworks>net35;net40;net45;netstandard2.0;netstandard1.3</TargetFrameworks>
     </PropertyGroup>
 
@@ -52,6 +53,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Universe.SqlInsights.Shared\Universe.SqlInsights.Shared.csproj" />
+      <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="All" />
     </ItemGroup>
     
 </Project>
