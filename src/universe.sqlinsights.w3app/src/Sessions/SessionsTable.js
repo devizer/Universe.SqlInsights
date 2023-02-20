@@ -11,7 +11,7 @@ import {API_URL} from "../stores/DataSourceListener";
 import moment from 'moment';
 
 import IconButton from '@material-ui/core/IconButton';
-import { ReactComponent as CopyIcon } from './CopyIcon.svg';
+// import { ReactComponent as CopyIcon } from './CopyIcon.svg';
 
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -19,6 +19,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import copy from 'copy-to-clipboard';
 import PropTypes from "prop-types";
 import dataSourceStore from "../stores/DataSourceStore";
+import * as DocumentVisibilityStore from "../stores/DocumentVisibilityStore";
 
 const useStyles2 = makeStyles((theme) => ({
     root: {
@@ -40,8 +41,23 @@ export default class SessionsTable extends Component {
 
         this.updateSessions = this.updateSessions.bind(this);
         this.handleVisibility = this.handleVisibility.bind(this);
+
+        this.state = {
+            sessions: null,
+        };
+
     }
 
+    componentDidMount()
+    {
+        let x = dataSourceStore.on('storeUpdated', this.updateSessions);
+        DocumentVisibilityStore.on(this.handleVisibility);
+    }
+
+    componentWillUnmount() {
+        dataSourceStore.off('storeUpdated', this.updateSessions);
+    }
+    
     updateSessions() {
         this.setState({sessions: sessionsStore.getSessions()});
     }
@@ -69,15 +85,17 @@ export default class SessionsTable extends Component {
         const sessions = this.state.sessions ? this.state.sessions : []  
         
         const sessionsAsDebug = sessions.map((session,index) =>
-            <li key={session.idSession.toString()}>
-                #{session.idSession} '{session.caption}', {session.startAt} ... {session.endedAt}, stopped: {session.isFinished}
+            <li key={session.IdSession}>
+                #{session.IdSession} '{session.Caption}', {session.StartedAt} ... {session.EndedAt}, IsFinished: {session.IsFinished}
             </li>
+            
         );
         
         return (
             <React.Fragment>
                 <div className={classes.root}>
                     {sessionsAsDebug}
+                    {sessions.length === 0 && <div>No Sessions Yet</div>}
                 </div>                
             </React.Fragment>
         )

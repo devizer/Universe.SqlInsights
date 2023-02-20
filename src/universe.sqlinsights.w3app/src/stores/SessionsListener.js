@@ -18,7 +18,7 @@ class SessionsListener {
                     return response.ok ? response.json() : {error: response.status, details: response.json()}
                 })
                 .then(sessions => {
-                    SessionsActions.DataSourceUpdated(sessions);
+                    SessionsActions.SessionsUpdated(sessions);
                     console.log("SESSIONS RETRIEVED", sessions);
                 })
                 .catch(error => {
