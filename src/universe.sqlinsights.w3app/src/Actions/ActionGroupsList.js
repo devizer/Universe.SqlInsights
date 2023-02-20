@@ -11,6 +11,7 @@ import dataSourceStore from "../stores/DataSourceStore";
 import {ActionKeyPathUi} from "../Shared/ActionKeyPathUi";
 import ActionList from "./ActionList";
 import * as DocumentVisibilityStore from "../stores/DocumentVisibilityStore";
+import sessionsStore from "../stores/SessionsStore";
 
 const noDataProps = {style:{color:"gray", marginTop:30, border: "1px solid grey"}};
 
@@ -114,7 +115,9 @@ export default class ActionGroupsList extends Component {
         }
         
         const defaultMetricColumnWidth = 90;
-
+        let noDataText = isLoaded ? "no actions triggered" : "waiting for cells";
+        if (!sessionsStore.getSelectedSession()) noDataText = "select a session";
+            
         return (
             <React.Fragment>
                     <RadioGroup row aria-label="kind" name="kind" value={this.state.kind} onChange={handleChangeKind} className='center-aligned'>
@@ -133,7 +136,7 @@ export default class ActionGroupsList extends Component {
                     defaultPageSize={pageSize}
                     pageSizeOptions={[pageSize]}
                     pageSize={pageSize}
-                    noDataText={isLoaded ? "no actions triggered" : "waiting for cells"}
+                    noDataText={noDataText}
                     getNoDataProps={() => noDataProps}
                     className="-striped -highlight"
                     columns={

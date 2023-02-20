@@ -12,16 +12,19 @@ class SessionsListener {
     }
 
     watchdogTick() {
-        const req = Helper.createRequest('Sessions/Index', {});
+        const req = Helper.createRequest('Sessions/Sessions', {});
         try {
             fetch(req)
                 .then(response => {
-                    return response.ok ? response.json() : {error: response.status, details: response.json()}
+                    if (!response.ok) console.error(`FETCH failed for '${req.method} ${req.url}'. status=${response.status}`, response);
+                    return response.ok ? response.json() : null;
                 })
                 .then(sessions => {
                     SessionsActions.SessionsUpdated(sessions);
-                    sessions.forEach((session, index) => this.calculateSessionFields(session));
-                    console.log("SESSIONS RETRIEVED", sessions);
+                    if (sessions != null)
+                        sessions.forEach((session, index) => this.calculateSessionFields(session));
+                    
+                    // console.log("SESSIONS RETRIEVED", sessions);
                 })
                 .catch(error => {
                     console.error(error);

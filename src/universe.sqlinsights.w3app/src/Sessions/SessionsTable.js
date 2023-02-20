@@ -20,6 +20,8 @@ import copy from 'copy-to-clipboard';
 import PropTypes from "prop-types";
 import dataSourceStore from "../stores/DataSourceStore";
 import * as DocumentVisibilityStore from "../stores/DocumentVisibilityStore";
+import {SelectedSessionUpdated} from "../stores/SessionsActions";
+import * as SessionsActions from "../stores/SessionsActions";
 
 const useStyles2 = makeStyles((theme) => ({
     root: {
@@ -112,6 +114,7 @@ export default class SessionsTable extends Component {
                             selectedSession: selectedRow, 
                             selectedIndex: rowInfo.index,
                         });
+                        SessionsActions.SelectedSessionUpdated(selectedRow);
                         Helper.toConsole("Session Selected", selectedRow);
                         if (this.props.onActionSelected)
                             this.props.onActionSelected(selectedRow);
@@ -169,7 +172,7 @@ export default class SessionsTable extends Component {
                     columns={
                         [
                             {
-                                Header: "Caption",
+                                Header: "Session",
                                 accessor: "Caption",
                                 minWidth: 540,
                                 Cell: cellCaption,
@@ -178,7 +181,7 @@ export default class SessionsTable extends Component {
                                 Header: "Started At",
                                 accessor: x => parseMyDate(x.StartedAt),
                                 id: "StartedAt",
-                                className: 'right-aligned',
+                                // className: 'right-aligned',
                                 width: dateColumnWidth,
                                 Cell: cellDate("StartedAt"),
                             },
@@ -186,7 +189,7 @@ export default class SessionsTable extends Component {
                                 Header: "Ended(ing) At",
                                 accessor: x => parseMyDate(x.CalculatedEnding),
                                 id: "EndedAt",
-                                className: 'right-aligned',
+                                // className: 'right-aligned',
                                 width: dateColumnWidth,
                                 Cell: cellDate("CalculatedEnding"),
                             },

@@ -1,6 +1,8 @@
 ﻿import * as Helper from "../Helper"
 import * as DataSourceActions from './DataSourceActions'
 import DataSourceStore from "./DataSourceStore";
+import sessionsStore from "./SessionsStore";
+import dataSourceStore from "./DataSourceStore";
 
 // export const API_URL="http://localhost:8776/SqlInsights";
 export const API_URL="http://localhost:50420/api/v1/SqlInsights";
@@ -10,13 +12,22 @@ class DataSourceListener {
 
     constructor() {
         this.watchdogTick = this.watchdogTick.bind(this);
+        this.handleSessionChanged = this.handleSessionChanged.bind(this);
+        
         this.timerId = setInterval(this.watchdogTick, 1000);
         
+        setTimeout(this.watchdogTick);
+        sessionsStore.on('storeUpdated', this.handleSessionChanged);
+    }
+    
+    handleSessionChanged() {
         setTimeout(this.watchdogTick);
     }
 
     watchdogTick() {
-        const req = Helper.createRequest('Summary', {IdSession: 0, AppName: null, HostId: null});
+        const selectedSession = sessionsStore.getSelectedSession();
+        const selectedSessionId = selectedSession ? selectedSession.IdSession : -1;
+        const req = Helper.createRequest('Summary', {IdSession: selectedSessionId, AppName: null, HostId: null});
         let apiUrl = `${API_URL}/Summary`;
         try {
             fetch(req)
