@@ -104,6 +104,7 @@ export default class SessionsTable extends Component {
 
         const selectedRowHandler = (state, rowInfo, column) => {
             if (rowInfo && rowInfo.row) {
+                const isSelected = this.state.selectedSession && rowInfo.original.IdSession === this.state.selectedSession.IdSession;
                 return {
                     onClick: (e) => {
                         const selectedRow = rowInfo.original;
@@ -116,8 +117,8 @@ export default class SessionsTable extends Component {
                             this.props.onActionSelected(selectedRow);
                     },
                     style: {
-                        background: rowInfo.index === this.state.selected ? '#4f9a94' : 'white',
-                        color: rowInfo.index === this.state.selected ? 'white' : 'black',
+                        background: isSelected ? '#4f9a94' : 'white',
+                        color: isSelected ? 'white' : 'black',
                         cursor: "pointer",
                     }
                 }
