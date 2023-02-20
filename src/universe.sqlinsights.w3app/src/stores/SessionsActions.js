@@ -1,11 +1,19 @@
 ﻿import dispatcher from "./DataSourceDispatcher";
 
-export const SESSION_UPDATED_ACTION = "SESSION_UPDATED_ACTION";
+export const SESSIONS_UPDATED_ACTION = "SESSION_UPDATED_ACTION";
+export const SELECTED_SESSION_UPDATED_ACTION = "SELECTED_SESSION_UPDATED_ACTION";
 
 export function SessionsUpdated(sessions) {
     dispatcher.dispatch({
-        type: SESSION_UPDATED_ACTION,
+        type: SESSIONS_UPDATED_ACTION,
         value: sessions
+    })
+}
+
+export function SelectedSessionUpdated(selectedSession) {
+    dispatcher.dispatch({
+        type: SELECTED_SESSION_UPDATED_ACTION,
+        value: selectedSession
     })
 }
 

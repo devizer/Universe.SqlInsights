@@ -8,13 +8,18 @@ class SessionsStore extends EventEmitter {
         super();
         // local copy per message
         this.sessions = null;
+        this.selectedSession = null;
     }
     
     handleActions(action) {
         switch (action.type) {
-            // a cast per message
-            case SessionsActions.SESSION_UPDATED_ACTION: {
+            case SessionsActions.SESSIONS_UPDATED_ACTION: {
                 this.sessions = action.value;
+                this.emit("storeUpdated");
+                break;
+            }
+            case SessionsActions.SELECTED_SESSION_UPDATED_ACTION: {
+                this.selectedSession = action.value;
                 this.emit("storeUpdated");
                 break;
             }
@@ -22,6 +27,10 @@ class SessionsStore extends EventEmitter {
                 // console.error(`Unknown action type '${action.type}' for SessionsStore`);
             }
         }
+    }
+    
+    getSelectedSession() {
+        return this.selectedSession;
     }
     
     getSessions() {

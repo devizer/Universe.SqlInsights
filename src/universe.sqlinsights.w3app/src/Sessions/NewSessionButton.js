@@ -51,7 +51,7 @@ export default class NewSessionButton extends Component {
                     className={classes.button}
                     startIcon={<SlideshowIcon />}
                 >
-                    Save
+                    New Session
                 </Button>
             </React.Fragment>
         )

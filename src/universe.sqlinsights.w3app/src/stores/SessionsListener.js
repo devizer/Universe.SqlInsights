@@ -1,5 +1,6 @@
 ﻿import * as Helper from "../Helper"
 import * as SessionsActions from './SessionsActions'
+import moment from 'moment';
 
 class SessionsListener {
 
@@ -19,6 +20,7 @@ class SessionsListener {
                 })
                 .then(sessions => {
                     SessionsActions.SessionsUpdated(sessions);
+                    sessions.forEach((session, index) => this.calculateSessionFields(session));
                     console.log("SESSIONS RETRIEVED", sessions);
                 })
                 .catch(error => {
@@ -28,6 +30,20 @@ class SessionsListener {
         } catch (err) {
             console.error(`FETCH failed for '${req.method} ${req.url}'. ${err}`);
         }
+    }
+    
+    calculateSessionFields(session) {
+        if (session.MaxDurationMinutes) {
+            session.ExpiringDate = moment(session.StartedAt).add(session.MaxDurationMinutes, 'm').toDate();
+        }
+        
+        session.CalculatedEnding = session.EndedAt;
+        if (!session.CalculatedEnding && session.ExpiringDate) {
+            session.CalculatedEnding = session.ExpiringDate;
+        }
+        
+        // console.log('%c SESSION CALC FIELDS', 'background: #222; color: #bada55', session);
+
     }
 }
 

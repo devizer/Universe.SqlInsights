@@ -18,11 +18,13 @@ class DataSourceStore extends EventEmitter {
             case DataSourceActions.DATA_SOURCE_UPDATED_ACTION: {
                 this.activeDataSource = action.value;
                 this.connectionStatus = true;
+                // console.log('%c Emit "storeUpdated" for "DATA_SOURCE_UPDATED_ACTION"', 'background: #222; color: #bada55');
                 this.emit("storeUpdated");
                 break;
             }
             case DataSourceActions.CONNECTION_STATUS_UPDATED_ACTION: {
                 this.connectionStatus = action.value;
+                // console.log('%c Emit "storeUpdated" for "CONNECTION_STATUS_UPDATED_ACTION"', 'background: #222; color: #bada55');
                 this.emit("storeUpdated");
                 break;
             }

@@ -44,6 +44,8 @@ export default class SessionsTable extends Component {
 
         this.state = {
             sessions: null,
+            selectedSession: null,
+            sorting: [{id: "Caption", desc: false}],
         };
 
     }
@@ -82,21 +84,115 @@ export default class SessionsTable extends Component {
     render() {
         const classes = useStyles2;
         
-        const sessions = this.state.sessions ? this.state.sessions : []  
+        const sessions = this.state.sessions ? this.state.sessions : []
+        const isLoaded = this.state.sessions !== null;
+        const pageSize = sessions.length === 0 ? 1 : Math.max(sessions.length, 1);
+        
         
         const sessionsAsDebug = sessions.map((session,index) =>
             <li key={session.IdSession}>
-                #{session.IdSession} '{session.Caption}', {session.StartedAt} ... {session.EndedAt}, IsFinished: {session.IsFinished}
+                #{session.IdSession} '{session.Caption}', {session.StartedAt} ... {session.EndedAt}, IsFinished: {String(session.IsFinished)}
             </li>
-            
         );
-        
+
+        const onSortedChange = (newSorted, column, shiftKey) => {
+            console.log('%c NEW SESSIONS SORTING', 'background: #222; color: #bada55', newSorted);
+            const id = newSorted[0].id;
+            const newSorting = [{ id: id, desc: newSorted[0].desc }];
+            this.setState({sorting:newSorting});
+        };
+
+        const selectedRowHandler = (state, rowInfo, column) => {
+            if (rowInfo && rowInfo.row) {
+                return {
+                    onClick: (e) => {
+                        const selectedRow = rowInfo.original;
+                        this.setState({
+                            selectedSession: selectedRow, 
+                            selectedIndex: rowInfo.index,
+                        });
+                        Helper.toConsole("Session Selected", selectedRow);
+                        if (this.props.onActionSelected)
+                            this.props.onActionSelected(selectedRow);
+                    },
+                    style: {
+                        background: rowInfo.index === this.state.selected ? '#4f9a94' : 'white',
+                        color: rowInfo.index === this.state.selected ? 'white' : 'black',
+                        cursor: "pointer",
+                    }
+                }
+            } else {
+                return {}
+            }
+        }
+
+        const noDataProps = {style:{color:"gray", marginTop:28, padding: 1, border: "1px solid transparent"}};
+
+        const cellCaption = row => row.original.Caption;
+        const dateColumnWidth = 200;
+        const parseMyDate = arg => arg ? (arg instanceof Date ? arg : new Date(arg)) : null;
+
+        let today = new Date();
+        const cellDate = propertyName => row =>  {
+            const value = row.original[propertyName];
+            // console.log('%c SESSION %s is %s', 'background: darkblue; color: #bada55', propertyName, value);
+            // const at = value instanceof Date ? value : parseMyDate(value);
+            const at = parseMyDate(row.original[propertyName]);
+            if (!at) return null;
+            const atDay = new Date(at.getTime()); atDay.setHours(0,0,0,0);
+            const mom = moment(at);
+            if (today.getTime() === atDay.getTime()) return mom.format("LTS"); else return mom.format("LTS, ll");
+        };
+
+
+
         return (
             <React.Fragment>
                 <div className={classes.root}>
                     {sessionsAsDebug}
                     {sessions.length === 0 && <div>No Sessions Yet</div>}
-                </div>                
+                </div>
+
+                <ReactTable
+                    data={sessions}
+                    sorted={this.state.sorting}
+                    onSortedChange={onSortedChange}
+                    getTrProps={selectedRowHandler}
+                    showPagination={false}
+                    defaultPageSize={pageSize}
+                    pageSizeOptions={[pageSize]}
+                    pageSize={pageSize}
+                    noDataText={isLoaded ? "no any sessions" : "waiting for cells"}
+                    getNoDataProps={() => noDataProps}
+                    className="-striped -highlight"
+                    columns={
+                        [
+                            {
+                                Header: "Caption",
+                                accessor: "Caption",
+                                minWidth: 540,
+                                Cell: cellCaption,
+                            },
+                            {
+                                Header: "Started At",
+                                accessor: x => parseMyDate(x.StartedAt),
+                                id: "StartedAt",
+                                className: 'right-aligned',
+                                width: dateColumnWidth,
+                                Cell: cellDate("StartedAt"),
+                            },
+                            {
+                                Header: "Ended(ing) At",
+                                accessor: x => parseMyDate(x.CalculatedEnding),
+                                id: "EndedAt",
+                                className: 'right-aligned',
+                                width: dateColumnWidth,
+                                Cell: cellDate("CalculatedEnding"),
+                            },
+                        ]
+                    }
+                />
+
             </React.Fragment>
         )
     }
