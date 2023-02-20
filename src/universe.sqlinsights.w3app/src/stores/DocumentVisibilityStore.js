@@ -28,5 +28,5 @@ if (document && document.visibilityState && typeof document.onvisibilitychange !
     }, false);
 }
 else {
-    console.warn("Unable to SUBRIBE to document[visibilitychange]");
+    console.warn("Unable to SUBSRIBE to document[visibilitychange]");
 }
