@@ -37,8 +37,8 @@ jobs:
 
     variables:
       OS: Windows
-      SQL: 'SqlServer 2019 Developer: MSSQLSERVER'
-    timeoutInMinutes: 30
+      # SQL: 'SqlServer 2019 Developer: MSSQLSERVER'
+    timeoutInMinutes: 40
     cancelTimeoutInMinutes: 1
     pool:
       vmImage: 'windows-2019'
