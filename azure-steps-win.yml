@@ -134,17 +134,20 @@ steps:
     displayName: 'yarn: build & run w3app'
 
   - bash: |
-      echo Testing Apps
-      # pushd src/Universe.SqlInsights.W3Api; dotnet run & ; popd
-      1-Run-W3Api.cmd
+      script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
+      Say --Reset-Stopwatch
+      Say "CPU: $(Get-CpuName)"
+      echo Starting W3Api
+      pushd src/Universe.SqlInsights.W3Api; dotnet run & ; popd
+      # 1-Run-W3Api.cmd
       # 2b-Build-and-Serve-SqlInsights-Prod.cmd
-      # sleep 15
+      sleep 15
       source scripts/wait_for_http.sh
-      echo "Attempt #1: get swagger"
+      Say "Attempt #1: get swagger"
       curl -I http://localhost:50420/swagger
-      echo "Wait for swagger"
+      Say "Waiting for swagger ...."
       wait_for_http "http://localhost:50420/swagger"
-      echo "Attempt #2: get swagger"
+      Say "Final Test: get swagger"
       curl -I http://localhost:50420/swagger
     condition: eq(variables['TEST_APPS'], 'true')
     displayName: 'Test Apps (optional)'
