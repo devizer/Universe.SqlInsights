@@ -31,11 +31,6 @@
         <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
     </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-        <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    </ItemGroup>
-
     <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard1.3' ">
         <PackageReference Include="Dapper" Version="1.60.6" />
     </ItemGroup>
@@ -53,6 +48,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Universe.SqlInsights.Shared\Universe.SqlInsights.Shared.csproj" />
+      <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
       <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="All" />
     </ItemGroup>
     
