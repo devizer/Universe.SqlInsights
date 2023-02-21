@@ -31,7 +31,7 @@ export default class NewSessionButton extends Component {
     static displayName = NewSessionButton.name;
 
     static propTypes = {
-        sessions: PropTypes.arrayOf(PropTypes.object),
+        onClick: PropTypes.func.isRequired,
     }
 
     constructor(props) {
@@ -50,6 +50,7 @@ export default class NewSessionButton extends Component {
                     size="large"
                     className={classes.button}
                     startIcon={<SlideshowIcon />}
+                    onClick={this.props.onClick} 
                 >
                     New Session
                 </Button>

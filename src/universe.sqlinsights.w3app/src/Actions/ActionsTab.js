@@ -24,7 +24,6 @@ export default class ActionsTab extends Component {
         
         return (
             <React.Fragment>
-                <NewSessionButton />
                 <SessionsTable />
                 <ActionGroupsList onActionSelected={onActionSelected}/>
                 <ActionList keyPath={this.state.selectedAction ? this.state.selectedAction.Key.Path : null} />

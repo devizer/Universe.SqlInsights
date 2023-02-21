@@ -21,6 +21,8 @@ import PropTypes from "prop-types";
 import * as DocumentVisibilityStore from "../stores/DocumentVisibilityStore";
 import {SelectedSessionUpdated} from "../stores/SessionsActions";
 import * as SessionsActions from "../stores/SessionsActions";
+import NewSessionButton from './NewSessionButton'
+import SessionEditorDialog from "./SessionEditorDialog"
 
 const useStyles2 = makeStyles((theme) => ({
     root: {
@@ -34,7 +36,7 @@ export default class SessionsTable extends Component {
     static displayName = SessionsTable.name;
 
     static propTypes = {
-        sessions: PropTypes.arrayOf(PropTypes.object),
+        // sessions: PropTypes.arrayOf(PropTypes.object),
     }
 
     constructor(props) {
@@ -42,11 +44,13 @@ export default class SessionsTable extends Component {
 
         this.updateSessions = this.updateSessions.bind(this);
         this.handleVisibility = this.handleVisibility.bind(this);
+        this.handleCloseEditor = this.handleCloseEditor.bind(this);
 
         this.state = {
             sessions: null,
             selectedSession: null,
             sorting: [{id: "Caption", desc: false}],
+            isEditorOpened: false,
         };
 
     }
@@ -70,6 +74,10 @@ export default class SessionsTable extends Component {
 
     handleVisibility(isVisible) {
         Helper.toConsole(`[${SessionsTable.name}] handleVisibility(${isVisible})`);
+    }
+    
+    handleCloseEditor() {
+        this.setState({isEditorOpened: false});
     }
 
     sessionsExample=`
@@ -140,10 +148,22 @@ export default class SessionsTable extends Component {
             const mom = moment(at);
             if (today.getTime() === atDay.getTime()) return mom.format("LTS"); else return mom.format("ll, LTS");
         };
+        
+        const handleNewSessionClick = () => {
+            this.setState({isEditorOpened: true});
+        }
+
+        const sessions1 = this.state.sessions;
+        const newSessionCaption = `New Session ${1 + (sessions1 ? sessions1.length : 0)}`;
+        console.log(`%c newSessionCaption="${newSessionCaption}"`, 'color: darkred');
 
         return (
             <React.Fragment>
 
+                <div class="right-aligned">
+                    <NewSessionButton onClick={handleNewSessionClick} />
+                </div>
+                
                 <ReactTable
                     data={sessions}
                     sorted={this.state.sorting}
@@ -181,6 +201,8 @@ export default class SessionsTable extends Component {
                         ]
                     }
                 />
+                
+                <SessionEditorDialog session={{Caption: newSessionCaption}} isOpened={this.state.isEditorOpened} onClose={this.handleCloseEditor} titleMode={"New"} />
 
             </React.Fragment>
         )
