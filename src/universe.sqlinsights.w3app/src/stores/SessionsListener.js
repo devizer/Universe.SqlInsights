@@ -20,14 +20,13 @@ class SessionsListener {
                     return response.ok ? response.json() : null;
                 })
                 .then(sessions => {
-                    SessionsActions.SessionsUpdated(sessions);
                     if (sessions != null) {
-                        sessions.forEach((session, index) => this.calculateSessionFields(session));
+                        sessions.map((session, index) => this.calculateSessionFields(session));
                     }
                     else {
                         console.error("!!!! SKIPPED calculateSessionFields");
                     }
-                    
+                    SessionsActions.SessionsUpdated(sessions);
                     // console.log("SESSIONS RETRIEVED", sessions);
                 })
                 .catch(error => {

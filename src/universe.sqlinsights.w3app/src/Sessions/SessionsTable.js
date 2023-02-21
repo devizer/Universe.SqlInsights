@@ -61,8 +61,11 @@ export default class SessionsTable extends Component {
         sessionsStore.off('storeUpdated', this.updateSessions);
     }
     
-    updateSessions() {
-        this.setState({sessions: sessionsStore.getSessions()});
+    updateSessions(arg) {
+        // console.log(`%c updateSessions `, 'color: darkred', arg.IdSession)
+        let sessions = sessionsStore.getSessions();
+        if (sessions)
+            this.setState({sessions: sessions});
     }
 
     handleVisibility(isVisible) {
@@ -140,6 +143,8 @@ export default class SessionsTable extends Component {
             // const value = row.original[propertyName];
             // console.log('%c SESSION %s is %s', 'background: darkblue; color: #bada55', propertyName, value);
             // const at = value instanceof Date ? value : parseMyDate(value);
+            // return row.original[propertyName] ?? "null";
+            return JSON.stringify(row.original);
             return `${typeof row.original[propertyName]} "${propertyName} for '${row.original.Caption}'"`;
             return `${typeof row.original[propertyName]} "${propertyName}"`;
             const at = parseMyDate(row.original[propertyName]);
