@@ -27,7 +27,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             SqlServerSqlInsightsStorage storage = new SqlServerSqlInsightsStorage(ProviderFactory, ConnectionString);
             var sessions = await storage.GetSessions();
             foreach (var session in sessions.Where(x => x.IdSession != 0))
-                storage.DeleteSession(session.IdSession);
+                await storage.DeleteSession(session.IdSession);
             
             if (false && sessions.Count(x => !x.IsFinished) < 2)
             {
