@@ -92,13 +92,6 @@ export default class SessionsTable extends Component {
         const isLoaded = this.state.sessions !== null;
         const pageSize = sessions.length === 0 ? 1 : Math.max(sessions.length, 1);
         
-        
-        const sessionsAsDebug = sessions.map((session,index) =>
-            <li key={session.IdSession}>
-                #{session.IdSession} '{session.Caption}', {session.StartedAt} ... {session.EndedAt}, IsFinished: {String(session.IsFinished)}
-            </li>
-        );
-
         const onSortedChange = (newSorted, column, shiftKey) => {
             console.log('%c NEW SESSIONS SORTING', 'background: #222; color: #bada55', newSorted);
             const id = newSorted[0].id;
@@ -135,34 +128,21 @@ export default class SessionsTable extends Component {
         const noDataProps = {style:{color:"gray", marginTop:28, padding: 1, border: "1px solid transparent"}};
 
         const cellCaption = row => row.original.Caption;
-        const dateColumnWidth = 200;
+        const dateColumnWidth = 220;
         const parseMyDate = arg => arg ? (arg instanceof Date ? arg : new Date(arg)) : null;
 
         let today = new Date();
         const cellDate = propertyName => row =>  {
-            // const value = row.original[propertyName];
-            // console.log('%c SESSION %s is %s', 'background: darkblue; color: #bada55', propertyName, value);
-            // const at = value instanceof Date ? value : parseMyDate(value);
-            // return row.original[propertyName] ?? "null";
-            return JSON.stringify(row.original);
-            return `${typeof row.original[propertyName]} "${propertyName} for '${row.original.Caption}'"`;
-            return `${typeof row.original[propertyName]} "${propertyName}"`;
+            // return JSON.stringify(row.original);
             const at = parseMyDate(row.original[propertyName]);
-            
             if (!at) return null;
             const atDay = new Date(at.getTime()); atDay.setHours(0,0,0,0);
             const mom = moment(at);
-            if (today.getTime() === atDay.getTime()) return mom.format("LTS"); else return mom.format("LTS, ll");
+            if (today.getTime() === atDay.getTime()) return mom.format("LTS"); else return mom.format("ll, LTS");
         };
-
-
 
         return (
             <React.Fragment>
-                <div className={classes.root}>
-                    {sessionsAsDebug}
-                    {sessions.length === 0 && <div>No Sessions Yet</div>}
-                </div>
 
                 <ReactTable
                     data={sessions}
@@ -188,7 +168,6 @@ export default class SessionsTable extends Component {
                                 Header: "Started At",
                                 accessor: x => parseMyDate(x.StartedAt),
                                 id: "StartedAt",
-                                // className: 'right-aligned',
                                 width: dateColumnWidth,
                                 Cell: cellDate("StartedAt"),
                             },
@@ -196,7 +175,6 @@ export default class SessionsTable extends Component {
                                 Header: "Ended(ing) At",
                                 accessor: x => parseMyDate(x.CalculatedEnding),
                                 id: "EndedAt",
-                                // className: 'right-aligned',
                                 width: dateColumnWidth,
                                 Cell: cellDate("CalculatedEnding"),
                             },
