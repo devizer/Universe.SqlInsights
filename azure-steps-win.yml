@@ -42,10 +42,10 @@ steps:
     
 
   - bash: |
-      dotnet --info
       script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash
       Say --Reset-Stopwatch
       Say "CPU: $(Get-CpuName)"
+      dotnet --info
       export DOTNET_VERSIONS="5.0 6.0 7.0"
       script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash; 
       dotnet --info
