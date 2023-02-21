@@ -24,6 +24,10 @@ import * as SessionsActions from "../stores/SessionsActions";
 import NewSessionButton from './NewSessionButton'
 import SessionEditorDialog from "./SessionEditorDialog"
 
+import { ReactComponent as MenuIconSvg } from './Menu-Icon-v2.svg';
+import {ReactComponent as CopyIcon} from "../Actions/CopyIcon.svg";
+const MenuIcon = (size=10,color='#333') => (<MenuIconSvg style={{width: size,height:size,fill:color,strokeWidth:'1px',stroke:color }} />);
+
 const useStyles2 = makeStyles((theme) => ({
     root: {
         '& > *': {
@@ -107,9 +111,10 @@ export default class SessionsTable extends Component {
             this.setState({sorting:newSorting});
         };
 
-        const selectedRowHandler = (state, rowInfo, column) => {
+        const selectedRowHandler = (state, rowInfo, instance) => {
             if (rowInfo && rowInfo.row) {
                 const isSelected = this.state.selectedSession && rowInfo.original.IdSession === this.state.selectedSession.IdSession;
+                // console.warn("STATE IS ", state);
                 return {
                     onClick: (e) => {
                         const selectedRow = rowInfo.original;
@@ -125,6 +130,8 @@ export default class SessionsTable extends Component {
                     style: {
                         background: isSelected ? '#4f9a94' : 'white',
                         color: isSelected ? 'white' : 'black',
+                        fill: isSelected ? 'white' : 'black',
+                        stroke: isSelected ? 'white' : 'black',
                         cursor: "pointer",
                     }
                 }
@@ -156,6 +163,12 @@ export default class SessionsTable extends Component {
         const sessions1 = this.state.sessions;
         const newSessionCaption = `New Session ${1 + (sessions1 ? sessions1.length : 0)}`;
         console.log(`%c newSessionCaption="${newSessionCaption}"`, 'color: darkred');
+        
+        // const cellMenu = <IconButton onClick={() => {}}>{MenuIcon()}</IconButton>;
+        
+        const cellMenu = <IconButton size={"small"} onClick={() => {}}><MenuIconSvg style={{width:18,height:18,marginLeft:2,marginRight:2,paddingTop:0, opacity:0.9}}/></IconButton>;
+        // const cellMenu = "";
+        
 
         return (
             <React.Fragment>
@@ -178,6 +191,15 @@ export default class SessionsTable extends Component {
                     className="-striped -highlight"
                     columns={
                         [
+                            {
+                                Header: " ",
+                                accessor: "IdSession",
+                                Cell: cellMenu,
+                                minWidth: 46,
+                                width: 46,
+                                className: 'center-aligned',
+                                sortable: false,
+                            },
                             {
                                 Header: "Session",
                                 accessor: "Caption",

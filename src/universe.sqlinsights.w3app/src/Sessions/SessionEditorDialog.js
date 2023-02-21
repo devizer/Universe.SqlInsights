@@ -72,7 +72,6 @@ export default class SessionsEditorDialog extends Component {
         };
     }
 
-
     componentWillReceiveProps(nextProps, nextContext) {
         if (nextProps.session !== this.state.session
             || nextProps.titleMode !== this.state.titleMode
