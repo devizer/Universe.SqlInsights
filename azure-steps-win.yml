@@ -139,18 +139,18 @@ steps:
       Say "CPU: $(Get-CpuName)"
       echo Starting W3Api
       pushd src/Universe.SqlInsights.W3Api; 
-      dotnet run & 
+      dotnet run &
       popd
       # 1-Run-W3Api.cmd
       # 2b-Build-and-Serve-SqlInsights-Prod.cmd
       sleep 15
       source scripts/wait_for_http.sh
       Say "Attempt #1: get swagger"
-      curl -I http://localhost:50420/swagger
+      curl -s -I http://localhost:50420/swagger
       Say "Waiting for swagger ...."
       wait_for_http "http://localhost:50420/swagger"
       Say "Final Test: get swagger"
-      curl -I http://localhost:50420/swagger
+      curl -s -I http://localhost:50420/swagger
     condition: eq(variables['TEST_APPS'], 'true')
     displayName: 'Test Apps (optional)'
 
