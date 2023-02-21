@@ -23,31 +23,36 @@ namespace Universe.SqlInsights.SqlServerStorage
             if (reqAction.AppName == null) throw new ArgumentException("Missing reqAction.AppName");
 
             const string
-                sqlSelect = "Select Data From SqlInsightsKeyPathSummary WITH (UPDLOCK) Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession",
-                sqlInsert = "Insert SqlInsightsKeyPathSummary(KeyPath, IdSession, AppName, HostId, Data, Version) Values(@KeyPath, @IdSession, @AppName, @HostId, @Data, @Version);",
-                sqlUpdate = "Update SqlInsightsKeyPathSummary Set Data = @Data, Version = @Version Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession";
+                sqlSelect =
+                    "Select Data From SqlInsightsKeyPathSummary WITH (UPDLOCK) Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession",
+                sqlInsert =
+                    "Insert SqlInsightsKeyPathSummary(KeyPath, IdSession, AppName, HostId, Data, Version) Values(@KeyPath, @IdSession, @AppName, @HostId, @Data, @Version);",
+                sqlUpdate =
+                    "Update SqlInsightsKeyPathSummary Set Data = @Data, Version = @Version Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession";
 
             var aliveSessions = GetAliveSessions().ToList();
 #if DEBUG
             double msec = DebuggerStopwatch.ElapsedTicks * 1000d / Stopwatch.Frequency;
-            Console.WriteLine($"{msec,15:n2} {Counter,-4} [AddAction] Alive Sessions >{string.Join(",", aliveSessions.Select(x => x.ToString()).ToArray())}< \"{reqAction.Key}\"");
+            var aliveSessionsInfo = string.Join(",", aliveSessions.Select(x => x.ToString()).ToArray());
+            Console.WriteLine($"{msec,15:n2} {Counter,-4} [AddAction] Alive Sessions >{aliveSessionsInfo}< \"{reqAction.Key}\"");
 #endif
             if (aliveSessions.Count <= 0) return;
-            
+
             using (IDbConnection con = GetConnection())
             {
                 var nextVersion = GetNextVersion(con, transaction: null);
                 StringsStorage stringStorage = new StringsStorage(con, transaction: null);
                 var idAppName = stringStorage.AcquireString(StringKind.AppName, reqAction.AppName);
                 var idHostId = stringStorage.AcquireString(StringKind.HostId, reqAction.HostId);
-                var tran = con.BeginTransaction(IsolationLevel.ReadUncommitted);
-                using (tran)
+
+                foreach (var idSession in aliveSessions)
                 {
 
-                    foreach (var idSession in aliveSessions)
-                    {
+                    var keyPath = SerializeKeyPath(reqAction.Key);
 
-                        var keyPath = SerializeKeyPath(reqAction.Key);
+                    var tran = con.BeginTransaction(IsolationLevel.ReadUncommitted);
+                    using (tran)
+                    {
 
                         // SUMMARY: SqlInsightsKeyPathSummary
                         ActionSummaryCounters actionActionSummary = reqAction.AsSummary();
@@ -60,9 +65,7 @@ namespace Universe.SqlInsights.SqlServerStorage
                                 HostId = idHostId,
                             }, tran);
 
-                        string rawDataPrev = query
-                            .FirstOrDefault()?
-                            .Data;
+                        string rawDataPrev = query.FirstOrDefault()?.Data;
 
                         bool exists = rawDataPrev != null;
                         ActionSummaryCounters
@@ -97,7 +100,7 @@ namespace Universe.SqlInsights.SqlServerStorage
                         // DETAILS: SqlInsightsAction
                         const string sqlInsertDetail = @"Insert SqlInsightsAction(At, IdSession, KeyPath, IsOK, AppName, HostId, Data)
 Values(@At, @IdSession, @KeyPath, @IsOK, @AppName, @HostId, @Data)";
-                        
+
                         var detail = reqAction;
                         var dataDetail = JsonConvert.SerializeObject(detail, DefaultSettings);
                         try
@@ -117,10 +120,11 @@ Values(@At, @IdSession, @KeyPath, @IsOK, @AppName, @HostId, @Data)";
                         {
                             throw;
                         }
+
+                        tran.Commit();
                     }
-                    
-                    tran.Commit();
                 }
+
             }
         }
 

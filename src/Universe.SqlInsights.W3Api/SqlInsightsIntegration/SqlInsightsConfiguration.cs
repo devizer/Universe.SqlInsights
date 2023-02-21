@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
 using Universe.SqlInsights.NetCore;
 using Universe.SqlInsights.Shared;
@@ -25,10 +24,10 @@ namespace Universe.SqlInsights.W3Api.SqlInsightsIntegration
         public string ReportFullFileName { get; } = "C:\\Temp\\SqlInsights-Dev-Report.txt";
         public string SqlTracesDirectory { get; } = "C:\\Temp\\SqlInsights-Traces";
 
-        public string ConnectionString => Configuration.GetConnectionString("SqlInsights") 
-                                          ?? throw new InvalidOperationException(
-                                              "Needs SqlInsights ConnectionString");
-        
+        public string ConnectionString =>
+            Configuration.GetConnectionString("SqlInsights")
+            ?? throw new InvalidOperationException("Needs SqlInsights ConnectionString");
+
         public string HistoryConnectionString => "server=(local);Initial Catalog=SqlInsights_v4;Integrated Security=SSPI;Application Name=SqlInsights";
         public string SqlClientAppNameFormat => $"{this.AppName}-{{0}}";
         public int MaxTraceFileSizeKb { get; } = 128 * 1024;
