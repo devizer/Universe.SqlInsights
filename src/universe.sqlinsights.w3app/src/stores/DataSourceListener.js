@@ -4,8 +4,11 @@ import DataSourceStore from "./DataSourceStore";
 import sessionsStore from "./SessionsStore";
 import dataSourceStore from "./DataSourceStore";
 
+import {API_URL} from '../BuildTimeConfiguration';
+
+
 // export const API_URL="http://localhost:8776/SqlInsights";
-export const API_URL="http://localhost:50420/api/v1/SqlInsights";
+// export const API_URL="http://localhost:50420/api/v1/SqlInsights";
 // export const API_URL="http://localhost:56111/AppInsight"
 
 class DataSourceListener {

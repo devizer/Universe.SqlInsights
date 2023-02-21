@@ -1,4 +1,4 @@
-﻿import {API_URL} from "./stores/DataSourceListener";
+﻿import {API_URL} from './BuildTimeConfiguration';
 
 export const toConsole = function(caption, obj) {
     if (process.env.NODE_ENV !== 'production') {
