@@ -20,7 +20,7 @@ namespace Universe.SqlInsights.W3Api.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<IEnumerable<SqlInsightsSession>>> Index()
+        public async Task<ActionResult<IEnumerable<SqlInsightsSession>>> Sessions()
         {
             return (await _Storage.GetSessions()).ToJsonResult();
         }

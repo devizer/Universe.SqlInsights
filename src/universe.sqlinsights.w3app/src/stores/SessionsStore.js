@@ -1,4 +1,4 @@
-﻿import dispatcher from "./DataSourceDispatcher";
+﻿import dispatcher from "./SessionsDispatcher";
 import {EventEmitter} from "events";
 import * as SessionsActions from "./SessionsActions";
 

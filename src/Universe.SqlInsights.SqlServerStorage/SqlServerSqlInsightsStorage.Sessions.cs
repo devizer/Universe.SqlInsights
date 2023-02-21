@@ -15,10 +15,10 @@ namespace Universe.SqlInsights.SqlServerStorage
 Declare @UtcNow datetime; 
 Set @UtcNow = GetUtcDate();
 Select 
-    IdSession 
+    IdSession
 From 
-    SqlInsightsSession 
-Where 
+    SqlInsightsSession
+Where
     IsFinished = (0) 
     And (MaxDurationMinutes Is Null Or DateAdd(minute,MaxDurationMinutes,StartedAt) >= @UtcNow)";
             

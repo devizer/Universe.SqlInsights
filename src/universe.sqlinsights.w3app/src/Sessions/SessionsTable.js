@@ -18,7 +18,6 @@ import MuiAlert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/core/styles'
 import copy from 'copy-to-clipboard';
 import PropTypes from "prop-types";
-import dataSourceStore from "../stores/DataSourceStore";
 import * as DocumentVisibilityStore from "../stores/DocumentVisibilityStore";
 import {SelectedSessionUpdated} from "../stores/SessionsActions";
 import * as SessionsActions from "../stores/SessionsActions";
@@ -54,12 +53,12 @@ export default class SessionsTable extends Component {
 
     componentDidMount()
     {
-        let x = dataSourceStore.on('storeUpdated', this.updateSessions);
+        let x = sessionsStore.on('storeUpdated', this.updateSessions);
         DocumentVisibilityStore.on(this.handleVisibility);
     }
 
     componentWillUnmount() {
-        dataSourceStore.off('storeUpdated', this.updateSessions);
+        sessionsStore.off('storeUpdated', this.updateSessions);
     }
     
     updateSessions() {
@@ -138,10 +137,13 @@ export default class SessionsTable extends Component {
 
         let today = new Date();
         const cellDate = propertyName => row =>  {
-            const value = row.original[propertyName];
+            // const value = row.original[propertyName];
             // console.log('%c SESSION %s is %s', 'background: darkblue; color: #bada55', propertyName, value);
             // const at = value instanceof Date ? value : parseMyDate(value);
+            return `${typeof row.original[propertyName]} "${propertyName} for '${row.original.Caption}'"`;
+            return `${typeof row.original[propertyName]} "${propertyName}"`;
             const at = parseMyDate(row.original[propertyName]);
+            
             if (!at) return null;
             const atDay = new Date(at.getTime()); atDay.setHours(0,0,0,0);
             const mom = moment(at);

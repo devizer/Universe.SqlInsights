@@ -21,8 +21,12 @@ class SessionsListener {
                 })
                 .then(sessions => {
                     SessionsActions.SessionsUpdated(sessions);
-                    if (sessions != null)
+                    if (sessions != null) {
                         sessions.forEach((session, index) => this.calculateSessionFields(session));
+                    }
+                    else {
+                        console.error("!!!! SKIPPED calculateSessionFields");
+                    }
                     
                     // console.log("SESSIONS RETRIEVED", sessions);
                 })
@@ -46,7 +50,6 @@ class SessionsListener {
         }
         
         // console.log('%c SESSION CALC FIELDS', 'background: #222; color: #bada55', session);
-
     }
 }
 

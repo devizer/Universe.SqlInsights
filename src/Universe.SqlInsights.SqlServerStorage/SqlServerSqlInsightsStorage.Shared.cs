@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -22,6 +23,7 @@ namespace Universe.SqlInsights.SqlServerStorage
         {
             ProviderFactory = providerFactory ?? throw new ArgumentNullException(nameof(providerFactory));
             ConnectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+            Counter = Interlocked.Increment(ref CounterStorage);
         }
 
         private static readonly DefaultContractResolver TheContractResolver = new DefaultContractResolver

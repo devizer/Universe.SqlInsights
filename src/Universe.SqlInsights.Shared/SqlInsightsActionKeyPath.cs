@@ -16,7 +16,7 @@ namespace Universe.SqlInsights.Shared
             {
                 const string arrow = " \x2192 ";
                 return Path == null ? "" : string.Join(arrow, Path);
-            }, LazyThreadSafetyMode.ExecutionAndPublication);
+            }, LazyThreadSafetyMode.None);
             
             _HashCode = new Lazy<int>(() =>
             {

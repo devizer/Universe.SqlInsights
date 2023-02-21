@@ -27,10 +27,12 @@ Create Table SqlInsightsString(
     Kind tinyint Not Null, -- 1: KeyPath, 2: AppName, 3: HostId
     StartsWith nvarchar({StringsStorage.MaxStartLength}) Not Null,
     Tail nvarchar(max) Null,
-    Constraint PK_SqlInsightsString Primary Key (IdString)
+    Constraint PK_SqlInsightsString Primary Key (Kind, StartsWith)
 );
-If Not Exists (Select 1 From sys.indexes Where name='IX_SqlInsightsString_Kind_StartsWith')
-Create Index IX_SqlInsightsString_Kind_StartsWith On SqlInsightsString(Kind, StartsWith);
+If Not Exists (Select 1 From sys.indexes Where name='IX_SqlInsightsString_IdString')
+Create Unique Index IX_SqlInsightsString_IdString On SqlInsightsString(IdString);
+-- If Not Exists (Select 1 From sys.indexes Where name='IX_SqlInsightsString_Kind_StartsWith')
+-- Create Index IX_SqlInsightsString_Kind_StartsWith On SqlInsightsString(Kind, StartsWith);
 ",
 
             // Table SqlInsights KeyPathSummaryTimestamp
@@ -42,6 +44,7 @@ Create Table SqlInsightsKeyPathSummaryTimestamp(
     Guid UniqueIdentifier Not Null,
     Constraint PK_SqlInsightsKeyPathSummaryTimestamp Primary Key (Guid)
 );
+If Not Exists(Select Version From SqlInsightsKeyPathSummaryTimestamp)
 Insert SqlInsightsKeyPathSummaryTimestamp(Version, Guid) Values(0, NewId())",
             
             // Table SqlInsights Session 
@@ -101,15 +104,18 @@ Create Table SqlInsightsAction(
     HostId bigint Not Null,
     IsOK bit Not Null,
     Data nvarchar(max) Not Null,
-    Constraint PK_SqlInsightsAction Primary Key (IdAction),
+    -- Constraint PK_SqlInsightsAction Primary Key (IdAction),
+    Constraint PK_SqlInsightsAction Primary Key (KeyPath, IdSession, IdAction),
     Constraint FK_SqlInsightsAction_SqlInsightsSession FOREIGN KEY (IdSession) REFERENCES SqlInsightsSession(IdSession)
         , -- ON DELETE CASCADE ON UPDATE NO ACTION,  -- Used for debugging only, not necessary in runtime
     Constraint FK_SqlInsightsAction_SqlInsightsKeyPathSummary FOREIGN KEY (KeyPath, IdSession, AppName, HostId) REFERENCES SqlInsightsKeyPathSummary(KeyPath, IdSession, AppName, HostId),
         -- ON DELETE CASCADE ON UPDATE NO ACTION   -- Used for debugging only, not necessary in runtime
     Constraint FK_SqlInsightsAction_AppName FOREIGN KEY (AppName) REFERENCES SqlInsightsString(IdString), 
     Constraint FK_SqlInsightsAction_HostId FOREIGN KEY (HostId) REFERENCES SqlInsightsString(IdString), 
-)
-Create Index IX_SqlInsightsAction_KeyPath_At On SqlInsightsAction(KeyPath, At)
+);
+-- Create Index IX_SqlInsightsAction_KeyPath_IdSession_IdAction On SqlInsightsAction(KeyPath, IdSession, IdAction);
+-- Create Index IX_SqlInsightsAction_KeyPath_At On SqlInsightsAction(KeyPath, At);
+-- Create Index IX_SqlInsightsAction_KeyPath On SqlInsightsAction(KeyPath);
 End 
 "
         };
