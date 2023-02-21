@@ -3,6 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp5.0</TargetFramework>
         <RootNamespace>Universe.SqlInsights.W3Api</RootNamespace>
+        <NoWarn>NETSDK1138</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
