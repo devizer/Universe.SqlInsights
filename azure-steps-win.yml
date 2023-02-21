@@ -19,7 +19,7 @@ steps:
         echo "'$cmd' version: [$("$cmd" --version | head -1)]"
       done
       echo "'sqlcmd' path: [$(command -v sqlcmd)]"
-      echo "'sqlcmd' version: [$(sqlcmd -? | head -2 | tr '\n' ' ')]"
+      echo "'sqlcmd' version: [$(sqlcmd -? | head -2 | tr '\n' ' ' | tr '\r' ' ' | tr '  ' ' ')]"
       true
     displayName: 'Show'
 
