@@ -113,10 +113,13 @@ steps:
        sqlcmd -S . -h-1 -s"," -E -W -w 10000 -Q "SET NOCOUNT ON; Select @@Version"
     displayName: 'Show SQL Info'
   
-  - publish: $(SYSTEM_ARTIFACTSDIRECTORY)/SQL-Setup.Logs
+  - task: PublishBuildArtifacts@1
     condition: succeededOrFailed()
     displayName: 'Publish SQL Setup.Logs'
-    artifact: 'SQL-Setup.Logs-$(Agent.JobName)'
+    inputs:
+      pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)/SQL-Setup.Logs'
+      artifactName: 'SQL-Setup.Logs-$(Agent.JobName)'
+
   
   - script: |
       call 0a-Net-Restore-All.cmd
