@@ -157,6 +157,7 @@ steps:
       # lets work more
       sleep 30
       taskkill /f /t /im dotnet.exe
+      taskkill /f /t /im dotnet-serve.exe
       Say "Final Test: get swagger"
       curl -s -I http://localhost:50420/swagger
     condition: eq(variables['TEST_APPS'], 'true')
