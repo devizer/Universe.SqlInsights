@@ -4,6 +4,8 @@
 steps:
 
   - script: |
+      echo skip
+      exit 0;
       echo PATH1: %PATH%
       if exist "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\amd64" Set PATH=C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\amd64;%PATH%;
       echo "##vso[task.setvariable variable=PATH]%PATH%"
@@ -11,6 +13,16 @@ steps:
       exit 0
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     displayName: "PATH's Patch"
+
+  - powershell: |
+      get-wmiobject Win32_Product | sort Name|Format-Table IdentifyingNumber, Name, LocalPackage -AutoSize | tee "$($Env:SYSTEM_ARTIFACTSDIRECTORY)\Win32_Product (MSI Dump).txt"
+      get-wmiobject Win32_Product | sort -Property Vendor, Version | Format-Table IdentifyingNumber, Vendor, Version, Name, LocalPackage -AutoSize | Out-File -Width 4444 "$($Env:SYSTEM_ARTIFACTSDIRECTORY)\Win32_Product v2 (MSI Dump).txt"
+    condition: ne(variables['MSI_DUMP'], '')
+    displayName: 'MSI DUMP'
+
+  - publish: $(SYSTEM.ARTIFACTSDIRECTORY)
+    condition: ne(variables['MSI_DUMP'], '')
+    artifact: 'MSI DUMP $(Agent.JobName)'
 
   - bash: |
       echo "Bash Version: $BASH_VERSION"
