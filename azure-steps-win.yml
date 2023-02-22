@@ -156,6 +156,8 @@ steps:
       wait_for_http "http://localhost:50420/swagger"
       Say "Final Test: get swagger"
       curl -s -I http://localhost:50420/swagger
+      # lets work more
+      sleep 30
     condition: eq(variables['TEST_APPS'], 'true')
     displayName: 'Test Apps (optional)'
 

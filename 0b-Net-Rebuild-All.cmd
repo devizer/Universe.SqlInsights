@@ -10,7 +10,7 @@ for %%d in (Universe.SqlInsights.AspNetLegacy Universe.SqlInsights.NetCore Unive
 pushd src\
 for %%c in (Release Debug) Do (
   echo MSBuild %%c
-  msbuild /t:Restore,Rebuild /v:m /p:Configuration=%%c /p:Version=%VER% /p:VersionSuffix=beta Universe.SqlInsights.sln
+  msbuild /t:Restore,Rebuild /v:m /p:Configuration=%%c /p:PackageVersion=%VER% /p:Version=%VER% /p:VersionSuffix=beta Universe.SqlInsights.sln
 )
 rem dotnet build /v:m /p:Version=%VER% Universe.SqlInsights.sln
 popd
