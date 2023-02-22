@@ -6,7 +6,7 @@ jobs:
 
   - job: Run
     strategy:
-      maxParallel: 7
+      maxParallel: 1
       matrix:
         Sql_2022_Dev:
           SQL: 'SqlServer 2022 Developer: MSSQLSERVER'
