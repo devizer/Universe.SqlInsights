@@ -26,7 +26,13 @@ import SessionEditorDialog from "./SessionEditorDialog"
 
 import { ReactComponent as MenuIconSvg } from './Menu-Icon-v2.svg';
 import {ReactComponent as CopyIcon} from "../Actions/CopyIcon.svg";
+
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+
 const MenuIcon = (size=10,color='#333') => (<MenuIconSvg style={{width: size,height:size,fill:color,strokeWidth:'1px',stroke:color }} />);
+
 
 const useStyles2 = makeStyles((theme) => ({
     root: {
@@ -160,14 +166,46 @@ export default class SessionsTable extends Component {
             this.setState({isEditorOpened: true});
         }
 
-        const sessions1 = this.state.sessions;
-        const newSessionCaption = `New Session ${1 + (sessions1 ? sessions1.length : 0)}`;
-        console.log(`%c newSessionCaption="${newSessionCaption}"`, 'color: darkred');
+        const sessionsTemp = this.state.sessions;
+        const newSessionCaption = `New Session ${1 + (sessionsTemp ? sessionsTemp.length : 0)}`;
+        // console.log(`%c newSessionCaption="${newSessionCaption}"`, 'color: darkred');
         
         // const cellMenu = <IconButton onClick={() => {}}>{MenuIcon()}</IconButton>;
-        
-        const cellMenu = <IconButton size={"small"} onClick={() => {}}><MenuIconSvg style={{width:18,height:18,marginLeft:2,marginRight:2,paddingTop:0, opacity:0.9}}/></IconButton>;
+
+        const handleCloseSessionMenu = () => {};
+        const handleOpenSessionMenu = session => (event) => {
+            const anchor = event.currentTarget;
+            console.log(`%c OPENING SESSION ${session.Caption} MENU`, "color: darkred; background-color: #91FFB2");
+            this.setState({
+                isSessionMenuOpened:true, 
+                sessionOfMenu: session,
+                sessionMenuAnchor: anchor,
+            });
+        };
+
+        const handleClickSessionMenu = menuOption => (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            const sessionOfMenu = this.state.sessionOfMenu;
+            console.warn(`%c CLICKED '${menuOption.title}' for session '${sessionOfMenu.Caption}'`);
+            this.setState({
+                isSessionMenuOpened: false,
+                sessionOfMenu: null,
+                sessionMenuAnchor: null,
+            });
+        };
+
+
+        const cellMenu = row => <IconButton size={"small"} onClick={handleOpenSessionMenu(row.original)}><MenuIconSvg style={{width:18,height:18,marginLeft:2,marginRight:2,paddingTop:0, opacity:0.6}}/></IconButton>;
         // const cellMenu = "";
+
+        const sessionMenuOptions = [
+            { title: "Rename" },
+            { title: "Stop" },
+            { title: "Delete" },
+            { title: "Resume" },
+        ];
+
         
 
         return (
@@ -223,6 +261,29 @@ export default class SessionsTable extends Component {
                         ]
                     }
                 />
+
+                <Menu
+                    id="long-menu"
+                    anchorEl={this.state.sessionMenuAnchor}
+                    keepMounted
+                    open={this.state.isSessionMenuOpened}
+                    onClose={handleCloseSessionMenu}
+                    PaperProps={{
+                        style: {
+                            maxHeight: 300,
+                            width: 200,
+                            minWidth: 200,
+                        },
+                    }}
+                >
+                    <div className="center-aligned"> SESSION <br/> {this.state.sessionOfMenu?.Caption}</div>
+                    <hr/>
+                    {sessionMenuOptions.map((option) => (
+                        <MenuItem key={option.title} selected={false} onClick={handleClickSessionMenu(option)}>
+                            {option.title}
+                        </MenuItem>
+                    ))}
+                </Menu>
                 
                 <SessionEditorDialog session={{Caption: newSessionCaption}} isOpened={this.state.isEditorOpened} onClose={this.handleCloseEditor} titleMode={"New"} />
 

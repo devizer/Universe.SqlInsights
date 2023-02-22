@@ -4,5 +4,9 @@ If Not Exist node_modules (call yarn install)
 rem call yarn test
 call yarn build
 pushd build
-dotnet serve --version 2>nul || dotnet tool install --global dotnet-serve
-dotnet serve -p 6060 -o
+start /max "Universe.SqlTrace" cmd /c npx serve
+popd
+popd
+echo WAITING FOR W3API......
+ping -n 10 localhost > nul
+start http://localhost:%PORT%
