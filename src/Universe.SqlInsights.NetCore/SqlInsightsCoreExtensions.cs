@@ -172,7 +172,7 @@ namespace Universe.SqlInsights.NetCore
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("ERROR " + Environment.NewLine + ex);
+                    Console.WriteLine("ERROR on SqlInsights Middleware for .NET Core" + Environment.NewLine + ex);
                 }
 
                 // Console.WriteLine($"Cpu Usage by http request is {watcher.GetSummaryCpuUsage()} {context.Request.Path} {context.Request.Method}");

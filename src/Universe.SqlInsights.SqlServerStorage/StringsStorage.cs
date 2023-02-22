@@ -41,7 +41,7 @@ namespace Universe.SqlInsights.SqlServerStorage
             }
 
             long? idStringNew = TryEvalAndRetry(
-                () => $"Get Id of string @{kind} '{value}' failed",
+                () => $"Get Id of string @{kind} '{value}'",
                 2,
                 () => AcquireString_Impl(kind, value)
             );
@@ -85,14 +85,18 @@ namespace Universe.SqlInsights.SqlServerStorage
             return queryInsert.FirstOrDefault();
         }
 
-        T TryEvalAndRetry<T>(Func<string> failTitle, int retryCount, Func<T> function)
+        T TryEvalAndRetry<T>(Func<string> operationTitle, int retryCount, Func<T> function)
         {
             Exception error = null;
             for (int i = 0; i < retryCount; i++)
             {
                 try
                 {
-                    return function();
+                    var ret = function();
+                    if (i > 0)
+                        Console.WriteLine($"Warning! Success on attempt #{(i+1)} for {operationTitle()}");
+
+                    return ret;
                 }
                 catch (Exception ex)
                 {
@@ -101,7 +105,7 @@ namespace Universe.SqlInsights.SqlServerStorage
                 }
             }
 
-            throw new InvalidOperationException(failTitle(), error);
+            throw new InvalidOperationException($"Fail: {operationTitle()}", error);
         }
 
 #if NETSTANDARD
