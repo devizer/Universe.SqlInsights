@@ -45,6 +45,7 @@ export default class NewSessionButton extends Component {
         return (
             <React.Fragment>
                 <Button
+                    id="new-session-button"
                     variant="contained"
                     color="primary"
                     size="large"

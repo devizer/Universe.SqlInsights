@@ -172,7 +172,14 @@ export default class SessionsTable extends Component {
         
         // const cellMenu = <IconButton onClick={() => {}}>{MenuIcon()}</IconButton>;
 
-        const handleCloseSessionMenu = () => {};
+        const handleCloseSessionMenu = () => {
+            this.setState({
+                isSessionMenuOpened: false,
+                sessionOfMenu: null,
+                sessionMenuAnchor: null,
+            });
+        };
+        
         const handleOpenSessionMenu = session => (event) => {
             const anchor = event.currentTarget;
             console.log(`%c OPENING SESSION ${session.Caption} MENU`, "color: darkred; background-color: #91FFB2");
@@ -196,7 +203,14 @@ export default class SessionsTable extends Component {
         };
 
 
-        const cellMenu = row => <IconButton size={"small"} onClick={handleOpenSessionMenu(row.original)}><MenuIconSvg style={{width:18,height:18,marginLeft:2,marginRight:2,paddingTop:0, opacity:0.6}}/></IconButton>;
+        const cellMenu = row => (
+            <>
+                <IconButton size={"small"} onClick={handleOpenSessionMenu(row.original)}>
+                    <MenuIconSvg style={{width:18,height:18,marginLeft:2,marginRight:2,paddingTop:0, opacity:0.6}}/>
+                </IconButton>
+                <span id={`menu-session-${row.original.IdSession}`}></span>
+            </>
+        );
         // const cellMenu = "";
 
         const sessionMenuOptions = [
@@ -264,7 +278,8 @@ export default class SessionsTable extends Component {
 
                 <Menu
                     id="long-menu"
-                    anchorEl={this.state.sessionMenuAnchor}
+                    /*anchorEl={this.state.sessionMenuAnchor}*/
+                    anchorEl={() => document.getElementById(`menu-session-${this.state.sessionOfMenu?.IdSession}`)}
                     keepMounted
                     open={this.state.isSessionMenuOpened}
                     onClose={handleCloseSessionMenu}
