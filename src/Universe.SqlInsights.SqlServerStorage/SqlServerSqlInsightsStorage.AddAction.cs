@@ -50,7 +50,7 @@ namespace Universe.SqlInsights.SqlServerStorage
 
                     var keyPath = SerializeKeyPath(reqAction.Key);
 
-                    var tran = con.BeginTransaction(IsolationLevel.ReadUncommitted);
+                    var tran = con.BeginTransaction(IsolationLevel.ReadCommitted);
                     using (tran)
                     {
 
@@ -87,6 +87,8 @@ namespace Universe.SqlInsights.SqlServerStorage
                         // next.Key = actionActionSummary.Key;
                         var sqlUpsert = exists ? sqlUpdate : sqlInsert;
                         var dataSummary = JsonConvert.SerializeObject(next, DefaultSettings);
+                        // TODO (without ReadCommitted only):
+                        // System.Data.SqlClient.SqlException (0x80131904): Violation of PRIMARY KEY constraint 'PK_SqlInsightsKeyPathSummary'. Cannot insert duplicate key in object 'dbo.SqlInsightsKeyPathSummary'. The duplicate key value is (ASP.NET Core→SqlInsights→Summary→[POST], 0, 1, 3).
                         con.Execute(sqlUpsert, new
                         {
                             KeyPath = keyPath,

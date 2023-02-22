@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
 using Universe.SqlInsights.Shared;
@@ -34,22 +35,21 @@ namespace Universe.SqlInsights.SqlServerStorage
                 Value = value
             };
 
-            lock (SyncCache)
+            if (Cache.TryGetValue(cacheKey, out var idString))
             {
-                if (Cache.TryGetValue(cacheKey, out var idString))
-                {
-                    return idString;
-                }
+                return idString;
             }
 
-            bool isInserted = AcquireString_Impl(kind, value, out var idStringNew);
+            long? idStringNew = TryEvalAndRetry(
+                () => $"Get Id of string @{kind} '{value}' failed",
+                2,
+                () => AcquireString_Impl(kind, value)
+            );
+
             if (!idStringNew.HasValue)
-                throw new InvalidCastException("Unexpected idStringNew");
-            
-            lock (SyncCache)
-            {
-                Cache[cacheKey] = idStringNew.Value;
-            }
+                throw new InvalidCastException($"Unexpected null string id for @{kind} '{value}'. Lost Scope_Identity()");
+
+            Cache[cacheKey] = idStringNew.Value;
 
             return idStringNew;
         }
@@ -57,14 +57,8 @@ namespace Universe.SqlInsights.SqlServerStorage
         const string SqlSelect = "Select IdString, StartsWith, Tail From SqlInsightsString WITH (UPDLOCK) Where Kind = @Kind and StartsWith = @StartsWith";
         const string SqlInsert = "Insert SqlInsightsString(Kind, StartsWith, Tail) Values(@Kind, @StartsWith, @Tail); Select Scope_Identity();";
 
-        private bool AcquireString_Impl(StringKind kind, string value, out long? idString)
+        private long? AcquireString_Impl(StringKind kind, string value)
         {
-            if (value == null)
-            {
-                idString = null;
-                return false;
-            }
-
             bool doesFit = value.Length <= MaxStartLength;
             string startsWith = !doesFit ? value.Substring(0, MaxStartLength) : value;
             var query = Connection.Query<SelectStringsResult>(SqlSelect, new
@@ -77,8 +71,7 @@ namespace Universe.SqlInsights.SqlServerStorage
             {
                 if (IsIt(startsWith, doesFit, value, str))
                 {
-                    idString = str.IdString;
-                    return false;
+                    return str.IdString;
                 }
             }
 
@@ -89,12 +82,26 @@ namespace Universe.SqlInsights.SqlServerStorage
                 Tail = doesFit ? null : value.Substring(MaxStartLength)
             }, Transaction);
 
-            idString = queryInsert.FirstOrDefault();
+            return queryInsert.FirstOrDefault();
+        }
 
-            if (!idString.HasValue)
-                throw new InvalidOperationException("Lost Scope_Identity() on Insert into SqlInsightsString");
+        T TryEvalAndRetry<T>(Func<string> failTitle, int retryCount, Func<T> function)
+        {
+            Exception error = null;
+            for (int i = 0; i < retryCount; i++)
+            {
+                try
+                {
+                    return function();
+                }
+                catch (Exception ex)
+                {
+                    error = ex;
+                    Thread.Sleep(0);
+                }
+            }
 
-            return true;
+            throw new InvalidOperationException(failTitle(), error);
         }
 
 #if NETSTANDARD
