@@ -15,8 +15,9 @@ steps:
     displayName: "PATH's Patch"
 
   - powershell: |
-      get-wmiobject Win32_Product | sort Name|Format-Table IdentifyingNumber, Name, LocalPackage -AutoSize | tee "$($Env:SYSTEM_ARTIFACTSDIRECTORY)\Win32_Product (MSI Dump).txt"
-      get-wmiobject Win32_Product | sort -Property Vendor, Version | Format-Table IdentifyingNumber, Vendor, Version, Name, LocalPackage -AutoSize | Out-File -Width 4444 "$($Env:SYSTEM_ARTIFACTSDIRECTORY)\Win32_Product v2 (MSI Dump).txt"
+      $file="$($Env:SYSTEM_ARTIFACTSDIRECTORY)\Win32_Product (MSI Dump).txt"
+      get-wmiobject Win32_Product | sort -Property Vendor, Version | Format-Table IdentifyingNumber, Vendor, Version, Name, LocalPackage -AutoSize | Out-File -Width 4444 "$file"
+      cat $file
     condition: ne(variables['MSI_DUMP'], '')
     displayName: 'MSI DUMP'
 
