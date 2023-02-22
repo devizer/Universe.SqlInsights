@@ -20,6 +20,7 @@ steps:
       done
       echo "'sqlcmd' path: [$(command -v sqlcmd)]"
       echo "'sqlcmd' version: [$(sqlcmd -? | head -2 | tr '\n' ' ' | tr '\r' ' ' | tr '  ' ' ')]"
+      echo "'taskkill' path: [$(command -v taskkill)]"
       true
     displayName: 'Show'
 
@@ -156,8 +157,9 @@ steps:
       wait_for_http "http://localhost:50420/swagger"
       # lets work more
       sleep 30
-      taskkill /f /t /im dotnet.exe
-      taskkill /f /t /im dotnet-serve.exe
+      Say "KILL W3API and W3APP"
+      taskkill "/f" "/t" "/im" "dotnet.exe"
+      taskkill "/f" "/t" "/im" "dotnet-serve.exe"
       Say "Final Test: get swagger"
       curl -s -I http://localhost:50420/swagger
     condition: eq(variables['TEST_APPS'], 'true')
