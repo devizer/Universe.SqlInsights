@@ -5,4 +5,3 @@ for %%d in (Universe.SqlInsights.Shared Universe.SqlInsights.SqlServerStorage Un
   nuget push *.nupkg %NUGET_BUILD_SERVER% -Timeout 600 -Source https://www.nuget.org/api/v2/package
   popd
 )
-
