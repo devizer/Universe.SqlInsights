@@ -14,7 +14,7 @@ steps:
 
   - bash: |
       echo "Bash Version: $BASH_VERSION"
-      for cmd in tr node yarn npm dotnet head grep awk sed; do
+      for cmd in cat tr node yarn npm dotnet head grep awk sed; do
         echo "'$cmd' path: [$(command -v "$cmd")]"
         echo "'$cmd' version: [$("$cmd" --version | head -1)]"
       done
@@ -161,7 +161,7 @@ steps:
       taskkill "/F" "/T" "/IM" "dotnet.exe"
       taskkill "/F" "/T" "/IM" "dotnet-serve.exe"
       Say "Final Test: get swagger"
-      curl -s -I http://localhost:50420/swagger
+      curl -I http://localhost:50420/swagger | cat
     condition: eq(variables['TEST_APPS'], 'true')
     displayName: 'Test Apps (optional)'
 
