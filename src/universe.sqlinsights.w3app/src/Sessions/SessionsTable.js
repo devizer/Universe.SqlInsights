@@ -30,6 +30,7 @@ import {ReactComponent as CopyIcon} from "../Actions/CopyIcon.svg";
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Typography from '@material-ui/core/Typography';
 
 const MenuIcon = (size=10,color='#333') => (<MenuIconSvg style={{width: size,height:size,fill:color,strokeWidth:'1px',stroke:color }} />);
 
@@ -286,13 +287,19 @@ export default class SessionsTable extends Component {
                     PaperProps={{
                         style: {
                             maxHeight: 300,
-                            width: 200,
-                            minWidth: 200,
+                            width: 250,
+                            minWidth: 250,
                         },
                     }}
                 >
-                    <div className="center-aligned"> SESSION <br/> {this.state.sessionOfMenu?.Caption}</div>
+                    <Typography variant="caption" display="block" gutterBottom noWrap className={"center-aligned"}>
+                        session
+                    </Typography>
+                    <Typography variant="button" display="block" gutterBottom noWrap className={"center-aligned"} style={{paddingLeft:16, paddingRight:16}}>
+                        {this.state.sessionOfMenu?.Caption}
+                    </Typography>
                     <hr/>
+
                     {sessionMenuOptions.map((option) => (
                         <MenuItem key={option.title} selected={false} onClick={handleClickSessionMenu(option)}>
                             {option.title}
