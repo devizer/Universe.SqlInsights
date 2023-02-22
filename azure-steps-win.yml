@@ -158,8 +158,7 @@ steps:
       # lets work more
       sleep 30
       Say "KILL W3API and W3APP"
-      taskkill "/F" "/T" "/IM" "dotnet.exe"
-      taskkill "/F" "/T" "/IM" "dotnet-serve.exe"
+      for proc in dotnet-serve.exe dotnet.exe; do cmd.exe /C "taskkill.exe /F /T /IM $proc"; done
       Say "Final Test: get swagger"
       curl -I http://localhost:50420/swagger | cat
     condition: eq(variables['TEST_APPS'], 'true')
