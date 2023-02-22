@@ -132,6 +132,7 @@ Values(@At, @IdSession, @KeyPath, @IsOK, @AppName, @HostId, @Data)";
 
 
         private static int TotalNextVersion, FailNextVersion;
+        // TODO: If deadlock retry again
         private static long GetNextVersion(IDbConnection con, IDbTransaction transaction)
         {
             const string sqlNextVersion = @"
@@ -153,6 +154,7 @@ Select Top 1 Version From SqlInsightsKeyPathSummaryTimestamp;
             {
                 fail = Interlocked.Increment(ref FailNextVersion);
                 nextVersionQueryError = ex;
+                // Microsoft Provider?
                 if (ex is SqlException sqlException)
                 {
                     isDeadLock = sqlException.Errors.OfType<SqlError>().Any(x => x.Number == 1205);
