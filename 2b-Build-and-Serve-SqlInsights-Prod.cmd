@@ -5,4 +5,4 @@ rem call yarn test
 call yarn build
 pushd build
 dotnet serve --version 2>nul || dotnet tool install --global dotnet-serve
-dotnet serve -p 6060 -o
+start /max "w3app" dotnet serve -p 6060 -o
