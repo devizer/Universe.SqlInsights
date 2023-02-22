@@ -118,7 +118,7 @@ steps:
     displayName: 'Publish SQL Setup.Logs'
     inputs:
       pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)/SQL-Setup.Logs'
-      artifactName: 'SQL-Setup.Logs-$(Agent.JobName)'
+      artifactName: '$(Agent.JobName), SQL-Setup.Logs'
 
   
   - script: |
