@@ -92,7 +92,9 @@ steps:
        # $ErrorActionPreference = 'SilentlyContinue'
        # $Env:SQL_SETUP_LOG_FOLDER = "$(System.DefaultWorkingDirectory)/Setup.Logs"
        $Env:SQL_SETUP_LOG_FOLDER = "$($Env:SYSTEM_ARTIFACTSDIRECTORY)\SQL-Setup.Logs"
-       New-Item -ItemType Directory -Force -Path $Env:SQL_SETUP_LOG_FOLDER -ErrorAction Continue 1> $null
+       Say "Creating log directory: '$(Env:SQL_SETUP_LOG_FOLDER)'"
+       New-Item "$(Env:SQL_SETUP_LOG_FOLDER)" -type directory -force -EA SilentlyContinue 
+       New-Item -ItemType Directory -Force -Path $Env:SQL_SETUP_LOG_FOLDER -ErrorAction Continue 
 
        $todo = Parse-SqlServers "$(SQL)"
        $todo | % { Install-SqlServer $_ }
