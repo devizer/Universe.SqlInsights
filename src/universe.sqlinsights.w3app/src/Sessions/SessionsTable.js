@@ -31,8 +31,11 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Typography from '@material-ui/core/Typography';
+import * as SessionIcons from './SvgIcons/Icons';
+// import {IconRename} from './SvgIcons/Icons';
 
 const MenuIcon = (size=10,color='#333') => (<MenuIconSvg style={{width: size,height:size,fill:color,strokeWidth:'1px',stroke:color }} />);
+
 
 
 const useStyles2 = makeStyles((theme) => ({
@@ -94,12 +97,12 @@ export default class SessionsTable extends Component {
     sessionsExample=`
 [
   {
-    "idSession": 0,
-    "startedAt": "2023-02-20T02:23:01.447Z",
-    "endedAt": "2023-02-20T02:23:01.447Z",
-    "isFinished": true,
-    "caption": "string",
-    "maxDurationMinutes": 0
+    "IdSession": 0,
+    "StartedAt": "2023-02-20T02:23:01.447Z",
+    "EndedAt": "2023-02-20T02:23:01.447Z",
+    "IsFinished": true,
+    "Caption": "string",
+    "MaxDurationMinutes": 0
   }
 ]`;
 
@@ -213,15 +216,13 @@ export default class SessionsTable extends Component {
             </>
         );
         // const cellMenu = "";
-
-        const sessionMenuOptions = [
-            { title: "Rename" },
-            { title: "Stop" },
-            { title: "Delete" },
-            { title: "Resume" },
-        ];
-
         
+        let sessionMenuOptions = [];
+        const isStopped = Boolean(this.state.sessionOfMenu?.IsFinished);
+        sessionMenuOptions.push({ title: "Rename", icon: SessionIcons.IconRename() });
+        sessionMenuOptions.push({ title: "Delete", icon: SessionIcons.IconDelete() });
+        if (isStopped) sessionMenuOptions.push({ title: "Resume", icon: SessionIcons.IconResume() });
+        if (!isStopped) sessionMenuOptions.push({ title: "Stop", icon: SessionIcons.IconStop() });
 
         return (
             <React.Fragment>
@@ -302,6 +303,9 @@ export default class SessionsTable extends Component {
 
                     {sessionMenuOptions.map((option) => (
                         <MenuItem key={option.title} selected={false} onClick={handleClickSessionMenu(option)}>
+                            {/*{MenuIcon(15,'#555')}&nbsp;&nbsp;*/}
+                            {/*<IconRename size={20} color={"$555"} />*/}
+                            {option.icon}&nbsp;&nbsp;
                             {option.title}
                         </MenuItem>
                     ))}
