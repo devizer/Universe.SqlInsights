@@ -91,7 +91,7 @@ steps:
 
        # $ErrorActionPreference = 'SilentlyContinue'
        # $Env:SQL_SETUP_LOG_FOLDER = "$(System.DefaultWorkingDirectory)/Setup.Logs"
-       $Env:SQL_SETUP_LOG_FOLDER = "$($Env:Temp)\SQL-Setup.Logs"
+       $Env:SQL_SETUP_LOG_FOLDER = "$($Env:SYSTEM_ARTIFACTSDIRECTORY)\SQL-Setup.Logs"
        New-Item -ItemType Directory -Force -Path $Env:SQL_SETUP_LOG_FOLDER -ErrorAction Continue 1> $null
 
        $todo = Parse-SqlServers "$(SQL)"
@@ -101,8 +101,8 @@ steps:
        Say "ALL THE SQL SERVICES"
        get-wmiobject win32_service | where {$_.Name.ToLower().IndexOf("sql") -ge 0 -or $_.DisplayName.ToLower().IndexOf("sql") -ge 0 } | sort-object -Property "DisplayName" | ft State, Name, DisplayName, StartMode, StartName
 
-       Say "Copy log SQL-Setup.Logs"
-       cp "$($Env:Temp)\SQL-Setup.Logs" Setup.Logs -Force
+       # Say "Copy log SQL-Setup.Logs"
+       # cp "$($Env:Temp)\SQL-Setup.Logs" Setup.Logs -Force
     displayName: 'Prepare SQL Server'
 
   - script: |
@@ -111,10 +111,10 @@ steps:
        sqlcmd -S . -h-1 -s"," -E -W -w 10000 -Q "SET NOCOUNT ON; Select @@Version"
     displayName: 'Show SQL Info'
   
-  - publish: $(System.DefaultWorkingDirectory)/Setup.Logs
+  - publish: $(SYSTEM_ARTIFACTSDIRECTORY)/Setup.Logs
     condition: succeededOrFailed()
-    displayName: 'Publish Setup.Logs'
-    artifact: 'Setup.Logs-$(Agent.JobName)'
+    displayName: 'Publish SQL Setup.Logs'
+    artifact: 'SQL-Setup.Logs-$(Agent.JobName)'
   
   - script: |
       call 0a-Net-Restore-All.cmd
