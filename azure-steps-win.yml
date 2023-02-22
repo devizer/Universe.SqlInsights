@@ -22,6 +22,7 @@ steps:
     displayName: 'MSI DUMP'
 
   - publish: $(SYSTEM.ARTIFACTSDIRECTORY)
+    displayName: 'Publish MSI DUMP'
     condition: ne(variables['MSI_DUMP'], '')
     artifact: 'MSI DUMP $(Agent.JobName)'
 

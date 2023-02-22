@@ -16,7 +16,7 @@ jobs:
           TEST_APPS: true
         Sql_2008_R2:
           SQL: 'SqlServer 2008R2 Express: MSSQLSERVER'
-          MSI_DUMP: 'Sure'
+          MSI_DUMP: true
         Sql_2008:
           SQL: 'SqlServer 2008 Express: MSSQLSERVER'
         Sql_2012:
