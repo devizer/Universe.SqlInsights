@@ -111,7 +111,7 @@ steps:
        sqlcmd -S . -h-1 -s"," -E -W -w 10000 -Q "SET NOCOUNT ON; Select @@Version"
     displayName: 'Show SQL Info'
   
-  - publish: $(SYSTEM_ARTIFACTSDIRECTORY)/Setup.Logs
+  - publish: $(SYSTEM_ARTIFACTSDIRECTORY)/SQL-Setup.Logs
     condition: succeededOrFailed()
     displayName: 'Publish SQL Setup.Logs'
     artifact: 'SQL-Setup.Logs-$(Agent.JobName)'
