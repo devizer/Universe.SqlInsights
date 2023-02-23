@@ -67,13 +67,16 @@ Select 1 [Any]";
         public async Task<long> CreateSession(string caption, int? maxDurationMinutes)
         {
             const string sql = @"
-Insert SqlInsightsSession(StartedAt, IsFinished, Caption, MaxDurationMinutes) Values(
+Insert 
+    SqlInsightsSession(StartedAt, IsFinished, Caption, MaxDurationMinutes)
+    OUTPUT INSERTED.IdSession As IdSession -- If fail it should be ignored     
+Values(
     GetUtcDate(),
     (0),
     @Caption,
     @MaxDurationMinutes
 );   
-Select SCOPE_IDENTITY();  
+-- Select SCOPE_IDENTITY() As IdSession;  
 ";
 
             using (var con = GetConnection())
