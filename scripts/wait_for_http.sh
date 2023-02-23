@@ -1,6 +1,6 @@
 
 function wait_for_http() {
-  u="$1"; t=30; 
+  u="$1"; t="${WAIT_HTTP_TIMEOUT:-30}"; 
   printf "Waiting for [$u] during $t seconds ..."
   while [ $t -ge 0 ]; do 
     t=$((t-1)); 

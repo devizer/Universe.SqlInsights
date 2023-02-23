@@ -182,7 +182,7 @@ steps:
   - bash: |
       echo Starting W3Api
       pushd src/Universe.SqlInsights.W3Api; 
-      dotnet run &
+      (dotnet run | tee "$SYSTEM_ARTIFACTSDIRECTORY/w3api (acceptance test).log") &
       popd
       sleep 15
       
@@ -191,6 +191,9 @@ steps:
       Say "Waiting for swagger ...."
       wait_for_http "http://localhost:50420/swagger"
       
+      # for acceptance test?
+      sleep 60
+
       Say "KILL W3API and W3APP"
       for proc in dotnet-serve.exe dotnet.exe; do cmd.exe /C "taskkill.exe /F /T /IM $proc"; done
       Say "Final Test: get swagger"
