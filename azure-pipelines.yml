@@ -1,7 +1,8 @@
 variables:
   Project: 'Universe.SqlInsights'
   TEST_W3API: true
- 
+  # Default image
+  VMIMAGE: 'windows-2019'
 
 jobs:
 
@@ -9,12 +10,13 @@ jobs:
     strategy:
       maxParallel: 9
       matrix:
-        Sql_2022_Dev:
+        'Sql 2022 Dev':
           SQL: 'SqlServer 2022 Developer: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
         Sql_2019_Dev:
           SQL: 'SqlServer 2019 Developer: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
+
         Sql_2008_R2:
           SQL: 'SqlServer 2008R2 Express: MSSQLSERVER'
           MSI_DUMP: true
@@ -24,6 +26,20 @@ jobs:
           SQL: 'SqlServer 2012 Express: MSSQLSERVER'
         Sql_2005:
           SQL: 'SqlServer 2005 Express: MSSQLSERVER'
+        
+        "2008 R2 on Windows Server 2022":
+          SQL: 'SqlServer 2008R2 Express: MSSQLSERVER'
+          MSI_DUMP: true
+          VMIMAGE: 'windows-2022'
+
+        "2008 on Windows Server 2022":
+          SQL: 'SqlServer 2008 Express: MSSQLSERVER'
+          VMIMAGE: 'windows-2022'
+
+        "2005 on Windows Server 2022":
+          SQL: 'SqlServer 2005 Express: MSSQLSERVER'
+          VMIMAGE: 'windows-2022'
+        
         Sql_2014:
           SQL: 'SqlServer 2014 Express: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
@@ -43,7 +59,7 @@ jobs:
     timeoutInMinutes: 40
     cancelTimeoutInMinutes: 1
     pool:
-      vmImage: 'windows-2019'
+      vmImage: "$(VMIMAGE)"
     steps:
       - template: azure-steps-win.yml
 

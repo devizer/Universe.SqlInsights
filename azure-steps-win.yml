@@ -137,6 +137,12 @@ steps:
        # cp "$($Env:Temp)\SQL-Setup.Logs" Setup.Logs -Force
     displayName: 'Prepare SQL Server'
 
+  - bash: |
+       export SQL_SETUP_LOGS_FOLDER="$SYSTEM_ARTIFACTSDIRECTORY"
+       powershell -f scripts/Publish-SQL-Server-Setup-Logs.ps1 || true
+    condition: succeededOrFailed()
+    displayName: 'Universal SQL Setup Logs'
+
   - script: |
        sqlcmd /? | find "Version"
        sqlcmd -S . -h-1 -s"," -E -W -w 10000 -Q "SET NOCOUNT ON; Select CONVERT(VARCHAR(128), SERVERPROPERTY ('productversion'))"
