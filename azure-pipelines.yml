@@ -1,5 +1,6 @@
 variables:
   Project: 'Universe.SqlInsights'
+  TEST_W3API: true
  
 
 jobs:
@@ -10,10 +11,10 @@ jobs:
       matrix:
         Sql_2022_Dev:
           SQL: 'SqlServer 2022 Developer: MSSQLSERVER'
-          TEST_APPS: true
+          TEST_ADVENTURE_WORKS: true
         Sql_2019_Dev:
           SQL: 'SqlServer 2019 Developer: MSSQLSERVER'
-          TEST_APPS: true
+          TEST_ADVENTURE_WORKS: true
         Sql_2008_R2:
           SQL: 'SqlServer 2008R2 Express: MSSQLSERVER'
           MSI_DUMP: true
@@ -25,16 +26,16 @@ jobs:
           SQL: 'SqlServer 2005 Express: MSSQLSERVER'
         Sql_2014:
           SQL: 'SqlServer 2014 Express: MSSQLSERVER'
-          TEST_APPS: true
+          TEST_ADVENTURE_WORKS: true
         Sql_2017_Dev:
           SQL: 'SqlServer 2017 Developer: MSSQLSERVER'
-          TEST_APPS: true
+          TEST_ADVENTURE_WORKS: true
         Sql_2016:
           SQL: 'SqlServer 2016 Express: MSSQLSERVER'
-          TEST_APPS: true
+          TEST_ADVENTURE_WORKS: true
         Sql_2017:
           SQL: 'SqlServer 2017 Express: MSSQLSERVER'
-          TEST_APPS: true
+          TEST_ADVENTURE_WORKS: true
 
     variables:
       OS: Windows
