@@ -187,11 +187,10 @@ steps:
       sleep 15
       
       source scripts/wait_for_http.sh
+      WAIT_HTTP_TIMEOUT=90
       Say "Waiting for swagger ...."
       wait_for_http "http://localhost:50420/swagger"
       
-      # lets work more
-      sleep 30
       Say "KILL W3API and W3APP"
       for proc in dotnet-serve.exe dotnet.exe; do cmd.exe /C "taskkill.exe /F /T /IM $proc"; done
       Say "Final Test: get swagger"
