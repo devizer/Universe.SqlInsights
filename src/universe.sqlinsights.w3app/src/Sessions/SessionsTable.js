@@ -218,11 +218,14 @@ export default class SessionsTable extends Component {
         // const cellMenu = "";
         
         let sessionMenuOptions = [];
-        const isStopped = Boolean(this.state.sessionOfMenu?.IsFinished);
-        sessionMenuOptions.push({ title: "Rename", icon: SessionIcons.IconRename() });
-        sessionMenuOptions.push({ title: "Delete", icon: SessionIcons.IconDelete() });
-        if (isStopped) sessionMenuOptions.push({ title: "Resume", icon: SessionIcons.IconResume() });
-        if (!isStopped) sessionMenuOptions.push({ title: "Stop", icon: SessionIcons.IconStop() });
+        if (this.state.sessionOfMenu) {
+            const isStopped = Boolean(this.state.sessionOfMenu?.IsFinished);
+            const isExpired = this.state.sessionOfMenu && this.state.sessionOfMenu.ExpiringDate < new Date();
+            sessionMenuOptions.push({title: "Rename", icon: SessionIcons.IconRename()});
+            sessionMenuOptions.push({title: "Delete", icon: SessionIcons.IconDelete()});
+            if (isStopped || isExpired) sessionMenuOptions.push({title: "Resume", icon: SessionIcons.IconResume()});
+            if (!isStopped && !isExpired) sessionMenuOptions.push({title: "Stop", icon: SessionIcons.IconStop()});
+        }
 
         return (
             <React.Fragment>
