@@ -215,3 +215,8 @@ steps:
       codeCoverageTool: cobertura
       failIfCoverageEmpty: false # Optional      
       summaryFileLocation: '**/In/**/coverage.cobertura.xml'
+
+  - publish: $(SYSTEM.ARTIFACTSDIRECTORY)
+    displayName: 'Publish Artifact'
+    condition: succeededOrFailed()
+    artifact: 'Artifacts $(Agent.JobName)'
