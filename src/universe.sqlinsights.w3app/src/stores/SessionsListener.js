@@ -47,8 +47,11 @@ class SessionsListener {
         if (!session.CalculatedEnding && session.ExpiringDate) {
             session.CalculatedEnding = session.ExpiringDate;
         }
+
+        // Doesn't work
+        // session.isExpired = () => (Boolean(session.ExpiringDate)) && (session.ExpiringDate < new Date());
+        // session.isExpired = session.isExpired.bind(session);
         
-        // console.log('%c SESSION CALC FIELDS', 'background: #222; color: #bada55', session);
     }
 }
 

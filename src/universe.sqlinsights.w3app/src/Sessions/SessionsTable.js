@@ -121,10 +121,12 @@ export default class SessionsTable extends Component {
             this.setState({sorting:newSorting});
         };
 
+        const now = new Date();
         const selectedRowHandler = (state, rowInfo, instance) => {
             if (rowInfo && rowInfo.row) {
                 const isSelected = this.state.selectedSession && rowInfo.original.IdSession === this.state.selectedSession.IdSession;
-                // console.warn("STATE IS ", state);
+                const isExpired = rowInfo.original.ExpiringDate && rowInfo.original.ExpiringDate < now;  
+                const isDown = rowInfo.original.IsFinished || isExpired; 
                 return {
                     onClick: (e) => {
                         const selectedRow = rowInfo.original;
@@ -140,8 +142,8 @@ export default class SessionsTable extends Component {
                     style: {
                         background: isSelected ? '#4f9a94' : 'white',
                         color: isSelected ? 'white' : 'black',
-                        fill: isSelected ? 'white' : 'black',
-                        stroke: isSelected ? 'white' : 'black',
+                        fill: isSelected ? (isDown ? '#AACCAA' : 'white') : (isDown ? '#999' : 'black'),
+                        stroke: isSelected ? (isDown ? '#AACCAA' : 'white') : (isDown ? '#999' : 'black'),
                         cursor: "pointer",
                     }
                 }
@@ -158,6 +160,7 @@ export default class SessionsTable extends Component {
 
         let today = new Date();
         const cellDate = propertyName => row =>  {
+            // return row.original.isExpired();
             // return JSON.stringify(row.original);
             const at = parseMyDate(row.original[propertyName]);
             if (!at) return null;
@@ -220,7 +223,8 @@ export default class SessionsTable extends Component {
         let sessionMenuOptions = [];
         if (this.state.sessionOfMenu) {
             const isStopped = Boolean(this.state.sessionOfMenu?.IsFinished);
-            const isExpired = this.state.sessionOfMenu && this.state.sessionOfMenu.ExpiringDate < new Date();
+            // const isExpired = this.state.sessionOfMenu && this.state.sessionOfMenu.ExpiringDate < new Date();
+            const isExpired = this.state.sessionOfMenu && this.state.sessionOfMenu.ExpiringDate && this.state.sessionOfMenu.ExpiringDate < now; 
             sessionMenuOptions.push({title: "Rename", icon: SessionIcons.IconRename()});
             sessionMenuOptions.push({title: "Delete", icon: SessionIcons.IconDelete()});
             if (isStopped || isExpired) sessionMenuOptions.push({title: "Resume", icon: SessionIcons.IconResume()});
