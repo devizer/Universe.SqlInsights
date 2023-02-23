@@ -4,12 +4,14 @@
 steps:
 
   - script: |
-      echo skip
+      echo foreach ($p in $ENV:PATH.Split(';')) { echo $p; } | powershell -c -
+      echo.
+      echo %PATH%
+      echo.
+      powershell -c "nuget help | Select -First 1; msbuild /version | Select -First 1;"
       exit 0;
-      echo PATH1: %PATH%
       if exist "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\amd64" Set PATH=C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\amd64;%PATH%;
       echo "##vso[task.setvariable variable=PATH]%PATH%"
-      powershell -c "nuget help | Select -First 1; msbuild /version | Select -First 1;"
       exit 0
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     displayName: "PATH's Patch"
