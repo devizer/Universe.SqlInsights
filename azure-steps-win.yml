@@ -15,6 +15,10 @@ steps:
     displayName: "PATH's Patch"
 
   - powershell: |
+      script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash
+      Say --Reset-Stopwatch
+      Say "CPU: $(Get-CpuName)"
+
       $file="$($Env:SYSTEM_ARTIFACTSDIRECTORY)\Win32_Product (MSI Dump).txt"
       get-wmiobject Win32_Product | sort -Property Vendor, Version | Format-Table IdentifyingNumber, Vendor, Version, Name, LocalPackage -AutoSize | Out-File -Width 4444 "$file"
       cat $file
@@ -32,9 +36,22 @@ steps:
         echo "'$cmd' path: [$(command -v "$cmd")]"
         echo "'$cmd' version: [$("$cmd" --version | head -1)]"
       done
+      
       echo "'sqlcmd' path: [$(command -v sqlcmd)]"
       echo "'sqlcmd' version: [$(sqlcmd -? | head -2 | tr '\n' ' ' | tr '\r' ' ' | tr '  ' ' ')]"
+      
       echo "'taskkill' path: [$(command -v taskkill)]"
+
+      echo "'msbuild' path: [$(command -v msbuild)]"
+      echo "'msbuild' version: [$(msbuild | head -1)]"
+
+      for csc in 'Framework/v2.0.50727' 'Framework/v3.5' 'Framework/v4.0.30319' 'Framework64/v2.0.50727' 'Framework64/v3.5' 'Framework64/v4.0.30319'; do
+        here="-"
+        fullpath='C:\Windows\'"$csc"
+        if [[ -s "$fullpath" ]]; then here="Yes"; fi
+        echo "'$fullpath': $here"
+      done
+
       true
     displayName: 'Show'
 
@@ -57,9 +74,6 @@ steps:
     
 
   - bash: |
-      script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash
-      Say --Reset-Stopwatch
-      Say "CPU: $(Get-CpuName)"
       dotnet --info
       export DOTNET_VERSIONS="5.0 6.0 7.0"
       script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash; 
@@ -159,21 +173,19 @@ steps:
   - script: |
       call 2b-Build-and-Serve-SqlInsights-Prod.cmd
     condition: eq(variables['Agent.OS'], 'Windows_NT')
-    displayName: 'yarn: build & run w3app'
+    displayName: 'yarn: build & serve'
 
   - bash: |
       echo Starting W3Api
       pushd src/Universe.SqlInsights.W3Api; 
       dotnet run &
       popd
-      # 1-Run-W3Api.cmd
-      # 2b-Build-and-Serve-SqlInsights-Prod.cmd
       sleep 15
+      
       source scripts/wait_for_http.sh
-      Say "Attempt #1: get swagger"
-      curl -s -I http://localhost:50420/swagger
       Say "Waiting for swagger ...."
       wait_for_http "http://localhost:50420/swagger"
+      
       # lets work more
       sleep 30
       Say "KILL W3API and W3APP"
@@ -184,10 +196,6 @@ steps:
     displayName: 'Test Apps (optional)'
 
 
-  - publish: $(System.DefaultWorkingDirectory)
-    condition: succeededOrFailed()
-    artifact: 'Working-$(Agent.JobName)'
-  
   - task: PublishTestResults@2
     condition: succeededOrFailed()
     inputs:
