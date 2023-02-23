@@ -19,18 +19,22 @@ namespace Universe.SqlInsights.SqlServerStorage
 
         public static readonly string[] SqlMigrations = new[]
         {
+            // TODO: Add Tests for LONG app name or host name
             // Table SqlInsights String
             @$"
 If Object_ID('SqlInsightsString') Is Null
+BEGIN
 Create Table SqlInsightsString(
     IdString bigint Identity Not Null,
     Kind tinyint Not Null, -- 1: KeyPath, 2: AppName, 3: HostId
     StartsWith nvarchar({StringsStorage.MaxStartLength}) Not Null,
-    Tail nvarchar(max) Null,
-    Constraint PK_SqlInsightsString Primary Key (Kind, StartsWith)
+    Tail nvarchar(max) Null
+    -- Constraint PK_SqlInsightsString Primary Key (Kind, StartsWith) -- TODO: BUG
 );
-If Not Exists (Select 1 From sys.indexes Where name='IX_SqlInsightsString_IdString')
-Create Unique Index IX_SqlInsightsString_IdString On SqlInsightsString(IdString);
+ALTER TABLE SqlInsightsString Add Constraint PK_SqlInsightsString Primary Key NONCLUSTERED (IdString);
+If Not Exists (Select 1 From sys.indexes Where name='IX_SqlInsightsString_Kind_StartsWith')
+Create Unique CLUSTERED Index IX_SqlInsightsString_Kind_StartsWith On SqlInsightsString(Kind, StartsWith);
+END
 -- If Not Exists (Select 1 From sys.indexes Where name='IX_SqlInsightsString_Kind_StartsWith')
 -- Create Index IX_SqlInsightsString_Kind_StartsWith On SqlInsightsString(Kind, StartsWith);
 ",
