@@ -6,50 +6,49 @@ variables:
 
 jobs:
 
-  - job: Run
+  - job: If
     strategy:
       maxParallel: 9
       matrix:
-        'Sql 2022 Dev':
-          SQL: 'SqlServer 2022 Developer: MSSQLSERVER'
-          TEST_ADVENTURE_WORKS: true
-        Sql_2019_Dev:
-          SQL: 'SqlServer 2019 Developer: MSSQLSERVER'
-          TEST_ADVENTURE_WORKS: true
 
-        Sql_2008_R2:
+        "Sql 2008 R2":
           SQL: 'SqlServer 2008R2 Express: MSSQLSERVER'
           MSI_DUMP: true
-        Sql_2008:
+        "Sql 2008":
           SQL: 'SqlServer 2008 Express: MSSQLSERVER'
-        Sql_2012:
-          SQL: 'SqlServer 2012 Express: MSSQLSERVER'
-        Sql_2005:
+        "Sql 2005":
           SQL: 'SqlServer 2005 Express: MSSQLSERVER'
         
         "2008 R2 on Windows Server 2022":
           SQL: 'SqlServer 2008R2 Express: MSSQLSERVER'
           MSI_DUMP: true
           VMIMAGE: 'windows-2022'
-
         "2008 on Windows Server 2022":
           SQL: 'SqlServer 2008 Express: MSSQLSERVER'
           VMIMAGE: 'windows-2022'
-
         "2005 on Windows Server 2022":
           SQL: 'SqlServer 2005 Express: MSSQLSERVER'
           VMIMAGE: 'windows-2022'
         
-        Sql_2014:
+        'Sql 2022 Dev':
+          SQL: 'SqlServer 2022 Developer: MSSQLSERVER'
+          TEST_ADVENTURE_WORKS: true
+        "Sql 2019 Dev":
+          SQL: 'SqlServer 2019 Developer: MSSQLSERVER'
+          TEST_ADVENTURE_WORKS: true
+        "Sql 2012":
+          SQL: 'SqlServer 2012 Express: MSSQLSERVER'
+
+        "Sql 2014":
           SQL: 'SqlServer 2014 Express: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
-        Sql_2017_Dev:
+        "Sql 2017 Dev":
           SQL: 'SqlServer 2017 Developer: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
-        Sql_2016:
+        "Sql 2016":
           SQL: 'SqlServer 2016 Express: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
-        Sql_2017:
+        "Sql 2017":
           SQL: 'SqlServer 2017 Express: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
 
