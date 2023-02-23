@@ -47,7 +47,7 @@ steps:
 
       for csc in 'Framework\v2.0.50727' 'Framework\v3.5' 'Framework\v4.0.30319' 'Framework64/v2.0.50727' 'Framework64/v3.5' 'Framework64/v4.0.30319'; do
         here="-"
-        fullpath='C:\Windows\Microsoft.NET\'"$csc"
+        fullpath='C:\Windows\Microsoft.NET\'"$csc\\csc.exe"
         if [[ -s "$fullpath" ]]; then here="Yes"; fi
         echo "'$fullpath': $here"
       done
