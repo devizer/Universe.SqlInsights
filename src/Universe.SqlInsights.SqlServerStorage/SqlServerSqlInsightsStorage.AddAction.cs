@@ -134,10 +134,13 @@ Values(@At, @IdSession, @KeyPath, @IsOK, @AppName, @HostId, @Data)";
         // TODO: If deadlock retry again
         private static long GetNextVersion(IDbConnection con, IDbTransaction transaction)
         {
+            /*
             const string sqlNextVersion = @"
-Update SqlInsightsKeyPathSummaryTimestamp Set Guid = NewId(), Version = Version + 1;
+Update Top (1) SqlInsightsKeyPathSummaryTimestamp Set Guid = NewId(), Version = Version + 1;
 Select Top 1 Version From SqlInsightsKeyPathSummaryTimestamp;
 ";
+*/
+            const string sqlNextVersion = @"Update Top (1) SqlInsightsKeyPathSummaryTimestamp Set Guid = NewId(), Version = Version + 1 Output inserted.Version;";
 
             long nextVersion = -1;
             bool isDeadLock = false;
