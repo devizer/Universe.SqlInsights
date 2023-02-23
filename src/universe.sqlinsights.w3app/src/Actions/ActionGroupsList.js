@@ -92,9 +92,15 @@ export default class ActionGroupsList extends Component {
 
         const selectedRowHandler = (state, rowInfo, column) => {
             if (rowInfo && rowInfo.row) {
+                const legacyIsSelected = rowInfo.index === this.state.selected; // remove it 
+                const selectedRow = this.state.selectedRow;
+                const selectedKeyString = selectedRow?.KeyString;
+                const currentKeyString = rowInfo.original?.KeyString;
+                const isSelected = currentKeyString && currentKeyString === selectedKeyString; 
                 return {
                     onClick: (e) => {
                         const selectedRow = rowInfo.original;
+                        // console.warn("REPLACE SELECTED BY INDEX BY Selected by Key Path. Clicked Row is", selectedRow);
                         this.setState({
                             selected: rowInfo.index,
                             selectedRow: selectedRow,
@@ -104,8 +110,8 @@ export default class ActionGroupsList extends Component {
                             this.props.onActionSelected(selectedRow);
                     },
                     style: {
-                        background: rowInfo.index === this.state.selected ? '#4f9a94' : 'white',
-                        color: rowInfo.index === this.state.selected ? 'white' : 'black',
+                        background: isSelected ? '#4f9a94' : 'white',
+                        color: isSelected ? 'white' : 'black',
                         cursor: "pointer",
                     }
                 }
