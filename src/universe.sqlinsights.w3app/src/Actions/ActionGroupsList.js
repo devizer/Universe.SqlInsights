@@ -30,7 +30,7 @@ export default class ActionGroupsList extends Component {
 
         this.state = {
             actions: null,
-            selected: null,
+            selected: null, // TODO: REMOVE IT
             selectedRow: null,
             kind: 'total', // or 'average'
             sorting: [{id: "AppDuration", desc: true}],
