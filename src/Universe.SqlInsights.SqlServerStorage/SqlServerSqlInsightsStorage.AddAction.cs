@@ -154,15 +154,7 @@ Select Top 1 Version From SqlInsightsKeyPathSummaryTimestamp;
             {
                 fail = Interlocked.Increment(ref FailNextVersion);
                 nextVersionQueryError = ex;
-                // Microsoft Provider?
-                if (ex is SqlException sqlException)
-                {
-                    isDeadLock = sqlException.Errors.OfType<SqlError>().Any(x => x.Number == 1205);
-                    foreach (SqlError sqlExceptionError in sqlException.Errors)
-                    {
-                        if (sqlExceptionError.Number == 1205) isDeadLock = true;
-                    }
-                }
+                isDeadLock = ex.GetSqlError()?.Number == 1205;
             }
 #if DEBUG
             var msecNextVersion = startNextVersion.ElapsedTicks * 1000d / Stopwatch.Frequency;

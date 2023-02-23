@@ -144,7 +144,7 @@ namespace Universe.SqlInsights.NetCore
                         }));
 
                     // ERROR
-                    SqlException sqlException = lastError.GetSqlError();
+                    SqlExceptionInfo sqlException = lastError.GetSqlError();
                     if (sqlException != null)
                     {
                         actionDetails.BriefSqlError = new BriefSqlError()
@@ -172,6 +172,8 @@ namespace Universe.SqlInsights.NetCore
                 }
                 catch (Exception ex)
                 {
+                    // TODO: (Error 2627 on AddAction)
+                    // System.Data.SqlClient.SqlException (0x80131904): Violation of PRIMARY KEY constraint 'PK_SqlInsightsKeyPathSummary'. Cannot insert duplicate key in object 'dbo.SqlInsightsKeyPathSummary'. The duplicate key value is (Misc→/api/v1/SqlInsights/Summary→[OPTIONS], 0, 1, 3).
                     Console.WriteLine("ERROR on SqlInsights Middleware for .NET Core" + Environment.NewLine + ex);
                 }
 

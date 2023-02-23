@@ -1,18 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 
 namespace Universe.SqlInsights.Shared
 {
+    // Supports both System and Microsoft sql client.
+    public class SqlExceptionInfo
+    {
+        public int Number { get; set; }
+        public string Message { get; set; }
+    }
+    
     public static class SqlExceptionExtensions
     {
-        public static SqlException GetSqlError(this Exception ex)
+        // Does not work for Microsoft.Data.SqlClient
+        public static SqlExceptionInfo GetSqlError(this Exception ex)
         {
             return ex?.AsPlainExceptionList()
-                .OfType<SqlException>()
-                .FirstOrDefault();
+                .Select(IsSqlException)
+                .FirstOrDefault(x => x != null);
+
+        }
+
+        public static SqlExceptionInfo IsSqlException(this Exception theException)
+        {
+            if (theException is System.Data.SqlClient.SqlException sysError) return new SqlExceptionInfo()
+            {
+                Message = sysError.Message,
+                Number = sysError.Number
+            };
+            
+#if NET461 || NETSTANDARD2_0
+            if (theException is Microsoft.Data.SqlClient.SqlException msError)
+            {
+                return new SqlExceptionInfo()
+                {
+                    Message = msError.Message,
+                    Number = msError.Number,
+                };
+            }
+#endif
+            return null;
         }
         
         public static IEnumerable<Exception> AsPlainExceptionList(this Exception ex)
@@ -40,7 +69,7 @@ namespace Universe.SqlInsights.Shared
             foreach (var exception in list)
             {
                 if (ret.Length > 0) ret.Append(" → ");
-                SqlException sqlEx = exception as SqlException;
+                SqlExceptionInfo sqlEx = IsSqlException(exception);
                 ret.Append($"❰{exception.GetType().Name}{(sqlEx == null ? "" : " " + sqlEx.Number)}❱ {exception.Message}");
             }
 

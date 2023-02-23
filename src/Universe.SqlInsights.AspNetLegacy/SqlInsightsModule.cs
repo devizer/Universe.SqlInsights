@@ -62,7 +62,7 @@ namespace Universe.SqlInsights.AspNetLegacy
             app.Error += (sender, args) =>
             {
                 Exception lastError = app.Server.GetLastError();
-                SqlException sqlException = lastError.GetSqlError();
+                SqlExceptionInfo sqlException = lastError.GetSqlError();
                 var sqlInfo = sqlException == null ? "" : $" SQL ERROR #{sqlException.Number} {sqlException.Message}";
                 var entryName = Assembly.GetEntryAssembly()?.Location;
                 if (entryName != null) entryName = Path.GetFileName(entryName);
@@ -142,7 +142,7 @@ namespace Universe.SqlInsights.AspNetLegacy
                     AppUserUsage = newLine.AppUserUsage,
                 };
                 
-                SqlException sqlException = lastError.GetSqlError();
+                SqlExceptionInfo sqlException = lastError.GetSqlError();
                 if (sqlException != null)
                 {
                     actionDetails.BriefSqlError = new BriefSqlError()
