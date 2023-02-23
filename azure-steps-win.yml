@@ -15,10 +15,6 @@ steps:
     displayName: "PATH's Patch"
 
   - powershell: |
-      script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash
-      Say --Reset-Stopwatch
-      Say "CPU: $(Get-CpuName)"
-
       $file="$($Env:SYSTEM_ARTIFACTSDIRECTORY)\Win32_Product (MSI Dump).txt"
       get-wmiobject Win32_Product | sort -Property Vendor, Version | Format-Table IdentifyingNumber, Vendor, Version, Name, LocalPackage -AutoSize | Out-File -Width 4444 "$file"
       cat $file
@@ -31,6 +27,10 @@ steps:
     artifact: 'MSI DUMP $(Agent.JobName)'
 
   - bash: |
+      script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash
+      Say --Reset-Stopwatch
+      Say "CPU: $(Get-CpuName)"
+
       echo "Bash Version: $BASH_VERSION"
       for cmd in cat tr node yarn npm dotnet head grep awk sed; do
         echo "'$cmd' path: [$(command -v "$cmd")]"
