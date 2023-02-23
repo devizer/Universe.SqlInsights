@@ -21,6 +21,7 @@ import copy from 'copy-to-clipboard';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import PropTypes from "prop-types";
+import sessionsStore from "../stores/SessionsStore"
 
 const SqlCode = ({codeString}) => {
     return (
@@ -99,7 +100,8 @@ export default class ActionList extends Component {
         // const apiTimestamp=`${API_URL}/ActionsTimestamp?key=${this.props.keyPath.join(Helper.keyPathSeparator.char)}`;
         const apiTimestamp=`${API_URL}/ActionsTimestamp`;
         try {
-            const req = Helper.createRequest('ActionsTimestamp', {Path: this.props.keyPath, IdSession: 0, AppName: null, HostId: null})
+            const idSession = sessionsStore.getSelectedSession()?.IdSession ?? -1;
+            const req = Helper.createRequest('ActionsTimestamp', {Path: this.props.keyPath, IdSession: idSession, AppName: null, HostId: null})
             fetch(req)
                 .then(response => {
                     return response.ok ? response.json() : {error: response.status, details: response.json()}
@@ -126,7 +128,8 @@ export default class ActionList extends Component {
         // const apiUrl=`${API_URL}/ActionsByKey?key=${this.props.keyPath.join(Helper.keyPathSeparator.char)}`;
         const apiUrl=`${API_URL}/ActionsByKey`;
         try {
-            const req = Helper.createRequest('ActionsByKey', {Path: this.props.keyPath, IdSession: 0, AppName: null, HostId: null})
+            const idSession = sessionsStore.getSelectedSession()?.IdSession ?? -1;
+            const req = Helper.createRequest('ActionsByKey', {Path: this.props.keyPath, IdSession: idSession, AppName: null, HostId: null})
             fetch(req)
                 .then(response => {
                     // console.log(`Response.Status for ${apiUrl} obtained: ${response.status}`);
