@@ -16,7 +16,7 @@ namespace Universe.SqlInsights.SqlServerStorage
         readonly IDbConnection Connection;
         readonly IDbTransaction Transaction;
         public const int MaxStartLength = 445;
-        private ConcurrentDictionary<CacheKey, long> Cache = new ConcurrentDictionary<CacheKey, long>();
+        private static ConcurrentDictionary<CacheKey, long> Cache = new ConcurrentDictionary<CacheKey, long>();
 
         public StringsStorage(IDbConnection connection, IDbTransaction transaction)
         {
@@ -161,6 +161,11 @@ namespace Universe.SqlInsights.SqlServerStorage
                     return ((int) Kind * 397) ^ (Value != null ? Value.GetHashCode() : 0);
                 }
             }
+        }
+
+        public static void ResetCacheForTests()
+        {
+            Cache.Clear();
         }
     }
 

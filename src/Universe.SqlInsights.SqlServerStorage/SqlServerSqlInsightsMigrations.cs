@@ -32,11 +32,9 @@ Create Table SqlInsightsString(
     -- Constraint PK_SqlInsightsString Primary Key (Kind, StartsWith) -- TODO: BUG
 );
 ALTER TABLE SqlInsightsString Add Constraint PK_SqlInsightsString Primary Key NONCLUSTERED (IdString);
-If Not Exists (Select 1 From sys.indexes Where name='IX_SqlInsightsString_Kind_StartsWith')
-Create Unique CLUSTERED Index IX_SqlInsightsString_Kind_StartsWith On SqlInsightsString(Kind, StartsWith);
+If Not Exists (Select 1 From sys.indexes Where name='UCX_SqlInsightsString_Kind_StartsWith')
+Create Unique CLUSTERED Index UCX_SqlInsightsString_Kind_StartsWith On SqlInsightsString(Kind, StartsWith);
 END
--- If Not Exists (Select 1 From sys.indexes Where name='IX_SqlInsightsString_Kind_StartsWith')
--- Create Index IX_SqlInsightsString_Kind_StartsWith On SqlInsightsString(Kind, StartsWith);
 ",
 
             // Table SqlInsights KeyPathSummaryTimestamp

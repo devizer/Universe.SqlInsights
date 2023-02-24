@@ -23,7 +23,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
 
         public async Task Seed()
         {
-            
+            StringsStorage.ResetCacheForTests();
             SqlServerSqlInsightsStorage storage = new SqlServerSqlInsightsStorage(ProviderFactory, ConnectionString);
             var sessions = await storage.GetSessions();
             foreach (var session in sessions.Where(x => x.IdSession != 0))
