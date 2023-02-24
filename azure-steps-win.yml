@@ -149,10 +149,14 @@ steps:
 
   - script: |
        sqlcmd /? | find "Version"
-       sqlcmd -S localhost,1433 -h-1 -s"," -E -W -w 10000 -Q "SET NOCOUNT ON; Select CONVERT(VARCHAR(128), SERVERPROPERTY ('productversion'))"
-       sqlcmd -S localhost,1433 -h-1 -s"," -E -W -w 10000 -Q "SET NOCOUNT ON; Select @@Version"
-       echo. && echo "CHECK Update ... Output"
-       sqlcmd -S localhost,1433 -E -Q "Create Table Temp1(id int); Insert Into Temp1 Values(10); Update Top (1) Temp1 Set id=42 Output Inserted.Id as MyNewId;"
+       for %%a IN ("." "localhost,1433") DO (
+        echo "TRY SERVER [%%a]"
+        sqlcmd -S %%a -h-1 -s"," -E -W -w 10000 -Q "SET NOCOUNT ON; Select CONVERT(VARCHAR(128), SERVERPROPERTY ('productversion'))"
+        sqlcmd -S %%a -h-1 -s"," -E -W -w 10000 -Q "SET NOCOUNT ON; Select @@Version"
+        echo. && echo "CHECK Update ... Output"
+        sqlcmd -S %%a -E -Q "Create Table Temp1(id int); Insert Into Temp1 Values(10); Update Top (1) Temp1 Set id=42 Output Inserted.Id as MyNewId;"
+        echo.
+       )
        true
     displayName: 'Show SQL Info'
   
