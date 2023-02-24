@@ -25,7 +25,8 @@ steps:
       $file="$($Env:SYSTEM_ARTIFACTSDIRECTORY)\Win32_Product (MSI Dump).txt"
       get-wmiobject Win32_Product | sort -Property Vendor, Version | Format-Table IdentifyingNumber, Vendor, Version, Name, LocalPackage -AutoSize | Out-File -Width 4444 "$file"
       cat $file
-    condition: ne(variables['MSI_DUMP'], '')
+    condition: False
+    # condition: ne(variables['MSI_DUMP'], '')
     displayName: 'MSI DUMP'
 
   - publish: $(SYSTEM.ARTIFACTSDIRECTORY)
@@ -39,7 +40,7 @@ steps:
       Say "CPU: $(Get-CpuName)"
 
       echo "Bash Version: $BASH_VERSION"
-      for cmd in jq tee cat tr node yarn npm dotnet head grep awk sed; do
+      for cmd in date jq tee cat tr node yarn npm dotnet head grep awk sed; do
         echo "'$cmd' path: [$(command -v "$cmd")]"
         echo "'$cmd' version: [$("$cmd" --version | head -1)]"
       done
@@ -58,6 +59,8 @@ steps:
         if [[ -s "$fullpath" ]]; then here="Yes"; fi
         echo "'$fullpath': $here"
       done
+
+      echo "Seconds since the Epoch: $(date +%s)"
 
       true
     displayName: 'Show'
@@ -79,13 +82,6 @@ steps:
 
     displayName: 'NodeJS Install'
     
-
-  - bash: |
-      dotnet --info
-      export DOTNET_VERSIONS="5.0 6.0 7.0"
-      script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash; 
-      dotnet --info
-    displayName: '.NET Install'
 
   # - bash: |
   #     curl -o local-databaseengine-v15-x64.msi https://master.dl.sourceforge.net/project/db-engine/local-databaseengine-v15-x64.msi?viasf=1
@@ -156,6 +152,13 @@ steps:
        sqlcmd -S . -E -Q "Create Table Temp1(id int); Insert Into Temp1 Values(10); Update Top (1) Temp1 Set id=42 Output Inserted.Id as MyNewId;"
     displayName: 'Show SQL Info'
   
+  - bash: |
+      dotnet --info
+      export DOTNET_VERSIONS="5.0 6.0 7.0"
+      script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash; 
+      dotnet --info
+    displayName: '.NET Install'
+
   - task: PublishBuildArtifacts@1
     condition: succeededOrFailed()
     displayName: 'Publish SQL Setup Logs'
