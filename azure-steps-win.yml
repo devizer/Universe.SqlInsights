@@ -209,10 +209,11 @@ steps:
       # for acceptance test?
       sleep 60
 
+      set -o pipefail
+      Say "Final Test: get swagger"
+      curl -I http://localhost:50420/swagger | cat || exit 666;
       Say "KILL W3API and W3APP"
       for proc in dotnet-serve.exe dotnet.exe; do cmd.exe /C "taskkill.exe /F /T /IM $proc"; done
-      Say "Final Test: get swagger"
-      curl -I http://localhost:50420/swagger | cat
     condition: eq(variables['TEST_W3API'], 'true')
     displayName: 'Test Apps (optional)'
 
