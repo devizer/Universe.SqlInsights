@@ -153,19 +153,20 @@ steps:
        true
     displayName: 'Show SQL Info'
   
-  - bash: |
-      dotnet --info
-      export DOTNET_VERSIONS="5.0 6.0 7.0"
-      script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash; 
-      dotnet --info
-    displayName: '.NET Install'
-
   - task: PublishBuildArtifacts@1
     condition: succeededOrFailed()
     displayName: 'Publish SQL Setup Logs'
     inputs:
       pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)'
       artifactName: '$(Agent.JobName) (SQL Setup Logs)'
+
+  - bash: |
+      dotnet --info
+      export DOTNET_VERSIONS="5.0 6.0 7.0"
+      script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash; 
+      dotnet --info
+    condition: succeededOrFailed()
+    displayName: '.NET Install'
 
   
   - script: |
