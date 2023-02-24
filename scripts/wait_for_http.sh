@@ -1,5 +1,6 @@
 
 function wait_for_http() {
+  local startAt="$(date +%s)"
   u="$1"; t="${WAIT_HTTP_TIMEOUT:-30}"; 
   printf "Waiting for [$u] during $t seconds ..."
   while [ $t -ge 0 ]; do 
@@ -13,6 +14,8 @@ function wait_for_http() {
     if [ "$e1" -eq 0 ]; then printf " OK\n"; return; fi; 
     printf ".";
     sleep 1;
-    done
+    local now="$(date +%s)"; local seconds=$((now-startAt))
+    if [ "$seconds" -gt "$t" ]; then break; fi
+  done
   printf " FAIL\n";
 }
