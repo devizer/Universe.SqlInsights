@@ -196,7 +196,7 @@ steps:
 
   - bash: |
       echo Starting W3Api
-      pushd src/Universe.SqlInsights.W3Api; 
+      pushd src/Universe.SqlInsights.W3Api;
       (dotnet run | tee "$SYSTEM_ARTIFACTSDIRECTORY/w3api (acceptance test).log") &
       popd
       sleep 15
