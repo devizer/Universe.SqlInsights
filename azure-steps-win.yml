@@ -3,7 +3,7 @@
 
 steps:
 
-  - powershell: 'Set-NetFirewallProfile -All -Enabled False'
+  - powershell: 'Set-NetFirewallProfile -All -Enabled False; netsh advfirewall set currentprofile state off; "ok?";'
     displayName: "Disable firefall"
 
   - script: |
