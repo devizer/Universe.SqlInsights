@@ -3,6 +3,9 @@
 
 steps:
 
+  - powershell: 'Set-NetFirewallProfile -All -Enabled False'
+    displayName: "Disable firefall"
+
   - script: |
       echo $vars=$ENV:PATH.Split(';'); [System.Array]::Sort($vars); foreach ($p in $vars) { echo $p; } | powershell -c -
       echo.
