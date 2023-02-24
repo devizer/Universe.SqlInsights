@@ -16,6 +16,11 @@ steps:
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     displayName: "PATH's Patch"
 
+  - bash: |
+      powershell -f scripts/Uninstall-Stuff.ps1 || true
+    condition: ne(variables['UNINSTALL_TRASH'], '')
+    displayName: 'UNINSTALL TRASH'
+
   - powershell: |
       $file="$($Env:SYSTEM_ARTIFACTSDIRECTORY)\Win32_Product (MSI Dump).txt"
       get-wmiobject Win32_Product | sort -Property Vendor, Version | Format-Table IdentifyingNumber, Vendor, Version, Name, LocalPackage -AutoSize | Out-File -Width 4444 "$file"

@@ -23,12 +23,15 @@ jobs:
           SQL: 'SqlServer 2008R2 Express: MSSQLSERVER'
           MSI_DUMP: true
           VMIMAGE: 'windows-2022'
+          UNINSTALL_TRASH: True
         "v2008 on Windows Server 2022":
           SQL: 'SqlServer 2008 Express: MSSQLSERVER'
           VMIMAGE: 'windows-2022'
+          UNINSTALL_TRASH: True
         "v2005 on Windows Server 2022":
           SQL: 'SqlServer 2005 Express: MSSQLSERVER'
           VMIMAGE: 'windows-2022'
+          UNINSTALL_TRASH: True
         
         'v2022 Dev':
           SQL: 'SqlServer 2022 Developer: MSSQLSERVER'
