@@ -29,8 +29,8 @@ New-Item -ItemType Directory -Path "$undir" -EA SilentlyContinue | out-null
 
 for ($i=0; $i -lt $ids.Length; $i++) {
   $id=$ids[$i];
-  Say "Uninistalling [$i of $($ids.Length)]: $id"
+  Say "Uninistalling [$($i+1) of $($ids.Length)]: $id"
   # & msiexec.exe /x "{588A9A11-1E20-4B91-8817-2D36ACBBBF9F}" /q 
   cmd /c msiexec /x "$id" /q /L*v "$undir\$id.log"
-  Say "Uninistalled [$i of $($ids.Length)]"
+  Say "Uninistalled [$($i+1) of $($ids.Length)]"
 }
