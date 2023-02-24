@@ -11,44 +11,44 @@ jobs:
       maxParallel: 9
       matrix:
 
-        "Sql 2008 R2":
+        "v2008 R2":
           SQL: 'SqlServer 2008R2 Express: MSSQLSERVER'
           MSI_DUMP: true
-        "Sql 2008":
+        "v2008":
           SQL: 'SqlServer 2008 Express: MSSQLSERVER'
-        "Sql 2005":
+        "v2005":
           SQL: 'SqlServer 2005 Express: MSSQLSERVER'
         
-        "2008 R2 on Windows Server 2022":
+        "v2008 R2 on Windows Server 2022":
           SQL: 'SqlServer 2008R2 Express: MSSQLSERVER'
           MSI_DUMP: true
           VMIMAGE: 'windows-2022'
-        "2008 on Windows Server 2022":
+        "v2008 on Windows Server 2022":
           SQL: 'SqlServer 2008 Express: MSSQLSERVER'
           VMIMAGE: 'windows-2022'
-        "2005 on Windows Server 2022":
+        "v2005 on Windows Server 2022":
           SQL: 'SqlServer 2005 Express: MSSQLSERVER'
           VMIMAGE: 'windows-2022'
         
-        'Sql 2022 Dev':
+        'v2022 Dev':
           SQL: 'SqlServer 2022 Developer: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
-        "Sql 2019 Dev":
+        "v2019 Dev":
           SQL: 'SqlServer 2019 Developer: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
-        "Sql 2012":
+        "v2012":
           SQL: 'SqlServer 2012 Express: MSSQLSERVER'
 
-        "Sql 2014":
+        "v2014":
           SQL: 'SqlServer 2014 Express: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
-        "Sql 2017 Dev":
+        "v2017 Dev":
           SQL: 'SqlServer 2017 Developer: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
-        "Sql 2016":
+        "v2016":
           SQL: 'SqlServer 2016 Express: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
-        "Sql 2017":
+        "v2017":
           SQL: 'SqlServer 2017 Express: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
 
