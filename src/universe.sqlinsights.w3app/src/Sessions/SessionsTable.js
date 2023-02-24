@@ -209,7 +209,6 @@ export default class SessionsTable extends Component {
             });
         };
 
-
         const cellMenu = row => (
             <>
                 <IconButton size={"small"} onClick={handleOpenSessionMenu(row.original)}>
@@ -287,7 +286,6 @@ export default class SessionsTable extends Component {
 
                 <Menu
                     id="long-menu"
-                    /*anchorEl={this.state.sessionMenuAnchor}*/
                     anchorEl={() => document.getElementById(`menu-session-${this.state.sessionOfMenu?.IdSession}`)}
                     keepMounted
                     open={this.state.isSessionMenuOpened}
@@ -310,8 +308,6 @@ export default class SessionsTable extends Component {
 
                     {sessionMenuOptions.map((option) => (
                         <MenuItem key={option.title} selected={false} onClick={handleClickSessionMenu(option)}>
-                            {/*{MenuIcon(15,'#555')}&nbsp;&nbsp;*/}
-                            {/*<IconRename size={20} color={"$555"} />*/}
                             {option.icon}&nbsp;&nbsp;
                             {option.title}
                         </MenuItem>

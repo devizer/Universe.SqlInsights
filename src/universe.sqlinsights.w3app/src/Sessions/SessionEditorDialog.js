@@ -34,9 +34,9 @@ import { red } from '@material-ui/core/colors';
 
 const ColorRadio = color => withStyles({
     root: {
-        color: color[400],
+        color: color[900],
         '&$checked': {
-            color: color[600],
+            color: color[999],
         },
     },
     checked: {},
@@ -110,7 +110,7 @@ export default class SessionsEditorDialog extends Component {
                     fullWidth
                     value={this.state.session?.Caption}
                 />
-                <DialogContentText className="center-aligned">
+                <DialogContentText className="center-aligned" style={{color:"black"}}>
                     <br/>
                     {radiosExpire.map(radio => (
                         <>
@@ -123,7 +123,7 @@ export default class SessionsEditorDialog extends Component {
                                 inputProps={{ 'aria-label': radio.label }}
                             />
                             {radio.label}
-                            &nbsp;&nbsp;
+                            &nbsp;
                         </>
                     ))}
                 </DialogContentText>

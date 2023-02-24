@@ -11,6 +11,8 @@ import {API_URL} from '../BuildTimeConfiguration';
 // export const API_URL="http://localhost:50420/api/v1/SqlInsights";
 // export const API_URL="http://localhost:56111/AppInsight"
 
+let prevSessionId = -1;
+
 class DataSourceListener {
 
     constructor() {
@@ -24,7 +26,11 @@ class DataSourceListener {
     }
     
     handleSessionChanged() {
-        setTimeout(this.watchdogTick);
+        const currentSessionId = sessionsStore.getSelectedSession()?.IdSession ?? -2;
+        if (currentSessionId !== prevSessionId) {
+            prevSessionId = currentSessionId; 
+            setTimeout(this.watchdogTick);
+        }
     }
 
     watchdogTick() {
