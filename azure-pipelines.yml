@@ -19,19 +19,7 @@ jobs:
         "v2005":
           SQL: 'SqlServer 2005 Express: MSSQLSERVER'
         
-        "v2008 R2 on Windows Server 2016":
-          SQL: 'SqlServer 2008R2 Express: MSSQLSERVER'
-          MSI_DUMP: true
-          VMIMAGE: 'windows-2016'
-          UNINSTALL_TRASH: True
-        "v2008 on Windows Server 2016":
-          SQL: 'SqlServer 2008 Express: MSSQLSERVER'
-          VMIMAGE: 'windows-2016'
-          UNINSTALL_TRASH: True
-        "v2005 on Windows Server 2016":
-          SQL: 'SqlServer 2005 Express: MSSQLSERVER'
-          VMIMAGE: 'windows-2016'
-          UNINSTALL_TRASH: True
+        # VMIMAGE: 'windows-2016' does not exist
         
         "v2008 R2 on Windows Server 2022":
           SQL: 'SqlServer 2008R2 Express: MSSQLSERVER'
