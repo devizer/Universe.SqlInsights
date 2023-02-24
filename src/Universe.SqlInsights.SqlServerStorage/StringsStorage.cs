@@ -16,7 +16,7 @@ namespace Universe.SqlInsights.SqlServerStorage
         readonly IDbConnection Connection;
         readonly IDbTransaction Transaction;
         public const int MaxStartLength = 445;
-        private static ConcurrentDictionary<CacheKey, long> Cache = new ConcurrentDictionary<CacheKey, long>();
+        private ConcurrentDictionary<CacheKey, long> Cache = new ConcurrentDictionary<CacheKey, long>();
 
         public StringsStorage(IDbConnection connection, IDbTransaction transaction)
         {
