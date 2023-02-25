@@ -23,6 +23,8 @@ steps:
     condition: ne(variables['RAM_DISK'], '')
     displayName: 'RAM Disk $(RAM_DISK)'
 
+    SQLINSIGHTS_CONNECTION_STRING
+
   - bash: |
       set -eu; set -o pipefail;
       docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@assw0rd!" -p 1433:1433 -d mcr.microsoft.com/mssql/server:"${SQL_IMAGE_TAG}"
@@ -30,6 +32,20 @@ steps:
       docker image ls
     condition: ne(variables['SQL_IMAGE_TAG'], '')
     displayName: 'SQL Server $(SQL_IMAGE_TAG)'
+
+  - bash: |
+      set -eu; set -o pipefail;
+      dotnet restore || dotnet restore --disable-parallel
+    condition: succeededOrFailed()
+    displayName: 'Restore'
+
+  - bash: |
+      set -eu; set -o pipefail;
+      cd src/Universe.SqlInsights.SqlServerStorage.Tests
+      export SQLINSIGHTS_CONNECTION_STRING="Data Source=localhost,1433;User ID=sa;Password=p@assw0rd!"
+      dotnet test -c Release
+    condition: succeededOrFailed()
+    displayName: 'Test'
 
   - publish: $(SYSTEM.ARTIFACTSDIRECTORY)
     displayName: 'Publish Artifacts'
