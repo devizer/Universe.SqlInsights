@@ -95,3 +95,4 @@ if (Test-Path -Path "$($ENV:RAM_DISK):\") {
 } else {
     Say "RAM Drive "$($ENV:RAM_DISK):\" not found"
 }
+echo "finished"
