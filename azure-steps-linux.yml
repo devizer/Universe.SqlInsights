@@ -30,7 +30,7 @@ steps:
       test -n "${RAM_DISK:-}" && v="-v ${RAM_DISK}:${RAM_DISK}"
       docker run --name sqlserver $v -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@assw0rd!" -p 1433:1433 -d mcr.microsoft.com/mssql/server:"${SQL_IMAGE_TAG}"
       Say "Show data folder"
-      docker exec -t sqlserver /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -p "p@assw0rd!" -Q "exec sp_databases; select * from sys.database_files;"
+      docker exec -t sqlserver /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "p@assw0rd!" -Q "exec sp_databases; select * from sys.database_files;"
       docker ps
       docker image ls
     condition: ne(variables['SQL_IMAGE_TAG'], '')
