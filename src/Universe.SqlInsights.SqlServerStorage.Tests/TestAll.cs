@@ -23,7 +23,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
 
         SqlServerSqlInsightsStorage CreateStorage(DbProviderFactory provider, string connectionString)
         {
-            SqlServerDbExtensions.CreateDbIfNotExists(connectionString, TestCaseProvider.DbDataDir);
+            SqlServerDbExtensions.CreateDbIfNotExists(connectionString, TestCaseProvider.DbDataDir, initialDataSize: 512);
             var migrations = new SqlServerSqlInsightsMigrations(provider, connectionString)
             {
                 ThrowOnDbCreationError = true
