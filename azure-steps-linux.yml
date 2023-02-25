@@ -46,7 +46,7 @@ steps:
 
   - bash: |
       set -eu; set -o pipefail;
-      docker logs sqlserver | cat | grep -v -e "^$"
+      docker logs sqlserver | cat | tr -d '\r' | grep -v -e "^$"
     condition: succeededOrFailed()
     displayName: 'SQL Server Logs'
 
@@ -76,6 +76,12 @@ steps:
       dotnet test -c Release --no-build
     condition: succeededOrFailed()
     displayName: 'Test'
+
+  - bash: |
+      set -eu; set -o pipefail;
+      docker logs sqlserver | cat | tr -d '\r' | grep -v -e "^$"
+    condition: succeededOrFailed()
+    displayName: 'SQL Server Logs'
 
   - publish: $(SYSTEM.ARTIFACTSDIRECTORY)
     displayName: 'Publish Artifacts'

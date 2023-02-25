@@ -20,7 +20,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         {
             var cases = TestCaseProvider.GetList();
             foreach (int threads in new[] { 8, 1})
-            foreach (int count in new[] { threads, 5000 })
+            foreach (int count in new[] { threads * 3, 5000 })
             foreach (var c in cases)
             {
                 yield return new SeedTestCaseProvider()
