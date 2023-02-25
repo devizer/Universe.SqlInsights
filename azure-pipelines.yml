@@ -12,16 +12,24 @@ jobs:
       maxParallel: 9
       matrix:
 
-        "SQL Server 2019 on Ubuntu":
+        "SQL Server 2019 on Ubuntu with RAM Disk":
           VMIMAGE: 'ubuntu-20.04'
           RAM_DISK: "/ram-disk"
           RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
           SQL_IMAGE_TAG: "2019-latest"
         
-        "SQL Server 2017 on Ubuntu":
+        "SQL Server 2019 on Ubuntu":
+          VMIMAGE: 'ubuntu-20.04'
+          SQL_IMAGE_TAG: "2019-latest"
+        
+        "SQL Server 2017 on Ubuntu with RAM Disk":
           VMIMAGE: 'ubuntu-20.04'
           RAM_DISK: "/ram-disk"
           RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
+          SQL_IMAGE_TAG: "2017-latest"
+
+        "SQL Server 2017 on Ubuntu":
+          VMIMAGE: 'ubuntu-20.04'
           SQL_IMAGE_TAG: "2017-latest"
         
     timeoutInMinutes: 40
@@ -33,7 +41,7 @@ jobs:
   
   - job: If
     strategy:
-      maxParallel: 9
+      maxParallel: 6
       matrix:
 
         "SQL Server 2008 R2":
