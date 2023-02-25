@@ -97,3 +97,8 @@ if (Test-Path -Path "$($ramDiskLetter):\") {
     Say "RAM Drive $($ramDiskLetter):\ not found"
 }
 echo "finished"
+
+# HOW TO REMOVE
+# Remove-IscsiVirtualDiskTargetMapping -TargetName Target1 -DevicePath ramdisk:RAMDISK1.vhdx
+# Remove-IscsiServerTarget -TargetName Target1
+# Remove-IscsiVirtualDisk -Path "ramdisk:tempdbRAM.vhdx" 
