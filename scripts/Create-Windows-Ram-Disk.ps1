@@ -86,13 +86,14 @@ Get-PSDrive | ft
 $ram=Get-Ram;
 Say "Total RAM: $($ram.Total.ToString("n0")) MB. Free: $($ram.Free.ToString("n0")) MB ($([Math]::Round($ram.Free * 100 / $ram.Total, 1))%)"
 
-if (Test-Path -Path "$($ENV:RAM_DISK):\") {
-    Say "RAM Drive "$($ENV:RAM_DISK):\" exists"
-    $dataDir="$($ENV:RAM_DISK):\DB";
+$ramDiskLetter="$($ENV:RAM_DISK)";
+if (Test-Path -Path "$(ramDiskLetter):\") {
+    Say "RAM Drive $(ramDiskLetter):\ exists"
+    $dataDir="$(ramDiskLetter):\DB";
     New-Item $dataDir -type directory -force -EA SilentlyContinue | out-null
     echo "##vso[task.setvariable variable=DB_DATA_DIR]$dataDir"
     Say "DB_DATA_DIR env is set to $dataDir";
 } else {
-    Say "RAM Drive "$($ENV:RAM_DISK):\" not found"
+    Say "RAM Drive $($ENV:RAM_DISK):\ not found"
 }
 echo "finished"
