@@ -13,13 +13,13 @@ jobs:
       matrix:
 
         "SQL Server 2019 on Ubuntu":
-          VMIMAGE: 'ubuntu-22.04'
+          VMIMAGE: 'ubuntu-20.04'
           RAM_DISK: "/ram-disk"
           RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
           SQL_IMAGE_TAG: "2019-latest"
         
         "SQL Server 2017 on Ubuntu":
-          VMIMAGE: 'ubuntu-22.04'
+          VMIMAGE: 'ubuntu-20.04'
           RAM_DISK: "/ram-disk"
           RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
           SQL_IMAGE_TAG: "2017-latest"
