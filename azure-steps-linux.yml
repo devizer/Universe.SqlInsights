@@ -31,7 +31,7 @@ steps:
       Say "volume options: [$v]"
       docker run --name sqlserver $v -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@assw0rd!" -p 1433:1433 -d mcr.microsoft.com/mssql/server:"${SQL_IMAGE_TAG}"
       Say "SQLCMD version:"
-      docker exec -t sqlserver /opt/mssql-tools/bin/sqlcmd /? | head -3
+      docker exec -t sqlserver /opt/mssql-tools/bin/sqlcmd -? | head -3
 
       set +e
       Say "Show data folder"
