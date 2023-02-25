@@ -48,7 +48,7 @@ Get-IscsiTarget | Connect-IscsiTarget
 Get-IscsiConnection | Get-Disk | Set-Disk -IsOffline $False
 Get-IscsiConnection | Get-Disk | Initialize-Disk -PartitionStyle MBR
 # -AssignDriveLetter  random?
-Get-IscsiConnection | Get-Disk | New-Partition -UseMaximumSize -DriveLetter ([char]"$($ENV:RAM_DISK)") | Format-Volume -FileSystem NTFS -Full -Force
+Get-IscsiConnection | Get-Disk | New-Partition -UseMaximumSize -DriveLetter ([char]"$($ENV:RAM_DISK)") | Format-Volume -FileSystem NTFS -NewFileSystemLabel RamDisk -Full -Force
 
 echo ""
 Say "GET-DISK"
