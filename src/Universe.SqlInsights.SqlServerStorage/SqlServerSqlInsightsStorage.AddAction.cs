@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Threading;
 using Dapper;
 using Newtonsoft.Json;
@@ -15,6 +16,8 @@ namespace Universe.SqlInsights.SqlServerStorage
         private static long CounterStorage;
         private long Counter;
         Stopwatch DebuggerStopwatch = Stopwatch.StartNew();
+
+        public static bool DebugAddAction = true;
 
         public void AddAction(ActionDetailsWithCounters reqAction)
         {
@@ -30,11 +33,14 @@ namespace Universe.SqlInsights.SqlServerStorage
                     "Update SqlInsightsKeyPathSummary Set Data = @Data, Version = @Version Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession";
 
             var aliveSessions = GetAliveSessions().ToList();
-#if DEBUG
-            double msec = DebuggerStopwatch.ElapsedTicks * 1000d / Stopwatch.Frequency;
-            var aliveSessionsInfo = string.Join(",", aliveSessions.Select(x => x.ToString()).ToArray());
-            Console.WriteLine($"{msec,15:n2} {Counter,-4} [AddAction] Alive Sessions >{aliveSessionsInfo}< \"{reqAction.Key}\"");
-#endif
+
+            if (DebugAddAction)
+            {
+                double msec = DebuggerStopwatch.ElapsedTicks * 1000d / Stopwatch.Frequency;
+                var aliveSessionsInfo = string.Join(",", aliveSessions.Select(x => x.ToString()).ToArray());
+                Console.WriteLine($"{msec,15:n2} {Counter,-4} [AddAction] Alive Sessions >{aliveSessionsInfo}< \"{reqAction.Key}\"");
+            }
+
             if (aliveSessions.Count <= 0) return;
 
             using (IDbConnection con = GetConnection())
@@ -158,13 +164,16 @@ Select Top 1 Version From SqlInsightsKeyPathSummaryTimestamp;
                 nextVersionQueryError = ex;
                 isDeadLock = ex.GetSqlError()?.Number == 1205;
             }
-#if DEBUG
-            var msecNextVersion = startNextVersion.ElapsedTicks * 1000d / Stopwatch.Frequency;
-            Console.WriteLine(
-                $"[NextVersionQuery {fail}/{total}] {msecNextVersion:n2} IsDeadlock: {(!isDeadLock ? "no" : "--<=DEADLOCK=>--")}{(nextVersionQueryError == null ? null : $" [{nextVersionQueryError.GetType()}] '{nextVersionQueryError.Message}'")}");
-            if (nextVersionQueryError != null)
-                throw new InvalidOperationException("Unable to create next version", nextVersionQueryError);
-#endif
+
+            if (DebugAddAction)
+            {
+                var msecNextVersion = startNextVersion.ElapsedTicks * 1000d / Stopwatch.Frequency;
+                Console.WriteLine(
+                    $"[NextVersionQuery {fail}/{total}] {msecNextVersion:n2} IsDeadlock: {(!isDeadLock ? "no" : "--<=DEADLOCK=>--")}{(nextVersionQueryError == null ? null : $" [{nextVersionQueryError.GetType()}] '{nextVersionQueryError.Message}'")}");
+                if (nextVersionQueryError != null)
+                    throw new InvalidOperationException("Unable to create next version", nextVersionQueryError);
+            }
+
             return nextVersion;
         }
     }

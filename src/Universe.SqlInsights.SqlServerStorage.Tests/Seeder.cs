@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Universe.SqlInsights.Shared;
@@ -21,55 +23,63 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             ConnectionString = connectionString;
         }
 
-        public async Task Seed()
+        public async Task Seed(int numThreads = 8, int limitCount = 99999)
         {
             StringsStorage.ResetCacheForTests();
+            SqlServerSqlInsightsStorage.DebugAddAction = false;
             SqlServerSqlInsightsStorage storage = new SqlServerSqlInsightsStorage(ProviderFactory, ConnectionString);
             var sessions = await storage.GetSessions();
             foreach (var session in sessions.Where(x => x.IdSession != 0))
                 await storage.DeleteSession(session.IdSession);
             
-            if (false && sessions.Count(x => !x.IsFinished) < 2)
-            {
-                Console.WriteLine("Create 2 Sessions: limited and unlimited");
-                var session1 = await storage.CreateSession("Snapshot Un-Limited " + DateTime.UtcNow, null);
-                var session2 = await storage.CreateSession("Snapshot Limited " + DateTime.UtcNow, 60*24*7);
-                Assert.AreNotEqual(session1, 0, "Session1 is not zero");
-                Assert.AreNotEqual(session2, 0, "Session2 is not zero");
-            }
-
             foreach (var session in (await storage.GetSessions()).Where(x => x.IdSession != 0))
-                storage.DeleteSession(session.IdSession);
+                await storage.DeleteSession(session.IdSession);
 
-            
             int aliveSessionsCount = storage.GetAliveSessions().Count();
             Console.WriteLine($"Alive Sessions Count: {aliveSessionsCount}");
             
-            storage.AddAction(CreateActionDetailsWithCounters("Warmp Up"));
+            SqlInsightsActionKeyPath key = new SqlInsightsActionKeyPath(TestAppName, $"Warm up");
+            storage.AddAction(CreateActionDetailsWithCounters(key));
             Console.WriteLine($"Warm Up completed (AddAction)");
+            
             Stopwatch sw = Stopwatch.StartNew();
-            int total = 0;
+            int total = 0, fail = 0;
             
             // Seed actions
-            for (int i = 65; i < 90; i++)
+            
+            ParallelOptions po = new ParallelOptions() { MaxDegreeOfParallelism = numThreads };
+            Parallel.ForEach(GetSeedingBatch().Take(limitCount), po, action =>
             {
-                for (int j = 0; j < 10 * (i - 65); j++)
+                total++;
+                try
                 {
-                    total += aliveSessionsCount;
-                    var keyPathSubKey = "Act " + ((char)i);
-                    var actionDetailsWithCounters = CreateActionDetailsWithCounters(keyPathSubKey);
-                    storage.AddAction(actionDetailsWithCounters);
+                    storage.AddAction(action);
                 }
-            }
+                catch (Exception ex)
+                {
+                    fail++;
+                }
+            });
 
             var ops = (double) total / sw.Elapsed.TotalSeconds;
-            Console.WriteLine($"OPS = {ops:n1} actions per second");
-
+            Console.WriteLine($"OPS = {ops:n1} actions per second. Adding Count: {total}. Fail count: {fail}");
         }
 
-        private static ActionDetailsWithCounters CreateActionDetailsWithCounters(string keyPathSubKey)
+        IEnumerable<ActionDetailsWithCounters> GetSeedingBatch()
         {
-            SqlInsightsActionKeyPath key = new SqlInsightsActionKeyPath(TestAppName, keyPathSubKey);
+            for (int j = 0; j <= 100; j++)
+            {
+                for (int i = 0; i < 26; i++)
+                {
+                    SqlInsightsActionKeyPath key = new SqlInsightsActionKeyPath(TestAppName, $"Section {(char) (i+65)}");
+                    ActionDetailsWithCounters actionDetailsWithCounters = CreateActionDetailsWithCounters(key);
+                    yield return actionDetailsWithCounters;
+                }
+            }
+        }
+
+        private static ActionDetailsWithCounters CreateActionDetailsWithCounters(SqlInsightsActionKeyPath key)
+        {
             ActionDetailsWithCounters.SqlStatement stm = new ActionDetailsWithCounters.SqlStatement()
             {
                 Counters = new SqlCounters() { Duration = 42 }

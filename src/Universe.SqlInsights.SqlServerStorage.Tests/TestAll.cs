@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -19,15 +20,17 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         {
         }
 
-        SqlServerSqlInsightsStorage CreateStorage(TestCaseProvider testCase)
+        SqlServerSqlInsightsStorage CreateStorage(DbProviderFactory provider, string connectionString)
         {
-            var migrations = new SqlServerSqlInsightsMigrations(testCase.Provider, testCase.ConnectionString)
+            var migrations = new SqlServerSqlInsightsMigrations(provider, connectionString)
             {
                 ThrowOnDbCreationError = true
             };
             migrations.Migrate();
-            return new SqlServerSqlInsightsStorage(testCase.Provider, testCase.ConnectionString);
+            return new SqlServerSqlInsightsStorage(provider, connectionString);
         }
+
+        SqlServerSqlInsightsStorage CreateStorage(TestCaseProvider testCase) => CreateStorage(testCase.Provider, testCase.ConnectionString);
 
         [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
         public async Task Test0_Migrate(TestCaseProvider testCase)
@@ -35,14 +38,14 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
         }
 
-        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
-        public async Task Test1_Seed(TestCaseProvider testCase)
+        [Test, TestCaseSource(typeof(SeedTestCaseProvider), nameof(SeedTestCaseProvider.GetList))]
+        public async Task Test1_Seed(SeedTestCaseProvider testCase)
         {
-            SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
+            SqlServerSqlInsightsStorage storage = CreateStorage(testCase.Provider, testCase.ConnectionString);
             var sessions = await storage.GetSessions();
             Console.WriteLine($"Sessions on-start: {sessions.Count()}");
             Seeder seeder = new Seeder(SqlClientFactory.Instance, storage.ConnectionString);
-            await seeder.Seed();
+            await seeder.Seed(testCase.ThreadCount, testCase.LimitCount);
             Console.WriteLine($"Sessions on-end: {(await storage.GetSessions()).Count()}");
         }
 
