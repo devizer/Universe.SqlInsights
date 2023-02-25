@@ -20,6 +20,7 @@ function Get-CPU() {
     return "$((Get-WmiObject Win32_Processor).Name), $([System.Environment]::ProcessorCount) Cores";
 }
 
+Say "WORKING DIR '$PWD'"
 Say "CPU: $(Get-CPU)"
 $ram=Get-Ram;
 Say "Total RAM: $($ram.Total.ToString("n0")) MB. Free: $($ram.Free.ToString("n0")) MB ($([Math]::Round($ram.Free * 100 / $ram.Total, 1))%)"
