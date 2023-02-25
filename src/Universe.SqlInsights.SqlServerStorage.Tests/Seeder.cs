@@ -61,7 +61,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             });
 
             var ops = (double) total / sw.Elapsed.TotalSeconds;
-            Console.WriteLine($"OPS = {ops:n1} actions per second. Adding Count: {total}. Fail count: {fail}");
+            Console.WriteLine($"OPS = {ops:n1} actions per second. Adding Count: {total}. Fail count: {fail} (Cores: {Environment.ProcessorCount})");
         }
 
         IEnumerable<ActionDetailsWithCounters> GetSeedingBatch()
