@@ -30,10 +30,10 @@ steps:
       test -n "${RAM_DISK:-}" && v="-v ${RAM_DISK}:${RAM_DISK}"
       Say "volume options: [$v]"
       docker run --name sqlserver $v -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@assw0rd!" -p 1433:1433 -d mcr.microsoft.com/mssql/server:"${SQL_IMAGE_TAG}"
-      Say "SQLCMD version:"
-      docker exec -t sqlserver /opt/mssql-tools/bin/sqlcmd -? | head -3
 
       set +e
+      Say "SQLCMD version:"
+      docker exec -t sqlserver /opt/mssql-tools/bin/sqlcmd -? | head -3
       Say "Show data folder"
       docker exec -t sqlserver /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "p@assw0rd!" -Q "exec sp_databases; select * from sys.database_files;"
       Say "DOCKER ALIVE CONTAINERS"
