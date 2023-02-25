@@ -26,10 +26,11 @@ $M=Get-Module -ListAvailable ServerManager; Import-Module -ModuleInfo $M;
 
 # List of IP Addresses
 Get-NetIPAddress | ft
-$ip="192.168.0.105"
+$ip=""
 
 Get-NetIPAddress | % {$_.IpAddress} | where { $_.StartsWith("192") } | % { if ($_) {$ip=$_} }
-Say "DETECTED IP: $ip"
+Get-NetIPAddress | % {$_.IpAddress} | where { $_.StartsWith("172") } | % { if ($_) {$ip=$_} }
+Say "DETECTED IP: [$ip]"
 
 $size=580;
 Say "RAM DISK SIZE: $size MB";
