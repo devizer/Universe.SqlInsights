@@ -60,8 +60,8 @@ Say "New-iscsivirtualdisk ..."
 New-iscsivirtualdisk -path ramdisk:RAMDISK1.vhdx -size ([int]$size * 1MB)
 Say "New-IscsiServerTarget ..."
 New-IscsiServerTarget Target1 -InitiatorId IPAddress:$ip
-Say "Add-IscsiVirtualDiskTargetMapping ..."
-Add-IscsiVirtualDiskTargetMapping -TargetName Target1 -Path ramdisk:RAMDISK1.vhdx -Lun 1
+Say "Add-IscsiVirtualDiskTargetMapping ..." # FAIL
+Add-IscsiVirtualDiskTargetMapping -TargetName Target1 -Path ramdisk:RAMDISK1.vhdx # -Lun 1
 Say "Start-Service msiscsi ..."
 Start-Service msiscsi
 Say "New-IscsiTargetPortal ..."
