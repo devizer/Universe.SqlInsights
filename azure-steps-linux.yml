@@ -13,18 +13,20 @@ steps:
 
   - bash: |
       set -eu; set -o pipefail;
+      sudo mkdir -p "${RAM_DISK}"
       sudo mount -t tmpfs -o size="{RAM_DISK_SIZE:-1500}"M tmpfs "${RAM_DISK}"
+      sudo chown -R "$(whoami)" "${RAM_DISK}"
       Say "Volumes"
       df -h -T
       free -m
     condition: ne(variables['RAM_DISK'], '')
-    displayName: 'RAM Disk'
+    displayName: 'RAM Disk $(RAM_DISK)'
 
   - bash: |
       set -eu; set -o pipefail;
       docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@assw0rd!" -p 1433:1433 -d mcr.microsoft.com/mssql/server:"${SQL_IMAGE_TAG}"
     condition: ne(variables['SQL_IMAGE_TAG'], '')
-    displayName: 'SQL Server'
+    displayName: 'SQL Server $(SQL_IMAGE_TAG)'
 
   - publish: $(SYSTEM.ARTIFACTSDIRECTORY)
     displayName: 'Publish Artifacts'
