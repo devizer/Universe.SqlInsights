@@ -45,6 +45,12 @@ steps:
 
   - bash: |
       set -eu; set -o pipefail;
+      docker logs sqlserver | cat
+    condition: succeededOrFailed()
+    displayName: 'SQL Server Logs'
+
+  - bash: |
+      set -eu; set -o pipefail;
       cd src/Universe.SqlInsights.SqlServerStorage.Tests
       dotnet restore || dotnet restore --disable-parallel
     condition: succeededOrFailed()
