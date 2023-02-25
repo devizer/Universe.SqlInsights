@@ -36,7 +36,8 @@ Get-NetIPAddress | % {$_.IpAddress} | where { $_.StartsWith("10.") } | % { if ($
 Get-NetIPAddress | % {$_.IpAddress} | where { $_.StartsWith("192.") } | % { if ($_) {$ip=$_} }
 Say "DETECTED IP: [$ip]"
 
-$size=3000;
+$size=2000; if ("$($ENV:RAM_DISK_SIZE)") { $size=$($ENV:RAM_DISK_SIZE); }
+
 Say "RAM DISK SIZE: $size MB";
 Say "RAM DISK DRIVE: '$($ENV:RAM_DISK)'";
 
