@@ -33,6 +33,8 @@ Say "DETECTED IP: $ip"
 
 $size=580;
 Say "RAM DISK SIZE: $size MB";
+Say "RAM DISK DRIVE: '$($ENV:RAM_DISK)'";
+
 
 
 New-iscsivirtualdisk -path ramdisk:RAMDISK1.vhdx -size ([int]$size * 1MB)
@@ -43,8 +45,10 @@ New-IscsiTargetPortal -TargetPortalAddress $ip
 Get-IscsiTarget | Connect-IscsiTarget
 Get-IscsiConnection | Get-Disk | Set-Disk -IsOffline $False
 Get-IscsiConnection | Get-Disk | Initialize-Disk -PartitionStyle MBR
-Get-IscsiConnection | Get-Disk | New-Partition -UseMaximumSize -AssignDriveLetter -DriveLetter "$($ENV:RAM_DISK)"
+Get-IscsiConnection | Get-Disk | New-Partition -UseMaximumSize -AssignDriveLetter -DriveLetter ([char]"$($ENV:RAM_DISK)")
 
 echo ""
-Say "DISKS"
+Say "GET-DISK"
 get-disk | ft
+Say "Get-PSDrive"
+Get-PSDrive | ft
