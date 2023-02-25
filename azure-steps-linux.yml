@@ -27,7 +27,7 @@ steps:
   - bash: |
       set -eu; set -o pipefail;
       v="";
-      test -n "${RAM_DISK:-}" && v="-v ${RAM_DISK}:${RAM_DISK}"
+      test -n "${RAM_DISK:-}" && v="-v ${RAM_DISK}:${RAM_DISK} -e 'MSSQL_DATA_DIR=${RAM_DISK}'"
       Say "volume options: [$v]"
       docker run --name sqlserver $v -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@assw0rd!" -p 1433:1433 -d mcr.microsoft.com/mssql/server:"${SQL_IMAGE_TAG}"
 
