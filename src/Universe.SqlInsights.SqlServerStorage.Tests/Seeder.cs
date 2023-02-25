@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using NUnit.Framework;
 using Universe.SqlInsights.Shared;
 using Universe.SqlTrace;
 

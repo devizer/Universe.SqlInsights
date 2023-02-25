@@ -197,6 +197,13 @@ steps:
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     displayName: 'dotnet test SqlServerStorage'
 
+  - bash: |
+      if [[ -n "$RAM_DISK" ]]; then
+        cmd /c "dir $RAM_DISK"
+      fi
+    condition: ne(variables['RAM_DISK'], '')
+    displayName: 'RAM Disk Usage'
+
   - script: |
       echo network-timeout 600000 >> %USERPROFILE%\.yarnrc
       pushd src\universe.sqlinsights.w3app
