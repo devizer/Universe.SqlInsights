@@ -42,3 +42,7 @@ Get-IscsiTarget | Connect-IscsiTarget
 Get-IscsiConnection | Get-Disk | Set-Disk -IsOffline $False
 Get-IscsiConnection | Get-Disk | Initialize-Disk -PartitionStyle MBR
 Get-IscsiConnection | Get-Disk | New-Partition -UseMaximumSize -AssignDriveLetter -DriveLetter "$($ENV:RAM_DISK)"
+
+echo ""
+Say "DISKS"
+get-disk | ft
