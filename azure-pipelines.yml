@@ -4,11 +4,10 @@ variables:
   # Default image
   VMIMAGE: 'windows-2019'
   DEFAULT_RAM_DISK_SIZE: "1500"
-  STEPS_TEMPLATE: "azure-steps-win.yml"
 
 jobs:
 
-  - job: If
+  - job: Test
     strategy:
       maxParallel: 9
       matrix:
@@ -17,9 +16,26 @@ jobs:
           VMIMAGE: 'ubuntu-22.04'
           RAM_DISK: "/ram-disk"
           RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
-          STEPS_TEMPLATE: "azure-steps-linux.yml"
           SQL_IMAGE_TAG: "2019-latest"
         
+        "SQL Server 2017 on Ubuntu":
+          VMIMAGE: 'ubuntu-22.04'
+          RAM_DISK: "/ram-disk"
+          RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
+          SQL_IMAGE_TAG: "2017-latest"
+        
+    timeoutInMinutes: 40
+    cancelTimeoutInMinutes: 1
+    pool:
+      vmImage: "$(VMIMAGE)"
+    steps:
+      - template: azure-steps-linux.yml
+  
+  - job: If
+    strategy:
+      maxParallel: 9
+      matrix:
+
         "SQL Server 2008 R2":
           SQL: 'SqlServer 2008R2 Express: MSSQLSERVER'
           MSI_DUMP: true
@@ -79,7 +95,7 @@ jobs:
     pool:
       vmImage: "$(VMIMAGE)"
     steps:
-      - template: $(STEPS_TEMPLATE)
+      - template: azure-steps-win.yml
 
 trigger:
   batch: false
