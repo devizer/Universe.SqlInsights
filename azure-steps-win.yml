@@ -197,10 +197,8 @@ steps:
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     displayName: 'dotnet test SqlServerStorage'
 
-  - bash: |
-      if [[ -n "$RAM_DISK" ]]; then
-        cmd /c "dir $RAM_DISK"
-      fi
+  - script: |
+      dir %RAM_DISK%
     condition: ne(variables['RAM_DISK'], '')
     displayName: 'RAM Disk Usage'
 
