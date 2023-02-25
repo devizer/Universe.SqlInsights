@@ -44,13 +44,20 @@ steps:
   - bash: |
       set -eu; set -o pipefail;
       cd src/Universe.SqlInsights.SqlServerStorage.Tests
+      dotnet build -c Release --no-restore
+    condition: succeededOrFailed()
+    displayName: 'Build'
+
+  - bash: |
+      set -eu; set -o pipefail;
+      cd src/Universe.SqlInsights.SqlServerStorage.Tests
       export SQLINSIGHTS_CONNECTION_STRING="Data Source=localhost,1433;User ID=sa;Password=p@assw0rd!"
       if [[ -n "${RAM_DISK:-}" ]]; then
         export SQLINSIGHTS_DATA_DIR="${RAM_DISK}/DB"
         sudo mkdir -p "$SQLINSIGHTS_DATA_DIR"
         Say "SQLINSIGHTS_DATA_DIR: [$SQLINSIGHTS_DATA_DIR]. TODO: mount it in a docker"
       fi
-      dotnet test -c Release
+      dotnet test -c Release --no-build
     condition: succeededOrFailed()
     displayName: 'Test'
 
