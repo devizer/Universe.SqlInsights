@@ -83,6 +83,15 @@ steps:
     condition: succeededOrFailed()
     displayName: 'SQL Server Logs'
 
+  - bash: |
+      set -eu; set -o pipefail;
+      docker logs sqlserver | cat | tr -d '\r' | grep -v -e "^$"
+      docker exec -t sqlserver cat /var/opt/mssql/log/errorlog | tr -d '\r'
+    condition: succeededOrFailed()
+    displayName: 'SQL Server Logs'
+
+    
+
   - publish: $(SYSTEM.ARTIFACTSDIRECTORY)
     displayName: 'Publish Artifacts'
     condition: succeededOrFailed()
