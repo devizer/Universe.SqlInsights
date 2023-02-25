@@ -25,6 +25,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
 
         public async Task Seed(int numThreads = 8, int limitCount = 99999)
         {
+            Console.WriteLine($"TestCaseProvider.DbDataDir: [{TestCaseProvider.DbDataDir}]");
             StringsStorage.ResetCacheForTests();
             SqlServerSqlInsightsStorage.DebugAddAction = false;
             SqlServerSqlInsightsStorage storage = new SqlServerSqlInsightsStorage(ProviderFactory, ConnectionString);
