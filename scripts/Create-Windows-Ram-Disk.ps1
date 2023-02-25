@@ -13,7 +13,7 @@ function Get-Ram() {
     $mem=(Get-CIMInstance Win32_OperatingSystem | Select FreePhysicalMemory,TotalVisibleMemorySize)[0];
     $total=[int] ($mem.TotalVisibleMemorySize / 1024);
     $free=[int] ($mem.FreePhysicalMemory / 1024);
-    $info="Total RAM: $($total.ToString("n0")) MB. Free: $($free.ToString("n0")) MB ($([Math]::Round($free * 100 / $total, 1))%)"
+    $info="Total RAM: $($total.ToString("n0")) MB. Free: $($free.ToString("n0")) MB ($([Math]::Round($free * 100 / $total, 1))%)";
     return @{
         Total=$total;
         Free=$free;
@@ -27,8 +27,7 @@ function Get-CPU() {
 $size=2000; if ("$($ENV:RAM_DISK_SIZE)") { $size=$($ENV:RAM_DISK_SIZE); }
 Say "WORKING DIR '$PWD'"
 Say "CPU: $(Get-CPU)"
-$ram=Get-Ram;
-Say "$($ram.Info)"
+Say "$(Get-Ram.Info)"
 Say "RAM DISK SIZE: $size MB";
 Say "RAM DISK DRIVE: '$($ENV:RAM_DISK)'";
 
@@ -87,8 +86,7 @@ get-disk | ft
 Say "Get-PSDrive"
 Get-PSDrive | ft
 
-$ram=Get-Ram;
-Say "Total RAM: $($ram.Total.ToString("n0")) MB. Free: $($ram.Free.ToString("n0")) MB ($([Math]::Round($ram.Free * 100 / $ram.Total, 1))%)"
+Say "$(Get-Ram.Info)"
 
 $ramDiskLetter="$($ENV:RAM_DISK)";
 if (Test-Path -Path "$($ramDiskLetter):\") {

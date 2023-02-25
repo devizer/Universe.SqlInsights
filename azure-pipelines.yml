@@ -3,6 +3,7 @@ variables:
   TEST_W3API: true
   # Default image
   VMIMAGE: 'windows-2019'
+  DEFAULT_RAM_DISK_SIZE: "1500"
 
 jobs:
 
@@ -19,7 +20,7 @@ jobs:
         "SQL Server 2005":
           SQL: 'SqlServer 2005 Express: MSSQLSERVER'
           RAM_DISK: "R"
-          RAM_DISK_SIZE: 2048
+          RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
         
         # VMIMAGE: 'windows-2016' does not exist
         
@@ -42,7 +43,7 @@ jobs:
           TEST_ADVENTURE_WORKS: true
           VMIMAGE: 'windows-2022'
           RAM_DISK: "R"
-          RAM_DISK_SIZE: 2048
+          RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
         "SQL Server 2019 Dev":
           SQL: 'SqlServer 2019 Developer: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
