@@ -187,8 +187,11 @@ steps:
     displayName: 'dotnet restore'
 
   - script: |
+      if Defined DB_DATA_DIR (
+        set SQLINSIGHTS_DATA_DIR=%DB_DATA_DIR%
+        Say "SQLINSIGHTS_DATA_DIR is %SQLINSIGHTS_DATA_DIR%"
+      )
       call 0b-Net-Rebuild-All.cmd
-      set -e
       cd src/Universe.SqlInsights.SqlServerStorage.Tests
       dotnet test --collect:"XPlat Code Coverage" --logger trx
     condition: eq(variables['Agent.OS'], 'Windows_NT')
