@@ -14,7 +14,7 @@ jobs:
       matrix:
 
         "SQL Server 2019 on Ubuntu":
-          STEPS_TEMPLATE: 'windows-2022'
+          VMIMAGE: 'ubuntu-22.04'
           RAM_DISK: "/ram-disk"
           RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
           STEPS_TEMPLATE: "azure-steps-linux.yml"
