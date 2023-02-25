@@ -46,7 +46,7 @@ steps:
 
   - bash: |
       set -eu; set -o pipefail;
-      docker logs sqlserver | cat
+      docker logs sqlserver | cat | grep -v -E "^$"
     condition: succeededOrFailed()
     displayName: 'SQL Server Logs'
 
