@@ -33,6 +33,7 @@ steps:
 
   - bash: |
       set -eu; set -o pipefail;
+      cd src/Universe.SqlInsights.SqlServerStorage.Tests
       dotnet restore || dotnet restore --disable-parallel
     condition: succeededOrFailed()
     displayName: 'Restore'
