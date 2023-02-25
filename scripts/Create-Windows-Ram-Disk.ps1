@@ -25,11 +25,8 @@ Say "RAM DISK SIZE: $size MB";
 Say "RAM DISK DRIVE: '$($ENV:RAM_DISK)'";
 
 
-
 $M=Get-Module -ListAvailable ServerManager; Import-Module -ModuleInfo $M;
-
 # Say "WINDOWS Features"; Get-WindowsFeature *; echo "";
-
 
 @("FS-iSCSITarget-Server", "iSCSITarget-VSS-VDS") | % { $package=$_
   Say "Installing $package"
@@ -40,7 +37,6 @@ $M=Get-Module -ListAvailable ServerManager; Import-Module -ModuleInfo $M;
 
 
 # https://github.com/aso930/CreateRAMDISK
-
 
 
 New-iscsivirtualdisk -path ramdisk:RAMDISK1.vhdx -size ([int]$size * 1MB)
