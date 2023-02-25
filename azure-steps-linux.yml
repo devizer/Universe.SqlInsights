@@ -1,0 +1,48 @@
+# AGENT_OS=Linux|Darwin|Windows_NT
+# condition: eq(variables['Agent.OS'], 'Linux|Darwin|Windows_NT')
+
+steps:
+
+
+  - bash: |
+      set -eu; set -o pipefail;
+      script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
+      Say --Reset-Stopwatch
+      Say "CPU: $(Get-CpuName)"
+    displayName: 'Bootstrap'
+
+  - bash: |
+      set -eu; set -o pipefail;
+      sudo mount -t tmpfs -o size="{RAM_DISK_SIZE:-1500}"M tmpfs "${RAM_DISK}"
+      Say "Volumes"
+      df -h -T
+      free -m
+    condition: ne(variables['RAM_DISK'], '')
+    displayName: 'RAM Disk'
+
+  - bash: |
+      set -eu; set -o pipefail;
+      docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@assw0rd!" -p 1433:1433 -d mcr.microsoft.com/mssql/server:"${SQL_IMAGE_TAG}"
+    condition: ne(variables['SQL_IMAGE_TAG'], '')
+    displayName: 'SQL Server'
+
+  - publish: $(SYSTEM.ARTIFACTSDIRECTORY)
+    displayName: 'Publish Artifacts'
+    condition: succeededOrFailed()
+    artifact: '$(Agent.JobName)'
+
+
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    inputs:
+      testRunner: VSTest
+      testResultsFiles: '**/*.trx'
+      testRunTitle: 'All the tests for $(Agent.JobName)'
+      
+  - task: PublishCodeCoverageResults@1
+    condition: succeededOrFailed()
+    inputs:
+      codeCoverageTool: cobertura
+      failIfCoverageEmpty: false # Optional      
+      summaryFileLocation: '**/In/**/coverage.cobertura.xml'
+

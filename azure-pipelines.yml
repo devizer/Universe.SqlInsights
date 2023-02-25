@@ -4,6 +4,7 @@ variables:
   # Default image
   VMIMAGE: 'windows-2019'
   DEFAULT_RAM_DISK_SIZE: "1500"
+  STEPS_TEMPLATE: "azure-steps-win.yml"
 
 jobs:
 
@@ -12,6 +13,13 @@ jobs:
       maxParallel: 9
       matrix:
 
+        "SQL Server 2019 on Ubuntu":
+          STEPS_TEMPLATE: 'windows-2022'
+          RAM_DISK: "/ram-disk"
+          RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
+          STEPS_TEMPLATE: "azure-steps-linux.yml"
+          SQL_IMAGE_TAG: "2019-latest"
+        
         "SQL Server 2008 R2":
           SQL: 'SqlServer 2008R2 Express: MSSQLSERVER'
           MSI_DUMP: true
@@ -71,7 +79,7 @@ jobs:
     pool:
       vmImage: "$(VMIMAGE)"
     steps:
-      - template: azure-steps-win.yml
+      - template: "$(STEPS_TEMPLATE)"
 
 trigger:
   batch: false
