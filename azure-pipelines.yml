@@ -36,9 +36,11 @@ jobs:
         #   VMIMAGE: 'windows-2022'
         #   UNINSTALL_TRASH: True
         
-        'SQL Server 2022 Dev':
+        'SQL Server 2022 Dev on Windows Server 2022':
           SQL: 'SqlServer 2022 Developer: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
+          VMIMAGE: 'windows-2022'
+          RAM_DISK: "R"
         "SQL Server 2019 Dev":
           SQL: 'SqlServer 2019 Developer: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
