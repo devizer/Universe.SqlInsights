@@ -55,6 +55,7 @@ $M=Get-Module -ListAvailable ServerManager; Import-Module -ModuleInfo $M;
 # https://github.com/aso930/CreateRAMDISK
 
 
+cd ~
 New-iscsivirtualdisk -path ramdisk:RAMDISK1.vhdx -size ([int]$size * 1MB)
 New-IscsiServerTarget Target1 -InitiatorId IPAddress:$ip
 Add-IscsiVirtualDiskTargetMapping -TargetName Target1 -Path ramdisk:RAMDISK1.vhdx -Lun 1
