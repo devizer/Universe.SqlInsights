@@ -23,8 +23,6 @@ steps:
     condition: ne(variables['RAM_DISK'], '')
     displayName: 'RAM Disk $(RAM_DISK)'
 
-    SQLINSIGHTS_CONNECTION_STRING
-
   - bash: |
       set -eu; set -o pipefail;
       docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@assw0rd!" -p 1433:1433 -d mcr.microsoft.com/mssql/server:"${SQL_IMAGE_TAG}"
