@@ -21,15 +21,15 @@ jobs:
         
         # VMIMAGE: 'windows-2016' does not exist
         
-        "SQL Server 2008 R2 on Windows Server 2022":
-          SQL: 'SqlServer 2008R2 Express: MSSQLSERVER'
-          MSI_DUMP: true
-          VMIMAGE: 'windows-2022'
-          UNINSTALL_TRASH: True
-        "SQL Server 2008 on Windows Server 2022":
-          SQL: 'SqlServer 2008 Express: MSSQLSERVER'
-          VMIMAGE: 'windows-2022'
-          UNINSTALL_TRASH: True
+        # "SQL Server 2008 R2 on Windows Server 2022":
+        #   SQL: 'SqlServer 2008R2 Express: MSSQLSERVER'
+        #   MSI_DUMP: true
+        #   VMIMAGE: 'windows-2022'
+        #   UNINSTALL_TRASH: True
+        # "SQL Server 2008 on Windows Server 2022":
+        #   SQL: 'SqlServer 2008 Express: MSSQLSERVER'
+        #   VMIMAGE: 'windows-2022'
+        #   UNINSTALL_TRASH: True
         # "SQL Server 2005 on Windows Server 2022":
         #   SQL: 'SqlServer 2005 Express: MSSQLSERVER'
         #   VMIMAGE: 'windows-2022'
