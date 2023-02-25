@@ -79,7 +79,7 @@ jobs:
     pool:
       vmImage: "$(VMIMAGE)"
     steps:
-      - template: "$(STEPS_TEMPLATE)"
+      - template: $(STEPS_TEMPLATE)
 
 trigger:
   batch: false
