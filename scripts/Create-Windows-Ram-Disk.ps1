@@ -1,0 +1,44 @@
+function Get-Elapsed
+{
+    if ($Global:startAt -eq $null) { $Global:startAt = [System.Diagnostics.Stopwatch]::StartNew(); }
+    [System.String]::Concat("[", (new-object System.DateTime(0)).AddMilliseconds($Global:startAt.ElapsedMilliseconds).ToString("mm:ss"), "]");
+}; Get-Elapsed | out-null;
+
+function Say { param( [string] $message )
+    Write-Host "$(Get-Elapsed) " -NoNewline -ForegroundColor Magenta
+    Write-Host "$message" -ForegroundColor Yellow
+}
+
+$M=Get-Module -ListAvailable ServerManager; Import-Module -ModuleInfo $M;
+
+Say "WINDOWS Features"
+Get-WindowsFeature *
+echo "";
+
+
+@("FS-iSCSITarget-Server", "iSCSITarget-VSS-VDS") | % { $package=$_
+  Say "Installing $package"
+  Install-WindowsFeature $package;
+  Say "Installed $package";
+  echo "";
+}
+
+
+# https://github.com/aso930/CreateRAMDISK
+
+# List of IP Addresses
+Get-NetIPAddress | ft
+
+$ip="127.0.0.1"
+$ip="192.168.213.128"
+$size=580;
+
+New-iscsivirtualdisk -path ramdisk:RAMDISK1.vhdx -size ([int]$size * 1MB)
+New-IscsiServerTarget Target1 -InitiatorId IPAddress:$ip
+Add-IscsiVirtualDiskTargetMapping -TargetName Target1 -Path ramdisk:RAMDISK1.vhdx -Lun 1
+Start-Service msiscsi
+New-IscsiTargetPortal -TargetPortalAddress $ip
+Get-IscsiTarget | Connect-IscsiTarget
+Get-IscsiConnection | Get-Disk | Set-Disk -IsOffline $False
+Get-IscsiConnection | Get-Disk | Initialize-Disk -PartitionStyle MBR
+Get-IscsiConnection | Get-Disk | New-Partition -UseMaximumSize -AssignDriveLetter -DriveLetter "$($ENV:RAM_DISK)"

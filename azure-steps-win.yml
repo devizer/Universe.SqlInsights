@@ -24,6 +24,11 @@ steps:
     condition: ne(variables['UNINSTALL_TRASH'], '')
     displayName: 'UNINSTALL TRASH'
 
+  - bash: |
+      powershell -f scripts/Create-Windows-Ram-Disk.ps1 || true
+    condition: ne(variables['RAM_DISK'], '')
+    displayName: 'RAM Disk'
+
   - powershell: |
       $file="$($Env:SYSTEM_ARTIFACTSDIRECTORY)\Win32_Product (MSI Dump).txt"
       get-wmiobject Win32_Product | sort -Property Vendor, Version | Format-Table IdentifyingNumber, Vendor, Version, Name, LocalPackage -AutoSize | Out-File -Width 4444 "$file"

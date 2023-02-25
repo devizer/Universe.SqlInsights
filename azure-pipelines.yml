@@ -18,6 +18,7 @@ jobs:
           SQL: 'SqlServer 2008 Express: MSSQLSERVER'
         "SQL Server 2005":
           SQL: 'SqlServer 2005 Express: MSSQLSERVER'
+          RAM_DISK: "R"
         
         # VMIMAGE: 'windows-2016' does not exist
         
