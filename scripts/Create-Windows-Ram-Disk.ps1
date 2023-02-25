@@ -47,7 +47,8 @@ New-IscsiTargetPortal -TargetPortalAddress $ip
 Get-IscsiTarget | Connect-IscsiTarget
 Get-IscsiConnection | Get-Disk | Set-Disk -IsOffline $False
 Get-IscsiConnection | Get-Disk | Initialize-Disk -PartitionStyle MBR
-Get-IscsiConnection | Get-Disk | New-Partition -UseMaximumSize -AssignDriveLetter -DriveLetter ([char]"$($ENV:RAM_DISK)")
+# -AssignDriveLetter  random?
+Get-IscsiConnection | Get-Disk | New-Partition -UseMaximumSize -DriveLetter ([char]"$($ENV:RAM_DISK)") | Format-Volume -FileSystem NTFS -Full -Force
 
 echo ""
 Say "GET-DISK"
