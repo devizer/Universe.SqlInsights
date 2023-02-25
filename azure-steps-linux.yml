@@ -14,7 +14,8 @@ steps:
   - bash: |
       set -eu; set -o pipefail;
       sudo mkdir -p "${RAM_DISK}"
-      sudo mount -t tmpfs -o size="{RAM_DISK_SIZE:-1500}"m tmpfs "${RAM_DISK}"
+      # sudo mount -t tmpfs -o size="{RAM_DISK_SIZE:-1500}"m tmpfs "${RAM_DISK}"
+      sudo mount -t tmpfs none "${RAM_DISK}"
       sudo chown -R "$(whoami)" "${RAM_DISK}"
       Say "Volumes"
       df -h -T
