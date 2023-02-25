@@ -29,8 +29,8 @@ Say "Total RAM: $($ram.Total.ToString("n0")) MB. Free: $($ram.Free.ToString("n0"
 Get-NetIPAddress | ft
 $ip=""
 
-Get-NetIPAddress | % {$_.IpAddress} | where { $_.StartsWith("10.") } | % { if ($_) {$ip=$_} }
 Get-NetIPAddress | % {$_.IpAddress} | where { $_.StartsWith("172.") } | % { if ($_) {$ip=$_} }
+Get-NetIPAddress | % {$_.IpAddress} | where { $_.StartsWith("10.") } | % { if ($_) {$ip=$_} }
 
 # works only
 Get-NetIPAddress | % {$_.IpAddress} | where { $_.StartsWith("192.") } | % { if ($_) {$ip=$_} }
