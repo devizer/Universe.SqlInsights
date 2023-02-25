@@ -28,8 +28,9 @@ $M=Get-Module -ListAvailable ServerManager; Import-Module -ModuleInfo $M;
 Get-NetIPAddress | ft
 $ip=""
 
-Get-NetIPAddress | % {$_.IpAddress} | where { $_.StartsWith("192") } | % { if ($_) {$ip=$_} }
-Get-NetIPAddress | % {$_.IpAddress} | where { $_.StartsWith("172") } | % { if ($_) {$ip=$_} }
+Get-NetIPAddress | % {$_.IpAddress} | where { $_.StartsWith("172.") } | % { if ($_) {$ip=$_} }
+Get-NetIPAddress | % {$_.IpAddress} | where { $_.StartsWith("192.") } | % { if ($_) {$ip=$_} }
+Get-NetIPAddress | % {$_.IpAddress} | where { $_.StartsWith("10.") } | % { if ($_) {$ip=$_} }
 Say "DETECTED IP: [$ip]"
 
 $size=580;
