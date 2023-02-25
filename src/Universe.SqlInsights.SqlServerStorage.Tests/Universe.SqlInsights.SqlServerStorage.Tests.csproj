@@ -6,14 +6,9 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
+  <Import Project="..\Shared-Files\NUnit-Platform.props" />
+
   <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="1.3.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="NUnit" Version="3.12.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" />
   </ItemGroup>
 

@@ -8,11 +8,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 using NUnit.Framework;
+using Universe.NUnitTests;
 using Universe.SqlInsights.Shared;
 
 namespace Universe.SqlInsights.SqlServerStorage.Tests
 {
-    public class Tests
+    public class TestAll : NUnitTestsBase
     {
 
         [OneTimeSetUp]
