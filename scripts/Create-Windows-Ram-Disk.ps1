@@ -9,6 +9,21 @@ function Say { param( [string] $message )
     Write-Host "$message" -ForegroundColor Yellow
 }
 
+function Get-Ram() {
+    $mem=(Get-CIMInstance Win32_OperatingSystem | Select FreePhysicalMemory,TotalVisibleMemorySize)[0];
+    return @{
+        Total=[int] ($mem.TotalVisibleMemorySize / 1024);
+        Free=[int] ($mem.FreePhysicalMemory / 1024);
+    }
+}
+function Get-CPU() {
+    return "$((Get-WmiObject Win32_Processor).Name), $([System.Environment]::ProcessorCount) Cores";
+}
+
+Say "CPU: $(Get-CPU)"
+$ram=Get-Ram;
+Say "Total RAM: $($ram.Total.ToString("n0")) MB. Free: $($ram.Free.ToString("n0")) MB ($([Math]::Round($ram.Free * 100 / $ram.Total, 1))%)"
+
 # List of IP Addresses
 Get-NetIPAddress | ft
 $ip=""
@@ -20,7 +35,7 @@ Get-NetIPAddress | % {$_.IpAddress} | where { $_.StartsWith("172.") } | % { if (
 Get-NetIPAddress | % {$_.IpAddress} | where { $_.StartsWith("192.") } | % { if ($_) {$ip=$_} }
 Say "DETECTED IP: [$ip]"
 
-$size=580;
+$size=3000;
 Say "RAM DISK SIZE: $size MB";
 Say "RAM DISK DRIVE: '$($ENV:RAM_DISK)'";
 
@@ -55,3 +70,6 @@ Say "GET-DISK"
 get-disk | ft
 Say "Get-PSDrive"
 Get-PSDrive | ft
+
+$ram=Get-Ram;
+Say "Total RAM: $($ram.Total.ToString("n0")) MB. Free: $($ram.Free.ToString("n0")) MB ($([Math]::Round($ram.Free * 100 / $ram.Total, 1))%)"
