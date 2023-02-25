@@ -14,7 +14,7 @@ steps:
   - bash: |
       set -eu; set -o pipefail;
       sudo mkdir -p "${RAM_DISK}"
-      # sudo mount -t tmpfs -o size="{RAM_DISK_SIZE:-1500}"m tmpfs "${RAM_DISK}"
+      # -o size="{RAM_DISK_SIZE:-1500}"m 
       sudo mount -t tmpfs none "${RAM_DISK}"
       sudo chown -R "$(whoami)" "${RAM_DISK}"
       Say "Volumes"
@@ -26,6 +26,8 @@ steps:
   - bash: |
       set -eu; set -o pipefail;
       docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@assw0rd!" -p 1433:1433 -d mcr.microsoft.com/mssql/server:"${SQL_IMAGE_TAG}"
+      docker ps
+      docker image ls
     condition: ne(variables['SQL_IMAGE_TAG'], '')
     displayName: 'SQL Server $(SQL_IMAGE_TAG)'
 
