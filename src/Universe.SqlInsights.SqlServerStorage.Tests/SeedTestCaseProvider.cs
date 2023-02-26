@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
+using System.Linq;
 
 namespace Universe.SqlInsights.SqlServerStorage.Tests
 {
@@ -19,22 +20,31 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         
         public static IEnumerable<SeedTestCaseProvider> GetList()
         {
+            var threadsList = new[] { Environment.ProcessorCount*2 + 1, Environment.ProcessorCount + 1, 1};
             var cases = TestCaseProvider.GetList();
-            foreach (int threads in new[] { Environment.ProcessorCount + 1, 1})
-            foreach (int count in new[] { threads * 3, 5000 })
             foreach (var c in cases)
             {
                 yield return new SeedTestCaseProvider()
                 {
                     Provider = c.Provider,
                     ConnectionString = c.ConnectionString,
-                    LimitCount = count,
+                    LimitCount = 100,
+                    ThreadCount = threadsList.Max(),
+                };
+            }
+
+            foreach (int threads in threadsList)
+            foreach (var c in cases)
+            {
+                yield return new SeedTestCaseProvider()
+                {
+                    Provider = c.Provider,
+                    ConnectionString = c.ConnectionString,
+                    LimitCount = 5000,
                     ThreadCount = threads
                 };
             }
         }
-
-
         
     }
 }
