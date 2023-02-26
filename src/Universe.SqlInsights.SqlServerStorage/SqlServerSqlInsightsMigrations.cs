@@ -59,7 +59,10 @@ namespace Universe.SqlInsights.SqlServerStorage
             List<string> sqlMotList = new List<string>();
             if (supportMOT && !isMotFileGroupExists)
             {
-
+                string sqlAutoCloseOff = @$"
+ALTER DATABASE [{dbName}] 
+SET AUTO_CLOSE OFF;";
+                
                 string sqlAddMotFileGroup = @$"
 ALTER DATABASE [{dbName}]
 ADD FILEGROUP MemoryOptimizedTables
@@ -74,7 +77,7 @@ TO FILEGROUP MemoryOptimizedTables;";
 ALTER DATABASE [{dbName}]
 SET MEMORY_OPTIMIZED_ELEVATE_TO_SNAPSHOT = ON;
 ";
-                sqlMotList.AddRange(new[] { sqlAddMotFileGroup, sqlAddMotFile, sqlEnableTransactions});
+                sqlMotList.AddRange(new[] { sqlAutoCloseOff, sqlAddMotFileGroup, sqlAddMotFile, sqlEnableTransactions});
             }
             
             string sqlWith = supportMOT ? " WITH (MEMORY_OPTIMIZED=ON, DURABILITY=SCHEMA_ONLY)" : "";
