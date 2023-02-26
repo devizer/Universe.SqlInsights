@@ -63,7 +63,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
 
             var ops = (double) total / sw.Elapsed.TotalSeconds;
             var providerName = Path.GetFileNameWithoutExtension(ProviderFactory.GetType().Assembly.Location);
-            Console.WriteLine($"[{providerName}] OPS = {ops:n1} actions per second. Adding Count: {total}. Fail count: {fail} (Cores: {Environment.ProcessorCount})");
+            Console.WriteLine($"[{providerName}] OPS = {ops:n1} actions per second. Adding Count: {total}. Fail count: {fail} (Cores: {Environment.ProcessorCount}, Threads: {numThreads})");
         }
 
         IEnumerable<ActionDetailsWithCounters> GetSeedingBatch()
