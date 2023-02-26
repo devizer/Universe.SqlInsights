@@ -28,8 +28,10 @@ steps:
 
       sudo mkdir -p "${RAM_DISK}/DB"
       sudo chown -R "$(whoami)" "${RAM_DISK}"
-      Say "Volumes"
+      Say "HOST VOLUMES"
       df -h -T
+      Say "FREE MEMORY"
+      Drop-FS-Cache
       free -m
     condition: ne(variables['RAM_DISK'], '')
     displayName: 'RAM Disk $(RAM_DISK)'
@@ -37,7 +39,7 @@ steps:
   - bash: |
       set -eu; set -o pipefail;
       v="";
-      test -n "${RAM_DISK:-}" && v="-v ${RAM_DISK}:${RAM_DISK} -e 'MSSQL_DATA_DIR=${RAM_DISK}'"
+      test -n "${RAM_DISK:-}" && v="-v ${RAM_DISK}:${RAM_DISK} -e MSSQL_DATA_DIR=${RAM_DISK}"
       Say "volume options: [$v]"
       docker run --name sqlserver --privileged $v -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@assw0rd!" -p 1433:1433 -d mcr.microsoft.com/mssql/server:"${SQL_IMAGE_TAG}"
 
@@ -78,9 +80,9 @@ steps:
       cd src/Universe.SqlInsights.SqlServerStorage.Tests
       export SQLINSIGHTS_CONNECTION_STRING="Data Source=localhost,1433;User ID=sa;Password=p@assw0rd!"
       if [[ -n "${RAM_DISK:-}" ]]; then
-        export SQLINSIGHTS_DATA_DIR="${RAM_DISK}/DB"
-        sudo mkdir -p "$SQLINSIGHTS_DATA_DIR"
-        Say "SQLINSIGHTS_DATA_DIR: [$SQLINSIGHTS_DATA_DIR]. TODO: mount it in a docker"
+        # export SQLINSIGHTS_DATA_DIR="${RAM_DISK}/DB"
+        # sudo mkdir -p "$SQLINSIGHTS_DATA_DIR"
+        # Say "SQLINSIGHTS_DATA_DIR: [$SQLINSIGHTS_DATA_DIR]. TODO: mount it in a docker"
       fi
       dotnet test -c Release --no-build
     condition: succeededOrFailed()
