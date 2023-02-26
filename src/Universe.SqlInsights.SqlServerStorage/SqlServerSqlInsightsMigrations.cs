@@ -29,7 +29,7 @@ namespace Universe.SqlInsights.SqlServerStorage
         {
             string dbName = new SqlConnectionStringBuilder(ConnectionString).InitialCatalog;
             Logs.AppendLine($"DisableMemoryOptimizedTables: {DisableMemoryOptimizedTables}");
-            Logs.AppendLine($"Db Name: {dbName}");
+            Logs.AppendLine($"Db Name: [{dbName}]");
             
             IDbConnection cnn = this.ProviderFactory.CreateConnection();
             cnn.ConnectionString = this.ConnectionString;
@@ -41,8 +41,9 @@ namespace Universe.SqlInsights.SqlServerStorage
             
             // MOT Folder
             var sampleFile = cnn.Query<string>("Select Top 1 filename from sys.sysfiles").FirstOrDefault();
-            var motFolder = sampleFile != null ? Path.GetDirectoryName(sampleFile) : null;
-            Logs.AppendLine($"MOT Folder: {motFolder}");
+            var dataFolder = sampleFile != null ? Path.GetDirectoryName(sampleFile) : null;
+            var motFileFolder = Path.Combine(dataFolder, $"MOT for {dbName}");
+            Logs.AppendLine($"MOT Files Folder: {dataFolder}");
 
             var existingTables = cnn.Query<string>("Select name from SYSOBJECTS WHERE xtype = 'U' and name like '%SqlInsights%'").ToArray();
             // Logs.AppendLine($"Existing Tables: {}");
@@ -53,7 +54,7 @@ namespace Universe.SqlInsights.SqlServerStorage
                 motFileGroup = cnn.Query<string>("Select Top 1 name from sys.filegroups where type = 'FX'").FirstOrDefault();
             }
             bool isMotFileGroupExists = !string.IsNullOrEmpty(motFileGroup);
-            Logs.AppendLine($"MOT File Group: '{motFileGroup}'");
+            Logs.AppendLine($"Existing MOT File Group Name: '{motFileGroup}'");
             Logs.AppendLine($"Is MOT File Group Exists: {isMotFileGroupExists}");
             
             List<string> sqlMotList = new List<string>();
@@ -70,7 +71,7 @@ CONTAINS MEMORY_OPTIMIZED_DATA;";
 
                 string sqlAddMotFile = @$"
 ALTER DATABASE [{dbName}] ADD FILE (
-    name='SqlInsight MemoryOptimizedTables', filename='{Path.Combine(motFolder, $"MOT for {dbName}")}')
+    name='SqlInsight MemoryOptimizedTables', filename='{motFileFolder}')
 TO FILEGROUP MemoryOptimizedTables;";
 
                 string sqlEnableTransactions = $@"
