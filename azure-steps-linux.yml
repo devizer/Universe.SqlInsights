@@ -11,39 +11,14 @@ steps:
       Say "CPU: $(Get-CpuName)"
     displayName: 'Bootstrap'
 
-  - bash: |
-      set -eu; set -o pipefail;
-
-      # VERSION1
-      kb="${RAM_DISK_SIZE:-1500}"; kb=$((kb*1024));
-      sudo mkdir -p "${RAM_DISK}"
-      sudo mount -t tmpfs -o size="${kb}"k none "${RAM_DISK}"
-
-      sudo mkdir -p "${RAM_DISK}/DB"
-      sudo chown -R "$(whoami)" "${RAM_DISK}"
-      sudo chmod -R 777 "${RAM_DISK}"
-      Say "HOST VOLUMES"
-      df -h -T
-      Say "FREE MEMORY"
-      Drop-FS-Cache
-      free -m
-    condition: ne(variables['RAM_DISK'], '')
-    displayName: 'RAM Disk $(RAM_DISK)'
-
   # - bash: |
   #     set -eu; set -o pipefail;
-  #     sudo mkdir -p "${RAM_DISK}"
-  #     # -o size="{RAM_DISK_SIZE:-1500}"m 
-  #     # Say "SKIPPING TMPFS on ${RAM_DISK}"
+  #     DOES NOT. Need DIRECT IO
 
-  #     # VERSION2
+  #     # VERSION1
   #     kb="${RAM_DISK_SIZE:-1500}"; kb=$((kb*1024));
-  #     sudo mkdir -p /mnt/ram-disk
-  #     sudo mount -t tmpfs -o size="${kb}"k none /mnt/ram-disk
-  #     sudo fallocate -l "$((kb-16))k" /mnt/ram-disk/ram-file
-  #     sudo losetup --direct-io=off /dev/loop23 /mnt/ram-disk/ram-file
-  #     sudo mkfs.ext4 /dev/loop23
-  #     sudo mount -o defaults,noatime,nodiratime,commit=2000,barrier=0,data=writeback /dev/loop23 "${RAM_DISK}"
+  #     sudo mkdir -p "${RAM_DISK}"
+  #     sudo mount -t tmpfs -o size="${kb}"k none "${RAM_DISK}"
 
   #     sudo mkdir -p "${RAM_DISK}/DB"
   #     sudo chown -R "$(whoami)" "${RAM_DISK}"
@@ -54,7 +29,33 @@ steps:
   #     Drop-FS-Cache
   #     free -m
   #   condition: ne(variables['RAM_DISK'], '')
-  #   displayName: 'RAM Disk $(RAM_DISK) V2'
+  #   displayName: 'RAM Disk $(RAM_DISK)'
+
+  - bash: |
+      set -eu; set -o pipefail;
+      sudo mkdir -p "${RAM_DISK}"
+      # -o size="{RAM_DISK_SIZE:-1500}"m 
+      # Say "SKIPPING TMPFS on ${RAM_DISK}"
+
+      # VERSION2
+      kb="${RAM_DISK_SIZE:-1500}"; kb=$((kb*1024));
+      sudo mkdir -p /mnt/ram-disk
+      sudo mount -t tmpfs -o size="${kb}"k none /mnt/ram-disk
+      sudo fallocate -l "$((kb-128))k" /mnt/ram-disk/ram-file
+      sudo losetup --direct-io=off /dev/loop23 /mnt/ram-disk/ram-file
+      sudo mkfs.ext2 /dev/loop23
+      sudo mount -o defaults,noatime,nodiratime,commit=2000,barrier=0,data=writeback /dev/loop23 "${RAM_DISK}"
+
+      sudo mkdir -p "${RAM_DISK}/DB"
+      sudo chown -R "$(whoami)" "${RAM_DISK}"
+      sudo chmod -R 777 "${RAM_DISK}"
+      Say "HOST VOLUMES"
+      df -h -T
+      Say "FREE MEMORY"
+      Drop-FS-Cache
+      free -m
+    condition: ne(variables['RAM_DISK'], '')
+    displayName: 'RAM Disk $(RAM_DISK) V2'
 
   - bash: |
       set -eu; set -o pipefail;
