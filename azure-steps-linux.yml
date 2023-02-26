@@ -47,7 +47,7 @@ steps:
       Say "SQLCMD version:"
       docker exec -t sqlserver /opt/mssql-tools/bin/sqlcmd -? | head -3
       Say "Show data folder"
-      docker exec -t sqlserver /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "p@assw0rd!" -Q "exec sp_databases; select * from sys.database_files;"
+      docker exec -t sqlserver /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "p@assw0rd!" -Q "exec sp_databases; select * from sys.database_files; create database mydb1; use mydb1; select * from sys.database_files;"
       Say "DOCKER ALIVE CONTAINERS"
       docker ps
       Say "DOCKER IMAGES"
