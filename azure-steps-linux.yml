@@ -96,10 +96,9 @@ steps:
 
   - bash: |
       set -eu; set -o pipefail;
-      docker logs sqlserver | cat | tr -d '\r' | grep -v -e "^$"
       docker exec -t sqlserver cat /var/opt/mssql/log/errorlog | tr -d '\r'
     condition: succeededOrFailed()
-    displayName: 'SQL Server Logs'
+    displayName: 'SQL /var/.../errorlog'
 
     
 
