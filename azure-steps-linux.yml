@@ -44,7 +44,7 @@ steps:
       sudo fallocate -l "$((kb-128))k" /mnt/ram-disk/ram-file
       sudo losetup --direct-io=off /dev/loop23 /mnt/ram-disk/ram-file
       sudo mkfs.ext2 /dev/loop23
-      sudo mount -o defaults,noatime,nodiratime,commit=2000,barrier=0,data=writeback /dev/loop23 "${RAM_DISK}"
+      sudo mount -o defaults,noatime,nodiratime /dev/loop23 "${RAM_DISK}"
 
       sudo mkdir -p "${RAM_DISK}/DB"
       sudo chown -R "$(whoami)" "${RAM_DISK}"
