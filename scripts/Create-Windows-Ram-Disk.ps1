@@ -27,7 +27,7 @@ function Get-CPU() {
 $size=2000; if ("$($ENV:RAM_DISK_SIZE)") { $size=$($ENV:RAM_DISK_SIZE); }
 Say "WORKING DIR '$PWD'"
 Say "CPU: $(Get-CPU)"
-Say "$(Get-Ram.Info)"
+Say "$((Get-Ram).Info)"
 Say "RAM DISK SIZE: $size MB";
 Say "RAM DISK DRIVE: '$($ENV:RAM_DISK)'";
 
@@ -86,7 +86,7 @@ get-disk | ft
 Say "Get-PSDrive"
 Get-PSDrive | ft
 
-Say "$(Get-Ram.Info)"
+Say "$((Get-Ram).Info)"
 
 $ramDiskLetter="$($ENV:RAM_DISK)";
 if (Test-Path -Path "$($ramDiskLetter):\") {
