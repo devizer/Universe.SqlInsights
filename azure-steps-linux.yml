@@ -92,6 +92,12 @@ steps:
 
   - bash: |
       set -eu; set -o pipefail;
+      test -d "${RAM_DISK:-}" && ls -la "${RAM_DISK:-}"
+    condition: ne(variables['RAM_DISK'], '')
+    displayName: 'Show RAM Disk'
+
+  - bash: |
+      set -eu; set -o pipefail;
       docker logs sqlserver | cat | tr -d '\r' | grep -v -e "^$"
     condition: succeededOrFailed()
     displayName: 'SQL Server Logs'
