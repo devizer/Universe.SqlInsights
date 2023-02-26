@@ -36,7 +36,8 @@ namespace Universe.SqlInsights.SqlServerStorage
             var man = cnn.Manage();
             Logs.AppendLine($"IsLocalDB: {man.IsLocalDB}");
             Logs.AppendLine($"Version: {man.ShortServerVersion}, {man.ServerEdition}");
-            var supportMOT = !man.IsLocalDB && man.ShortServerVersion.Major >= 12;
+            var major = man.ShortServerVersion.Major;
+            var supportMOT = !man.IsLocalDB && (major > 12 || (major == 12 && man.EngineEdition == EngineEdition.Enterprise));
             Logs.AppendLine($"Support MOT: {supportMOT}{(DisableMemoryOptimizedTables & supportMOT ? ", But Disabled": "")}");
             
             // MOT Folder
