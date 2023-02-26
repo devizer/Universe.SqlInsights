@@ -35,7 +35,7 @@ namespace Universe.SqlInsights.SqlServerStorage
             cnn.ConnectionString = this.ConnectionString;
             var man = cnn.Manage();
             Logs.AppendLine($"IsLocalDB: {man.IsLocalDB}");
-            Logs.AppendLine($"Version: {man.ShortServerVersion}, {man.EngineEdition}");
+            Logs.AppendLine($"Version: {man.ShortServerVersion}, {man.ServerEdition}");
             var supportMOT = !man.IsLocalDB && man.ShortServerVersion.Major >= 12;
             Logs.AppendLine($"Support MOT: {supportMOT}{(DisableMemoryOptimizedTables & supportMOT ? ", But Disabled": "")}");
             
@@ -65,13 +65,13 @@ SET AUTO_CLOSE OFF;";
                 
                 string sqlAddMotFileGroup = @$"
 ALTER DATABASE [{dbName}]
-ADD FILEGROUP MemoryOptimizedTables
+ADD FILEGROUP MemoryOptimizedTablesFileGroup
 CONTAINS MEMORY_OPTIMIZED_DATA;";
 
                 string sqlAddMotFile = @$"
 ALTER DATABASE [{dbName}] ADD FILE (
     name='SqlInsight MemoryOptimizedTables', filename='{motFileFolder}')
-TO FILEGROUP MemoryOptimizedTables;";
+TO FILEGROUP MemoryOptimizedTablesFileGroup;";
 
                 string sqlEnableTransactions = $@"
 ALTER DATABASE [{dbName}]
