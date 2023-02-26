@@ -28,6 +28,7 @@ steps:
 
       sudo mkdir -p "${RAM_DISK}/DB"
       sudo chown -R "$(whoami)" "${RAM_DISK}"
+      sudo chmode -R 777 "${RAM_DISK}"
       Say "HOST VOLUMES"
       df -h -T
       Say "FREE MEMORY"
