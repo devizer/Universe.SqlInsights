@@ -54,8 +54,7 @@ namespace Universe.SqlInsights.SqlServerStorage
                 motFileGroup = cnn.Query<string>("Select Top 1 name from sys.filegroups where type = 'FX'").FirstOrDefault();
             }
             bool isMotFileGroupExists = !string.IsNullOrEmpty(motFileGroup);
-            Logs.AppendLine($"Existing MOT File Group Name: '{motFileGroup}'");
-            Logs.AppendLine($"Is MOT File Group Exists: {isMotFileGroupExists}");
+            Logs.AppendLine($"Existing MOT File Group Name: {(isMotFileGroupExists ? $"'{motFileGroup}'" : ">Not Found<")}");
             
             List<string> sqlMotList = new List<string>();
             if (supportMOT && !isMotFileGroupExists)
@@ -215,7 +214,7 @@ End
                     }
                 }
 
-                Logs.AppendLine($"Migration succesfully invoked {sqlMigrations.Count} commands");
+                Logs.Append($"Migration succesfully invoked {sqlMigrations.Count} commands");
             }
         }
 
