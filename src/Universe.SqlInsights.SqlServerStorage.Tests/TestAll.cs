@@ -21,7 +21,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         {
         }
 
-        SqlServerSqlInsightsStorage CreateStorage(DbProviderFactory provider, string connectionString)
+        SqlServerSqlInsightsStorage CreateStorage(DbProviderFactory provider, string connectionString, bool verboseLog)
         {
             SqlServerDbExtensions.CreateDbIfNotExists(connectionString, TestCaseProvider.DbDataDir, initialDataSize: 64);
             var migrations = new SqlServerSqlInsightsMigrations(provider, connectionString)
@@ -29,22 +29,23 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                 ThrowOnDbCreationError = true
             };
             migrations.Migrate();
-            Console.WriteLine($"Migration successfully completed. Details:{Environment.NewLine}{migrations.Logs}");
+            if (verboseLog)
+                Console.WriteLine($"Migration successfully completed. Details:{Environment.NewLine}{migrations.Logs}");
             return new SqlServerSqlInsightsStorage(provider, connectionString);
         }
 
-        SqlServerSqlInsightsStorage CreateStorage(TestCaseProvider testCase) => CreateStorage(testCase.Provider, testCase.ConnectionString);
+        SqlServerSqlInsightsStorage CreateStorage(TestCaseProvider testCase, bool verboseLog = false) => CreateStorage(testCase.Provider, testCase.ConnectionString, verboseLog);
 
         [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
         public async Task Test0_Migrate(TestCaseProvider testCase)
         {
-            SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
+            SqlServerSqlInsightsStorage storage = CreateStorage(testCase, true);
         }
 
         [Test, TestCaseSource(typeof(SeedTestCaseProvider), nameof(SeedTestCaseProvider.GetList))]
         public async Task Test1_Seed(SeedTestCaseProvider testCase)
         {
-            SqlServerSqlInsightsStorage storage = CreateStorage(testCase.Provider, testCase.ConnectionString);
+            SqlServerSqlInsightsStorage storage = CreateStorage(testCase.Provider, testCase.ConnectionString, false);
             var sessions = await storage.GetSessions();
             Console.WriteLine($"Sessions on-start: {sessions.Count()}");
             Seeder seeder = new Seeder(testCase.Provider, storage.ConnectionString);
@@ -92,7 +93,6 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             bool anyAliveSession = storage.AnyAliveSession();
             Assert.IsFalse(anyAliveSession);
         }
-        
 
         [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
         public async Task Test3_FinishAllSessions(TestCaseProvider testCase)
