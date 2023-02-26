@@ -79,6 +79,7 @@ steps:
 
   - bash: |
       set -eu; set -o pipefail;
+      Say "CPU: $(Get-CpuName)"
       cd src/Universe.SqlInsights.SqlServerStorage.Tests
       export SQLINSIGHTS_CONNECTION_STRING="Data Source=localhost,1433;User ID=sa;Password=p@assw0rd!"
       if false && [[ -n "${RAM_DISK:-}" ]]; then
