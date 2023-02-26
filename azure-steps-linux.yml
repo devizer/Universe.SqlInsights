@@ -113,7 +113,7 @@ steps:
 
   - bash: |
       set -eu; set -o pipefail;
-      test -d "${RAM_DISK:-}" && ls -la "${RAM_DISK:-}"
+      test -d "${RAM_DISK:-}" && ls -laR "${RAM_DISK:-}"
     condition: ne(variables['RAM_DISK'], '')
     displayName: 'Show RAM Disk'
 
