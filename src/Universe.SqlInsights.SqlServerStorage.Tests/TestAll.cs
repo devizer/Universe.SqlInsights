@@ -46,7 +46,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             SqlServerSqlInsightsStorage storage = CreateStorage(testCase.Provider, testCase.ConnectionString);
             var sessions = await storage.GetSessions();
             Console.WriteLine($"Sessions on-start: {sessions.Count()}");
-            Seeder seeder = new Seeder(SqlClientFactory.Instance, storage.ConnectionString);
+            Seeder seeder = new Seeder(testCase.Provider, storage.ConnectionString);
             await seeder.Seed(testCase.ThreadCount, testCase.LimitCount);
             Console.WriteLine($"Sessions on-end: {(await storage.GetSessions()).Count()}");
         }
