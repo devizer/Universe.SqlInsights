@@ -35,9 +35,9 @@ namespace Universe.SqlInsights.SqlServerStorage
             cnn.ConnectionString = this.ConnectionString;
             var man = cnn.Manage();
             Logs.AppendLine($"IsLocalDB: {man.IsLocalDB}");
-            Logs.AppendLine($"Version: {man.ShortServerVersion}");
+            Logs.AppendLine($"Version: {man.ShortServerVersion}, {man.EngineEdition}");
             var supportMOT = !man.IsLocalDB && man.ShortServerVersion.Major >= 12;
-            Logs.AppendLine($"Support MOT: {supportMOT}");
+            Logs.AppendLine($"Support MOT: {supportMOT}{(DisableMemoryOptimizedTables & supportMOT ? ", But Disabled": "")}");
             
             // MOT Folder
             var sampleFile = cnn.Query<string>("Select Top 1 filename from sys.sysfiles").FirstOrDefault();
