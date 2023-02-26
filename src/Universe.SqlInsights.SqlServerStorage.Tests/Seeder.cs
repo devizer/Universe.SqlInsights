@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Universe.SqlInsights.Shared;
@@ -39,7 +40,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             
             SqlInsightsActionKeyPath key = new SqlInsightsActionKeyPath(TestAppName, $"Warm up");
             storage.AddAction(CreateActionDetailsWithCounters(key));
-            Console.WriteLine($"Warm Up completed (AddAction)");
+            // Console.WriteLine($"Warm Up completed (AddAction)");
             
             Stopwatch sw = Stopwatch.StartNew();
             int total = 0, fail = 0;
@@ -61,7 +62,8 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             });
 
             var ops = (double) total / sw.Elapsed.TotalSeconds;
-            Console.WriteLine($"OPS = {ops:n1} actions per second. Adding Count: {total}. Fail count: {fail} (Cores: {Environment.ProcessorCount})");
+            var providerName = Path.GetFileNameWithoutExtension(ProviderFactory.GetType().Assembly.Location);
+            Console.WriteLine($"[{providerName}] OPS = {ops:n1} actions per second. Adding Count: {total}. Fail count: {fail} (Cores: {Environment.ProcessorCount})");
         }
 
         IEnumerable<ActionDetailsWithCounters> GetSeedingBatch()

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
 
@@ -19,7 +20,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         public static IEnumerable<SeedTestCaseProvider> GetList()
         {
             var cases = TestCaseProvider.GetList();
-            foreach (int threads in new[] { 8, 1})
+            foreach (int threads in new[] { Environment.ProcessorCount + 1, 1})
             foreach (int count in new[] { threads * 3, 5000 })
             foreach (var c in cases)
             {
