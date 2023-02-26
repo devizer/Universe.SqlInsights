@@ -9,7 +9,7 @@ jobs:
 
   - job: Test
     strategy:
-      maxParallel: 9
+      maxParallel: 8
       matrix:
 
         "SQL Server 2022 on Ubuntu with RAM Disk":
@@ -51,7 +51,7 @@ jobs:
   
   - job: If
     strategy:
-      maxParallel: 6
+      maxParallel: 7
       matrix:
 
         "SQL Server 2008 R2":
