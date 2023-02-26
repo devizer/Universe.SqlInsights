@@ -1,7 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.IO;
+using System.Linq;
+using System.Text;
 using Dapper;
+using Universe.SqlServerJam;
 
 namespace Universe.SqlInsights.SqlServerStorage
 {
@@ -9,7 +15,9 @@ namespace Universe.SqlInsights.SqlServerStorage
     {
         public readonly DbProviderFactory ProviderFactory;
         public readonly string ConnectionString;
+        public readonly StringBuilder Logs = new StringBuilder();
         public bool ThrowOnDbCreationError { get; set; } = false;
+        public bool DisableMemoryOptimizedTables { get; set; } = false;
 
         public SqlServerSqlInsightsMigrations(DbProviderFactory providerFactory, string connectionString)
         {
@@ -17,11 +25,65 @@ namespace Universe.SqlInsights.SqlServerStorage
             ConnectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
         }
 
-        public static readonly string[] SqlMigrations = new[]
+        public List<string> GetSqlMigrations()
         {
-            // TODO: Add Tests for LONG app name or host name
-            // Table SqlInsights String
-            @$"
+            string dbName = new SqlConnectionStringBuilder(ConnectionString).InitialCatalog;
+            Logs.AppendLine($"DisableMemoryOptimizedTables: {DisableMemoryOptimizedTables}");
+            Logs.AppendLine($"Db Name: {dbName}");
+            
+            IDbConnection cnn = this.ProviderFactory.CreateConnection();
+            cnn.ConnectionString = this.ConnectionString;
+            var man = cnn.Manage();
+            Logs.AppendLine($"IsLocalDB: {man.IsLocalDB}");
+            Logs.AppendLine($"Version: {man.ShortServerVersion}");
+            var supportMOT = !man.IsLocalDB && man.ShortServerVersion.Major >= 12;
+            Logs.AppendLine($"Support MOT: {supportMOT}");
+            
+            // MOT Folder
+            var sampleFile = cnn.Query<string>("Select Top 1 filename from sys.sysfiles").FirstOrDefault();
+            var motFolder = sampleFile != null ? Path.GetDirectoryName(sampleFile) : null;
+            Logs.AppendLine($"MOT Folder: {motFolder}");
+
+            var existingTables = cnn.Query<string>("Select name from SYSOBJECTS WHERE xtype = 'U' and name like '%SqlInsights%'").ToArray();
+            // Logs.AppendLine($"Existing Tables: {}");
+
+            string motFileGroup = null;
+            if (supportMOT)
+            {
+                motFileGroup = cnn.Query<string>("Select Top 1 name from sys.filegroups where type = 'FX'").FirstOrDefault();
+            }
+            bool isMotFileGroupExists = !string.IsNullOrEmpty(motFileGroup);
+            Logs.AppendLine($"MOT File Group: '{motFileGroup}'");
+            Logs.AppendLine($"Is MOT File Group Exists: {isMotFileGroupExists}");
+            
+            List<string> sqlMotList = new List<string>();
+            if (supportMOT && !isMotFileGroupExists)
+            {
+
+                string sqlAddMotFileGroup = @$"
+ALTER DATABASE [{dbName}]
+ADD FILEGROUP MemoryOptimizedTables
+CONTAINS MEMORY_OPTIMIZED_DATA;";
+
+                string sqlAddMotFile = @$"
+ALTER DATABASE [{dbName}] ADD FILE (
+    name='SqlInsight MemoryOptimizedTables', filename='{Path.Combine(motFolder, $"MOT for {dbName}")}')
+TO FILEGROUP MemoryOptimizedTables;";
+
+                string sqlEnableTransactions = $@"
+ALTER DATABASE [{dbName}]
+SET MEMORY_OPTIMIZED_ELEVATE_TO_SNAPSHOT = ON;
+";
+                sqlMotList.AddRange(new[] { sqlAddMotFileGroup, sqlAddMotFile, sqlEnableTransactions});
+            }
+            
+            string sqlWith = supportMOT ? " WITH (MEMORY_OPTIMIZED=ON, DURABILITY=SCHEMA_ONLY)" : "";
+            
+            List<string> sqlCreateList = new List<string>
+            {
+                // TODO: Add Tests for LONG app name or host name
+                // Table SqlInsights String
+                @$"
 If Object_ID('SqlInsightsString') Is Null
 BEGIN
 Create Table SqlInsightsString(
@@ -37,9 +99,9 @@ Create Unique CLUSTERED Index UCX_SqlInsightsString_Kind_StartsWith On SqlInsigh
 END
 ",
 
-            // Table SqlInsights KeyPathSummaryTimestamp
-            // This is workaround for memory optimized SqlInsightsKeyPathSummary 
-            @"
+                // Table SqlInsights KeyPathSummaryTimestamp
+                // This is workaround for memory optimized SqlInsightsKeyPathSummary 
+                @$"
 If Object_ID('SqlInsightsKeyPathSummaryTimestamp') Is Null
 Create Table SqlInsightsKeyPathSummaryTimestamp(
     Version BigInt Not Null,
@@ -48,9 +110,9 @@ Create Table SqlInsightsKeyPathSummaryTimestamp(
 );
 If Not Exists(Select Version From SqlInsightsKeyPathSummaryTimestamp)
 Insert SqlInsightsKeyPathSummaryTimestamp(Version, Guid) Values(0, NewId())",
-            
-            // Table SqlInsights Session 
-            @"
+
+                // Table SqlInsights Session 
+                @$"
 If Object_ID('SqlInsightsSession') Is Null
 Begin
 Create Table SqlInsightsSession(
@@ -61,20 +123,20 @@ Create Table SqlInsightsSession(
     Caption nvarchar(1000) Not Null,
     MaxDurationMinutes int Null, 
     Constraint PK_SqlInsightsSession Primary Key (IdSession)
-)
+);
 SET IDENTITY_INSERT SqlInsightsSession ON;
 Insert SqlInsightsSession(IdSession, StartedAt, IsFinished, Caption) Values(
     0,
     GetUtcDate(),
     (0),
     'Lifetime session'
-)    
+);    
 SET IDENTITY_INSERT SqlInsightsSession OFF;
 End
 ",
-            
-            // SqlInsights KeyPathSummary 
-            @"
+
+                // SqlInsights KeyPathSummary 
+                @$"
 If Object_ID('SqlInsightsKeyPathSummary') Is Null
 Begin
 Create Table SqlInsightsKeyPathSummary(
@@ -88,13 +150,13 @@ Create Table SqlInsightsKeyPathSummary(
     Constraint FK_SqlInsightsKeyPathSummary_SqlInsightsSession FOREIGN KEY (IdSession) REFERENCES SqlInsightsSession(IdSession),
     Constraint FK_SqlInsightsKeyPathSummary_AppName FOREIGN KEY (AppName) REFERENCES SqlInsightsString(IdString),
     Constraint FK_SqlInsightsKeyPathSummary_HostId FOREIGN KEY (HostId) REFERENCES SqlInsightsString(IdString)
-)
+);
 Create Index IX_SqlInsightsKeyPathSummary_Version On SqlInsightsKeyPathSummary(Version Desc)
 End
 ",
-            
-            // Table SqlInsights Action
-            @"
+
+                // Table SqlInsights Action
+                @"
 If Object_ID('SqlInsightsAction') Is Null
 Begin
 Create Table SqlInsightsAction(
@@ -120,7 +182,13 @@ Create Table SqlInsightsAction(
 -- Create Index IX_SqlInsightsAction_KeyPath On SqlInsightsAction(KeyPath);
 End 
 "
-        };
+            };
+
+            List<string> ret = new List<string>();
+            ret.AddRange(sqlMotList);
+            ret.AddRange(sqlCreateList);
+            return ret;
+        }
 
         public void Migrate()
         {
@@ -130,7 +198,8 @@ End
             using (var con = this.ProviderFactory.CreateConnection())
             {
                 con.ConnectionString = this.ConnectionString;
-                foreach (var sqlMigration in SqlMigrations)
+                var sqlMigrations = GetSqlMigrations();
+                foreach (var sqlMigration in sqlMigrations)
                 {
                     try
                     {
@@ -138,9 +207,11 @@ End
                     }
                     catch (Exception ex)
                     {
-                        throw new InvalidOperationException($"Migration failed{Environment.NewLine}{sqlMigration}", ex);
+                        throw new InvalidOperationException($"Migration failed. Code: {Environment.NewLine}{sqlMigration}{Environment.NewLine}Diagnostic Details{Environment.NewLine}{this.Logs}", ex);
                     }
                 }
+
+                Logs.AppendLine($"Migration succesfully invoked {sqlMigrations.Count} commands");
             }
         }
 

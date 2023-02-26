@@ -29,6 +29,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                 ThrowOnDbCreationError = true
             };
             migrations.Migrate();
+            Console.WriteLine($"Migration successfully completed. Details:{Environment.NewLine}{migrations.Logs}");
             return new SqlServerSqlInsightsStorage(provider, connectionString);
         }
 
