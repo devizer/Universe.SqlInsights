@@ -43,8 +43,11 @@ namespace Universe.SqlInsights.SqlServerStorage
             Logs.AppendLine($"Long Version: {man.LongServerVersion}");
             var major = man.ShortServerVersion.Major;
             // Server 2016 (13.x) SP1 (or later), any edition. For SQL Server 2014 (12.x) and SQL Server 2016 (13.x) RTM (pre-SP1) you need Enterprise, Developer, or Evaluation edition.
-            var supportMOT = !man.IsLocalDB && (major > 12 || (major == 12 && man.EngineEdition == EngineEdition.Enterprise));
+            // var supportMOT = !man.IsLocalDB && (major > 12 || (major == 12 && man.EngineEdition == EngineEdition.Enterprise));
+            var supportMOT = man.IsMemoryOptimizedTableSupported;
             Logs.AppendLine($"Support MOT: {supportMOT}{(DisableMemoryOptimizedTables & supportMOT ? ", But Disabled": "")}");
+
+            if (DisableMemoryOptimizedTables) supportMOT = false;
             
             // MOT Folder
             var sampleFile = cnn.Query<string>("Select Top 1 filename from sys.sysfiles").FirstOrDefault();
