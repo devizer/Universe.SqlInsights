@@ -90,13 +90,17 @@ SET MEMORY_OPTIMIZED_ELEVATE_TO_SNAPSHOT = ON;
                 sqlMotList.AddRange(new[] { sqlAutoCloseOff, sqlAddMotFileGroup, sqlAddMotFile, sqlEnableTransactions});
             }
             
-            string sqlWith = supportMOT ? " WITH (MEMORY_OPTIMIZED=ON, DURABILITY=SCHEMA_ONLY)" : "";
+            string sqlWithMemory = supportMOT ? " WITH (MEMORY_OPTIMIZED=ON, DURABILITY=SCHEMA_ONLY)" : "";
+
+            Func<string, string> IfMemory = sql => supportMOT ? sql : "";  
+            Func<string, string> IfLegacy = sql => !supportMOT ? sql : "";  
             
             List<string> sqlCreateList = new List<string>
             {
                 // TODO: Add Tests for LONG app name or host name
                 // Table SqlInsights String
                 @$"
+-- for MEMORY OPTIMIZED foreign keys should be replaced by indexes  
 If Object_ID('SqlInsightsString') Is Null
 BEGIN
 Create Table SqlInsightsString(
@@ -104,12 +108,14 @@ Create Table SqlInsightsString(
     Kind tinyint Not Null, -- 1: KeyPath, 2: AppName, 3: HostId
     StartsWith nvarchar({StringsStorage.MaxStartLength}) Not Null,
     Tail nvarchar(max) Null
-    -- Constraint PK_SqlInsightsString Primary Key (Kind, StartsWith) -- TODO: BUG
-);
-ALTER TABLE SqlInsightsString Add Constraint PK_SqlInsightsString Primary Key NONCLUSTERED (IdString);
+    {IfMemory(", Constraint PK_SqlInsightsString Primary Key NonClustered (IdString)")}
+    {IfLegacy(", Constraint PK_SqlInsightsString Primary Key NonClustered (IdString);")}
+){sqlWithMemory};
 If Not Exists (Select 1 From sys.indexes Where name='UCX_SqlInsightsString_Kind_StartsWith')
-Create Unique CLUSTERED Index UCX_SqlInsightsString_Kind_StartsWith On SqlInsightsString(Kind, StartsWith);
+{IfLegacy($@"Create Unique CLUSTERED Index UCX_SqlInsightsString_Kind_StartsWith On SqlInsightsString(Kind, StartsWith);")}
+{IfMemory($@"ALTER TABLE SqlInsightsString ADD INDEX UCX_SqlInsightsString_Kind_StartsWith (Kind, StartsWith);")}    
 END
+-- DONE.
 ",
 
                 // Table SqlInsights KeyPathSummaryTimestamp
@@ -119,10 +125,11 @@ If Object_ID('SqlInsightsKeyPathSummaryTimestamp') Is Null
 Create Table SqlInsightsKeyPathSummaryTimestamp(
     Version BigInt Not Null,
     Guid UniqueIdentifier Not Null,
-    Constraint PK_SqlInsightsKeyPathSummaryTimestamp Primary Key (Guid)
-);
+    Constraint PK_SqlInsightsKeyPathSummaryTimestamp Primary Key {(supportMOT ? "NON" : "")}Clustered (Guid)
+){sqlWithMemory};
 If Not Exists(Select Version From SqlInsightsKeyPathSummaryTimestamp)
-Insert SqlInsightsKeyPathSummaryTimestamp(Version, Guid) Values(0, NewId())",
+Insert SqlInsightsKeyPathSummaryTimestamp(Version, Guid) Values(0, NewId());
+-- DONE.",
 
                 // Table SqlInsights Session 
                 @$"
@@ -135,8 +142,8 @@ Create Table SqlInsightsSession(
     IsFinished bit Not Null,
     Caption nvarchar(1000) Not Null,
     MaxDurationMinutes int Null, 
-    Constraint PK_SqlInsightsSession Primary Key (IdSession)
-);
+    Constraint PK_SqlInsightsSession Primary Key {(supportMOT ? "NON" : "")}Clustered (IdSession)
+){sqlWithMemory};
 SET IDENTITY_INSERT SqlInsightsSession ON;
 Insert SqlInsightsSession(IdSession, StartedAt, IsFinished, Caption) Values(
     0,
@@ -146,7 +153,7 @@ Insert SqlInsightsSession(IdSession, StartedAt, IsFinished, Caption) Values(
 );    
 SET IDENTITY_INSERT SqlInsightsSession OFF;
 End
-",
+-- DONE.",
 
                 // SqlInsights KeyPathSummary 
                 @$"
@@ -159,17 +166,18 @@ Create Table SqlInsightsKeyPathSummary(
     IdSession bigint Not Null,
     Version BigInt Not Null,
     Data nvarchar(max) Not Null,
-    Constraint PK_SqlInsightsKeyPathSummary Primary Key (KeyPath, IdSession, AppName, HostId),
+    Constraint PK_SqlInsightsKeyPathSummary Primary Key {(supportMOT ? "NON" : "")}Clustered (KeyPath, IdSession, AppName, HostId),
     Constraint FK_SqlInsightsKeyPathSummary_SqlInsightsSession FOREIGN KEY (IdSession) REFERENCES SqlInsightsSession(IdSession),
     Constraint FK_SqlInsightsKeyPathSummary_AppName FOREIGN KEY (AppName) REFERENCES SqlInsightsString(IdString),
     Constraint FK_SqlInsightsKeyPathSummary_HostId FOREIGN KEY (HostId) REFERENCES SqlInsightsString(IdString)
-);
-Create Index IX_SqlInsightsKeyPathSummary_Version On SqlInsightsKeyPathSummary(Version Desc)
+){sqlWithMemory};
+{IfLegacy("Create Index IX_SqlInsightsKeyPathSummary_Version On SqlInsightsKeyPathSummary(Version Desc);")}
+{IfMemory("Alter Table SqlInsightsKeyPathSummary Add Index IX_SqlInsightsKeyPathSummary_Version (Version Desc);")}
 End
-",
+-- DONE.",
 
                 // Table SqlInsights Action
-                @"
+                @$"
 If Object_ID('SqlInsightsAction') Is Null
 Begin
 Create Table SqlInsightsAction(
@@ -182,17 +190,21 @@ Create Table SqlInsightsAction(
     IsOK bit Not Null,
     Data nvarchar(max) Not Null,
     -- Constraint PK_SqlInsightsAction Primary Key (IdAction),
-    Constraint PK_SqlInsightsAction Primary Key (KeyPath, IdSession, IdAction),
+    Constraint PK_SqlInsightsAction Primary Key {(supportMOT ? "NON" : "")}Clustered (KeyPath, IdSession, IdAction)
+{IfLegacy($@"
+    ,
     Constraint FK_SqlInsightsAction_SqlInsightsSession FOREIGN KEY (IdSession) REFERENCES SqlInsightsSession(IdSession)
         , -- ON DELETE CASCADE ON UPDATE NO ACTION,  -- Used for debugging only, not necessary in runtime
+    
+    -- Do we need this FK? 
     Constraint FK_SqlInsightsAction_SqlInsightsKeyPathSummary FOREIGN KEY (KeyPath, IdSession, AppName, HostId) REFERENCES SqlInsightsKeyPathSummary(KeyPath, IdSession, AppName, HostId),
         -- ON DELETE CASCADE ON UPDATE NO ACTION   -- Used for debugging only, not necessary in runtime
-    Constraint FK_SqlInsightsAction_AppName FOREIGN KEY (AppName) REFERENCES SqlInsightsString(IdString), 
-    Constraint FK_SqlInsightsAction_HostId FOREIGN KEY (HostId) REFERENCES SqlInsightsString(IdString), 
+
+    -- Next joins are NEVER used
+    -- Constraint FK_SqlInsightsAction_AppName FOREIGN KEY (AppName) REFERENCES SqlInsightsString(IdString), 
+    -- Constraint FK_SqlInsightsAction_HostId FOREIGN KEY (HostId) REFERENCES SqlInsightsString(IdString),
+")} 
 );
--- Create Index IX_SqlInsightsAction_KeyPath_IdSession_IdAction On SqlInsightsAction(KeyPath, IdSession, IdAction);
--- Create Index IX_SqlInsightsAction_KeyPath_At On SqlInsightsAction(KeyPath, At);
--- Create Index IX_SqlInsightsAction_KeyPath On SqlInsightsAction(KeyPath);
 End 
 "
             };
