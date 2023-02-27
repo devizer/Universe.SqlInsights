@@ -116,62 +116,62 @@ jobs:
     steps:
       - template: azure-steps-win.yml
 
-- job: 'Combine'
-  condition: succeededOrFailed()
-  pool:
-    vmImage: 'ubuntu-20.04'
-  timeoutInMinutes: 30
-  dependsOn:
-    - Test
-    - If
-
-  steps: 
-  - script: |
-      script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
-      Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
-
-      RAW_ARTIFACTS_DIR="$(Agent.TempDirectory)/artifacts"
-      echo "##vso[task.setvariable variable=RAW_ARTIFACTS_DIR]$RAW_ARTIFACTS_DIR"
-      Say "RAW_ARTIFACTS_DIR: $RAW_ARTIFACTS_DIR"
-    displayName: 'Config Deploy'
-
-  - task: DownloadPipelineArtifact@2
+  - job: 'Combine'
     condition: succeededOrFailed()
-    displayName: 'Download of all platforms to $(RAW_ARTIFACTS_DIR)'
-    inputs:
-      path: $(RAW_ARTIFACTS_DIR)
-      patterns: 
-        "**"
-    
-  - script: |
-      set -eu; set -o pipefail
-      Say "RAW_ARTIFACTS_DIR: [${RAW_ARTIFACTS_DIR}]"
+    pool:
+      vmImage: 'ubuntu-20.04'
+    timeoutInMinutes: 30
+    dependsOn:
+      - Test
+      - If
 
-      benchmark="$SYSTEM_ARTIFACTSDIRECTORY/Benchmark.txt"
-      mkdir -p $SYSTEM_ARTIFACTSDIRECTORY/Bench
-      find "${RAW_ARTIFACTS_DIR}" -name AddAction.log | while IFS='' read -r file; do
-        pushd "$(dirname "$file")" >/dev/null
-        title="$(basename "$(pwd)")"
-        popd >/dev/null
-        echo $title >> "$benchmark"
-        cat $file >> "$benchmark"
-        echo "" >> "$benchmark"
-      done
+    steps: 
+    - script: |
+        script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
+        Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
 
-      7z a -mx=3 "$SYSTEM_ARTIFACTSDIRECTORY/Combined as is.7z" "${RAW_ARTIFACTS_DIR}"
+        RAW_ARTIFACTS_DIR="$(Agent.TempDirectory)/artifacts"
+        echo "##vso[task.setvariable variable=RAW_ARTIFACTS_DIR]$RAW_ARTIFACTS_DIR"
+        Say "RAW_ARTIFACTS_DIR: $RAW_ARTIFACTS_DIR"
+      displayName: 'Config Deploy'
 
-      # Clean
-      rm -rf ${RAW_ARTIFACTS_DIR}/* || true
+    - task: DownloadPipelineArtifact@2
+      condition: succeededOrFailed()
+      displayName: 'Download of all platforms to $(RAW_ARTIFACTS_DIR)'
+      inputs:
+        path: $(RAW_ARTIFACTS_DIR)
+        patterns: 
+          "**"
+      
+    - script: |
+        set -eu; set -o pipefail
+        Say "RAW_ARTIFACTS_DIR: [${RAW_ARTIFACTS_DIR}]"
 
-    condition: succeededOrFailed()
-    displayName: 'Deploy GitHub Release $(CMAKE_VER)'
+        benchmark="$SYSTEM_ARTIFACTSDIRECTORY/Benchmark.txt"
+        mkdir -p $SYSTEM_ARTIFACTSDIRECTORY/Bench
+        find "${RAW_ARTIFACTS_DIR}" -name AddAction.log | while IFS='' read -r file; do
+          pushd "$(dirname "$file")" >/dev/null
+          title="$(basename "$(pwd)")"
+          popd >/dev/null
+          echo $title >> "$benchmark"
+          cat $file >> "$benchmark"
+          echo "" >> "$benchmark"
+        done
 
-  - task: PublishBuildArtifacts@1
-    condition: succeededOrFailed()
-    displayName: 'Publish'
-    inputs:
-      pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)'
-      artifactName: 'Nuget Cache (combined)'
+        7z a -mx=3 "$SYSTEM_ARTIFACTSDIRECTORY/Combined as is.7z" "${RAW_ARTIFACTS_DIR}"
+
+        # Clean
+        rm -rf ${RAW_ARTIFACTS_DIR}/* || true
+
+      condition: succeededOrFailed()
+      displayName: 'Deploy GitHub Release $(CMAKE_VER)'
+
+    - task: PublishBuildArtifacts@1
+      condition: succeededOrFailed()
+      displayName: 'Publish'
+      inputs:
+        pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)'
+        artifactName: 'Nuget Cache (combined)'
 
 
 trigger:
