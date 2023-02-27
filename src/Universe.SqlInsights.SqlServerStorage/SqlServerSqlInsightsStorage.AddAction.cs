@@ -24,9 +24,11 @@ namespace Universe.SqlInsights.SqlServerStorage
 
             if (reqAction.AppName == null) throw new ArgumentException("Missing reqAction.AppName");
 
+            // TODO: The table option 'updlock' is not supported with memory optimized tables.
+            // Select .... WITH (UPDLOCK) Where 
             const string
                 sqlSelect =
-                    "Select Data From SqlInsightsKeyPathSummary WITH (UPDLOCK) Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession",
+                    "Select Data From SqlInsightsKeyPathSummary Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession",
                 sqlInsert =
                     "Insert SqlInsightsKeyPathSummary(KeyPath, IdSession, AppName, HostId, Data, Version) Values(@KeyPath, @IdSession, @AppName, @HostId, @Data, @Version);",
                 sqlUpdate =

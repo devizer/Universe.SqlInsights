@@ -53,7 +53,10 @@ namespace Universe.SqlInsights.SqlServerStorage
             return idStringNew;
         }
         
-        const string SqlSelect = "Select IdString, StartsWith, Tail From SqlInsightsString WITH (UPDLOCK,ROWLOCK) Where Kind = @Kind and StartsWith = @StartsWith";
+        // ... WITH (UPDLOCK, rowlock) Where ...
+        // TODO: The table option 'rowlock' is not supported with memory optimized tables.
+        // TODO: The table option 'updlock' is not supported with memory optimized tables.
+        const string SqlSelect = "Select IdString, StartsWith, Tail From SqlInsightsString Where Kind = @Kind and StartsWith = @StartsWith";
         const string SqlInsert = "Insert SqlInsightsString(Kind, StartsWith, Tail) OUTPUT Inserted.IdString as IdString Values(@Kind, @StartsWith, @Tail);";
 
         private long? AcquireString_Impl(StringKind kind, string value)
