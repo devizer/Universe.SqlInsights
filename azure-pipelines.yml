@@ -50,7 +50,7 @@ jobs:
       - template: azure-steps-linux.yml
   
   - job: If
-    condition: eq('Never','')
+    # condition: eq('Never','')
     strategy:
       maxParallel: 7
       matrix:
