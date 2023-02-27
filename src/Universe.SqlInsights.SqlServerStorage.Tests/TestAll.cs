@@ -19,6 +19,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         [OneTimeSetUp]
         public void Setup()
         {
+            SqlServerSqlInsightsMigrations.DisableMemoryOptimizedTables = false;
         }
 
         SqlServerSqlInsightsStorage CreateStorage(DbProviderFactory provider, string connectionString, bool verboseLog)

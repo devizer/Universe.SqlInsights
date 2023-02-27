@@ -17,7 +17,7 @@ namespace Universe.SqlInsights.SqlServerStorage
         public readonly string ConnectionString;
         public readonly StringBuilder Logs = new StringBuilder();
         public bool ThrowOnDbCreationError { get; set; } = false;
-        public bool DisableMemoryOptimizedTables { get; set; } = false;
+        public static bool DisableMemoryOptimizedTables { get; set; } = true;
 
         public SqlServerSqlInsightsMigrations(DbProviderFactory providerFactory, string connectionString)
         {
@@ -109,7 +109,7 @@ Create Table SqlInsightsString(
     StartsWith nvarchar({StringsStorage.MaxStartLength}) Not Null,
     Tail nvarchar(max) Null
     {IfMemory(", Constraint PK_SqlInsightsString Primary Key NonClustered (IdString)")}
-    {IfLegacy(", Constraint PK_SqlInsightsString Primary Key NonClustered (IdString);")}
+    {IfLegacy(", Constraint PK_SqlInsightsString Primary Key NonClustered (IdString)")}
 ){sqlWithMemory};
 If Not Exists (Select 1 From sys.indexes Where name='UCX_SqlInsightsString_Kind_StartsWith')
 {IfLegacy($@"Create Unique CLUSTERED Index UCX_SqlInsightsString_Kind_StartsWith On SqlInsightsString(Kind, StartsWith);")}

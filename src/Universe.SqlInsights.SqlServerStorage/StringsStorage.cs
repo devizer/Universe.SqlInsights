@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
@@ -53,14 +54,16 @@ namespace Universe.SqlInsights.SqlServerStorage
             return idStringNew;
         }
         
-        // ... WITH (UPDLOCK, rowlock) Where ...
-        // TODO: The table option 'rowlock' is not supported with memory optimized tables.
-        // TODO: The table option 'updlock' is not supported with memory optimized tables.
-        const string SqlSelect = "Select IdString, StartsWith, Tail From SqlInsightsString Where Kind = @Kind and StartsWith = @StartsWith";
-        const string SqlInsert = "Insert SqlInsightsString(Kind, StartsWith, Tail) OUTPUT Inserted.IdString as IdString Values(@Kind, @StartsWith, @Tail);";
 
         private long? AcquireString_Impl(StringKind kind, string value)
         {
+            bool isMemoryOptimized = MetadataCache.IsMemoryOptimized(Connection);
+            // ... WITH (UPDLOCK, rowlock) Where ...
+            // TODO: The table option 'rowlock' is not supported with memory optimized tables.
+            // TODO: The table option 'updlock' is not supported with memory optimized tables.
+            string SqlSelect = $"Select IdString, StartsWith, Tail From SqlInsightsString {(isMemoryOptimized ? "" : "WITH (UPDLOCK, rowlock)")} Where Kind = @Kind and StartsWith = @StartsWith";
+            const string SqlInsert = "Insert SqlInsightsString(Kind, StartsWith, Tail) OUTPUT Inserted.IdString as IdString Values(@Kind, @StartsWith, @Tail);";
+
             bool doesFit = value.Length <= MaxStartLength;
             string startsWith = !doesFit ? value.Substring(0, MaxStartLength) : value;
             var query = Connection.Query<SelectStringsResult>(SqlSelect, new

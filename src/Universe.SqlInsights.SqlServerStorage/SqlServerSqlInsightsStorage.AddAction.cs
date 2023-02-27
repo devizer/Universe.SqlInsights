@@ -26,9 +26,13 @@ namespace Universe.SqlInsights.SqlServerStorage
 
             // TODO: The table option 'updlock' is not supported with memory optimized tables.
             // Select .... WITH (UPDLOCK) Where 
-            const string
+            bool isMemoryOptimized = MetadataCache.IsMemoryOptimized(ConnectionString);
+
+            string
                 sqlSelect =
-                    "Select Data From SqlInsightsKeyPathSummary Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession",
+                    $"Select Data From SqlInsightsKeyPathSummary {(isMemoryOptimized ? "" : "WITH (UPDLOCK,ROWLOCK)")} Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession";
+            
+            const string    
                 sqlInsert =
                     "Insert SqlInsightsKeyPathSummary(KeyPath, IdSession, AppName, HostId, Data, Version) Values(@KeyPath, @IdSession, @AppName, @HostId, @Data, @Version);",
                 sqlUpdate =
