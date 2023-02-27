@@ -149,12 +149,12 @@ jobs:
 
         benchmark="$SYSTEM_ARTIFACTSDIRECTORY/Benchmark.txt"
         mkdir -p $SYSTEM_ARTIFACTSDIRECTORY/Bench
-        find "${RAW_ARTIFACTS_DIR}" -name AddAction.log | while IFS='' read -r file; do
+        find "${RAW_ARTIFACTS_DIR}" -name AddAction.log | sort | while IFS='' read -r file; do
           pushd "$(dirname "$file")" >/dev/null
           title="$(basename "$(pwd)")"
           popd >/dev/null
           echo $title >> "$benchmark"
-          cat $file >> "$benchmark"
+          cat "$file" >> "$benchmark"
           echo "" >> "$benchmark"
         done
 
@@ -171,7 +171,7 @@ jobs:
       displayName: 'Publish'
       inputs:
         pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)'
-        artifactName: 'Nuget Cache (combined)'
+        artifactName: 'Combined benchmark (and artifacts)'
 
 
 trigger:
