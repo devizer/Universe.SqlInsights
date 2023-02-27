@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Universe.SqlInsights.Shared;
+using Universe.SqlServerJam;
 using Universe.SqlTrace;
 
 namespace Universe.SqlInsights.SqlServerStorage.Tests
@@ -67,9 +68,14 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             providerName = providerName.Split('.').First(); 
             Console.WriteLine($"[{providerName}] OPS = {ops:n1} actions per second. Adding Count: {total}. Fail count: {fail} (Cores: {Environment.ProcessorCount}, Threads: {numThreads})");
             if (total > 500)
-            TestEnv.LogToArtifact("AddAction.log",
-                $"{TestEnv.TestConfigName} on {CrossInfo.ThePlatform} | {TestEnv.TestCpuName} | {providerName} | {numThreads} on {Environment.ProcessorCount} | {total} / {fail}" 
-            );
+            {
+                var cnn = this.ProviderFactory.CreateConnection();
+                cnn.ConnectionString = this.ConnectionString;
+                var sqlVersion = cnn.Manage().ShortServerVersion;
+                TestEnv.LogToArtifact("AddAction.log",
+                    $"v{sqlVersion} on {TestEnv.TestConfigName} | {CrossInfo.ThePlatform} | {TestEnv.TestCpuName} | {providerName} | {numThreads} on {Environment.ProcessorCount} | {total} / {fail}"
+                );
+            }
 
         }
 
