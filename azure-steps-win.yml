@@ -192,7 +192,7 @@ steps:
       export TEST_CONFIGURATION="DISK";
       if [[ -n "${DB_DATA_DIR:-}" ]]; then
         export SQLINSIGHTS_DATA_DIR="$DB_DATA_DIR"
-        TEST_CONFIGURATION="RAM-Disk"
+        export TEST_CONFIGURATION="RAM-Disk"
         Say "SQLINSIGHTS_DATA_DIR is $SQLINSIGHTS_DATA_DIR"
       fi
       cd src/Universe.SqlInsights.SqlServerStorage.Tests
