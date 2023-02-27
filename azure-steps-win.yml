@@ -197,6 +197,10 @@ steps:
       fi
       cd src/Universe.SqlInsights.SqlServerStorage.Tests
       dotnet test --collect:"XPlat Code Coverage" --logger trx
+
+      Say "Benchmark Seed"
+      rm -f $SYSTEM_ARTIFACTSDIRECTORY/AddAction.log
+      dotnet test -c Release -f netcoreapp3.1 --filter "Name~Test1_Seed"
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     displayName: 'dotnet test SqlServerStorage'
 
