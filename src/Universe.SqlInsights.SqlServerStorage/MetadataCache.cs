@@ -41,7 +41,7 @@ namespace Universe.SqlInsights.SqlServerStorage
                 return _Cache;
         }
 
-        private static Metadata _Cache;
+        private static volatile Metadata _Cache;
 
         private static Metadata GetMetadataImplementation(IDbConnection connection)
         {
@@ -56,6 +56,11 @@ namespace Universe.SqlInsights.SqlServerStorage
             {
                 IsMemoryOptimized = isSupported
             };
-        } 
+        }
+
+        public static void ResetCacheForTests()
+        {
+            _Cache = null;
+        }
     }
 }

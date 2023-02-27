@@ -26,6 +26,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         {
             Console.WriteLine($"TestCaseProvider.DbDataDir: [{TestCaseProvider.DbDataDir}]");
             StringsStorage.ResetCacheForTests();
+            MetadataCache.ResetCacheForTests();
             SqlServerSqlInsightsStorage.DebugAddAction = false;
             SqlServerSqlInsightsStorage storage = new SqlServerSqlInsightsStorage(ProviderFactory, ConnectionString);
             var sessions = await storage.GetSessions();
