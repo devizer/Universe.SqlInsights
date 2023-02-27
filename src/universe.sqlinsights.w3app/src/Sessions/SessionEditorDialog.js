@@ -45,7 +45,7 @@ const ColorRadio = color => withStyles({
 const GreenRadio = ColorRadio(green);
 
 
-const radiosExpire = [
+const expireOptions = [
     { label: 'for 1 hour', minutes: 60, color: green },
     { label: 'for 8 hours', minutes: 60*8, color: green },
     { label: 'for 24 hours', minutes: 60*24, color: green },
@@ -68,7 +68,7 @@ export default class SessionsEditorDialog extends Component {
         this.state = {
             session: this.props.session,
             isOpened: this.props.isOpened,
-            selectedExpire: radiosExpire[radiosExpire.length - 1], 
+            selectedExpire: expireOptions[expireOptions.length - 1], 
         };
     }
 
@@ -112,27 +112,30 @@ export default class SessionsEditorDialog extends Component {
                 />
                 <DialogContentText className="center-aligned" style={{color:"black"}}>
                     <br/>
-                    {radiosExpire.map(radio => (
+                    {expireOptions.map(expire => (
                         <>
                             &nbsp;
                             <GreenRadio
-                                checked={selectedExpire?.label === radio.label}
-                                onChange={() => this.setState({selectedExpire: radio}) }
-                                value={radio.minutes}
+                                checked={selectedExpire?.label === expire.label}
+                                onChange={() => this.setState({selectedExpire: expire}) }
+                                value={expire.minutes}
                                 name="radio-button-expire"
-                                inputProps={{ 'aria-label': radio.label }}
+                                inputProps={{ 'aria-label': expire.label }}
                             />
-                            {radio.label}
+                            {expire.label}
                             &nbsp;
                         </>
                     ))}
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose} color="primary">
+                <Button onClick={handleClose} variant="text" color="primary">
                     Cancel
                 </Button>
-                <Button onClick={handleClose} color="primary">
+                <Button onClick={handleClose}  variant="contained" color="secondary">
+                    Delete
+                </Button>
+                <Button onClick={handleClose}  variant="contained" color="primary">
                     Start
                 </Button>
             </DialogActions>
