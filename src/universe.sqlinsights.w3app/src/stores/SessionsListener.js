@@ -6,7 +6,7 @@ class SessionsListener {
 
     constructor() {
         this.watchdogTick = this.watchdogTick.bind(this);
-        this.timerId = setInterval(this.watchdogTick, 1000);
+        this.timerId = setInterval(this.watchdogTick, 15*1000);
 
         setTimeout(this.watchdogTick);
     }
