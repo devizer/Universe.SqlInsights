@@ -114,6 +114,8 @@ steps:
   - bash: |
       set -eu; set -o pipefail;
       test -d "${RAM_DISK:-}" && ls -laR "${RAM_DISK:-}"
+      Say "Disk Usage"
+      df -h -T
     condition: ne(variables['RAM_DISK'], '')
     displayName: 'Show RAM Disk'
 
