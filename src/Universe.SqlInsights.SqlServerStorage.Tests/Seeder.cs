@@ -73,7 +73,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                 cnn.ConnectionString = this.ConnectionString;
                 var sqlVersion = cnn.Manage().ShortServerVersion;
                 TestEnv.LogToArtifact("AddAction.log",
-                    $"v{sqlVersion} on {TestEnv.TestConfigName} | {CrossInfo.ThePlatform} | {TestEnv.TestCpuName} | {providerName} | {numThreads} on {Environment.ProcessorCount} | {total} / {fail}"
+                    $"v{sqlVersion} on {TestEnv.TestConfigName} | {CrossInfo.ThePlatform} | {TestEnv.TestCpuName} | {providerName,-9} | {numThreads} on {Environment.ProcessorCount} | {total} / {fail}"
                 );
             }
 
