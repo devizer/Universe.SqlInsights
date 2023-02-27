@@ -47,7 +47,7 @@ class SessionsListener {
         if (!session.CalculatedEnding && session.ExpiringDate) {
             session.CalculatedEnding = session.ExpiringDate;
         }
-
+        
         // Doesn't work
         // session.isExpired = () => (Boolean(session.ExpiringDate)) && (session.ExpiringDate < new Date());
         // session.isExpired = session.isExpired.bind(session);

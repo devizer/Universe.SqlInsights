@@ -24,7 +24,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
 
         public async Task Seed(int numThreads = 8, int limitCount = 99999)
         {
-            Console.WriteLine($"TestCaseProvider.DbDataDir: [{TestCaseProvider.DbDataDir}]");
+            Console.WriteLine($"TestCaseProvider.DbDataDir: [{TestEnv.DbDataDir}]");
             StringsStorage.ResetCacheForTests();
             MetadataCache.ResetCacheForTests();
             SqlServerSqlInsightsStorage.DebugAddAction = false;
@@ -64,7 +64,13 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
 
             var ops = (double) total / sw.Elapsed.TotalSeconds;
             var providerName = Path.GetFileNameWithoutExtension(ProviderFactory.GetType().Assembly.Location);
+            providerName = providerName.Split('.').First(); 
             Console.WriteLine($"[{providerName}] OPS = {ops:n1} actions per second. Adding Count: {total}. Fail count: {fail} (Cores: {Environment.ProcessorCount}, Threads: {numThreads})");
+            if (total > 500)
+            TestEnv.LogToArtifact("AddAction.log",
+                $"{TestEnv.TestConfigName} on {CrossInfo.ThePlatform} | {TestEnv.TestCpuName} | {providerName} | {numThreads} on {Environment.ProcessorCount} | {total} / {fail}" 
+            );
+
         }
 
         IEnumerable<ActionDetailsWithCounters> GetSeedingBatch()

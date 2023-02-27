@@ -186,12 +186,15 @@ steps:
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     displayName: 'dotnet restore'
 
-  - script: |
-      if Defined DB_DATA_DIR (
-        set SQLINSIGHTS_DATA_DIR=%DB_DATA_DIR%
-        Say "SQLINSIGHTS_DATA_DIR is %SQLINSIGHTS_DATA_DIR%"
-      )
-      call 0b-Net-Rebuild-All.cmd
+  - bash: |
+      set -eu; set -o pipefail;
+      export TEST_CPU_NAME="$(Get-CpuName --name-only)"
+      export TEST_CONFIGURATION="DISK";
+      if [[ -n "${DB_DATA_DIR:-}" ]]; then
+        export SQLINSIGHTS_DATA_DIR="$DB_DATA_DIR"
+        TEST_CONFIGURATION="RAM-Disk"
+        Say "SQLINSIGHTS_DATA_DIR is $SQLINSIGHTS_DATA_DIR"
+      fi
       cd src/Universe.SqlInsights.SqlServerStorage.Tests
       dotnet test --collect:"XPlat Code Coverage" --logger trx
     condition: eq(variables['Agent.OS'], 'Windows_NT')
