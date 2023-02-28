@@ -20,12 +20,28 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         public static new IEnumerable<SeedTestCaseProvider> GetTestCases()
         {
             var threadsList = new[] { Environment.ProcessorCount * 2 + 1, Environment.ProcessorCount + 1, 1 };
-            var limitsList = new[] { 100, 5000 };
             var providerList = new DbProviderFactory[] { System.Data.SqlClient.SqlClientFactory.Instance, Microsoft.Data.SqlClient.SqlClientFactory.Instance };
             bool isMotSupported = TestEnv.IsMotSupported();
             bool?[] motList = isMotSupported ? new bool?[] { true, false } : new bool?[] { null };
+
+            // JIT
             foreach (var provider in providerList)
-            foreach (var limits in limitsList)
+            {
+                var mot = false;
+                var dbNameParameters = $"{provider.GetShortProviderName()} {(mot == true ? "MOT On" : "MOT Off")}";
+                SqlConnectionStringBuilder connectionString = new SqlConnectionStringBuilder(TestEnv.TheConnectionString);
+                connectionString.InitialCatalog = string.Format(TestEnv.DbNamePattern, dbNameParameters);
+                yield return new SeedTestCaseProvider()
+                {
+                    Provider = provider,
+                    ConnectionString = connectionString.ConnectionString,
+                    LimitCount = 100,
+                    ThreadCount = 25,
+                    NeedMot = mot,
+                };
+            }
+
+            foreach (var provider in providerList)
             foreach (var threads in threadsList)
             foreach (var mot in motList)
             {
@@ -37,7 +53,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                 {
                     Provider = provider,
                     ConnectionString = connectionString.ConnectionString,
-                    LimitCount = limits,
+                    LimitCount = 5000,
                     ThreadCount = threads,
                     NeedMot = mot,
                 };
