@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.NetworkInformation;
 using System.Threading;
 using Dapper;
 using Newtonsoft.Json;
@@ -61,7 +60,8 @@ namespace Universe.SqlInsights.SqlServerStorage
 
                     var keyPath = SerializeKeyPath(reqAction.Key);
 
-                    var tran = con.BeginTransaction(IsolationLevel.ReadCommitted);
+                    // Either ReadCommitted or ReadUncommitted without MOT. Doesn't matter without deletion.
+                    var tran = con.BeginTransaction(IsolationLevel.ReadUncommitted);
                     using (tran)
                     {
 

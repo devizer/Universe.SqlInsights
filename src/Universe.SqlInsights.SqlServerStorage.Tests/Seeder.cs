@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Diagnostics;
@@ -49,6 +50,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             
             // Seed actions
             
+            ConcurrentDictionary<string,CounterHolder> errors = new ConcurrentDictionary<string, CounterHolder>();
             ParallelOptions po = new ParallelOptions() { MaxDegreeOfParallelism = numThreads };
             Parallel.ForEach(GetSeedingBatch().Take(limitCount), po, action =>
             {
@@ -60,13 +62,18 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                 catch (Exception ex)
                 {
                     fail++;
+                    var sqlError = ex.GetSqlError();
+                    string err = (sqlError == null ? "" : $"#{sqlError.Number} ") + ex.Message;
+                    var counter = errors.GetOrAdd(err, key => new CounterHolder());
+                    counter.Total += 1;
                 }
             });
 
             var ops = (double) total / sw.Elapsed.TotalSeconds;
             var providerName = Path.GetFileNameWithoutExtension(ProviderFactory.GetType().Assembly.Location);
             providerName = providerName.Split('.').First(); 
-            Console.WriteLine($"[{providerName}] OPS = {ops:n1} actions per second. Adding Count: {total}. Fail count: {fail} (Cores: {Environment.ProcessorCount}, Threads: {numThreads})");
+            var errorsInfo = errors.Count == 0 ? "" : $"{Environment.NewLine}{string.Join(",", errors.OrderByDescending(x => x.Value.Total).Select(x => $"N={x.Value.Total}: {x.Key}"))}";
+            Console.WriteLine($"[{providerName}] OPS = {ops:n1} actions per second. Adding Count: {total}. Fail count: {fail} (Cores: {Environment.ProcessorCount}, Threads: {numThreads}){errorsInfo}");
             if (total > 500)
             {
                 var cnn = this.ProviderFactory.CreateConnection();
@@ -78,6 +85,11 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             }
 
         }
+        class CounterHolder
+        {
+            public int Total;
+        }
+
 
         IEnumerable<ActionDetailsWithCounters> GetSeedingBatch()
         {
@@ -110,5 +122,6 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             };
             return actionDetailsWithCounters;
         }
+
     }
 }
