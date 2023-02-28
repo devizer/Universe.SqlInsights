@@ -1,15 +1,20 @@
 ﻿using System;
+using System.Data.Common;
+using System.Data.SqlClient;
 using System.IO;
+using System.Linq;
 using System.Text;
+using Universe.SqlServerJam;
 
 namespace Universe.SqlInsights.SqlServerStorage.Tests
 {
-    public class TestEnv
+    public static class TestEnv
     {
         // private string ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Database=SqlServerSqlInsightsStorage_Tests; Integrated Security=SSPI";
         // private static readonly string TheConnectionString = "Data Source=(local);Database=SqlServerSqlInsightsStorage_Tests; Integrated Security=SSPI";
         public static string TheConnectionString => string.IsNullOrEmpty(DbConnectionString) ? "Data Source=(local);Integrated Security=SSPI" : DbConnectionString;
-        public static readonly string DbNamePattern = "SqlInsights Storage {0} Tests";
+        
+        public static readonly string DbNamePattern = "SqlInsights {0} Tests";
 
         // OPTIONAL
         public static string DbDataDir => Environment.GetEnvironmentVariable("SQLINSIGHTS_DATA_DIR");
@@ -18,6 +23,21 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         public static string TestConfigName => Environment.GetEnvironmentVariable("TEST_CONFIGURATION");
         public static string TestCpuName => Environment.GetEnvironmentVariable("TEST_CPU_NAME");
 
+        public static string GetShortProviderName(this DbProviderFactory provider)
+        {
+            var providerName = Path.GetFileNameWithoutExtension(provider.GetType().Assembly.Location);
+            providerName = providerName.Split('.').First();
+            return providerName;
+        }
+        
+        public static bool IsMotSupported()
+        {
+            SqlConnectionStringBuilder master = new SqlConnectionStringBuilder(TheConnectionString);
+            SqlConnection con = new SqlConnection(master.ConnectionString);
+            return con.Manage().IsMemoryOptimizedTableSupported;
+        }
+
+        
         public static void LogToArtifact(string fileName, string line)
         {
             var artifactDirectory = Environment.GetEnvironmentVariable("SYSTEM_ARTIFACTSDIRECTORY");

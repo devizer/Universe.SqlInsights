@@ -70,11 +70,10 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             });
 
             var ops = (double) total / sw.Elapsed.TotalSeconds;
-            var providerName = Path.GetFileNameWithoutExtension(ProviderFactory.GetType().Assembly.Location);
-            providerName = providerName.Split('.').First(); 
+            var providerName = ProviderFactory.GetShortProviderName();
             var errorsInfo = errors.Count == 0 ? "" : $"{Environment.NewLine}{string.Join(",", errors.OrderByDescending(x => x.Value.Total).Select(x => $"N={x.Value.Total}: {x.Key}"))}";
             Console.WriteLine($"[{providerName}] OPS = {ops:n1} actions per second. Adding Count: {total}. Fail count: {fail} (Cores: {Environment.ProcessorCount}, Threads: {numThreads}){errorsInfo}");
-            if (total > 500)
+            if (total > 129)
             {
                 var cnn = this.ProviderFactory.CreateConnection();
                 cnn.ConnectionString = this.ConnectionString;

@@ -64,7 +64,6 @@ namespace Universe.SqlInsights.SqlServerStorage
                     var tran = con.BeginTransaction(IsolationLevel.ReadUncommitted);
                     using (tran)
                     {
-
                         // SUMMARY: SqlInsightsKeyPathSummary
                         ActionSummaryCounters actionActionSummary = reqAction.AsSummary();
                         var query = con

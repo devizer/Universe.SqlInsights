@@ -25,6 +25,7 @@ namespace Universe.NUnitTests
 
 
         Action OnDisposeList = () => { };
+        Action OnDisposeClassList = () => { };
 
         protected void OnDispose(string title, Action action, TestDisposeOptions mode)
         {
@@ -34,12 +35,15 @@ namespace Universe.NUnitTests
             var testName = TestContext.CurrentContext.Test.Name;
             bool isIgnoringError = (mode & TestDisposeOptions.IgnoreError) != 0;
             bool isGlobal = (mode & TestDisposeOptions.Global) != 0;
+            bool isClass = (mode & TestDisposeOptions.Class) != 0;
+            if (isClass && isGlobal) throw new ArgumentException("Both Global and Class mode is nonsense");
             var isAsync = (mode & TestDisposeOptions.Async) != 0;
 
+            string whenPrefix = isGlobal ? "Global " : isClass ? "Class Bound " : "";
             Action actionWithLog = () =>
             {
                 
-                string prefix = $"Dispose {(isGlobal ? "Global " : "")}{(isAsync ? "Async " : "")}{testId}{(isGlobal ? $" {testName}" : "")}";
+                string prefix = $"Dispose {whenPrefix}{(isAsync ? "Async " : "")}{testId}{(isGlobal || isClass ? $" {testName}" : "")}";
                 Stopwatch sw = Stopwatch.StartNew();
                 try
                 {
@@ -61,6 +65,8 @@ namespace Universe.NUnitTests
 
             if (isGlobal) 
                 GlobalTestsTearDown.OnDisposeInternal(actionWrapped);
+            else if (isClass)
+                OnDisposeClassList += actionWrapped;
             else
                 OnDisposeList += actionWrapped;
         }
@@ -124,7 +130,6 @@ namespace Universe.NUnitTests
             {
                 Stopwatch sw = Stopwatch.StartNew();
                 copy();
-                // Console.WriteLine($"[On Dispose Info {TestId}] Completed in {sw.ElapsedMilliseconds:n0} milliseconds");
             }
 
             Console.WriteLine("");
@@ -140,7 +145,9 @@ namespace Universe.NUnitTests
         [OneTimeTearDown]
         public void BaseOneTimeTearDown()
         {
-            // nothing todo
+            var copy = OnDisposeClassList;
+            OnDisposeClassList = () => { };
+            copy?.Invoke();
         }
 
         protected static void SilentExecute(Action action)
@@ -256,9 +263,10 @@ namespace Universe.NUnitTests
     public enum TestDisposeOptions
     {
         Default = 0,
-        Async = 1,
+        Class = 1,
         Global = 2,
-        IgnoreError = 4,
+        Async = 4,
+        IgnoreError = 8,
     }
 }
 

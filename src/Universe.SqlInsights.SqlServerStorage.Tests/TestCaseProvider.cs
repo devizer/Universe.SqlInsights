@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Common;
+using System.Data.SqlClient;
 using System.IO;
 
 namespace Universe.SqlInsights.SqlServerStorage.Tests
@@ -8,27 +10,34 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
     {
         public DbProviderFactory Provider { get; set; }
         public string ConnectionString { get; set; }
+        public bool? NeedMot { get; set; }
 
         public override string ToString()
         {
-            return Path.GetFileNameWithoutExtension(Provider.GetType().Assembly.Location);
+            return $"{Provider.GetShortProviderName()}, {(NeedMot == true ? "MOT On" : "MOT Off")}";
         }
-
-        public static IEnumerable<TestCaseProvider> GetList()
+        
+        public static IEnumerable<TestCaseProvider> GetTestCases()
         {
-            yield return CreateTestCaseProviderByType(System.Data.SqlClient.SqlClientFactory.Instance);
-            yield return CreateTestCaseProviderByType(Microsoft.Data.SqlClient.SqlClientFactory.Instance);
-        }
-
-        static TestCaseProvider CreateTestCaseProviderByType(DbProviderFactory dbProviderFactory)
-        {
-            System.Data.SqlClient.SqlConnectionStringBuilder builder = new System.Data.SqlClient.SqlConnectionStringBuilder(TestEnv.TheConnectionString);
-            builder.InitialCatalog = string.Format(TestEnv.DbNamePattern, Path.GetFileNameWithoutExtension(dbProviderFactory.GetType().Assembly.Location));
-            return new TestCaseProvider()
+            var providerList = new DbProviderFactory[] { System.Data.SqlClient.SqlClientFactory.Instance, Microsoft.Data.SqlClient.SqlClientFactory.Instance };
+            bool isMotSupported = TestEnv.IsMotSupported();
+            bool?[] motList = isMotSupported ? new bool?[] { true, false } : new bool?[] { null };
+            foreach (var provider in providerList)
+            foreach (var mot in motList)
             {
-                Provider = dbProviderFactory,
-                ConnectionString = builder.ConnectionString,
-            };
+                var dbNameParameters = $"{provider.GetShortProviderName()} {(mot == true ? "MOT On" : "MOT Off")}";
+                SqlConnectionStringBuilder connectionString = new SqlConnectionStringBuilder(TestEnv.TheConnectionString);
+                connectionString.InitialCatalog = string.Format(TestEnv.DbNamePattern, dbNameParameters);
+
+                yield return new TestCaseProvider()
+                {
+                    Provider = provider,
+                    ConnectionString = connectionString.ConnectionString,
+                    NeedMot = mot,
+                };
+            }
         }
+
+
     }
 }

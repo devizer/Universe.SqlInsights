@@ -10,6 +10,7 @@ using Dapper;
 using NUnit.Framework;
 using Universe.NUnitTests;
 using Universe.SqlInsights.Shared;
+using Universe.SqlServerJam;
 
 namespace Universe.SqlInsights.SqlServerStorage.Tests
 {
@@ -17,13 +18,27 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
     {
 
         [OneTimeSetUp]
-        public void Setup()
+        public void OneTimeSetup()
         {
             SqlServerSqlInsightsMigrations.DisableMemoryOptimizedTables = false;
         }
+        
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+        }
+
 
         SqlServerSqlInsightsStorage CreateStorage(DbProviderFactory provider, string connectionString, bool verboseLog)
         {
+            StringsStorage.ResetCacheForTests();
+            MetadataCache.ResetCacheForTests();
+
+            if (TestContext.CurrentContext.Test.Arguments.FirstOrDefault() is TestCaseProvider testCase)
+                SqlServerSqlInsightsMigrations.DisableMemoryOptimizedTables = testCase.NeedMot != true;
+            else
+                throw new InvalidOperationException("Test should be parametrized by TestCaseSource attribute and TestCaseProvider argument");
+            
             SqlServerDbExtensions.CreateDbIfNotExists(connectionString, TestEnv.DbDataDir, initialDataSize: 64);
             var migrations = new SqlServerSqlInsightsMigrations(provider, connectionString)
             {
@@ -32,18 +47,26 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             migrations.Migrate();
             if (verboseLog)
                 Console.WriteLine($"Migration successfully completed. Details:{Environment.NewLine}{migrations.Logs}");
+
+            var dbName = new SqlConnectionStringBuilder(connectionString).InitialCatalog;
+            OnDispose(
+                $"Drop Database [{dbName}]", () =>
+                {
+                    // Console.WriteLine($"Deleting database [{dbName}]");
+                    // AgileDbKiller.Kill(connectionString, throwOnError: false, retryCount: 3);
+                }, TestDisposeOptions.Global);
             return new SqlServerSqlInsightsStorage(provider, connectionString);
         }
 
         SqlServerSqlInsightsStorage CreateStorage(TestCaseProvider testCase, bool verboseLog = false) => CreateStorage(testCase.Provider, testCase.ConnectionString, verboseLog);
 
-        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
+        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetTestCases))]
         public async Task Test0_Migrate(TestCaseProvider testCase)
         {
             SqlServerSqlInsightsStorage storage = CreateStorage(testCase, true);
         }
 
-        [Test, TestCaseSource(typeof(SeedTestCaseProvider), nameof(SeedTestCaseProvider.GetList))]
+        [Test, TestCaseSource(typeof(SeedTestCaseProvider), nameof(TestCaseProvider.GetTestCases))]
         public async Task Test1_Seed(SeedTestCaseProvider testCase)
         {
             SqlServerSqlInsightsStorage storage = CreateStorage(testCase.Provider, testCase.ConnectionString, false);
@@ -54,7 +77,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             Console.WriteLine($"Sessions on-end: {(await storage.GetSessions()).Count()}");
         }
 
-        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
+        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetTestCases))]
         public void Test1b_Any_Alive_Session_Exists(TestCaseProvider testCase)
         {
             SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
@@ -62,7 +85,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             Assert.IsTrue(anyAliveSession);
         }
 
-        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
+        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetTestCases))]
         public async Task Test2_LoadAll(TestCaseProvider testCase)
         {
             SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
@@ -85,7 +108,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             Console.WriteLine($"Commands: {countCommands}");
         }
 
-        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
+        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetTestCases))]
         [Ignore("Doesn't work. idSession == 0 check is on data access level")]
         public async Task Test3b_No_AliveSessions(TestCaseProvider testCase)
         {
@@ -95,7 +118,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             Assert.IsFalse(anyAliveSession);
         }
 
-        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
+        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetTestCases))]
         public async Task Test3_FinishAllSessions(TestCaseProvider testCase)
         {
             // Finish a single session
@@ -121,7 +144,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
 
         }
 
-        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
+        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetTestCases))]
         public async Task Test4_Rename_and_Delete_Session(TestCaseProvider testCase)
         {
             SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
@@ -147,7 +170,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
 
         }
         
-        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
+        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetTestCases))]
         public async Task Test5_Select_AppNames(TestCaseProvider testCase)
         {
             SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
@@ -157,7 +180,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             Assert.True(contains, $"storage.GetAppNames() should return '{Seeder.TestAppName}'");
         }
 
-        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
+        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetTestCases))]
         public async Task Test6_Select_HostIds(TestCaseProvider testCase)
         {
             SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
@@ -167,7 +190,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             Assert.True(contains, $"storage.GetAppNames() should return '{Environment.MachineName}'");
         }
 
-        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetList))]
+        [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetTestCases))]
         public async Task Test7_Test_Strings_Storage(TestCaseProvider testCase)
         {
             using (IDbConnection con = testCase.Provider.CreateConnection())

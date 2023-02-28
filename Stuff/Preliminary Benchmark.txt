@@ -1,0 +1,135 @@
+Artifacts If SQL Server 2005
+    158.8 1/s | v9.0.5000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | System    | 5T on 2 | 2626 / 0
+    168.2 1/s | v9.0.5000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | Microsoft | 5T on 2 | 2626 / 0
+    145.5 1/s | v9.0.5000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | System    | 3T on 2 | 2626 / 0
+    141.8 1/s | v9.0.5000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | Microsoft | 3T on 2 | 2626 / 0
+    117.2 1/s | v9.0.5000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | System    | 1T on 2 | 2626 / 0
+    117.6 1/s | v9.0.5000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | Microsoft | 1T on 2 | 2626 / 0
+
+    870.3 1/s | v9.0.5000 on RAM-Disk | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 9T on 4 | 2605 / 0
+  1,016.7 1/s | v9.0.5000 on RAM-Disk | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 9T on 4 | 2595 / 0
+  1,276.3 1/s | v9.0.5000 on RAM-Disk | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 5T on 4 | 2608 / 0
+  1,512.9 1/s | v9.0.5000 on RAM-Disk | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 5T on 4 | 2610 / 0
+    234.7 1/s | v9.0.5000 on RAM-Disk | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 1T on 4 | 2626 / 0
+    306.1 1/s | v9.0.5000 on RAM-Disk | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 1T on 4 | 2626 / 0
+
+Artifacts If SQL Server 2008 R2
+    188.6 1/s | v10.50.4000 on DISK | Windows | Intel(R) Xeon(R) CPU E5-2673 v3 @ 2.40GHz | System    | 5T on 2 | 2626 / 0
+    188.2 1/s | v10.50.4000 on DISK | Windows | Intel(R) Xeon(R) CPU E5-2673 v3 @ 2.40GHz | Microsoft | 5T on 2 | 2626 / 0
+    147.9 1/s | v10.50.4000 on DISK | Windows | Intel(R) Xeon(R) CPU E5-2673 v3 @ 2.40GHz | System    | 3T on 2 | 2626 / 0
+    145.2 1/s | v10.50.4000 on DISK | Windows | Intel(R) Xeon(R) CPU E5-2673 v3 @ 2.40GHz | Microsoft | 3T on 2 | 2626 / 0
+    104.6 1/s | v10.50.4000 on DISK | Windows | Intel(R) Xeon(R) CPU E5-2673 v3 @ 2.40GHz | System    | 1T on 2 | 2626 / 0
+    107.0 1/s | v10.50.4000 on DISK | Windows | Intel(R) Xeon(R) CPU E5-2673 v3 @ 2.40GHz | Microsoft | 1T on 2 | 2626 / 0
+
+Artifacts If SQL Server 2008
+    187.9 1/s | v10.0.5500 on DISK | Windows | Intel(R) Xeon(R) Platinum 8171M CPU @ 2.60GHz | System    | 5T on 2 | 2626 / 0
+    213.8 1/s | v10.0.5500 on DISK | Windows | Intel(R) Xeon(R) Platinum 8171M CPU @ 2.60GHz | Microsoft | 5T on 2 | 2626 / 0
+    189.2 1/s | v10.0.5500 on DISK | Windows | Intel(R) Xeon(R) Platinum 8171M CPU @ 2.60GHz | System    | 3T on 2 | 2626 / 0
+    190.2 1/s | v10.0.5500 on DISK | Windows | Intel(R) Xeon(R) Platinum 8171M CPU @ 2.60GHz | Microsoft | 3T on 2 | 2626 / 0
+    128.2 1/s | v10.0.5500 on DISK | Windows | Intel(R) Xeon(R) Platinum 8171M CPU @ 2.60GHz | System    | 1T on 2 | 2626 / 0
+    129.0 1/s | v10.0.5500 on DISK | Windows | Intel(R) Xeon(R) Platinum 8171M CPU @ 2.60GHz | Microsoft | 1T on 2 | 2626 / 0
+
+Artifacts If SQL Server 2012
+    249.9 1/s | v11.0.6020 on DISK | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 9T on 4 | 2622 / 0
+    315.2 1/s | v11.0.6020 on DISK | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 9T on 4 | 2595 / 0
+    255.0 1/s | v11.0.6020 on DISK | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 5T on 4 | 2609 / 0
+    272.9 1/s | v11.0.6020 on DISK | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 5T on 4 | 2611 / 0
+    110.7 1/s | v11.0.6020 on DISK | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 1T on 4 | 2626 / 0
+    112.4 1/s | v11.0.6020 on DISK | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 1T on 4 | 2626 / 0
+
+Artifacts If SQL Server 2014
+    233.0 1/s | v12.0.5000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 9T on 4 | 2625 / 0
+    308.5 1/s | v12.0.5000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 9T on 4 | 2581 / 0
+    262.1 1/s | v12.0.5000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 5T on 4 | 2602 / 0
+    269.0 1/s | v12.0.5000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 5T on 4 | 2604 / 0
+    102.6 1/s | v12.0.5000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 1T on 4 | 2626 / 0
+    106.3 1/s | v12.0.5000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 1T on 4 | 2626 / 0
+
+Artifacts If SQL Server 2016
+    372.8 1/s | v13.0.4001 on DISK | Windows | Intel(R) Xeon(R) CPU E5-2673 v4 @ 2.30GHz | System    | 9T on 4 | 2624 / 24
+    548.7 1/s | v13.0.4001 on DISK | Windows | Intel(R) Xeon(R) CPU E5-2673 v4 @ 2.30GHz | Microsoft | 9T on 4 | 2622 / 31
+    472.5 1/s | v13.0.4001 on DISK | Windows | Intel(R) Xeon(R) CPU E5-2673 v4 @ 2.30GHz | System    | 5T on 4 | 2622 / 6
+    480.5 1/s | v13.0.4001 on DISK | Windows | Intel(R) Xeon(R) CPU E5-2673 v4 @ 2.30GHz | Microsoft | 5T on 4 | 2620 / 8
+     97.6 1/s | v13.0.4001 on DISK | Windows | Intel(R) Xeon(R) CPU E5-2673 v4 @ 2.30GHz | System    | 1T on 4 | 2626 / 0
+     96.9 1/s | v13.0.4001 on DISK | Windows | Intel(R) Xeon(R) CPU E5-2673 v4 @ 2.30GHz | Microsoft | 1T on 4 | 2626 / 0
+
+Artifacts If SQL Server 2017 Dev
+    375.7 1/s | v14.0.1000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | System    | 5T on 2 | 2626 / 4
+    527.1 1/s | v14.0.1000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | Microsoft | 5T on 2 | 2626 / 0
+    436.2 1/s | v14.0.1000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | System    | 3T on 2 | 2626 / 0
+    412.5 1/s | v14.0.1000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | Microsoft | 3T on 2 | 2626 / 0
+    217.4 1/s | v14.0.1000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | System    | 1T on 2 | 2626 / 0
+    209.4 1/s | v14.0.1000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | Microsoft | 1T on 2 | 2626 / 0
+
+Artifacts If SQL Server 2017
+    356.5 1/s | v14.0.1000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 5T on 2 | 2626 / 0
+    489.0 1/s | v14.0.1000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 5T on 2 | 2626 / 0
+    322.3 1/s | v14.0.1000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 3T on 2 | 2626 / 0
+    457.3 1/s | v14.0.1000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 3T on 2 | 2626 / 0
+    204.7 1/s | v14.0.1000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 1T on 2 | 2626 / 0
+    206.5 1/s | v14.0.1000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 1T on 2 | 2626 / 0
+
+Artifacts If SQL Server 2019 Dev
+    459.7 1/s | v15.0.2000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | System    | 9T on 4 | 2505 / 3
+    474.8 1/s | v15.0.2000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | Microsoft | 9T on 4 | 2556 / 3
+    683.4 1/s | v15.0.2000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | System    | 5T on 4 | 2509 / 3
+    523.8 1/s | v15.0.2000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | Microsoft | 5T on 4 | 2472 / 5
+    120.7 1/s | v15.0.2000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | System    | 1T on 4 | 2626 / 0
+    156.2 1/s | v15.0.2000 on DISK | Windows | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | Microsoft | 1T on 4 | 2626 / 0
+
+Artifacts If SQL Server 2022 Dev on Windows Server 2022
+    642.0 1/s | v16.0.1000 on RAM-Disk | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 9T on 4 | 2619 / 79
+    634.4 1/s | v16.0.1000 on RAM-Disk | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 9T on 4 | 2600 / 72
+    763.6 1/s | v16.0.1000 on RAM-Disk | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 5T on 4 | 2606 / 101
+    694.9 1/s | v16.0.1000 on RAM-Disk | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 5T on 4 | 2613 / 101
+    154.5 1/s | v16.0.1000 on RAM-Disk | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 1T on 4 | 2626 / 0
+    179.6 1/s | v16.0.1000 on RAM-Disk | Windows | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 1T on 4 | 2626 / 0
+
+Test SQL Server 2017 on Ubuntu with RAM Disk
+    472.8 1/s | v14.0.3460 on RAM-Disk | Linux | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 5T on 2 | 2626 / 99
+    558.9 1/s | v14.0.3460 on RAM-Disk | Linux | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 5T on 2 | 2626 / 113
+    555.3 1/s | v14.0.3460 on RAM-Disk | Linux | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 3T on 2 | 2626 / 103
+    508.7 1/s | v14.0.3460 on RAM-Disk | Linux | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 3T on 2 | 2626 / 46
+    357.8 1/s | v14.0.3460 on RAM-Disk | Linux | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 1T on 2 | 2626 / 0
+    359.6 1/s | v14.0.3460 on RAM-Disk | Linux | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 1T on 2 | 2626 / 0
+
+Test SQL Server 2017 on Ubuntu
+    556.2 1/s | v14.0.3460 on DISK | Linux | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | System    | 5T on 2 | 2626 / 73
+    579.5 1/s | v14.0.3460 on DISK | Linux | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | Microsoft | 5T on 2 | 2626 / 68
+    568.1 1/s | v14.0.3460 on DISK | Linux | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | System    | 3T on 2 | 2626 / 23
+    586.3 1/s | v14.0.3460 on DISK | Linux | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | Microsoft | 3T on 2 | 2626 / 47
+    341.0 1/s | v14.0.3460 on DISK | Linux | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | System    | 1T on 2 | 2626 / 0
+    342.5 1/s | v14.0.3460 on DISK | Linux | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | Microsoft | 1T on 2 | 2626 / 0
+
+Test SQL Server 2019 on Ubuntu with RAM Disk
+    493.8 1/s | v15.0.4298 on RAM-Disk | Linux | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 5T on 2 | 2626 / 87
+    516.0 1/s | v15.0.4298 on RAM-Disk | Linux | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 5T on 2 | 2626 / 121
+    451.9 1/s | v15.0.4298 on RAM-Disk | Linux | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 3T on 2 | 2626 / 12
+    517.7 1/s | v15.0.4298 on RAM-Disk | Linux | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 3T on 2 | 2626 / 55
+    344.2 1/s | v15.0.4298 on RAM-Disk | Linux | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 1T on 2 | 2626 / 0
+    322.5 1/s | v15.0.4298 on RAM-Disk | Linux | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 1T on 2 | 2626 / 0
+
+Test SQL Server 2019 on Ubuntu
+    398.1 1/s | v15.0.4298 on DISK | Linux | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 5T on 2 | 2626 / 45
+    469.3 1/s | v15.0.4298 on DISK | Linux | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 5T on 2 | 2622 / 31
+    440.8 1/s | v15.0.4298 on DISK | Linux | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 3T on 2 | 2626 / 47
+    452.2 1/s | v15.0.4298 on DISK | Linux | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 3T on 2 | 2626 / 35
+    230.4 1/s | v15.0.4298 on DISK | Linux | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 1T on 2 | 2626 / 0
+    225.6 1/s | v15.0.4298 on DISK | Linux | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 1T on 2 | 2626 / 0
+
+Test SQL Server 2022 on Ubuntu with RAM Disk
+    397.5 1/s | v16.0.4003 on RAM-Disk | Linux | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 5T on 2 | 2626 / 15
+    476.9 1/s | v16.0.4003 on RAM-Disk | Linux | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 5T on 2 | 2626 / 77
+    397.0 1/s | v16.0.4003 on RAM-Disk | Linux | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 3T on 2 | 2626 / 36
+    377.8 1/s | v16.0.4003 on RAM-Disk | Linux | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 3T on 2 | 2626 / 7
+    267.8 1/s | v16.0.4003 on RAM-Disk | Linux | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | System    | 1T on 2 | 2626 / 0
+    285.6 1/s | v16.0.4003 on RAM-Disk | Linux | Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz | Microsoft | 1T on 2 | 2626 / 0
+
+Test SQL Server 2022 on Ubuntu
+    425.6 1/s | v16.0.4003 on DISK | Linux | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | System    | 5T on 2 | 2626 / 34
+    551.6 1/s | v16.0.4003 on DISK | Linux | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | Microsoft | 5T on 2 | 2626 / 49
+    525.3 1/s | v16.0.4003 on DISK | Linux | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | System    | 3T on 2 | 2626 / 57
+    508.3 1/s | v16.0.4003 on DISK | Linux | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | Microsoft | 3T on 2 | 2626 / 74
+    317.4 1/s | v16.0.4003 on DISK | Linux | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | System    | 1T on 2 | 2626 / 0
+    320.7 1/s | v16.0.4003 on DISK | Linux | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | Microsoft | 1T on 2 | 2626 / 0
+
