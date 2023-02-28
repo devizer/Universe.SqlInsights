@@ -30,7 +30,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         }
 
         [Test]
-        public void TestSystemJsonOfDetails()
+        public void TestSystemJsonOfActionDetails()
         {
             Assert.AreEqual("System", DbJsonConvert.Flawor);
 
@@ -54,7 +54,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         }
 
         [Test]
-        public static void TestSystemJsonOfSummary()
+        public static void TestSystemJsonOfActionSummary()
         {
             Assert.AreEqual("System", DbJsonConvert.Flawor);
 
@@ -91,7 +91,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                 {
                     Console.WriteLine($"Deleting database [{dbName}]");
                     AgileDbKiller.Kill(connectionString, throwOnError: false, retryCount: 3);
-                }, TestDisposeOptions.Global);
+                }, TestDisposeOptions.Class);
             return new SqlServerSqlInsightsStorage(provider, connectionString);
         }
 
