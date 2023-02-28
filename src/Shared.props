@@ -1,6 +1,7 @@
 ﻿<Project>
 
     <PropertyGroup>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <OutputType>Library</OutputType>
         <LangVersion>latest</LangVersion>
         <DebugType>Full</DebugType>

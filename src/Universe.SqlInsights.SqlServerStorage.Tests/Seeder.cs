@@ -77,9 +77,11 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             {
                 var cnn = this.ProviderFactory.CreateConnection();
                 cnn.ConnectionString = this.ConnectionString;
-                var sqlVersion = cnn.Manage().ShortServerVersion;
+                var sqlServerManagement = cnn.Manage();
+                var sqlVersion = sqlServerManagement.ShortServerVersion;
+                var hasMot = sqlServerManagement.CurrentDatabase.HasMemoryOptimizedTableFileGroup;
                 TestEnv.LogToArtifact("AddAction.log",
-                    $"{ops,9:n1} 1/s | v{sqlVersion} on {TestEnv.TestConfigName} | {CrossInfo.ThePlatform} | {TestEnv.TestCpuName} | {providerName,-9} | {numThreads}T on {Environment.ProcessorCount} | {total} / {fail}"
+                    $"{ops,9:n1} 1/s | v{sqlVersion} on {TestEnv.TestConfigName} | {(hasMot ? "MOT" : "   ")} | {CrossInfo.ThePlatform} | {TestEnv.TestCpuName} | {providerName,-9} | {numThreads}T on {Environment.ProcessorCount} | {total} / {fail}"
                 );
             }
 
