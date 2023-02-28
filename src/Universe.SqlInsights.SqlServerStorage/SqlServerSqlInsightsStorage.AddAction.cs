@@ -61,7 +61,9 @@ namespace Universe.SqlInsights.SqlServerStorage
                     var keyPath = SerializeKeyPath(reqAction.Key);
 
                     // Either ReadCommitted or ReadUncommitted without MOT. Doesn't matter without deletion.
-                    var tran = con.BeginTransaction(IsolationLevel.ReadUncommitted);
+                    
+                    // IDbTransaction tran = con.BeginTransaction(IsolationLevel.ReadUncommitted);
+                    IDbTransaction tran = null;
                     using (tran)
                     {
                         // SUMMARY: SqlInsightsKeyPathSummary
@@ -82,7 +84,7 @@ namespace Universe.SqlInsights.SqlServerStorage
                             next,
                             prev = !exists
                                 ? new ActionSummaryCounters()
-                                : JsonConvert.DeserializeObject<ActionSummaryCounters>(rawDataPrev, DefaultSettings);
+                                : DbJsonConvert.Deserialize<ActionSummaryCounters>(rawDataPrev);
 
                         if (exists)
                         {
@@ -96,7 +98,7 @@ namespace Universe.SqlInsights.SqlServerStorage
 
                         // next.Key = actionActionSummary.Key;
                         var sqlUpsert = exists ? sqlUpdate : sqlInsert;
-                        var dataSummary = JsonConvert.SerializeObject(next, DefaultSettings);
+                        var dataSummary = DbJsonConvert.Serialize(next);
                         // TODO (without ReadCommitted only):
                         // System.Data.SqlClient.SqlException (0x80131904): Violation of PRIMARY KEY constraint 'PK_SqlInsightsKeyPathSummary'. Cannot insert duplicate key in object 'dbo.SqlInsightsKeyPathSummary'. The duplicate key value is (ASP.NET Core→SqlInsights→Summary→[POST], 0, 1, 3).
                         con.Execute(sqlUpsert, new
@@ -114,7 +116,7 @@ namespace Universe.SqlInsights.SqlServerStorage
 Values(@At, @IdSession, @KeyPath, @IsOK, @AppName, @HostId, @Data)";
 
                         var detail = reqAction;
-                        var dataDetail = JsonConvert.SerializeObject(detail, DefaultSettings);
+                        var dataDetail = DbJsonConvert.Serialize(detail);
                         try
                         {
                             con.Execute(sqlInsertDetail, new
@@ -133,7 +135,7 @@ Values(@At, @IdSession, @KeyPath, @IsOK, @AppName, @HostId, @Data)";
                             throw;
                         }
 
-                        tran.Commit();
+                        // tran.Commit();
                     }
                 }
 

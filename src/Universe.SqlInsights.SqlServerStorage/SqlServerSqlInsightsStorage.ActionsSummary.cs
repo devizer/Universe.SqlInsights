@@ -48,7 +48,7 @@ Where
                     SqlInsightsActionKeyPath key = null;
                     foreach (var raw in src)
                     {
-                        var deserialized = JsonConvert.DeserializeObject<ActionSummaryCounters>(raw, DefaultSettings);
+                        var deserialized = DbJsonConvert.Deserialize<ActionSummaryCounters>(raw);
                         key = deserialized.Key;
                         next.Add(deserialized);
                     }
@@ -61,7 +61,7 @@ Where
                 
                 var query = resultSet.Select(x =>
                 {
-                    return JsonConvert.DeserializeObject<ActionSummaryCounters>(x.Data, DefaultSettings);
+                    return DbJsonConvert.Deserialize<ActionSummaryCounters>(x.Data);
                 });
 
                 return query.ToList();

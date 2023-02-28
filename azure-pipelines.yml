@@ -9,7 +9,7 @@ jobs:
 
   - job: Test
     strategy:
-      maxParallel: 1
+      maxParallel: 6
       matrix:
 
         "SQL Server 2022 on Ubuntu with RAM Disk":
@@ -52,7 +52,7 @@ jobs:
   - job: If
     # condition: eq('Never','')
     strategy:
-      maxParallel: 1
+      maxParallel: 7
       matrix:
 
         "SQL Server 2008 R2":

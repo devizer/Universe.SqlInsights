@@ -111,7 +111,7 @@ steps:
         sudo mkdir -p "$SQLINSIGHTS_DATA_DIR"
         Say "SQLINSIGHTS_DATA_DIR: [$SQLINSIGHTS_DATA_DIR]"
       fi
-      dotnet test -c Release --no-build
+      dotnet test -c Release --no-build -f net6.0
     condition: succeededOrFailed()
     displayName: 'Test'
 

@@ -2,10 +2,16 @@
 
     <PropertyGroup>
         <!-- net35;net40;net45; -->
-        <TargetFrameworks>net35;net40;net45;netstandard2.0;netstandard1.3</TargetFrameworks>
+        <!-- System.Text.Json support starts from net 4.6.2 -->
+        <TargetFrameworks>net35;net40;net45;net462;netstandard2.0;netstandard1.3</TargetFrameworks>
     </PropertyGroup>
 
     <Import Project="..\Shared.props" />
+
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net462' Or '$(TargetFramework)' == 'netstandard2.0' ">
+      <PackageReference Include="System.Text.Json" Version="5.0"  />
+    </ItemGroup>
+
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net35'">
         <AssemblyAttribute Include="System.Runtime.Versioning.TargetFrameworkAttribute">

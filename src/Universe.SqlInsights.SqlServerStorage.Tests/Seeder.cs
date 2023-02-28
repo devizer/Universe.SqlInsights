@@ -105,7 +105,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             }
         }
 
-        private static ActionDetailsWithCounters CreateActionDetailsWithCounters(SqlInsightsActionKeyPath key)
+        public static ActionDetailsWithCounters CreateActionDetailsWithCounters(SqlInsightsActionKeyPath key)
         {
             ActionDetailsWithCounters.SqlStatement stm = new ActionDetailsWithCounters.SqlStatement()
             {

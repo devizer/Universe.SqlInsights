@@ -42,12 +42,11 @@ namespace Universe.SqlInsights.SqlServerStorage
                     .QueryAsync<SelectDataResult>(sql, new {KeyPath = SerializeKeyPath(keyPath), IdSession = idSession, N = lastN});
 
                 var ret = query
-                    .Select(x => JsonConvert.DeserializeObject<ActionDetailsWithCounters>(x.Data, DefaultSettings));
+                    .Select(x => DbJsonConvert.Deserialize<ActionDetailsWithCounters>(x.Data));
 
                 return ret.ToList();
             }
         }
-
 
 #endif        
     }

@@ -22,7 +22,7 @@ namespace Universe.SqlInsights.Shared
         public double AppKernelUsage { get; set; }
         public double AppUserUsage { get; set; }
 
-        public List<SqlStatement> SqlStatements { get; } = new List<SqlStatement>();
+        public List<SqlStatement> SqlStatements { get; set; } = new List<SqlStatement>();
 
         public class SqlStatement
         {

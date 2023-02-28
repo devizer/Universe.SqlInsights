@@ -26,17 +26,6 @@ namespace Universe.SqlInsights.SqlServerStorage
             Counter = Interlocked.Increment(ref CounterStorage);
         }
 
-        private static readonly DefaultContractResolver TheContractResolver = new DefaultContractResolver
-        {
-        };
-
-        private static readonly JsonSerializerSettings DefaultSettings = new JsonSerializerSettings
-        {
-            Formatting = Formatting.None,
-            ContractResolver = TheContractResolver,
-            /*Converters = new JsonConverterCollection(),*/
-        };
-
         IDbConnection GetConnection()
         {
             // Migrations here for development only
