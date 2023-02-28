@@ -87,11 +87,10 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
 
             var dbName = new SqlConnectionStringBuilder(connectionString).InitialCatalog;
             OnDispose(
-                $"Drop Database [{dbName}]", () =>
-                {
-                    Console.WriteLine($"Deleting database [{dbName}]");
-                    AgileDbKiller.Kill(connectionString, throwOnError: false, retryCount: 3);
-                }, TestDisposeOptions.Class);
+                $"Drop Database [{dbName}]",
+                () => AgileDbKiller.Kill(connectionString, throwOnError: false, retryCount: 3),
+                TestDisposeOptions.Class
+            );
             return new SqlServerSqlInsightsStorage(provider, connectionString);
         }
 

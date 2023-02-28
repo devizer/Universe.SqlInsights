@@ -42,7 +42,7 @@ jobs:
           VMIMAGE: 'ubuntu-20.04'
           SQL_IMAGE_TAG: "2017-latest"
         
-    timeoutInMinutes: 40
+    timeoutInMinutes: 45
     cancelTimeoutInMinutes: 1
     pool:
       vmImage: "$(VMIMAGE)"
