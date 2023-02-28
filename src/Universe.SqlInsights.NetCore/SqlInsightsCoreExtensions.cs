@@ -144,7 +144,7 @@ namespace Universe.SqlInsights.NetCore
                         }));
 
                     // ERROR
-                    SqlExceptionInfo sqlException = lastError.GetSqlError();
+                    SqlExceptionInfo sqlException = lastError.FindSqlError();
                     if (sqlException != null)
                     {
                         actionDetails.BriefSqlError = new BriefSqlError()

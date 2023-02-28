@@ -62,7 +62,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                 catch (Exception ex)
                 {
                     fail++;
-                    var sqlError = ex.GetSqlError();
+                    var sqlError = ex.FindSqlError();
                     string err = (sqlError == null ? "" : $"#{sqlError.Number} ") + ex.Message;
                     var counter = errors.GetOrAdd(err, key => new CounterHolder());
                     counter.Total += 1;

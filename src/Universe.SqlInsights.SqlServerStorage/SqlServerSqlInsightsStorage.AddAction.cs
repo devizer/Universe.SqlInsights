@@ -167,7 +167,7 @@ Select Top 1 Version From SqlInsightsKeyPathSummaryTimestamp;
             {
                 fail = Interlocked.Increment(ref FailNextVersion);
                 nextVersionQueryError = ex;
-                isDeadLock = ex.GetSqlError()?.Number == 1205;
+                isDeadLock = ex.FindSqlError()?.Number == 1205;
             }
 
             if (DebugAddAction)

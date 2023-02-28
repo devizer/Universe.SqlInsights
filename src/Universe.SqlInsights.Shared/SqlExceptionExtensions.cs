@@ -14,8 +14,7 @@ namespace Universe.SqlInsights.Shared
     
     public static class SqlExceptionExtensions
     {
-        // Does not work for Microsoft.Data.SqlClient
-        public static SqlExceptionInfo GetSqlError(this Exception ex)
+        public static SqlExceptionInfo FindSqlError(this Exception ex)
         {
             return ex?.AsPlainExceptionList()
                 .Select(IsSqlException)
