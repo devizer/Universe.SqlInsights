@@ -20,7 +20,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         public static new IEnumerable<SeedTestCaseProvider> GetTestCases()
         {
             var threadsList = new[] { Environment.ProcessorCount * 2 + 1, Environment.ProcessorCount + 1, 1 };
-            var providerList = new DbProviderFactory[] { System.Data.SqlClient.SqlClientFactory.Instance, Microsoft.Data.SqlClient.SqlClientFactory.Instance };
+            var providerList = new DbProviderFactory[] { Microsoft.Data.SqlClient.SqlClientFactory.Instance, System.Data.SqlClient.SqlClientFactory.Instance, };
             bool isMotSupported = TestEnv.IsMotSupported();
             bool?[] motList = isMotSupported ? new bool?[] { true, false } : new bool?[] { null };
 
@@ -41,8 +41,8 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                 };
             }
 
-            foreach (var provider in providerList)
             foreach (var threads in threadsList)
+            foreach (var provider in providerList)
             foreach (var mot in motList)
             {
                 var dbNameParameters = $"{provider.GetShortProviderName()} {(mot == true ? "MOT On" : "MOT Off")}";
