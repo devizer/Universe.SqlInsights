@@ -55,9 +55,9 @@ steps:
       Say "DOCKER IMAGES"
       docker image ls
 
-      Say "/usr/src/app/do-my-sql-commands.sh"
+      Say "/var/opt/mssql/mssql.conf"
       # /usr/src/app/do-my-sql-commands.sh & /opt/mssql/bin/sqlservr
-      docker exec -t sqlserver cat /usr/src/app/do-my-sql-commands.sh
+      docker exec -t sqlserver cat /var/opt/mssql/mssql.conf
       Say "/opt/mssql/bin/sqlservr"
       docker exec -t sqlserver file /opt/mssql/bin/sqlservr
 
