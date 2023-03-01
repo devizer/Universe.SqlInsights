@@ -56,7 +56,8 @@ namespace Universe.SqlInsights.SqlServerStorage
             Logs.AppendLine($"MOT Files Folder: {dataFolder}");
 
             var existingTables = cnn.Query<string>("Select name from SYSOBJECTS WHERE xtype = 'U' and name like '%SqlInsights%'").ToArray();
-            // Logs.AppendLine($"Existing Tables: {}");
+            var existingTablesInfo = existingTables.Length == 0 ? ">Not Found<" : String.Join(",", existingTables.Select(x => $"[{x}]").ToArray());
+            Logs.AppendLine($"Existing Tables: {existingTablesInfo}");
 
             string motFileGroup = null;
             if (supportMOT)
@@ -66,7 +67,7 @@ namespace Universe.SqlInsights.SqlServerStorage
             bool isMotFileGroupExists = !string.IsNullOrEmpty(motFileGroup);
             Logs.AppendLine($"Existing MOT File Group Name: {(isMotFileGroupExists ? $"'{motFileGroup}'" : ">Not Found<")}");
             
-            List<string> sqlMotList = new List<string>();
+            List<string> sqlConfigureMotList = new List<string>();
             if (supportMOT && !isMotFileGroupExists)
             {
                 string sqlAutoCloseOff = @$"
@@ -87,7 +88,7 @@ TO FILEGROUP MemoryOptimizedTablesFileGroup;";
 ALTER DATABASE [{dbName}]
 SET MEMORY_OPTIMIZED_ELEVATE_TO_SNAPSHOT = ON;
 ";
-                sqlMotList.AddRange(new[] { sqlAutoCloseOff, sqlAddMotFileGroup, sqlAddMotFile, sqlEnableTransactions});
+                sqlConfigureMotList.AddRange(new[] { sqlAutoCloseOff, sqlAddMotFileGroup, sqlAddMotFile, sqlEnableTransactions});
             }
             
             string sqlWithMemory = supportMOT ? " WITH (MEMORY_OPTIMIZED=ON, DURABILITY=SCHEMA_ONLY)" : "";
@@ -95,7 +96,7 @@ SET MEMORY_OPTIMIZED_ELEVATE_TO_SNAPSHOT = ON;
             Func<string, string> IfMemory = sql => supportMOT ? sql : "";  
             Func<string, string> IfLegacy = sql => !supportMOT ? sql : "";  
             
-            List<string> sqlCreateList = new List<string>
+            List<string> sqlCreateTablesList = new List<string>
             {
                 // TODO: Add Tests for LONG app name or host name
                 // Table SqlInsights String
@@ -193,13 +194,9 @@ Create Table SqlInsightsAction(
     Constraint PK_SqlInsightsAction Primary Key {(supportMOT ? "NON" : "")}Clustered (KeyPath, IdSession, IdAction)
 {IfLegacy($@"
     ,
-    Constraint FK_SqlInsightsAction_SqlInsightsSession FOREIGN KEY (IdSession) REFERENCES SqlInsightsSession(IdSession)
-        , -- ON DELETE CASCADE ON UPDATE NO ACTION,  -- Used for debugging only, not necessary in runtime
-    
+    Constraint FK_SqlInsightsAction_SqlInsightsSession FOREIGN KEY (IdSession) REFERENCES SqlInsightsSession(IdSession),
     -- Do we need this FK? 
     Constraint FK_SqlInsightsAction_SqlInsightsKeyPathSummary FOREIGN KEY (KeyPath, IdSession, AppName, HostId) REFERENCES SqlInsightsKeyPathSummary(KeyPath, IdSession, AppName, HostId),
-        -- ON DELETE CASCADE ON UPDATE NO ACTION   -- Used for debugging only, not necessary in runtime
-
     -- Next joins are NEVER used
     -- Constraint FK_SqlInsightsAction_AppName FOREIGN KEY (AppName) REFERENCES SqlInsightsString(IdString), 
     -- Constraint FK_SqlInsightsAction_HostId FOREIGN KEY (HostId) REFERENCES SqlInsightsString(IdString),
@@ -210,8 +207,8 @@ End
             };
 
             List<string> ret = new List<string>();
-            ret.AddRange(sqlMotList);
-            ret.AddRange(sqlCreateList);
+            ret.AddRange(sqlConfigureMotList);
+            ret.AddRange(sqlCreateTablesList);
             return ret;
         }
 

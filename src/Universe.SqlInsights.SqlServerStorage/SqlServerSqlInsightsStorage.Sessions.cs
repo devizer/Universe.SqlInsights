@@ -69,7 +69,7 @@ Select 1 [Any]";
             const string sql = @"
 Insert 
     SqlInsightsSession(StartedAt, IsFinished, Caption, MaxDurationMinutes)
-    OUTPUT INSERTED.IdSession As IdSession -- If fail it should be ignored     
+    OUTPUT INSERTED.IdSession As IdSession -- May return IdSession, but fail     
 Values(
     GetUtcDate(),
     (0),
@@ -115,7 +115,7 @@ Values(
 
         public async Task FinishSession(long idSession)
         {
-            if (idSession == 0) return;
+            // if (idSession == 0) return; 
             const string sql = @"Update SqlInsightsSession Set IsFinished = (1), EndedAt = GETUTCDATE() Where IdSession = @IdSession;"; 
             using (var con = GetConnection())
             {

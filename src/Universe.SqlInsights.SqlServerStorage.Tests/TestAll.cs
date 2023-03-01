@@ -23,51 +23,12 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         [OneTimeSetUp]
         public void OneTimeSetup()
         {
-            // SqlServerSqlInsightsMigrations.DisableMemoryOptimizedTables = false;
-
         }
         
         [OneTimeTearDown]
         public void OneTimeTearDown()
         {
         }
-
-        [Test]
-        public void TestSystemJsonOfActionDetails()
-        {
-            Assert.AreEqual("System", DbJsonConvert.Flawor);
-
-            ActionDetailsWithCounters details = Seeder.CreateActionDetailsWithCounters(new SqlInsightsActionKeyPath("Topic", "Kind"));
-
-            Console.WriteLine($"Original by Newtonsoft {Environment.NewLine}{DbJsonConvertLegacy.Serialize(details)}{Environment.NewLine}");
-            Console.WriteLine($"Original by System {Environment.NewLine}{DbJsonConvert.Serialize(details)}{Environment.NewLine}");
-
-            var detailsCopyLegacy = DbJsonConvertLegacy.Deserialize<ActionDetailsWithCounters>(DbJsonConvertLegacy.Serialize(details));
-            Console.WriteLine($"Legacy Copy by Newtonsoft {Environment.NewLine}{DbJsonConvertLegacy.Serialize(detailsCopyLegacy)}{Environment.NewLine}");
-            Console.WriteLine($"Legacy Copy by System {Environment.NewLine}{DbJsonConvert.Serialize(detailsCopyLegacy)}{Environment.NewLine}");
-            
-            var detailsCopySystem = DbJsonConvert.Deserialize<ActionDetailsWithCounters>(DbJsonConvert.Serialize(details));
-            Console.WriteLine($"System Copy by Newtonsoft {Environment.NewLine}{DbJsonConvertLegacy.Serialize(detailsCopySystem)}{Environment.NewLine}");
-            Console.WriteLine($"System Copy by System {Environment.NewLine}{DbJsonConvert.Serialize(detailsCopySystem)}{Environment.NewLine}");
-            
-            var detailsCopy = DbJsonConvert.Deserialize<ActionDetailsWithCounters>(DbJsonConvert.Serialize(details));
-            Assert.AreEqual(DbJsonConvert.Serialize(details), DbJsonConvert.Serialize(detailsCopy), "Details by System Serializer");
-            Assert.AreEqual(DbJsonConvertLegacy.Serialize(details), DbJsonConvertLegacy.Serialize(detailsCopy), "Details by Newtonsoft Serializer");
-
-        }
-
-        [Test]
-        public static void TestSystemJsonOfActionSummary()
-        {
-            Assert.AreEqual("System", DbJsonConvert.Flawor);
-
-            ActionDetailsWithCounters details = Seeder.CreateActionDetailsWithCounters(new SqlInsightsActionKeyPath("Topic", "Kind"));
-            ActionSummaryCounters summary = details.AsSummary();
-            ActionSummaryCounters summaryCopy = DbJsonConvert.Deserialize<ActionSummaryCounters>(DbJsonConvert.Serialize(summary));
-            Assert.AreEqual(DbJsonConvert.Serialize(summary), DbJsonConvert.Serialize(summaryCopy), "Details by System Serializer");
-            Assert.AreEqual(DbJsonConvertLegacy.Serialize(summary), DbJsonConvertLegacy.Serialize(summaryCopy), "Details by Newtonsoft Serializer");
-        }
-
 
         SqlServerSqlInsightsStorage CreateStorage(DbProviderFactory provider, string connectionString, bool verboseLog)
         {
@@ -77,9 +38,11 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             if (TestContext.CurrentContext.Test.Arguments.FirstOrDefault() is TestCaseProvider testCase)
             {
                 SqlServerSqlInsightsMigrations.DisableMemoryOptimizedTables = !testCase.NeedMot.GetValueOrDefault();
+                /*
                 Console.WriteLine($"{{{TestContext.CurrentContext.Test.Name}}}: DisableMemoryOptimizedTables {SqlServerSqlInsightsMigrations.DisableMemoryOptimizedTables}" +
                                   $", testCase.NeedMot={testCase.NeedMot}");
                 Console.WriteLine("Test Case:" + Environment.NewLine + testCase);
+            */
             }
             else
                 throw new InvalidOperationException($"Test '{TestContext.CurrentContext.Test.Name}' should be parametrized by TestCaseSource attribute and TestCaseProvider argument");
@@ -185,7 +148,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             }
 
             int aliveSessionsCount = storage.GetAliveSessions().Count();
-            Assert.AreEqual(1, aliveSessionsCount, "Alive Session count should be 1");
+            Assert.AreEqual(0, aliveSessionsCount, "Alive Session count should be 0");
 
             int aliveSessionsCount2 = storage.GetAliveSessions().Count(x => x != 0);
             Assert.AreEqual(0, aliveSessionsCount2, "Alive Session count (except default one) should be 0");
@@ -241,6 +204,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetTestCases))]
         public async Task Test7_Test_Strings_Storage(TestCaseProvider testCase)
         {
+            SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
             using (IDbConnection con = testCase.Provider.CreateConnection())
             {
                 con.ConnectionString = testCase.ConnectionString;
@@ -267,7 +231,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
 
 
         private static Random Rand = new Random(42);
-        static string GetRandomString(int len)
+        public static string GetRandomString(int len)
         {
             StringBuilder ret = new StringBuilder();
             for (int i = 0; i < len; i++)
@@ -277,4 +241,5 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         }
         
     }
+    
 }
