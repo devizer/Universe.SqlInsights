@@ -11,26 +11,6 @@ steps:
       Say "CPU: $(Get-CpuName)"
     displayName: 'Bootstrap'
 
-  # - bash: |
-  #     set -eu; set -o pipefail;
-  #     DOES NOT. Need DIRECT IO
-
-  #     # VERSION1
-  #     kb="${RAM_DISK_SIZE:-1500}"; kb=$((kb*1024));
-  #     sudo mkdir -p "${RAM_DISK}"
-  #     sudo mount -t tmpfs -o size="${kb}"k none "${RAM_DISK}"
-
-  #     sudo mkdir -p "${RAM_DISK}/DB"
-  #     sudo chown -R "$(whoami)" "${RAM_DISK}"
-  #     sudo chmod -R 777 "${RAM_DISK}"
-  #     Say "HOST VOLUMES"
-  #     df -h -T
-  #     Say "FREE MEMORY"
-  #     Drop-FS-Cache
-  #     free -m
-  #   condition: ne(variables['RAM_DISK'], '')
-  #   displayName: 'RAM Disk $(RAM_DISK)'
-
   - bash: |
       set -eu; set -o pipefail;
       sudo mkdir -p "${RAM_DISK}"
@@ -74,6 +54,13 @@ steps:
       docker ps
       Say "DOCKER IMAGES"
       docker image ls
+
+      Say "/usr/src/app/do-my-sql-commands.sh"
+      # /usr/src/app/do-my-sql-commands.sh & /opt/mssql/bin/sqlservr
+      docker exec -t sqlserver cat /usr/src/app/do-my-sql-commands.sh
+      Say "/opt/mssql/bin/sqlservr"
+      docker exec -t sqlserver file /opt/mssql/bin/sqlservr
+
     condition: ne(variables['SQL_IMAGE_TAG'], '')
     displayName: 'SQL Server $(SQL_IMAGE_TAG)'
 
