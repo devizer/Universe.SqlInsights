@@ -42,7 +42,7 @@ jobs:
           VMIMAGE: 'ubuntu-20.04'
           SQL_IMAGE_TAG: "2017-latest"
         
-    timeoutInMinutes: 45
+    timeoutInMinutes: 20
     cancelTimeoutInMinutes: 1
     pool:
       vmImage: "$(VMIMAGE)"
@@ -109,7 +109,7 @@ jobs:
     variables:
       OS: Windows
       # SQL: 'SqlServer 2019 Developer: MSSQLSERVER'
-    timeoutInMinutes: 40
+    timeoutInMinutes: 49
     cancelTimeoutInMinutes: 1
     pool:
       vmImage: "$(VMIMAGE)"
