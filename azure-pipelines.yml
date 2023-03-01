@@ -164,7 +164,7 @@ jobs:
         rm -rf ${RAW_ARTIFACTS_DIR}/* || true
 
       condition: succeededOrFailed()
-      displayName: 'Deploy GitHub Release $(CMAKE_VER)'
+      displayName: 'Combine benchmarks'
 
     - task: PublishBuildArtifacts@1
       condition: succeededOrFailed()
