@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 using Universe.SqlInsights.Shared;
 using Universe.SqlServerJam;
 using Universe.SqlTrace;
@@ -79,7 +80,8 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                 cnn.ConnectionString = this.ConnectionString;
                 var sqlServerManagement = cnn.Manage();
                 var sqlVersion = sqlServerManagement.ShortServerVersion;
-                var hasMot = sqlServerManagement.CurrentDatabase.HasMemoryOptimizedTableFileGroup;
+                // var hasMot = sqlServerManagement.CurrentDatabase.HasMemoryOptimizedTableFileGroup;
+                var hasMot = cnn.Query<string>("Select Top 1 name from sys.filegroups where type = 'FX'").FirstOrDefault() != null;
                 TestEnv.LogToArtifact("AddAction.log",
                     $"{ops,9:n1} 1/s | v{sqlVersion} on {TestEnv.TestConfigName} | {(hasMot ? "MOT" : "   ")} | {CrossInfo.ThePlatform} | {TestEnv.TestCpuName} | {providerName,-9} | {numThreads}T on {Environment.ProcessorCount} | {total} / {fail}"
                 );
