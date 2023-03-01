@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using DbProviderFactory = System.Data.Common.DbProviderFactory;
 
 namespace Universe.SqlInsights.SqlServerStorage.Tests
@@ -36,7 +37,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                     Provider = provider,
                     ConnectionString = connectionString.ConnectionString,
                     LimitCount = 100,
-                    ThreadCount = 25,
+                    ThreadCount = threadsList.Max(),
                     NeedMot = mot,
                 };
             }
