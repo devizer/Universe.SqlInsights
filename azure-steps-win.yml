@@ -202,7 +202,7 @@ steps:
       rm -f $SYSTEM_ARTIFACTSDIRECTORY/AddAction.log
       dotnet test -c Release -f net6.0 --filter "Name~Test1_Seed"
     condition: eq(variables['Agent.OS'], 'Windows_NT')
-    displayName: 'Test Storage'
+    displayName: 'Test Storage, and benchmark'
 
   - script: |
       dir %DB_DATA_DIR%
