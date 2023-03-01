@@ -22,6 +22,13 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         
         public static string TestConfigName => Environment.GetEnvironmentVariable("TEST_CONFIGURATION");
         public static string TestCpuName => Environment.GetEnvironmentVariable("TEST_CPU_NAME");
+        public static bool IsTestUnderCoverage => GetBooleanVar("TEST_UNDER_COVERAGE");
+
+        static bool GetBooleanVar(string name)
+        {
+            var raw = Environment.GetEnvironmentVariable(name);
+            return raw == "1" || "True".Equals(raw, StringComparison.OrdinalIgnoreCase) || "On".Equals(raw, StringComparison.OrdinalIgnoreCase);
+        }
 
         public static string GetShortProviderName(this DbProviderFactory provider)
         {

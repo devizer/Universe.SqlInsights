@@ -196,10 +196,12 @@ steps:
         Say "SQLINSIGHTS_DATA_DIR is $SQLINSIGHTS_DATA_DIR"
       fi
       cd src/Universe.SqlInsights.SqlServerStorage.Tests
+      export TEST_UNDER_COVERAGE=True
       dotnet test --collect:"XPlat Code Coverage" --logger trx
 
       Say "Benchmark Seed"
       rm -f $SYSTEM_ARTIFACTSDIRECTORY/AddAction.log
+      export TEST_UNDER_COVERAGE=False
       dotnet test -c Release -f net6.0 --filter "Name~Test1_Seed"
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     displayName: 'Test Storage, and benchmark'

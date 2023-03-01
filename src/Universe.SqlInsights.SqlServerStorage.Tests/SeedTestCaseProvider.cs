@@ -21,6 +21,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         public static new IEnumerable<SeedTestCaseProvider> GetTestCases()
         {
             var threadsList = new[] { Environment.ProcessorCount * 2 + 1, Environment.ProcessorCount + 1, 1 };
+            if (TestEnv.IsTestUnderCoverage) threadsList = new[] { Environment.ProcessorCount };
             var providerList = new DbProviderFactory[] { Microsoft.Data.SqlClient.SqlClientFactory.Instance, System.Data.SqlClient.SqlClientFactory.Instance, };
             bool isMotSupported = TestEnv.IsMotSupported();
             bool?[] motList = isMotSupported ? new bool?[] { true, false } : new bool?[] { null };
@@ -54,7 +55,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                 {
                     Provider = provider,
                     ConnectionString = connectionString.ConnectionString,
-                    LimitCount = 5000,
+                    LimitCount = TestEnv.IsTestUnderCoverage ? 500 : 5000,
                     ThreadCount = threads,
                     NeedMot = mot,
                 };
