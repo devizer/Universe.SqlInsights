@@ -61,7 +61,7 @@ namespace Universe.SqlInsights.SqlServerStorage
             // ... WITH (UPDLOCK, rowlock) Where ...
             // TODO: The table option 'rowlock' is not supported with memory optimized tables.
             // TODO: The table option 'updlock' is not supported with memory optimized tables.
-            string SqlSelect = $"Select IdString, StartsWith, Tail From SqlInsightsString {(isMemoryOptimized ? "" : "WITH (UPDLOCK, rowlock)")} Where Kind = @Kind and StartsWith = @StartsWith";
+            string SqlSelect = $"Select IdString, StartsWith, Tail From SqlInsightsString {(isMemoryOptimized ? "" : "WITH (UPDLOCK, ROWLOCK)")} Where Kind = @Kind and StartsWith = @StartsWith";
             const string SqlInsert = "Insert SqlInsightsString(Kind, StartsWith, Tail) OUTPUT Inserted.IdString as IdString Values(@Kind, @StartsWith, @Tail);";
 
             bool doesFit = value.Length <= MaxStartLength;

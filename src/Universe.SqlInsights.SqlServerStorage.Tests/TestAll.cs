@@ -18,10 +18,13 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
     public class TestAll : NUnitTestsBase
     {
 
+        private const bool NeedDropDatabaseOnDispose = true;
+
         [OneTimeSetUp]
         public void OneTimeSetup()
         {
-            SqlServerSqlInsightsMigrations.DisableMemoryOptimizedTables = false;
+            // SqlServerSqlInsightsMigrations.DisableMemoryOptimizedTables = false;
+
         }
         
         [OneTimeTearDown]
@@ -70,12 +73,19 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         {
             StringsStorage.ResetCacheForTests();
             MetadataCache.ResetCacheForTests();
-
-            if (TestContext.CurrentContext.Test.Arguments.FirstOrDefault() is TestCaseProvider testCase)
-                SqlServerSqlInsightsMigrations.DisableMemoryOptimizedTables = testCase.NeedMot != true;
-            else
-                throw new InvalidOperationException("Test should be parametrized by TestCaseSource attribute and TestCaseProvider argument");
             
+            if (TestContext.CurrentContext.Test.Arguments.FirstOrDefault() is TestCaseProvider testCase)
+            {
+                SqlServerSqlInsightsMigrations.DisableMemoryOptimizedTables = !testCase.NeedMot.GetValueOrDefault();
+                Console.WriteLine($"{{{TestContext.CurrentContext.Test.Name}}}: DisableMemoryOptimizedTables {SqlServerSqlInsightsMigrations.DisableMemoryOptimizedTables}" +
+                                  $", testCase.NeedMot={testCase.NeedMot}");
+                Console.WriteLine("Test Case:" + Environment.NewLine + testCase);
+            }
+            else
+                throw new InvalidOperationException($"Test '{TestContext.CurrentContext.Test.Name}' should be parametrized by TestCaseSource attribute and TestCaseProvider argument");
+
+
+
             SqlServerDbExtensions.CreateDbIfNotExists(connectionString, TestEnv.OptionalDbDataDir, initialDataSize: 64);
             var migrations = new SqlServerSqlInsightsMigrations(provider, connectionString)
             {
@@ -86,6 +96,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                 Console.WriteLine($"Migration successfully completed. Details:{Environment.NewLine}{migrations.Logs}");
 
             var dbName = new SqlConnectionStringBuilder(connectionString).InitialCatalog;
+            if (NeedDropDatabaseOnDispose)
             OnDispose(
                 $"Drop Database [{dbName}]",
                 () => AgileDbKiller.Kill(connectionString, throwOnError: false, retryCount: 3),
@@ -93,6 +104,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             );
             return new SqlServerSqlInsightsStorage(provider, connectionString);
         }
+
 
         SqlServerSqlInsightsStorage CreateStorage(TestCaseProvider testCase, bool verboseLog = false) => CreateStorage(testCase.Provider, testCase.ConnectionString, verboseLog);
 

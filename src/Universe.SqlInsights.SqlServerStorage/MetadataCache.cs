@@ -16,11 +16,13 @@ namespace Universe.SqlInsights.SqlServerStorage
 
         private static object _sync = new object();
 
+        // TODO: for strings: do we need WITH (UPDLOCK, ROWLOCK)
         public static bool IsMemoryOptimized(IDbConnection connection)
         {
             return GetMetadata(connection).IsMemoryOptimized;
         }
 
+        // TODO: for SqlInsightsKeyPathSummary on AddAction: do we need WITH (UPDLOCK, ROWLOCK)
         public static bool IsMemoryOptimized(string connectionString)
         {
             SqlConnection cnn = new SqlConnection(connectionString);

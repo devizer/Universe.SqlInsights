@@ -10,8 +10,6 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
     {
         public int ThreadCount { get; set; }
         public int LimitCount { get; set; }
-     
-        public bool? NeedMot { get; set; }
         
         public override string ToString()
         {
