@@ -197,7 +197,7 @@ steps:
       fi
       cd src/Universe.SqlInsights.SqlServerStorage.Tests
       export TEST_UNDER_COVERAGE=True
-      dotnet test --collect:"XPlat Code Coverage" --logger trx
+      dotnet test --collect:"XPlat Code Coverage" --logger trx -f net6.0
 
       Say "Benchmark Seed"
       rm -f $SYSTEM_ARTIFACTSDIRECTORY/AddAction.log
