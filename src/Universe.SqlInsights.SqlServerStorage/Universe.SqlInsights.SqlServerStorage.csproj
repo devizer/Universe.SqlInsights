@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <!-- net35;net40;net45; -->
@@ -9,7 +9,7 @@
     <Import Project="..\Shared.props" />
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net462' Or '$(TargetFramework)' == 'netstandard2.0' ">
-      <PackageReference Include="System.Text.Json" Version="7.0"  />
+      <PackageReference Include="System.Text.Json" Version="7.0" />
     </ItemGroup>
 
 
@@ -57,7 +57,7 @@
 -->
 
     <ItemGroup>
-      <PackageReference Include="Universe.SqlServerJam" Version="1.0.79" />
+      <PackageReference Include="Universe.SqlServerJam" Version="1.0.80" />
       <ProjectReference Include="..\Universe.SqlInsights.Shared\Universe.SqlInsights.Shared.csproj" />
       <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
       <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="All" />
