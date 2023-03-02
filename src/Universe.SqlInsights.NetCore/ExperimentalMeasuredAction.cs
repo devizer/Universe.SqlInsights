@@ -1,6 +1,8 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 using Universe.SqlInsights.Shared;
 using Universe.SqlTrace;
@@ -9,7 +11,7 @@ using Universe.CpuUsage;
 namespace Universe.SqlInsights.NetCore
 {
 
-    public class ExperimentalMeasuredAction
+    public static class ExperimentalMeasuredAction
     {
         public static void Perform(
             ISqlInsightsConfiguration config,
@@ -58,13 +60,29 @@ namespace Universe.SqlInsights.NetCore
             int n = 0;
             foreach (SqlStatementCounters detail in details)
             {
-                log.AppendLine($"#{++n} {detail.Counters}");
+                var header = $"    Query #{++n} ";
+                if (header.Length < 24) header += new string('.', 24 - header.Length);
+                
+                log.AppendLine($"{header}: {detail.Counters}");
                 var sqlCode = string.IsNullOrEmpty(detail.Sql) ? detail.SpName : detail.Sql;
                 sqlCode = sqlCode.TrimStart(new[] { '\r', '\n' });
-                log.AppendLine($"{sqlCode}");
+                log.AppendLine($"{MultilinePadding(sqlCode, "    │ ")}");
             }
             
             Console.WriteLine(log);
+        }
+
+        static string MultilinePadding(string arg)
+        {
+            return MultilinePadding(arg, "   │");
+        }
+        static string MultilinePadding(string arg, string padding)
+        {
+            StringBuilder ret = new StringBuilder();
+            StringReader rdr = new StringReader(arg);
+            string line = null;
+            while ((line = rdr.ReadLine()) != null) ret.Append(ret.Length == 0 ? "" : Environment.NewLine).Append(padding + line);
+            return ret.ToString();
         }
     }
 }
