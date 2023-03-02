@@ -27,25 +27,27 @@ namespace Universe.SqlInsights.SqlServerStorage
 
         public List<string> GetSqlMigrations()
         {
-            string dbName = new SqlConnectionStringBuilder(ConnectionString).InitialCatalog;
-            Logs.AppendLine($"DisableMemoryOptimizedTables: {DisableMemoryOptimizedTables}");
-            Logs.AppendLine($"Db Name: [{dbName}]");
+            var sqlConnectionStringBuilder = new SqlConnectionStringBuilder(ConnectionString);
+            string dbName = sqlConnectionStringBuilder.InitialCatalog;
+            string serverName = sqlConnectionStringBuilder.InitialCatalog;
+            Logs.AppendLine($" * DisableMemoryOptimizedTables: {DisableMemoryOptimizedTables}");
+            Logs.AppendLine($" * Db Name: [{dbName}]");
             
             IDbConnection cnn = this.ProviderFactory.CreateConnection();
             cnn.ConnectionString = this.ConnectionString;
             var man = cnn.Manage();
-            Logs.AppendLine($"IsLocalDB: {man.IsLocalDB}");
-            Logs.AppendLine($"Short Version: {man.ShortServerVersion}");
+            Logs.AppendLine($" * IsLocalDB: {man.IsLocalDB}");
+            Logs.AppendLine($" * Short Version: {man.ShortServerVersion}");
             var mediumStrings = new[] { man.ProductVersion, man.ProductLevel, man.ProductUpdateLevel, man.ServerEdition };
             var mediumVersion = string.Join(" ", mediumStrings.Select(x => x?.Trim()).Distinct().Where(x => !string.IsNullOrEmpty(x)).ToArray());
             mediumVersion = mediumVersion == "" ? "" : $" {mediumVersion}";
-            Logs.AppendLine($"Medium Version:{mediumVersion}");
-            Logs.AppendLine($"Long Version: {man.LongServerVersion}");
+            Logs.AppendLine($" * Medium Version:{mediumVersion}");
+            Logs.AppendLine($" * Long Version: {man.LongServerVersion}");
             var major = man.ShortServerVersion.Major;
             // Server 2016 (13.x) SP1 (or later), any edition. For SQL Server 2014 (12.x) and SQL Server 2016 (13.x) RTM (pre-SP1) you need Enterprise, Developer, or Evaluation edition.
             // var supportMOT = !man.IsLocalDB && (major > 12 || (major == 12 && man.EngineEdition == EngineEdition.Enterprise));
             var supportMOT = man.IsMemoryOptimizedTableSupported;
-            Logs.AppendLine($"Support MOT: {supportMOT}{(DisableMemoryOptimizedTables & supportMOT ? ", But Disabled": "")}");
+            Logs.AppendLine($" * Support MOT: {supportMOT}{(DisableMemoryOptimizedTables & supportMOT ? ", But Disabled": "")}");
 
             if (DisableMemoryOptimizedTables) supportMOT = false;
             
@@ -53,11 +55,11 @@ namespace Universe.SqlInsights.SqlServerStorage
             var sampleFile = cnn.Query<string>("Select Top 1 filename from sys.sysfiles").FirstOrDefault();
             var dataFolder = sampleFile != null ? Path.GetDirectoryName(sampleFile) : null;
             var motFileFolder = Path.Combine(dataFolder, $"MOT for {dbName}");
-            Logs.AppendLine($"MOT Files Folder: {dataFolder}");
+            Logs.AppendLine($" * MOT Files Folder: {dataFolder}");
 
             var existingTables = cnn.Query<string>("Select name from SYSOBJECTS WHERE xtype = 'U' and name like '%SqlInsights%'").ToArray();
             var existingTablesInfo = existingTables.Length == 0 ? ">Not Found<" : String.Join(",", existingTables.Select(x => $"[{x}]").ToArray());
-            Logs.AppendLine($"Existing Tables: {existingTablesInfo}");
+            Logs.AppendLine($" * Existing Tables: {existingTablesInfo}");
 
             string motFileGroup = null;
             if (supportMOT)
@@ -65,7 +67,7 @@ namespace Universe.SqlInsights.SqlServerStorage
                 motFileGroup = cnn.Query<string>("Select Top 1 name from sys.filegroups where type = 'FX'").FirstOrDefault();
             }
             bool isMotFileGroupExists = !string.IsNullOrEmpty(motFileGroup);
-            Logs.AppendLine($"Existing MOT File Group Name: {(isMotFileGroupExists ? $"'{motFileGroup}'" : ">Not Found<")}");
+            Logs.AppendLine($" * Existing MOT File Group Name: {(isMotFileGroupExists ? $"'{motFileGroup}'" : ">Not Found<")}");
             
             List<string> sqlConfigureMotList = new List<string>();
             if (supportMOT && !isMotFileGroupExists)
@@ -233,7 +235,7 @@ End
                     }
                 }
 
-                Logs.Append($"Migration succesfully invoked {sqlMigrations.Count} commands");
+                Logs.Append($" * Done! Migration successfully invoked {sqlMigrations.Count} commands");
             }
         }
 
@@ -249,12 +251,14 @@ End
             master.InitialCatalog = "";
             
             string sqlCommands = @$"
+Select DB_ID('{dbName}');
 If DB_ID('{dbName}') Is Null 
 Begin 
     Create Database [{dbName}]; 
     -- The scenario is for development only
-    exec('Alter Database [{dbName}] Set Recovery Simple'); 
-End";
+exec('Alter Database [{dbName}] Set Recovery Simple'); 
+End
+";
 
             try
             {
@@ -262,7 +266,11 @@ End";
                 con.ConnectionString = master.ConnectionString;
                 using (con)
                 {
-                    con.Execute(sqlCommands, null);
+                    var existingDbId = con.Query<int?>(sqlCommands, null, null, true, null, CommandType.Text);
+                    if (existingDbId == null)
+                        Logs.AppendLine($" * New database [{dbName}] successfully created on server {master.DataSource}");
+                    else
+                        Logs.AppendLine($" * Existing database [{dbName}] exists on server {master.DataSource}");
                 }
             }
             catch

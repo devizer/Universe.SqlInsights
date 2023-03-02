@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Universe.SqlInsights.Shared;
 using Universe.SqlTrace;
@@ -13,6 +15,7 @@ namespace Universe.SqlInsights.NetCore
 
     public static class ExperimentalMeasuredAction
     {
+        
         public static void Perform(
             ISqlInsightsConfiguration config,
             SqlInsightsActionKeyPath keyPath,
@@ -52,9 +55,21 @@ namespace Universe.SqlInsights.NetCore
             traceReader.Stop();
             traceReader.Dispose();
 
+            StatByAction stat;
+            if (!_First.TryGetValue(keyPath.ToString(), out stat))
+            {
+                stat = _First[keyPath.ToString()] = new StatByAction() { Count = 1, Duration = duration };
+            }
+            else
+            {
+                stat = _Avg.GetOrAdd(keyPath.ToString(), action => new StatByAction());
+                stat.Count++;
+                stat.Duration += duration;
+            }
+
             StringBuilder log = new StringBuilder();
             log.AppendLine($"Detailed metrics for «{keyPath}»");
-            log.AppendLine($"    Duration ...........: {duration:n1} milliseconds");
+            log.AppendLine($"    Duration ...........: {duration:n1} milliseconds, average={stat.Duration/stat.Count:n1}, count={stat.Count}");
             log.AppendLine($"    Cpu Usage ..........: [user] {cpuUsage?.UserUsage.TotalMicroSeconds/1000d:n1} + [kernel] {cpuUsage?.KernelUsage.TotalMicroSeconds/1000d:n1} milliseconds");
             log.AppendLine($"    Sql Summary ........: {sqlProfilerSummary}");
             int n = 0;
@@ -83,6 +98,14 @@ namespace Universe.SqlInsights.NetCore
             string line = null;
             while ((line = rdr.ReadLine()) != null) ret.Append(ret.Length == 0 ? "" : Environment.NewLine).Append(padding + line);
             return ret.ToString();
+        }
+
+        private static ConcurrentDictionary<string, StatByAction> _Avg = new ();
+        private static ConcurrentDictionary<string, StatByAction> _First = new ();
+        class StatByAction
+        {
+            public double Duration;
+            public long Count;
         }
     }
 }
