@@ -62,7 +62,8 @@ namespace Universe.SqlInsights.SqlServerStorage
                     // Either ReadCommitted or ReadUncommitted without MOT. Doesn't matter without deletion.
                     
                     // IDbTransaction tran = con.BeginTransaction(IsolationLevel.ReadUncommitted);
-                    IDbTransaction tran = null;
+                    IDbTransaction tran = null; // for legacy
+                    // if (isMemoryOptimized) tran = con.BeginTransaction(IsolationLevel.ReadUncommitted); SLOWER 
                     using (tran)
                     {
                         // SUMMARY: SqlInsightsKeyPathSummary
@@ -100,15 +101,22 @@ namespace Universe.SqlInsights.SqlServerStorage
                         var dataSummary = DbJsonConvert.Serialize(next);
                         // TODO (without ReadCommitted only):
                         // System.Data.SqlClient.SqlException (0x80131904): Violation of PRIMARY KEY constraint 'PK_SqlInsightsKeyPathSummary'. Cannot insert duplicate key in object 'dbo.SqlInsightsKeyPathSummary'. The duplicate key value is (ASP.NET Core→SqlInsights→Summary→[POST], 0, 1, 3).
-                        con.Execute(sqlUpsert, new
+                        try
                         {
-                            KeyPath = keyPath,
-                            IdSession = idSession,
-                            Data = dataSummary,
-                            AppName = idAppName,
-                            HostId = idHostId,
-                            Version = nextVersion,
-                        }, tran);
+                            con.Execute(sqlUpsert, new
+                            {
+                                KeyPath = keyPath,
+                                IdSession = idSession,
+                                Data = dataSummary,
+                                AppName = idAppName,
+                                HostId = idHostId,
+                                Version = nextVersion,
+                            }, tran);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new InvalidOperationException($"Unable to {(exists ? "update" : "insert")} action summary SqlInsightsKeyPathSummary", ex);
+                        }
 
                         // DETAILS: SqlInsightsAction
                         const string sqlInsertDetail = @"Insert SqlInsightsAction(At, IdSession, KeyPath, IsOK, AppName, HostId, Data)
@@ -134,7 +142,7 @@ Values(@At, @IdSession, @KeyPath, @IsOK, @AppName, @HostId, @Data)";
                             throw;
                         }
 
-                        // tran.Commit();
+                        tran?.Commit();
                     }
                 }
 
@@ -163,14 +171,12 @@ Select Top 1 Version From SqlInsightsKeyPathSummaryTimestamp;
             {
                 IEnumerable<long> nextVersionQuery = con.Query<long>(sqlNextVersion, null, transaction);
                 nextVersion = nextVersionQuery.FirstOrDefault() + 1;
-                // Console.WriteLine($"WTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF. nextVersion='{nextVersion}'");
             }
             catch (Exception ex)
             {
                 fail = Interlocked.Increment(ref FailNextVersion);
                 nextVersionQueryError = ex;
                 isDeadLock = ex.FindSqlError()?.Number == 1205;
-                // Console.WriteLine($"FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIL. {ex.GetExeptionDigest()}");
             }
 
             if (DebugAddAction)
@@ -189,7 +195,7 @@ Select Top 1 Version From SqlInsightsKeyPathSummaryTimestamp;
             }
 
             if (nextVersionQueryError != null)
-                throw new InvalidOperationException("Unable to create next version", nextVersionQueryError);
+                throw new InvalidOperationException("Unable to fetch next version", nextVersionQueryError);
 
             return nextVersion;
         }
