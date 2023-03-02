@@ -8,7 +8,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using Universe.SqlInsights.Shared;
-using Universe.SqlServerJam;
 using Universe.SqlTrace;
 
 namespace Universe.SqlInsights.SqlServerStorage.Tests
@@ -88,7 +87,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             Console.WriteLine($"[{providerName}] {totalActionRecordsDelta}; OPS = {actualOps:n1} * {actualCores}T actions per second. Adding Count: {total}. Fail count: {fail} (Cores: {Environment.ProcessorCount}, Threads: {numThreads}){errorsInfo}");
             if (total > 129)
             {
-                var sqlServerManagement = cnn.Manage();
+                var sqlServerManagement = Universe.SqlServerJam.SqlConnectionExtensions.Manage(cnn);
                 var sqlVersion = sqlServerManagement.ShortServerVersion;
                 var hasMot = sqlServerManagement.CurrentDatabase.HasMemoryOptimizedTableFileGroup;
                 // var hasMot = cnn.Query<string>("Select Top 1 name from sys.filegroups where type = 'FX'").FirstOrDefault() != null;
