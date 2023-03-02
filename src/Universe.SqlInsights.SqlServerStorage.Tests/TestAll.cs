@@ -32,8 +32,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
 
         SqlServerSqlInsightsStorage CreateStorage(DbProviderFactory provider, string connectionString, bool verboseLog)
         {
-            StringsStorage.ResetCacheForTests();
-            MetadataCache.ResetCacheForTests();
+            SqlServerSqlInsightsStorage.ResetCacheForTests();
             
             if (TestContext.CurrentContext.Test.Arguments.FirstOrDefault() is TestCaseProvider testCase)
             {
