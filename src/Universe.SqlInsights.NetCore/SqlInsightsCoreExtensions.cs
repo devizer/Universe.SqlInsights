@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -160,10 +159,10 @@ namespace Universe.SqlInsights.NetCore
                         actionDetails.BriefException = lastError.GetBriefExceptionKey();
                     }
 
-                    SqlInsightsReport r = serviceProvider.GetRequiredService<SqlInsightsReport>();
-                    bool canSummarize = r.Add(actionDetails);
+                    SqlInsightsReport inMemoryReport = serviceProvider.GetRequiredService<SqlInsightsReport>();
+                    bool canSummarize = inMemoryReport.Add(actionDetails);
 
-                    if (canSummarize)
+                    if (canSummarize) // not a first call?
                     {
                         storage?.AddAction(actionDetails);
                     }

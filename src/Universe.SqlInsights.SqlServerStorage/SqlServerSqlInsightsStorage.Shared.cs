@@ -100,17 +100,17 @@ namespace Universe.SqlInsights.SqlServerStorage
         }
 
 
-        public async Task<IEnumerable<LongAndString>> GetAppNames()
+        public async Task<IEnumerable<LongIdAndString>> GetAppNames()
         {
             return await GetAllStringsByKind(StringKind.AppName);
         }
 
-        public async Task<IEnumerable<LongAndString>> GetHostIds()
+        public async Task<IEnumerable<LongIdAndString>> GetHostIds()
         {
             return await GetAllStringsByKind(StringKind.HostId);
         }
 
-        private async Task<IEnumerable<LongAndString>> GetAllStringsByKind(StringKind stringKind)
+        private async Task<IEnumerable<LongIdAndString>> GetAllStringsByKind(StringKind stringKind)
         {
             using var dbConnection = GetConnection();
             StringsStorage strings = new StringsStorage(dbConnection, null);

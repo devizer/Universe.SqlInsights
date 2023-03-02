@@ -211,13 +211,13 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                 for (int len = StringsStorage.MaxStartLength - 5; len <= StringsStorage.MaxStartLength + 5; len++)
                 {
                     var expected = GetRandomString(len);
-                    IEnumerable<LongAndString> all = await ss.GetAllStringsByKind(StringKind.AppName);
+                    IEnumerable<LongIdAndString> all = await ss.GetAllStringsByKind(StringKind.AppName);
                     Assert.IsFalse(all.Any(x => x.Value == expected), $"[Before] String is missing in the storage (len={len}) '{expected}'");
                     var idString = ss.AcquireString(StringKind.AppName, expected);
                     try
                     {
                         Assert.IsNotNull(idString);
-                        IEnumerable<LongAndString> allAfter = await ss.GetAllStringsByKind(StringKind.AppName);
+                        IEnumerable<LongIdAndString> allAfter = await ss.GetAllStringsByKind(StringKind.AppName);
                         Assert.IsTrue(allAfter.Any(x => x.Value == expected), $"[After] String exists in the storage (len={len}) '{expected}'");
                     }
                     finally

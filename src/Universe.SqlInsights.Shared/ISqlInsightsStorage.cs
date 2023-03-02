@@ -7,6 +7,8 @@ namespace Universe.SqlInsights.Shared
     {
         // To Inject (NET 3.5 +) 
         void AddAction(ActionDetailsWithCounters reqAction);
+        
+        // Used by AddAction only
         IEnumerable<long> GetAliveSessions();
         bool AnyAliveSession();
 
@@ -23,12 +25,12 @@ namespace Universe.SqlInsights.Shared
         Task RenameSession(long idSession, string caption);
         Task FinishSession(long idSession);
 
-        Task<IEnumerable<LongAndString>> GetAppNames();
-        Task<IEnumerable<LongAndString>> GetHostIds();
+        Task<IEnumerable<LongIdAndString>> GetAppNames();
+        Task<IEnumerable<LongIdAndString>> GetHostIds();
 #endif
     }
 
-    public class LongAndString
+    public class LongIdAndString
     {
         public long Id { get; set; }
         public string Value { get; set; }

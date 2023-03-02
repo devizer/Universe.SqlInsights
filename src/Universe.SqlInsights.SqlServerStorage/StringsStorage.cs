@@ -114,11 +114,11 @@ namespace Universe.SqlInsights.SqlServerStorage
         }
 
 #if NETSTANDARD
-        public async Task<IEnumerable<LongAndString>> GetAllStringsByKind(StringKind kind)
+        public async Task<IEnumerable<LongIdAndString>> GetAllStringsByKind(StringKind kind)
         {
             const string sql = "Select IdString, StartsWith, Tail From SqlInsightsString Where Kind = @Kind";
             var query = await Connection.QueryAsync<SelectStringsResult>(sql, new {Kind = (byte) kind});
-            return query.Select(x => new LongAndString()
+            return query.Select(x => new LongIdAndString()
             {
                 Id = x.IdString,
                 Value = x.Tail == null ? x.StartsWith : (x.StartsWith + x.Tail)

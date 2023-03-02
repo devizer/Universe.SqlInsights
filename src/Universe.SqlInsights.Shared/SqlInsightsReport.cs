@@ -116,7 +116,7 @@ namespace Universe.SqlInsights.Shared
         }
 
         /// <summary>
-        /// Returns true if it should be summarized
+        /// Returns true if it should be summarized. E.g. not a first call
         /// </summary>
         public bool Add(ActionDetailsWithCounters req)
         {
