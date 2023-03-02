@@ -204,6 +204,9 @@ Create Table SqlInsightsAction(
     -- Constraint FK_SqlInsightsAction_HostId FOREIGN KEY (HostId) REFERENCES SqlInsightsString(IdString),
 ")} 
 );
+CREATE NONCLUSTERED INDEX [IX_SqlInsightsAction_IdSession_KeyPath_IdAction_Data]
+    ON [dbo].[SqlInsightsAction] ([IdSession],[KeyPath])
+    INCLUDE ([IdAction],[Data]);
 End 
 "
             };
