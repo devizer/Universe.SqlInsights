@@ -60,7 +60,7 @@ namespace Universe.SqlInsights.SqlServerStorage
             };
         }
 
-        public static void ResetCacheForTests()
+        internal static void ResetCacheForTests()
         {
             _Cache = null;
         }

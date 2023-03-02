@@ -14,6 +14,20 @@ namespace Universe.SqlInsights.Shared
     
     public static class SqlExceptionExtensions
     {
+        public static string GetExceptionDigest(this Exception exception)
+        {
+            List<string> ret = new List<string>();
+            // while (ex != null)
+            foreach(var ex in AsPlainExceptionList(exception))
+            {
+                var sqlErrorInfo = IsSqlException(ex);
+                int? sqlError = sqlErrorInfo?.Number; 
+                ret.Add("[" + ex.GetType().Name + (sqlError == null ? "" : " #") + sqlError + "] " + ex.Message);
+            }
+
+            return string.Join(" --> ", ret.ToArray());
+        }
+
         public static SqlExceptionInfo FindSqlError(this Exception ex)
         {
             return ex?.AsPlainExceptionList()

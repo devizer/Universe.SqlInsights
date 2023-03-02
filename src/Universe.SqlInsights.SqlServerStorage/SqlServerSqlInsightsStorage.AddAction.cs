@@ -7,6 +7,7 @@ using System.Threading;
 using Dapper;
 using Newtonsoft.Json;
 using Universe.SqlInsights.Shared;
+using Universe.SqlServerJam;
 
 namespace Universe.SqlInsights.SqlServerStorage
 {
@@ -23,8 +24,6 @@ namespace Universe.SqlInsights.SqlServerStorage
 
             if (reqAction.AppName == null) throw new ArgumentException("Missing reqAction.AppName");
 
-            // TODO: The table option 'updlock' is not supported with memory optimized tables.
-            // Select .... WITH (UPDLOCK) Where 
             bool isMemoryOptimized = MetadataCache.IsMemoryOptimized(ConnectionString);
 
             string
@@ -153,7 +152,7 @@ Update Top (1) SqlInsightsKeyPathSummaryTimestamp Set Guid = NewId(), Version = 
 Select Top 1 Version From SqlInsightsKeyPathSummaryTimestamp;
 ";
 */
-            const string sqlNextVersion = @"Update Top (1) SqlInsightsKeyPathSummaryTimestamp Set Guid = NewId(), Version = Version + 1 Output inserted.Version;";
+            const string sqlNextVersion = @"Update Top (1) SqlInsightsKeyPathSummaryTimestamp Set Version = Version + 1 Output inserted.Version;";
 
             long nextVersion = -1;
             bool isDeadLock = false;
@@ -164,22 +163,33 @@ Select Top 1 Version From SqlInsightsKeyPathSummaryTimestamp;
             {
                 IEnumerable<long> nextVersionQuery = con.Query<long>(sqlNextVersion, null, transaction);
                 nextVersion = nextVersionQuery.FirstOrDefault() + 1;
+                // Console.WriteLine($"WTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF. nextVersion='{nextVersion}'");
             }
             catch (Exception ex)
             {
                 fail = Interlocked.Increment(ref FailNextVersion);
                 nextVersionQueryError = ex;
                 isDeadLock = ex.FindSqlError()?.Number == 1205;
+                // Console.WriteLine($"FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIL. {ex.GetExeptionDigest()}");
             }
 
             if (DebugAddAction)
             {
                 var msecNextVersion = startNextVersion.ElapsedTicks * 1000d / Stopwatch.Frequency;
-                Console.WriteLine(
-                    $"[NextVersionQuery {fail}/{total}] {msecNextVersion:n2} IsDeadlock: {(!isDeadLock ? "no" : "--<=DEADLOCK=>--")}{(nextVersionQueryError == null ? null : $" [{nextVersionQueryError.GetType()}] '{nextVersionQueryError.Message}'")}");
+                string errorDetails = null;
                 if (nextVersionQueryError != null)
-                    throw new InvalidOperationException("Unable to create next version", nextVersionQueryError);
+                {
+                     errorDetails = $"[{nextVersionQueryError.GetType()}] '{nextVersionQueryError.Message}'";
+                    var sqlError = SqlExceptionExtensions.IsSqlException(nextVersionQueryError);
+                    if (sqlError != null) errorDetails = $"[{nextVersionQueryError.GetType()} N{sqlError.Number}] '{nextVersionQueryError.Message}'"; 
+                }
+                
+                Console.WriteLine(
+                    $"[NextVersionQuery {fail}/{total}] {msecNextVersion:n2} IsDeadlock: {(!isDeadLock ? "no" : "--<=DEADLOCK=>--")}{(nextVersionQueryError == null ? null : $" {errorDetails}")}");
             }
+
+            if (nextVersionQueryError != null)
+                throw new InvalidOperationException("Unable to create next version", nextVersionQueryError);
 
             return nextVersion;
         }

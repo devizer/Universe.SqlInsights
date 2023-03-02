@@ -25,9 +25,9 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             bool?[] motList = isMotSupported ? new bool?[] { true, false } : new bool?[] { null };
 
             // JIT
+            foreach (var mot in motList)
             foreach (var provider in providerList)
             {
-                var mot = false;
                 var dbNameParameters = $"{provider.GetShortProviderName()} {(mot == true ? "MOT On" : "MOT Off")}";
                 SqlConnectionStringBuilder connectionString = new SqlConnectionStringBuilder(TestEnv.TheConnectionString);
                 connectionString.InitialCatalog = string.Format(TestEnv.DbNamePattern, dbNameParameters);

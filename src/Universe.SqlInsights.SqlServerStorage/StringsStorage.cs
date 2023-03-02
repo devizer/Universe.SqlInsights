@@ -169,7 +169,7 @@ namespace Universe.SqlInsights.SqlServerStorage
             }
         }
 
-        public static void ResetCacheForTests()
+        internal static void ResetCacheForTests()
         {
             Cache.Clear();
         }

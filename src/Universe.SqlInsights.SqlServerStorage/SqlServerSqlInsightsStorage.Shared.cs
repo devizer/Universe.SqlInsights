@@ -25,6 +25,14 @@ namespace Universe.SqlInsights.SqlServerStorage
             ConnectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             Counter = Interlocked.Increment(ref CounterStorage);
         }
+        
+        public static void ResetCacheForTests()
+        {
+            AreMigrationsChecked = false;
+            StringsStorage.ResetCacheForTests();
+            MetadataCache.ResetCacheForTests();
+        }
+
 
         IDbConnection GetConnection()
         {
@@ -34,7 +42,9 @@ namespace Universe.SqlInsights.SqlServerStorage
                 lock(SyncMigrations)
                     if (!AreMigrationsChecked)
                     {
-                        new SqlServerSqlInsightsMigrations(ProviderFactory, ConnectionString).Migrate();
+                        var migrations = new SqlServerSqlInsightsMigrations(ProviderFactory, ConnectionString);
+                        migrations.Migrate();
+                        Console.WriteLine($"IMPLICIT MIGRATIONs LOGS{Environment.NewLine}{migrations.Logs}");
                         AreMigrationsChecked = true;
                     }
 

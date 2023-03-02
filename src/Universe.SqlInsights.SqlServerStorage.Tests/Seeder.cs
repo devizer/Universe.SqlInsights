@@ -28,8 +28,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         public async Task Seed(int numThreads = 8, int limitCount = 99999)
         {
             Console.WriteLine($"TestCaseProvider.DbDataDir: [{TestEnv.OptionalDbDataDir}]");
-            StringsStorage.ResetCacheForTests();
-            MetadataCache.ResetCacheForTests();
+            SqlServerSqlInsightsStorage.ResetCacheForTests();
             SqlServerSqlInsightsStorage.DebugAddAction = false;
             SqlServerSqlInsightsStorage storage = new SqlServerSqlInsightsStorage(ProviderFactory, ConnectionString);
             var sessions = await storage.GetSessions();
@@ -49,6 +48,13 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             Stopwatch sw = Stopwatch.StartNew();
             int total = 0, fail = 0;
             
+            var cnn = this.ProviderFactory.CreateConnection();
+            cnn.ConnectionString = this.ConnectionString;
+
+            Func<int?> GetTotalActionRecords = () => cnn.QueryFirstOrDefault<int?>("Select Count(1) From SqlInsightsAction");
+
+            int? totalActionRecordsBefore = GetTotalActionRecords();
+            
             // Seed actions
             
             ConcurrentDictionary<string,CounterHolder> errors = new ConcurrentDictionary<string, CounterHolder>();
@@ -64,26 +70,30 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                 {
                     fail++;
                     var sqlError = ex.FindSqlError();
-                    string err = (sqlError == null ? "" : $"#{sqlError.Number} ") + ex.Message;
+                    // string err = (sqlError == null ? "" : $"#{sqlError.Number} ") + ex.Message;
+                    string err = ex.GetExceptionDigest();
                     var counter = errors.GetOrAdd(err, key => new CounterHolder());
                     counter.Total += 1;
                 }
             });
 
+            int? totalActionRecordsAfter = GetTotalActionRecords();
+            var totalActionRecordsDelta = totalActionRecordsAfter.GetValueOrDefault() - totalActionRecordsBefore.GetValueOrDefault();
+
             var ops = (double) total / sw.Elapsed.TotalSeconds;
+            var actualCores = Math.Min(Environment.ProcessorCount, numThreads);
+            var actualOps = (double)(total - fail) / sw.Elapsed.TotalSeconds / actualCores;
             var providerName = ProviderFactory.GetShortProviderName();
-            var errorsInfo = errors.Count == 0 ? "" : $"{Environment.NewLine}{string.Join(",", errors.OrderByDescending(x => x.Value.Total).Select(x => $"N={x.Value.Total}: {x.Key}"))}";
-            Console.WriteLine($"[{providerName}] OPS = {ops:n1} actions per second. Adding Count: {total}. Fail count: {fail} (Cores: {Environment.ProcessorCount}, Threads: {numThreads}){errorsInfo}");
+            var errorsInfo = errors.Count == 0 ? "" : $"{Environment.NewLine}{string.Join(Environment.NewLine, errors.OrderByDescending(x => x.Value.Total).Select(x => $"N={x.Value.Total}: {x.Key}"))}";
+            Console.WriteLine($"[{providerName}] {totalActionRecordsDelta}; OPS = {actualOps:n1} * {actualCores}T actions per second. Adding Count: {total}. Fail count: {fail} (Cores: {Environment.ProcessorCount}, Threads: {numThreads}){errorsInfo}");
             if (total > 129)
             {
-                var cnn = this.ProviderFactory.CreateConnection();
-                cnn.ConnectionString = this.ConnectionString;
                 var sqlServerManagement = cnn.Manage();
                 var sqlVersion = sqlServerManagement.ShortServerVersion;
                 var hasMot = sqlServerManagement.CurrentDatabase.HasMemoryOptimizedTableFileGroup;
                 // var hasMot = cnn.Query<string>("Select Top 1 name from sys.filegroups where type = 'FX'").FirstOrDefault() != null;
                 TestEnv.LogToArtifact("AddAction.log",
-                    $"{ops,9:n1} 1/s | v{sqlVersion} on {TestEnv.TestConfigName} | {(hasMot ? "MOT" : "   ")} | {CrossInfo.ThePlatform} | {TestEnv.TestCpuName} | {providerName,-9} | {numThreads}T on {Environment.ProcessorCount} | {total} / {fail}"
+                    $"{actualOps,9:n1} 1/s * {actualCores}T | v{sqlVersion} on {TestEnv.TestConfigName} | {(hasMot ? "MOT" : "   ")} | {CrossInfo.ThePlatform} | {TestEnv.TestCpuName} | {providerName,-9} | {numThreads}T on {Environment.ProcessorCount} | {total} / {fail}"
                 );
             }
 
