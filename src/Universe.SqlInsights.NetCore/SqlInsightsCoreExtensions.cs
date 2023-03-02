@@ -164,7 +164,24 @@ namespace Universe.SqlInsights.NetCore
 
                     if (canSummarize) // not a first call?
                     {
-                        storage?.AddAction(actionDetails);
+                        var traceableStorage = storage as ITraceableStorage;
+                        if (traceableStorage != null)
+                        {
+                            ExperimentalMeasuredAction.Perform(
+                                config,
+                                new SqlInsightsActionKeyPath($"[{storage.GetType().Name}]::AddAction()"),
+                                connectionString =>
+                                {
+                                    var traceableStorage = storage as ITraceableStorage;
+                                    traceableStorage.ConnectionString = connectionString;
+                                    storage?.AddAction(actionDetails);
+                                }
+                            );
+                        }
+                        else
+                        {
+                            storage?.AddAction(actionDetails);
+                        }
                     }
 
                     // Console.WriteLine($"⚠ Processed  {aboutRequest}");

@@ -28,13 +28,13 @@ namespace Universe.SqlInsights.SqlServerStorage
 
             string
                 sqlSelect =
-                    $"Select Data From SqlInsightsKeyPathSummary {(isMemoryOptimized ? "" : "WITH (UPDLOCK,ROWLOCK)")} Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession";
+                    $"SELECT [Data] From [SqlInsightsKeyPathSummary] {(isMemoryOptimized ? "" : "WITH (UPDLOCK,ROWLOCK)")} Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession";
             
             const string    
                 sqlInsert =
-                    "Insert SqlInsightsKeyPathSummary(KeyPath, IdSession, AppName, HostId, Data, Version) Values(@KeyPath, @IdSession, @AppName, @HostId, @Data, @Version);",
+                    "INSERT [SqlInsightsKeyPathSummary] (KeyPath, IdSession, AppName, HostId, Data, Version) Values(@KeyPath, @IdSession, @AppName, @HostId, @Data, @Version);",
                 sqlUpdate =
-                    "Update SqlInsightsKeyPathSummary Set Data = @Data, Version = @Version Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession";
+                    "UPDATE [SqlInsightsKeyPathSummary] Set Data = @Data, Version = @Version Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession";
 
             var aliveSessions = GetAliveSessions().ToList();
 
@@ -160,7 +160,7 @@ Update Top (1) SqlInsightsKeyPathSummaryTimestamp Set Guid = NewId(), Version = 
 Select Top 1 Version From SqlInsightsKeyPathSummaryTimestamp;
 ";
 */
-            const string sqlNextVersion = @"Update Top (1) SqlInsightsKeyPathSummaryTimestamp Set Version = Version + 1 Output inserted.Version;";
+            const string sqlNextVersion = @"UPDATE Top (1) [SqlInsightsKeyPathSummaryTimestamp] Set Version = Version + 1 Output Inserted.Version;";
 
             long nextVersion = -1;
             bool isDeadLock = false;

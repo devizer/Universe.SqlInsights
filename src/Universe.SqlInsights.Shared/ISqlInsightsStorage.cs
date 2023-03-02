@@ -3,6 +3,11 @@ using System.Threading.Tasks;
 
 namespace Universe.SqlInsights.Shared
 {
+    public interface ITraceableStorage
+    {
+        string ConnectionString { get; set; }
+    }
+    
     public interface ISqlInsightsStorage
     {
         // To Inject (NET 3.5 +) 

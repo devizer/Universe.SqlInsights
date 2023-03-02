@@ -11,10 +11,10 @@ using Universe.SqlInsights.Shared;
 
 namespace Universe.SqlInsights.SqlServerStorage
 {
-    public partial class SqlServerSqlInsightsStorage : ISqlInsightsStorage
+    public partial class SqlServerSqlInsightsStorage : ISqlInsightsStorage, ITraceableStorage
     {
         public readonly DbProviderFactory ProviderFactory;
-        public readonly string ConnectionString;
+        public string ConnectionString { get; set; }
 
         private static volatile bool AreMigrationsChecked = false;
         private static readonly object SyncMigrations = new object();

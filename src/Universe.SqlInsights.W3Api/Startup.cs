@@ -52,6 +52,8 @@ namespace Universe.SqlInsights.W3Api
                 };
                 return new DbOptions() {ConnectionString = builder.ConnectionString};
             });
+            
+            // TODO: For SQL Server we need Func<ISqlInsightsStorage>
             services.AddScoped<ISqlInsightsStorage>(provider =>
             {
                 var dbOptions = provider.GetRequiredService<DbOptions>();

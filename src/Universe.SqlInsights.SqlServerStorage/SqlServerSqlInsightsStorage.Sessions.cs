@@ -12,12 +12,12 @@ namespace Universe.SqlInsights.SqlServerStorage
         public IEnumerable<long> GetAliveSessions()
         {
             const string sql = @"
-Declare @UtcNow datetime; 
+DECLARE @UtcNow datetime; 
 Set @UtcNow = GetUtcDate();
-Select 
+SELECT 
     IdSession
 From 
-    SqlInsightsSession
+    [SqlInsightsSession]
 Where
     IsFinished = (0) 
     And (MaxDurationMinutes Is Null Or DateAdd(minute,MaxDurationMinutes,StartedAt) >= @UtcNow)";
@@ -32,13 +32,14 @@ Where
         public bool AnyAliveSession()
         {
             const string sql = @"
-Declare @UtcNow datetime; 
+DECLARE @UtcNow datetime; 
 Set @UtcNow = GetUtcDate(); 
 If Exists
 (
-    Select IdSession 
+    SELECT 
+        IdSession 
     From 
-        SqlInsightsSession 
+        [SqlInsightsSession] 
     Where 
         IsFinished = (0) 
         And (MaxDurationMinutes Is Null Or DateAdd(minute,MaxDurationMinutes,StartedAt) >= @UtcNow)
