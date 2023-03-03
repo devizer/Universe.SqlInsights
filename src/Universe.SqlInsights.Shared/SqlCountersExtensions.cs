@@ -20,6 +20,7 @@ namespace Universe.SqlInsights.Shared
                 Writes = one.Writes + another.Writes,
                 Reads = one.Reads + another.Reads,
                 Requests = one.Requests + another.Requests,
+                RowCounts = one.RowCounts + another.RowCounts,
             };
         }
 
@@ -38,6 +39,7 @@ namespace Universe.SqlInsights.Shared
                 Duration = one.Duration - another.Duration,
                 Reads = one.Reads - another.Reads,
                 Requests = one.Requests - another.Requests,
+                RowCounts = one.RowCounts - another.RowCounts,
             };
         }
     }

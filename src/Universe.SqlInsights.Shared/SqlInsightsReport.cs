@@ -22,6 +22,10 @@ namespace Universe.SqlInsights.Shared
         private static readonly Stopwatch AppStartedAt = Stopwatch.StartNew();
         private static readonly object SyncUptime = new object();
 
+        private SqlInsightsReport()
+        {
+        }
+
         public static TimeSpan Uptime
         {
             get
@@ -100,7 +104,7 @@ namespace Universe.SqlInsights.Shared
 
                     tableRow.AddRange(new object[]
                     {
-                        formatNumber(row?.SqlCounters.Requests, "f1"),
+                        formatNumber(row?.SqlCounters.Requests, "f4"),
                         row?.SqlErrors.ToString("f0"),
                         formatNumber(row?.SqlCounters.Duration, "f2"),
                         formatNumber(row?.SqlCounters.CPU, "f2"),
@@ -222,7 +226,8 @@ NEXT: {next}");
             double msecGenerated = reportStartedAt != null ? reportStartedAt.GetMilliseconds() : 0;
             try
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(fileName));
+                var directoryName = Path.GetDirectoryName(fileName);
+                if (!Directory.Exists(directoryName)) Directory.CreateDirectory(directoryName);
             }
             catch
             {
@@ -237,15 +242,17 @@ NEXT: {next}");
                     if (reportStartedAt != null)
                     {
                         var msecWritten = reportStartedAt.GetMilliseconds();
-                        w.WriteLine(Environment.NewLine + Environment.NewLine + $"Report generated during {msecGenerated:f2}" +
+                        w.WriteLine(
+                            Environment.NewLine
+                            + Environment.NewLine
+                            + $"Report generated during {msecGenerated:f2}" +
                             $" and written to this file during {(msecWritten - msecGenerated):f2} msec" +
-                            Environment.NewLine + $"Legend: " + Environment.NewLine +
-                            $" * Left number is an avg duration in milliseconds" + Environment.NewLine +
-                            $" * Right number is an avg CPU usage in milliseconds" + Environment.NewLine +
-                            "Warning: " + Environment.NewLine +
-                            "   CPU usage in IIS apps doesn't work properly on desktop windows family" +
                             Environment.NewLine + Environment.NewLine
-                            + $"This report Generated at {DateTime.Now}. App uptime is {Uptime}");
+                            + $"This report Generated at {DateTime.Now}. App uptime is {Uptime}"
+                            + Environment.NewLine + Environment.NewLine +
+                            "Warning: " + Environment.NewLine +
+                            "   CPU usage in IIS apps doesn't work properly on desktop windows family");
+
                     }
                 }
             }
@@ -253,27 +260,6 @@ NEXT: {next}");
             {
             }
 
-
-#if false
-            var reportFile = Path.Combine(
-                Path.GetDirectoryName(fileName),
-                Path.GetFileNameWithoutExtension(fileName) + ".json"
-            );
-
-            try
-            {
-                using (FileStream fs = new FileStream(reportFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, 8192))
-                using (StreamWriter w = new StreamWriter(fs, new UTF8Encoding(false)))
-                {
-                    w.WriteLine(ToJson());
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Flushing of performance report to file {0} postponsed. Reason is below{1}{2}",
-                    reportFile, Environment.NewLine, ex);
-            }
-#endif
         }
 
     }
