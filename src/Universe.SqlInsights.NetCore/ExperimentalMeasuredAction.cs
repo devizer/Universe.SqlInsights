@@ -12,22 +12,6 @@ using CpuUsage = Universe.CpuUsage.CpuUsage;
 namespace Universe.SqlInsights.NetCore
 {
 
-    public class SqlInsightsActionMetrics
-    {
-        private SqlInsightsActionMetrics()
-        {
-        }
-
-        private SqlInsightsActionKeyPath KeyPath { get; }
-        public double Duration { get; set; }
-        public CpuUsage.CpuUsage CpuUsage { get; }
-        public TraceDetailsReport SqlTraceDetails { get; }
-        private SqlCounters SqlTraceSummary { get; }
-
-    }
-
-
-
     public static class ExperimentalMeasuredAction
     {
         
@@ -59,7 +43,16 @@ namespace Universe.SqlInsights.NetCore
             Stopwatch startAt = Stopwatch.StartNew();
             CpuUsage.CpuUsage? cpuUsageAtStart = CpuUsage.CpuUsage.GetByThread();
 
-            action(connectionString);
+            Exception exception = null;
+            try
+            {
+                action(connectionString);
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
+            }
+
 
             double duration = startAt.ElapsedTicks * 1000d / Stopwatch.Frequency;
             CpuUsage.CpuUsage? cpuUsage = CpuUsage.CpuUsage.GetByThread() - cpuUsageAtStart;
@@ -78,8 +71,8 @@ namespace Universe.SqlInsights.NetCore
                     AppUserUsage = (cpuUsage?.UserUsage.TotalSeconds).GetValueOrDefault(),
                     AppName = config.AppName,
                     HostId = config.HostId,
-                    At = DateTime.Now,
-                    IsOK = true,
+                    At = DateTime.UtcNow,
+                    IsOK = exception == null,
                     BriefException = null,
                     BriefSqlError = null,
                     ExceptionAsString = null,
@@ -93,7 +86,25 @@ namespace Universe.SqlInsights.NetCore
                     }).ToList()
                 };
 
-                SqlInsightsReport.Instance.Add(actionDetailsWithCounters);
+                SqlExceptionInfo sqlException = exception.FindSqlError();
+                if (sqlException != null)
+                {
+                    actionDetailsWithCounters.BriefSqlError = new BriefSqlError()
+                    {
+                        Message = sqlException.Message,
+                        SqlErrorCode = sqlException.Number,
+                    };
+                }
+
+                if (exception != null)
+                {
+                    actionDetailsWithCounters.ExceptionAsString = exception.ToString();
+                    actionDetailsWithCounters.BriefException = exception.GetBriefExceptionKey();
+                }
+
+
+
+            SqlInsightsReport.Instance.Add(actionDetailsWithCounters);
 
             StatByAction stat;
             if (!_First.TryGetValue(keyPath.ToString(), out stat))

@@ -64,6 +64,7 @@ namespace Universe.SqlInsights.Shared
                     "-SQL CPU",
                     "-SQL Reads",
                     "-SQL Writes",
+                    "-SQL Rows",
                 });
             }
 
@@ -110,6 +111,7 @@ namespace Universe.SqlInsights.Shared
                         formatNumber(row?.SqlCounters.CPU, "f2"),
                         formatNumber(row?.SqlCounters.Reads, "f2"),
                         formatNumber(row?.SqlCounters.Writes, "f2"),
+                        formatNumber(row?.SqlCounters.RowCounts, "f2"),
                     });
                 }
 

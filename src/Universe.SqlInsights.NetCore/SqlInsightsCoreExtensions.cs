@@ -167,7 +167,7 @@ namespace Universe.SqlInsights.NetCore
                         {
                             ExperimentalMeasuredAction.Perform(
                                 config,
-                                new SqlInsightsActionKeyPath($"[{storage.GetType().Name}]::AddAction()"),
+                                new SqlInsightsActionKeyPath($"[{storage.GetType().Name}]", "AddAction()"),
                                 connectionString =>
                                 {
                                     var traceableStorage = storage as ITraceableStorage;
