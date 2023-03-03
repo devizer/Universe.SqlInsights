@@ -176,13 +176,23 @@ export default class SessionsTable extends Component {
             const mom = moment(at);
             if (today.getTime() === atDay.getTime()) return mom.format("LTS"); else return mom.format("ll, LTS");
         };
-        
+
+
         const handleNewSessionClick = () => {
-            this.setState({isEditorOpened: true});
+            const sessionsTemp = this.state.sessions;
+            const newSessionCaption = `New Session ${1 + (sessionsTemp ? sessionsTemp.length : 0)}`;
+            this.setState({
+                isEditorOpened: true,
+                sessionOfEditor: {IdSession: -1, Caption: newSessionCaption},
+                editorTitle: "New Session",
+                editorButtons: [],
+                
+                isSessionMenuOpened: false,
+                sessionOfMenu: null,
+                sessionMenuAnchor: null,
+            });
         }
 
-        const sessionsTemp = this.state.sessions;
-        const newSessionCaption = `New Session ${1 + (sessionsTemp ? sessionsTemp.length : 0)}`;
         // console.log(`%c newSessionCaption="${newSessionCaption}"`, 'color: darkred');
         
         // const cellMenu = <IconButton onClick={() => {}}>{MenuIcon()}</IconButton>;
@@ -209,7 +219,7 @@ export default class SessionsTable extends Component {
             event.stopPropagation();
             event.preventDefault();
             const sessionOfMenu = this.state.sessionOfMenu;
-            console.log(`%c CLICKED '${menuOption.title}' for session '${sessionOfMenu.Caption}'`, "color: darkgreen, background-color: #FFB7B2");
+            console.log(`%c MENU CLICKED: '${menuOption.title}' for session '${sessionOfMenu.Caption}'`, "color: darkgreen, background-color: #FFB7B2");
             this.setState({
                 isSessionMenuOpened: false,
                 sessionOfMenu: null,
@@ -217,6 +227,7 @@ export default class SessionsTable extends Component {
                 editorTitle: menuOption.editorTitle,
                 editorButtons: menuOption.buttons,
                 isEditorOpened: true,
+                sessionOfEditor: this.state.sessionOfMenu, 
             });
         };
 
@@ -358,7 +369,7 @@ export default class SessionsTable extends Component {
                 </Menu>
                 
                 <SessionEditorDialog 
-                    session={{Caption: newSessionCaption}} 
+                    session={this.state.sessionOfEditor} 
                     isOpened={this.state.isEditorOpened} 
                     onClose={this.handleCloseEditor} 
                     titleMode={this.state.editorTitle}

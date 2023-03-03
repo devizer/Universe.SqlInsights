@@ -31,6 +31,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { withStyles } from '@material-ui/core/styles';
 import { green } from '@material-ui/core/colors';
 import { red } from '@material-ui/core/colors';
+import Typography from "@material-ui/core/Typography";
 
 const ColorRadio = color => withStyles({
     root: {
@@ -105,11 +106,13 @@ export default class SessionsEditorDialog extends Component {
 
 
 
-        const selectedExpire = this.state.selectedExpire; 
+        const selectedExpire = this.state.selectedExpire;
+
+        const buttonFakeCancel = {caption: "Resume", variant: "contained", color: "primary", action: () => console.log("%c Dialog canceled", "background-color: #5998FF")};
         
         return (
-        <Dialog open={this.props.isOpened} onClose={handleClose} aria-labelledby="form-dialog-title" fullWidth={true} maxWidth="md">
-            <DialogTitle id="form-dialog-title">{this.props.titleMode} Session</DialogTitle>
+        <Dialog open={this.props.isOpened} onClose={handleClose} aria-labelledby="form-dialog-title" fullWidth={true} maxWidth="sm">
+            <DialogTitle id="form-dialog-title">{this.props.titleMode} “{this.state.session?.Caption}” </DialogTitle>
             <DialogContent>
                 <TextField
                     autoFocus
@@ -119,6 +122,7 @@ export default class SessionsEditorDialog extends Component {
                     type="text"
                     fullWidth
                     value={this.state.session?.Caption}
+                    onChange={e => { const session=this.state.session??{}; session.Caption=e.target.value; this.setState({session})} }
                 />
                 <DialogContentText className="center-aligned" style={{color:"black"}}>
                     <br/>
@@ -139,15 +143,24 @@ export default class SessionsEditorDialog extends Component {
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                {this.props.buttons.map((button,index) => (
-                    <Button onClick={handleButton(button)} variant={button.variant} color={button.color}>
-                        {button.caption}
+                <Typography variant="caption" display="block" gutterBottom noWrap className={"right-aligned"} style={{padding: 16}}>
+
+                    <Button onClick={handleButton(buttonFakeCancel)} variant="text" color="primary">
+                        Cancel
                     </Button>
-                ))}
+
+                    {this.props.buttons.map((button,index) => (
+                        <>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <Button onClick={handleButton(button)} variant={button.variant} color={button.color}>
+                                {button.caption}
+                            </Button>
+                        </>
+                    ))}
+                    
+                </Typography>
+
 {/*
-                <Button onClick={handleButton("cancel")} variant="text" color="primary">
-                    Cancel
-                </Button>
                 <Button onClick={handleButton("delete")}  variant="contained" color="secondary">
                     Delete
                 </Button>
