@@ -248,6 +248,7 @@ steps:
       Say "KILL W3API and W3APP"
       for proc in dotnet-serve.exe dotnet.exe; do cmd.exe /C "taskkill.exe /F /T /IM $proc"; done
       7z a "${SYSTEM_ARTIFACTSDIRECTORY}\\SqlInsights Report.7z" "${SQLINSIGHTS_REPORT_FOLDER}"
+      cp -f "${SQLINSIGHTS_REPORT_FULLNAME}" "${SYSTEM_ARTIFACTSDIRECTORY}\\SqlInsights Report.txt"
       true
     condition: eq(variables['TEST_W3API'], 'true')
     displayName: 'RUN W3API (optional)'

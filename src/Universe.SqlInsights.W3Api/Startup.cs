@@ -63,7 +63,7 @@ namespace Universe.SqlInsights.W3Api
                 return new SqlServerSqlInsightsStorage(SqlClientFactory.Instance, dbOptions.ConnectionString);
             });
 
-            services.AddSingleton<SqlInsightsReport>(new SqlInsightsReport());
+            services.AddSingleton<SqlInsightsReport>(SqlInsightsReport.Instance);
             services.AddScoped<ActionIdHolder>();
             services.AddScoped<ExceptionHolder>();
             services.AddScoped<KeyPathHolder>();
