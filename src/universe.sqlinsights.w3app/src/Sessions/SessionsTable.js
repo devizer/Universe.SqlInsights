@@ -90,8 +90,16 @@ export default class SessionsTable extends Component {
         Helper.toConsole(`[${SessionsTable.name}] handleVisibility(${isVisible})`);
     }
     
-    handleCloseEditor() {
-        this.setState({isEditorOpened: false});
+    handleCloseEditor(session, button) {
+        // if button is undefined then just cancel  
+        if (button) {
+            if (button.action) button.action(session);
+
+            this.setState({isEditorOpened: false});
+        }
+        else {
+            this.setState({isEditorOpened: false});
+        }
     }
 
     sessionsExample=`
@@ -201,11 +209,14 @@ export default class SessionsTable extends Component {
             event.stopPropagation();
             event.preventDefault();
             const sessionOfMenu = this.state.sessionOfMenu;
-            console.warn(`%c CLICKED '${menuOption.title}' for session '${sessionOfMenu.Caption}'`);
+            console.log(`%c CLICKED '${menuOption.title}' for session '${sessionOfMenu.Caption}'`, "color: darkgreen, background-color: #FFB7B2");
             this.setState({
                 isSessionMenuOpened: false,
                 sessionOfMenu: null,
                 sessionMenuAnchor: null,
+                editorTitle: menuOption.editorTitle,
+                editorButtons: menuOption.buttons,
+                isEditorOpened: true,
             });
         };
 
@@ -221,13 +232,45 @@ export default class SessionsTable extends Component {
         
         let sessionMenuOptions = [];
         if (this.state.sessionOfMenu) {
+            const actionRename = session => {
+                const requestBody = {IdSession: session.IdSession, Caption: session.Caption};
+                console.log(`%c RENAMING SESSION`, 'color: darkred', requestBody);
+            };
+            const buttonsOnRename = [
+                {caption: "Rename", variant: "contained", color: "primary", action: actionRename}
+            ];
+
+            const actionDelete = session => {
+                const requestBody = {IdSession: session.IdSession};
+                console.log(`%c DELETING SESSION`, 'color: darkred', requestBody);
+            };
+            const buttonsOnDelete = [
+                {caption: "Delete", variant: "contained", color: "primary", action: actionDelete}
+            ];
+
+            const actionResume = session => {
+                const requestBody = {IdSession: session.IdSession};
+                console.log(`%c RESUMING SESSION`, 'color: darkred', requestBody);
+            };
+            const buttonsOnResume = [
+                {caption: "Resume", variant: "contained", color: "primary", action: actionResume}
+            ];
+
+            const actionStop = session => {
+                const requestBody = {IdSession: session.IdSession};
+                console.log(`%c STOPPING SESSION`, 'color: darkred', requestBody);
+            };
+            const buttonsOnStop = [
+                {caption: "Stop", variant: "contained", color: "primary", action: actionStop}
+            ];
+
             const isStopped = Boolean(this.state.sessionOfMenu?.IsFinished);
             // const isExpired = this.state.sessionOfMenu && this.state.sessionOfMenu.ExpiringDate < new Date();
             const isExpired = this.state.sessionOfMenu && this.state.sessionOfMenu.ExpiringDate && this.state.sessionOfMenu.ExpiringDate < now; 
-            sessionMenuOptions.push({title: "Rename", icon: SessionIcons.IconRename()});
-            sessionMenuOptions.push({title: "Delete", icon: SessionIcons.IconDelete()});
-            if (isStopped || isExpired) sessionMenuOptions.push({title: "Resume", icon: SessionIcons.IconResume()});
-            if (!isStopped && !isExpired) sessionMenuOptions.push({title: "Stop", icon: SessionIcons.IconStop()});
+            sessionMenuOptions.push({title: "Rename", icon: SessionIcons.IconRename(), buttons: buttonsOnRename, editorTitle: "Rename session"});
+            sessionMenuOptions.push({title: "Delete", icon: SessionIcons.IconDelete(), buttons: buttonsOnDelete, editorTitle: "Delete session"});
+            if (isStopped || isExpired) sessionMenuOptions.push({title: "Resume", icon: SessionIcons.IconResume(), buttons: buttonsOnResume, editorTitle: "Resume session"});
+            if (!isStopped && !isExpired) sessionMenuOptions.push({title: "Stop", icon: SessionIcons.IconStop(), buttons: buttonsOnStop, editorTitle: "Stop session"});
         }
 
         return (
@@ -285,7 +328,7 @@ export default class SessionsTable extends Component {
                 />
 
                 <Menu
-                    id="long-menu"
+                    id="session-context-menu"
                     anchorEl={() => document.getElementById(`menu-session-${this.state.sessionOfMenu?.IdSession}`)}
                     keepMounted
                     open={this.state.isSessionMenuOpened}
@@ -314,7 +357,13 @@ export default class SessionsTable extends Component {
                     ))}
                 </Menu>
                 
-                <SessionEditorDialog session={{Caption: newSessionCaption}} isOpened={this.state.isEditorOpened} onClose={this.handleCloseEditor} titleMode={"New"} />
+                <SessionEditorDialog 
+                    session={{Caption: newSessionCaption}} 
+                    isOpened={this.state.isEditorOpened} 
+                    onClose={this.handleCloseEditor} 
+                    titleMode={this.state.editorTitle}
+                    buttons={this.state.editorButtons ?? []}
+                />
 
             </React.Fragment>
         )

@@ -57,9 +57,10 @@ export default class SessionsEditorDialog extends Component {
 
     static propTypes = {
         session: PropTypes.object.isRequired,
-        titleMode: PropTypes.oneOf(['Edit', 'New', 'Delete']).isRequired,
+        titleMode: PropTypes.any.isRequired,
         isOpened: PropTypes.bool.isRequired,
         onClose: PropTypes.func.isRequired,
+        buttons: PropTypes.array.isRequired,
     }
 
     constructor(props) {
@@ -68,7 +69,9 @@ export default class SessionsEditorDialog extends Component {
         this.state = {
             session: this.props.session,
             isOpened: this.props.isOpened,
-            selectedExpire: expireOptions[expireOptions.length - 1], 
+            selectedExpire: expireOptions[expireOptions.length - 1],
+            buttons: this.props.buttons,
+            titleMode: this.props.titleMode,
         };
     }
 
@@ -77,12 +80,14 @@ export default class SessionsEditorDialog extends Component {
             || nextProps.titleMode !== this.state.titleMode
             || nextProps.isOpened !== this.state.isOpened
             || nextProps.onClose !== this.state.onClose
+            || nextProps.buttons !== this.state.buttons
         ) {
             this.setState({
                 session: nextProps.session,
                 titleMode: nextProps.titleMode,
                 isOpened: nextProps.isOpened,
                 onClose: nextProps.onClose,
+                buttons: nextProps.buttons,
             });
         }
     }
@@ -93,8 +98,13 @@ export default class SessionsEditorDialog extends Component {
             this.setState({isOpened: false});
             if (this.props.onClose) this.props.onClose(this.state.session);
         }
-        
-        
+        const handleButton = button =>() => {
+            this.setState({isOpened: false});
+            if (this.props.onClose) this.props.onClose(this.state.session, button);
+        }
+
+
+
         const selectedExpire = this.state.selectedExpire; 
         
         return (
@@ -129,15 +139,22 @@ export default class SessionsEditorDialog extends Component {
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose} variant="text" color="primary">
+                {this.props.buttons.map((button,index) => (
+                    <Button onClick={handleButton(button)} variant={button.variant} color={button.color}>
+                        {button.caption}
+                    </Button>
+                ))}
+{/*
+                <Button onClick={handleButton("cancel")} variant="text" color="primary">
                     Cancel
                 </Button>
-                <Button onClick={handleClose}  variant="contained" color="secondary">
+                <Button onClick={handleButton("delete")}  variant="contained" color="secondary">
                     Delete
                 </Button>
-                <Button onClick={handleClose}  variant="contained" color="primary">
+                <Button onClick={handleButton("start")}  variant="contained" color="primary">
                     Start
                 </Button>
+*/}
             </DialogActions>
         </Dialog>
         );
