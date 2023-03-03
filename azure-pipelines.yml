@@ -160,7 +160,7 @@ jobs:
 
         SqlInsightsReport="$SYSTEM_ARTIFACTSDIRECTORY/SqlInsightsReport.txt"
         find "${RAW_ARTIFACTS_DIR}" -name "SqlInsights Report.txt" | sort | while IFS='' read -r file; do
-          awk -v RS= 'NR==1' "$file" | tee -a "$SqlInsightsReport"
+          (awk -v RS= 'NR==1' "$file"; echo "") | tee -a "$SqlInsightsReport"
         done
 
         7z a -mx=3 "$SYSTEM_ARTIFACTSDIRECTORY/Combined as is.7z" "${RAW_ARTIFACTS_DIR}"
