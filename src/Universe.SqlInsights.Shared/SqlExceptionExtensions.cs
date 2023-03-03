@@ -28,6 +28,7 @@ namespace Universe.SqlInsights.Shared
             return string.Join(" --> ", ret.ToArray());
         }
 
+        // Support Both System and Microsoft Sql Client
         public static SqlExceptionInfo FindSqlError(this Exception ex)
         {
             return ex?.AsPlainExceptionList()
@@ -36,6 +37,7 @@ namespace Universe.SqlInsights.Shared
 
         }
 
+        // Support Both System and Microsoft Sql Client
         public static SqlExceptionInfo IsSqlException(this Exception theException)
         {
             if (theException is System.Data.SqlClient.SqlException sysError) return new SqlExceptionInfo()
