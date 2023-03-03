@@ -123,6 +123,11 @@ namespace Universe.SqlInsights.Shared
             if (req.Key == null) return false;
 
             TimeStamp = Guid.NewGuid();
+            Console.WriteLine(@$"NEW TIMESTAMP
+{TimeStamp}
+AVG: {Avg.Count} {Avg.Values.Select(x => x.Count).Sum()}
+FIRST: {First.Count}
+");
             var asSummary = req.AsSummary();
 
             lock (Sync)
@@ -182,6 +187,11 @@ namespace Universe.SqlInsights.Shared
                 while (true)
                 {
                     var next = SqlInsightsReport.Instance.TimeStamp;
+                    /*
+                    Console.WriteLine(@$"SqlInsightsReport.Instance.TimeStamp:
+PREV: {prev}
+NEXT: {next}");
+                    */
                     if (!next.Equals(prev))
                     {
                         Stopwatch startAt = Stopwatch.StartNew();

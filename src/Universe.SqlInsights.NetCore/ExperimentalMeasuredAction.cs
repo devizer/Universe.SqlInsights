@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
@@ -8,10 +7,26 @@ using System.Linq;
 using System.Text;
 using Universe.SqlInsights.Shared;
 using Universe.SqlTrace;
-using Universe.CpuUsage;
+using CpuUsage = Universe.CpuUsage.CpuUsage;
 
 namespace Universe.SqlInsights.NetCore
 {
+
+    public class SqlInsightsActionMetrics
+    {
+        private SqlInsightsActionMetrics()
+        {
+        }
+
+        private SqlInsightsActionKeyPath KeyPath { get; }
+        public double Duration { get; set; }
+        public CpuUsage.CpuUsage CpuUsage { get; }
+        public TraceDetailsReport SqlTraceDetails { get; }
+        private SqlCounters SqlTraceSummary { get; }
+
+    }
+
+
 
     public static class ExperimentalMeasuredAction
     {
@@ -50,10 +65,35 @@ namespace Universe.SqlInsights.NetCore
             CpuUsage.CpuUsage? cpuUsage = CpuUsage.CpuUsage.GetByThread() - cpuUsageAtStart;
             
             TraceDetailsReport details = traceReader.ReadDetailsReport();
-            var sqlProfilerSummary = details.Summary;
+            SqlCounters sqlProfilerSummary = details.Summary;
             
             traceReader.Stop();
             traceReader.Dispose();
+
+                ActionDetailsWithCounters actionDetailsWithCounters = new ActionDetailsWithCounters()
+                {
+                    Key = keyPath,
+                    AppDuration = duration,
+                    AppKernelUsage = (cpuUsage?.KernelUsage.TotalSeconds).GetValueOrDefault(),
+                    AppUserUsage = (cpuUsage?.UserUsage.TotalSeconds).GetValueOrDefault(),
+                    AppName = config.AppName,
+                    HostId = config.HostId,
+                    At = DateTime.Now,
+                    IsOK = true,
+                    BriefException = null,
+                    BriefSqlError = null,
+                    ExceptionAsString = null,
+                    SqlStatements = details.Select(x => new ActionDetailsWithCounters.SqlStatement()
+                    {
+                        Counters = x.Counters,
+                        SpName = x.SpName,
+                        Sql = x.Sql,
+                        SqlErrorCode = x.SqlErrorCode,
+                        SqlErrorText = x.SqlErrorText,
+                    }).ToList()
+                };
+
+                SqlInsightsReport.Instance.Add(actionDetailsWithCounters);
 
             StatByAction stat;
             if (!_First.TryGetValue(keyPath.ToString(), out stat))

@@ -269,11 +269,14 @@ End
                 con.ConnectionString = master.ConnectionString;
                 using (con)
                 {
-                    var existingDbId = con.Query<int?>(sqlCommands, null, null, true, null, CommandType.Text);
+                    con.Execute(sqlCommands, null);
+                    /*
+                    var existingDbId = con.Query<int?>(sqlCommands, null, null, true, 10, CommandType.Text);
                     if (existingDbId == null)
                         Logs.AppendLine($" * New database [{dbName}] successfully created on server {master.DataSource}");
                     else
                         Logs.AppendLine($" * Existing database [{dbName}] exists on server {master.DataSource}");
+                */
                 }
             }
             catch

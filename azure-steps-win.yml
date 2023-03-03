@@ -204,7 +204,7 @@ steps:
       export TEST_UNDER_COVERAGE=False
       dotnet test -c Release -f net6.0 --filter "Name~Test1_Seed"
     condition: eq(variables['Agent.OS'], 'Windows_NT')
-    displayName: 'Test Storage, and benchmark'
+    displayName: 'TEST STORAGE +BENCHMARK'
 
   - script: |
       dir %DB_DATA_DIR%
@@ -247,7 +247,7 @@ steps:
       for proc in dotnet-serve.exe dotnet.exe; do cmd.exe /C "taskkill.exe /F /T /IM $proc"; done
       true
     condition: eq(variables['TEST_W3API'], 'true')
-    displayName: 'Test Apps (optional)'
+    displayName: 'RUN W3API (optional)'
 
 
   - task: PublishTestResults@2

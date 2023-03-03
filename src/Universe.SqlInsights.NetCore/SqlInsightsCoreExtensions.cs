@@ -79,7 +79,6 @@ namespace Universe.SqlInsights.NetCore
                     TraceColumns.Application | TraceColumns.Sql,
                     appFilter);
 
-                
                 CpuUsageAsyncWatcher watcher = new CpuUsageAsyncWatcher();
                 Stopwatch stopwatch = Stopwatch.StartNew();
                 var idThreadBefore = Thread.CurrentThread.ManagedThreadId;
@@ -164,8 +163,7 @@ namespace Universe.SqlInsights.NetCore
 
                     if (canSummarize) // not a first call?
                     {
-                        var traceableStorage = storage as ITraceableStorage;
-                        if (traceableStorage != null)
+                        if (storage is ITraceableStorage traceableStorage)
                         {
                             ExperimentalMeasuredAction.Perform(
                                 config,

@@ -87,6 +87,8 @@ namespace Universe.SqlInsights.W3Api
         {
             // TODO: START MIGRATE ON STARTUP, crash if fail
             PreJit(logger);
+
+
             app.ValidateSqlInsightsServices();
             app.UseSqlInsights();
             
@@ -111,6 +113,13 @@ namespace Universe.SqlInsights.W3Api
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+            // AutoFlush
+            using var scope = app.ApplicationServices.CreateScope();
+            var sqlInsightsConfiguration = scope.ServiceProvider.GetRequiredService<ISqlInsightsConfiguration>();
+            var reportFullFileName = sqlInsightsConfiguration.ReportFullFileName;
+            SqlInsightsReport.AutoFlush(reportFullFileName, 100);
+
         }
 
         void PreJit(ILogger logger)
@@ -126,7 +135,7 @@ namespace Universe.SqlInsights.W3Api
                     var summary = await history.GetActionsSummary(0);
                     var keyPath = summary.FirstOrDefault()?.Key ?? new SqlInsightsActionKeyPath();
                     await history.GetKeyPathTimestampOfDetails(0, keyPath);
-                    await history.GetActionsByKeyPath(0, keyPath);
+                    await history.GetActionsByKeyPath(0, keyPath, lastN: 1);
                     logger.LogInformation($"Pre-jit of ISqlInsightsStorage completed in {sw.Elapsed}");
                 }
                 catch (Exception ex)

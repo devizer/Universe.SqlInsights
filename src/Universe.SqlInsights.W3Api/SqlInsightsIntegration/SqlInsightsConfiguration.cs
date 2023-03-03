@@ -11,7 +11,7 @@ namespace Universe.SqlInsights.W3Api.SqlInsightsIntegration
     {
         private IConfiguration Configuration { get; }
 
-        public SqlInsightsConfiguration(IConfiguration configuration)
+        public SqlInsightsConfiguration(IConfiguration configuration) : this()
         {
             Configuration = configuration;
         }
@@ -21,7 +21,9 @@ namespace Universe.SqlInsights.W3Api.SqlInsightsIntegration
         public bool Enabled { get; } = true;
         public bool MeasureSqlMetrics { get; } = true;
         public decimal AutoFlushDelay { get; } = 1000;
-        public string ReportFullFileName { get; } = "C:\\Temp\\SqlInsights-Dev-Report.txt";
+
+        private Lazy<string> _ReportFullFileName;
+        public string ReportFullFileName => _ReportFullFileName.Value;
         public string SqlTracesDirectory { get; } = "C:\\Temp\\SqlInsights-Traces";
 
         public string ConnectionString =>
@@ -33,7 +35,20 @@ namespace Universe.SqlInsights.W3Api.SqlInsightsIntegration
         public int MaxTraceFileSizeKb { get; } = 128 * 1024;
         public int LatestInmemoryDetailRows { get; } = 1;
 
-        private SqlInsightsConfiguration() {}
+        private SqlInsightsConfiguration()
+        {
+            _ReportFullFileName = new Lazy<string>(GetReportFillFileName);
+        }
+
+        private static string GetReportFillFileName()
+        {
+            var ret = Environment.GetEnvironmentVariable("SQLINSIGHTS_REPORT_FULLNAME");
+            if (!string.IsNullOrEmpty(ret)) return ret;
+            if (CrossInfo.ThePlatform == CrossInfo.Platform.Windows)
+                return "C:\\Temp\\SqlInsights-W3Api\\Report.txt";
+            else
+                return "/tmp/SqlInsights-W3Api/Report.txt";
+        }
     }
     
     public class CustomGroupingActionFilter : IActionFilter
