@@ -7,6 +7,10 @@ steps:
       (Get-Counter -ListSet *).Paths | Where-Object { $_ -like "*Transfers*" }
     displayName: 'List Perfmormance Counters'
 
+  - powershell: |
+      Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 20
+    displayName: 'Show Transfer for 20 seconds'
+
   - powershell: 'Set-NetFirewallProfile -All -Enabled False; netsh advfirewall set currentprofile state off; "ok?";'
     displayName: "Disable firefall"
 
@@ -150,6 +154,10 @@ steps:
        # cp "$($Env:Temp)\SQL-Setup.Logs" Setup.Logs -Force
     displayName: 'Prepare SQL Server'
 
+  - powershell: |
+      Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 20
+    displayName: 'Show Transfer for 20 seconds'
+
   - bash: |
        export SQL_SETUP_LOGS_FOLDER="$SYSTEM_ARTIFACTSDIRECTORY"
        powershell -f scripts/Publish-SQL-Server-Setup-Logs.ps1 || true
@@ -190,6 +198,10 @@ steps:
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     displayName: 'dotnet restore'
 
+  - powershell: |
+      Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 20
+    displayName: 'Show Transfer for 20 seconds'
+
   - bash: |
       set -eu; set -o pipefail;
       export TEST_CPU_NAME="$(Get-CpuName --name-only)"
@@ -228,6 +240,10 @@ steps:
       call 2b-Build-and-Serve-SqlInsights-Prod.cmd
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     displayName: 'yarn: build & serve'
+
+  - powershell: |
+      Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 20
+    displayName: 'Show Transfer for 20 seconds'
 
   - bash: |
       echo Starting W3Api
