@@ -227,6 +227,8 @@ steps:
 
   - bash: |
       echo Starting W3Api
+      export SQLINSIGHTS_REPORT_FOLDER="C:\\Temp\\SqlInsights-W3Api-Internal-Logs"
+      export SQLINSIGHTS_REPORT_FULLNAME="${SQLINSIGHTS_REPORT_FOLDER}\\Report.Txt"
       pushd src/Universe.SqlInsights.W3Api;
       (dotnet run | tee "$SYSTEM_ARTIFACTSDIRECTORY/w3api (acceptance test).log") &
       popd
@@ -245,6 +247,7 @@ steps:
       curl -I http://localhost:50420/swagger | cat || exit 666;
       Say "KILL W3API and W3APP"
       for proc in dotnet-serve.exe dotnet.exe; do cmd.exe /C "taskkill.exe /F /T /IM $proc"; done
+      7z a "${SYSTEM_ARTIFACTSDIRECTORY}\\Report.txt.7z" "${SQLINSIGHTS_REPORT_FOLDER}"
       true
     condition: eq(variables['TEST_W3API'], 'true')
     displayName: 'RUN W3API (optional)'
