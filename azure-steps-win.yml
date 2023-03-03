@@ -3,6 +3,10 @@
 
 steps:
 
+  - powershell: |
+      (Get-Counter -ListSet *).Paths | Where-Object { $_ -like "*Transfers*" }
+    displayName: 'List Perfmormance Counters'
+
   - powershell: 'Set-NetFirewallProfile -All -Enabled False; netsh advfirewall set currentprofile state off; "ok?";'
     displayName: "Disable firefall"
 

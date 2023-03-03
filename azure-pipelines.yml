@@ -135,10 +135,6 @@ jobs:
         Say "RAW_ARTIFACTS_DIR: $RAW_ARTIFACTS_DIR"
       displayName: 'Config Deploy'
 
-    - powershell: |
-        (Get-Counter -ListSet *).Paths | Where-Object { $_ -like "*Transfers*" }
-      displayName: 'List Perfmormance Counters'
-
 
     - task: DownloadPipelineArtifact@2
       condition: succeededOrFailed()
