@@ -120,7 +120,10 @@ namespace Universe.SqlInsights.NetCore
 
             StringBuilder log = new StringBuilder();
             log.AppendLine($"Detailed metrics for «{keyPath}»");
-            log.AppendLine($"    Duration ...........: {duration:n1} milliseconds, average={stat.Duration/stat.Count:n1}, count={stat.Count}");
+            if (actionDetailsWithCounters.BriefException != null)
+                log.AppendLine($"    Fail ...............: {actionDetailsWithCounters.BriefException}");
+
+            log.AppendLine($"    Duration ...........: {duration:n1} milliseconds, average={stat.Duration / stat.Count:n1}, count={stat.Count}");
             log.AppendLine($"    Cpu Usage ..........: [user] {cpuUsage?.UserUsage.TotalMicroSeconds/1000d:n1} + [kernel] {cpuUsage?.KernelUsage.TotalMicroSeconds/1000d:n1} milliseconds");
             log.AppendLine($"    Sql Summary ........: {sqlProfilerSummary}");
             int n = 0;
