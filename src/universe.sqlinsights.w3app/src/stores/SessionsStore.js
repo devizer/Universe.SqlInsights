@@ -4,6 +4,9 @@ import * as SessionsActions from "./SessionsActions";
 import {calculateSessionFields} from "./CalculatedSessionProperties"
 import * as Helper from "../Helper";
 
+import sessionsListener from "./SessionsListener"
+
+
 
 class SessionsStore extends EventEmitter {
     
@@ -101,8 +104,9 @@ class SessionsStore extends EventEmitter {
                     return response.ok ? response.json() : null;
                 })
                 .then(ok => {
-                    console.error(`SESSION ACTION REQUEST SUCCESSFULLY COMPLETED for '${req.method} ${req.url}'`);
+                    console.log(`SESSION ACTION REQUEST SUCCESSFULLY COMPLETED for '${req.method} ${req.url}'`);
                     // TODO TODO TODO TODO TODO TODO TODO: Trigger GetSessions
+                    sessionsListener.refreshAsync();
                 })
                 .catch(error => {
                     console.error(`SESSION ACTION REQUEST FAILED for '${req.method} ${req.url}'.`, error);

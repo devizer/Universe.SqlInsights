@@ -116,7 +116,7 @@ Values(
 
         public async Task ResumeSession(long idSession)
         {
-            const string sql = @"Update SqlInsightsSession Set IsFinished = (1) Where IdSession = @IdSession;"; 
+            const string sql = @"Update SqlInsightsSession Set IsFinished = (0), EndedAt = null Where IdSession = @IdSession;"; 
             using (var con = GetConnection())
             {
                 await con.ExecuteAsync(sql, new {IdSession = idSession});
