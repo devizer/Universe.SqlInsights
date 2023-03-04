@@ -288,10 +288,10 @@ export default class SessionsTable extends Component {
             const isStopped = Boolean(this.state.sessionOfMenu?.IsFinished);
             // const isExpired = this.state.sessionOfMenu && this.state.sessionOfMenu.ExpiringDate < new Date();
             const isExpired = this.state.sessionOfMenu && this.state.sessionOfMenu.ExpiringDate && this.state.sessionOfMenu.ExpiringDate < now; 
-            sessionMenuOptions.push({title: "Rename", icon: SessionIcons.IconRename(), buttons: buttonsOnRename, editorTitle: "Rename session"});
-            sessionMenuOptions.push({title: "Delete", icon: SessionIcons.IconDelete(), buttons: buttonsOnDelete, editorTitle: "Delete session"});
-            if (isStopped || isExpired) sessionMenuOptions.push({title: "Resume", icon: SessionIcons.IconResume(), buttons: buttonsOnResume, editorTitle: "Resume session"});
-            if (!isStopped && !isExpired) sessionMenuOptions.push({title: "Stop", icon: SessionIcons.IconStop(), buttons: buttonsOnStop, editorTitle: "Stop session"});
+            sessionMenuOptions.push({title: "Rename …", icon: SessionIcons.IconRename(), buttons: buttonsOnRename, editorTitle: "Rename session"});
+            sessionMenuOptions.push({title: "Delete …", icon: SessionIcons.IconDelete(), buttons: buttonsOnDelete, editorTitle: "Delete session"});
+            if (isStopped || isExpired) sessionMenuOptions.push({title: "Resume …", icon: SessionIcons.IconResume(), buttons: buttonsOnResume, editorTitle: "Resume session"});
+            if (!isStopped && !isExpired) sessionMenuOptions.push({title: "Stop …", icon: SessionIcons.IconStop(), buttons: buttonsOnStop, editorTitle: "Stop session"});
         }
 
         return (
