@@ -109,6 +109,7 @@ export default class SessionsEditorDialog extends Component {
         const buttonFakeCancel = {caption: "Resume", variant: "contained", color: "primary", action: () => console.log("%c Dialog canceled", "background-color: #5998FF")};
         
         const handleRadioExpire = expireOption => e => {
+            this.state.session.MaxDurationMinutes = expireOption.minutes;
             this.setState({
                 selectedExpire: expireOption,
                 session: { ...this.state.session, MaxDurationMinutes: expireOption.minutes }
