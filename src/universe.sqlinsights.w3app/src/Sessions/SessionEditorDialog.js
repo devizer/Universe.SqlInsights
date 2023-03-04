@@ -104,11 +104,17 @@ export default class SessionsEditorDialog extends Component {
             if (this.props.onClose) this.props.onClose(this.state.session, button);
         }
 
-
-
         const selectedExpire = this.state.selectedExpire;
 
         const buttonFakeCancel = {caption: "Resume", variant: "contained", color: "primary", action: () => console.log("%c Dialog canceled", "background-color: #5998FF")};
+        
+        const handleRadioExpire = expireOption => e => {
+            this.setState({
+                selectedExpire: expireOption,
+                session: { ...this.state.session, MaxDurationMinutes: expireOption.minutes }
+            });
+        } 
+        
         
         return (
         <Dialog open={this.props.isOpened} onClose={handleClose} aria-labelledby="form-dialog-title" fullWidth={true} maxWidth="sm">
@@ -126,17 +132,17 @@ export default class SessionsEditorDialog extends Component {
                 />
                 <DialogContentText className="center-aligned" style={{color:"black"}}>
                     <br/>
-                    {expireOptions.map(expire => (
+                    {expireOptions.map(expireOption => (
                         <>
                             &nbsp;
                             <GreenRadio
-                                checked={selectedExpire?.label === expire.label}
-                                onChange={() => this.setState({selectedExpire: expire}) }
-                                value={expire.minutes}
+                                checked={selectedExpire?.label === expireOption.label}
+                                onChange={ handleRadioExpire(expireOption) }
+                                value={expireOption.minutes}
                                 name="radio-button-expire"
-                                inputProps={{ 'aria-label': expire.label }}
+                                inputProps={{ 'aria-label': expireOption.label }}
                             />
-                            {expire.label}
+                            {expireOption.label}
                             &nbsp;
                         </>
                     ))}

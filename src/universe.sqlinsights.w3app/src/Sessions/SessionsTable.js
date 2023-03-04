@@ -123,7 +123,7 @@ export default class SessionsTable extends Component {
         const pageSize = sessions.length === 0 ? 1 : Math.max(sessions.length, 1);
         
         const onSortedChange = (newSorted, column, shiftKey) => {
-            console.log('%c NEW SESSIONS SORTING', 'background: #222; color: #bada55', newSorted);
+            console.log('%c APPLY SESSIONS SORTING', 'background: #222; color: #bada55', newSorted);
             const id = newSorted[0].id;
             const newSorting = [{ id: id, desc: newSorted[0].desc }];
             this.setState({sorting:newSorting});
@@ -179,17 +179,27 @@ export default class SessionsTable extends Component {
 
 
         const handleNewSessionClick = () => {
+            const actionNewSession = session => {
+                const requestBody = {IdSession: -1, Caption: session.Caption, MaxDurationMinutes: session.MaxDurationMinutes};
+                console.log(`%c <STARTING> SESSION`, 'color: darkred', requestBody);
+            };
+            const buttonsOnNewSession = [
+                {caption: "Start Session", variant: "contained", color: "primary", action: actionNewSession}
+            ];
+
             const sessionsTemp = this.state.sessions;
             const newSessionCaption = `New Session ${1 + (sessionsTemp ? sessionsTemp.length : 0)}`;
             this.setState({
                 isEditorOpened: true,
                 sessionOfEditor: {IdSession: -1, Caption: newSessionCaption},
                 editorTitle: "New Session",
-                editorButtons: [],
+                editorButtons: buttonsOnNewSession,
                 
                 isSessionMenuOpened: false,
                 sessionOfMenu: null,
                 sessionMenuAnchor: null,
+                
+                
             });
         }
 
