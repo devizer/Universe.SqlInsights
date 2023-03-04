@@ -2,6 +2,7 @@
 import {EventEmitter} from "events";
 import * as SessionsActions from "./SessionsActions";
 import {calculateSessionFields} from "./CalculatedSessionProperties"
+import * as Helper from "../Helper";
 
 
 class SessionsStore extends EventEmitter {
@@ -42,11 +43,16 @@ class SessionsStore extends EventEmitter {
     createNewSession(caption, maxDurationMinutes) {
         const session = {Caption: caption, MaxDurationMinutes: maxDurationMinutes, StartedAt: new Date()};
         this.sessions.push(session);
+        
+        this.invokeSessionManagementApi("Sessions/CreateSession", {Caption: caption});
     }
 
     renameSession(idSession, caption) {
         const session = this.sessions.find(x => x.IdSession === idSession);
         if (session) session.Caption = caption;
+
+        this.invokeSessionManagementApi("Sessions/RenameSession", {IdSession: idSession, Caption: caption});
+
     }
 
     deleteSession(idSession) {
@@ -61,6 +67,7 @@ class SessionsStore extends EventEmitter {
         }
 
         this.emit("storeUpdated");
+        this.invokeSessionManagementApi("Sessions/DeleteSession", {IdSession: idSession});
     }
 
     stopSession(idSession) {
@@ -70,6 +77,8 @@ class SessionsStore extends EventEmitter {
             session.EndedAt = new Date();
             calculateSessionFields(session);
         }
+
+        this.invokeSessionManagementApi("Sessions/FinishSession", {IdSession: idSession});
     }
 
     resumeSession(idSession) {
@@ -79,6 +88,30 @@ class SessionsStore extends EventEmitter {
             session.EndedAt = null;
             calculateSessionFields(session);
         }
+        
+        this.invokeSessionManagementApi("Sessions/ResumeSession", {IdSession: idSession});
+    }
+    
+    invokeSessionManagementApi(path,body) {
+        const req = Helper.createRequest(path, body);
+        try {
+            fetch(req)
+                .then(response => {
+                    if (!response.ok) console.error(`SESSION ACTION REQUEST FAILED for '${req.method} ${req.url}'. status=${response.status}`, response);
+                    return response.ok ? response.json() : null;
+                })
+                .then(ok => {
+                    console.error(`SESSION ACTION REQUEST SUCCESSFULLY COMPLETED for '${req.method} ${req.url}'`);
+                    // TODO TODO TODO TODO TODO TODO TODO: Trigger GetSessions
+                })
+                .catch(error => {
+                    console.error(`SESSION ACTION REQUEST FAILED for '${req.method} ${req.url}'.`, error);
+                    // DataSourceActions.ConnectionStatusUpdated(false);
+                });
+        } catch (err) {
+            console.error(`FETCH failed for '${req.method} ${req.url}'`, err);
+        }
+
     }
 
 }
