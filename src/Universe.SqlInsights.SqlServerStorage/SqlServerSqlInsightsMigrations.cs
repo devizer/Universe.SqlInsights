@@ -38,14 +38,9 @@ namespace Universe.SqlInsights.SqlServerStorage
             var man = cnn.Manage();
             Logs.AppendLine($" * IsLocalDB: {man.IsLocalDB}");
             Logs.AppendLine($" * Short Version: {man.ShortServerVersion}");
-            var mediumStrings = new[] { man.ProductVersion, man.ProductLevel, man.ProductUpdateLevel, man.ServerEdition };
-            var mediumVersion = string.Join(" ", mediumStrings.Select(x => x?.Trim()).Distinct().Where(x => !string.IsNullOrEmpty(x)).ToArray());
-            mediumVersion = mediumVersion == "" ? "" : $" {mediumVersion}";
-            Logs.AppendLine($" * Medium Version:{mediumVersion}");
+            Logs.AppendLine($" * Medium Version:{man.MediumServerVersion}");
             Logs.AppendLine($" * Long Version: {man.LongServerVersion}");
-            var major = man.ShortServerVersion.Major;
             // Server 2016 (13.x) SP1 (or later), any edition. For SQL Server 2014 (12.x) and SQL Server 2016 (13.x) RTM (pre-SP1) you need Enterprise, Developer, or Evaluation edition.
-            // var supportMOT = !man.IsLocalDB && (major > 12 || (major == 12 && man.EngineEdition == EngineEdition.Enterprise));
             var supportMOT = man.IsMemoryOptimizedTableSupported;
             Logs.AppendLine($" * Support MOT: {supportMOT}{(DisableMemoryOptimizedTables & supportMOT ? ", But Disabled": "")}");
 

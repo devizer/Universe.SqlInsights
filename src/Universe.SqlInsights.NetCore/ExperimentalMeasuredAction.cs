@@ -126,7 +126,8 @@ namespace Universe.SqlInsights.NetCore
             int n = 0;
             foreach (SqlStatementCounters detail in details)
             {
-                var header = $"    Query #{++n} ";
+                string prefix = n == 0 ? "┌─" : "├─";
+                var header = $"    {prefix} Query #{++n} ";
                 if (header.Length < 24) header += new string('.', 24 - header.Length);
                 
                 log.AppendLine($"{header}: {detail.Counters}");
