@@ -182,6 +182,7 @@ export default class SessionsTable extends Component {
             const actionNewSession = session => {
                 const requestBody = {IdSession: -1, Caption: session.Caption, MaxDurationMinutes: session.MaxDurationMinutes};
                 console.log(`%c <STARTING> SESSION`, 'color: darkred', requestBody);
+                sessionsStore.createNewSession(session.Caption, session.MaxDurationMinutes);
             };
             const buttonsOnNewSession = [
                 {caption: "Start Session", variant: "contained", color: "primary", action: actionNewSession}
@@ -256,6 +257,7 @@ export default class SessionsTable extends Component {
             const actionRename = session => {
                 const requestBody = {IdSession: session.IdSession, Caption: session.Caption};
                 console.log(`%c RENAMING SESSION`, 'color: darkred', requestBody);
+                sessionsStore.renameSession(session.IdSession, session.Caption);
             };
             const buttonsOnRename = [
                 {caption: "Rename", variant: "contained", color: "primary", action: actionRename}
@@ -264,6 +266,7 @@ export default class SessionsTable extends Component {
             const actionDelete = session => {
                 const requestBody = {IdSession: session.IdSession};
                 console.log(`%c DELETING SESSION`, 'color: darkred', requestBody);
+                sessionsStore.deleteSession(session.IdSession);
             };
             const buttonsOnDelete = [
                 {caption: "Delete", variant: "contained", color: "primary", action: actionDelete}
@@ -272,6 +275,7 @@ export default class SessionsTable extends Component {
             const actionResume = session => {
                 const requestBody = {IdSession: session.IdSession};
                 console.log(`%c RESUMING SESSION`, 'color: darkred', requestBody);
+                sessionsStore.resumeSession(session.IdSession);
             };
             const buttonsOnResume = [
                 {caption: "Resume", variant: "contained", color: "primary", action: actionResume}
@@ -280,6 +284,7 @@ export default class SessionsTable extends Component {
             const actionStop = session => {
                 const requestBody = {IdSession: session.IdSession};
                 console.log(`%c STOPPING SESSION`, 'color: darkred', requestBody);
+                sessionsStore.stopSession(session.IdSession);
             };
             const buttonsOnStop = [
                 {caption: "Stop", variant: "contained", color: "primary", action: actionStop}

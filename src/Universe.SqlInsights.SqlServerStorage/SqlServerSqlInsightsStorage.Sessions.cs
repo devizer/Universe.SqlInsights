@@ -114,6 +114,15 @@ Values(
             }
         }
 
+        public async Task ResumeSession(long idSession)
+        {
+            const string sql = @"Update SqlInsightsSession Set IsFinished = (1) Where IdSession = @IdSession;"; 
+            using (var con = GetConnection())
+            {
+                await con.ExecuteAsync(sql, new {IdSession = idSession});
+            }
+        }
+
         public async Task FinishSession(long idSession)
         {
             // if (idSession == 0) return; 

@@ -1,6 +1,6 @@
 ﻿import * as Helper from "../Helper"
 import * as SessionsActions from './SessionsActions'
-import moment from 'moment';
+import {calculateSessionFields} from "./CalculatedSessionProperties"
 
 class SessionsListener {
 
@@ -21,7 +21,7 @@ class SessionsListener {
                 })
                 .then(sessions => {
                     if (sessions != null) {
-                        sessions.map((session, index) => this.calculateSessionFields(session));
+                        sessions.map((session, index) => calculateSessionFields(session));
                     }
                     else {
                         console.error("!!!! SKIPPED calculateSessionFields");
@@ -38,21 +38,6 @@ class SessionsListener {
         }
     }
     
-    calculateSessionFields(session) {
-        if (session.MaxDurationMinutes) {
-            session.ExpiringDate = moment(session.StartedAt).add(session.MaxDurationMinutes, 'm').toDate();
-        }
-        
-        session.CalculatedEnding = session.EndedAt;
-        if (!session.CalculatedEnding && session.ExpiringDate) {
-            session.CalculatedEnding = session.ExpiringDate;
-        }
-        
-        // Doesn't work
-        // session.isExpired = () => (Boolean(session.ExpiringDate)) && (session.ExpiringDate < new Date());
-        // session.isExpired = session.isExpired.bind(session);
-        
-    }
 }
 
 const sessionsListener = new SessionsListener();

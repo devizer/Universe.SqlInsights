@@ -29,6 +29,8 @@ namespace Universe.SqlInsights.Shared
         Task DeleteSession(long idSession);
         Task RenameSession(long idSession, string caption);
         Task FinishSession(long idSession);
+        Task ResumeSession(long idSession);
+
 
         Task<IEnumerable<LongIdAndString>> GetAppNames();
         Task<IEnumerable<LongIdAndString>> GetHostIds();

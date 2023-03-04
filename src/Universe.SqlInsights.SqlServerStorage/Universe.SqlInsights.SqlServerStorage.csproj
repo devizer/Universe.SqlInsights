@@ -3,7 +3,7 @@
     <PropertyGroup>
         <!-- net35;net40;net45; -->
         <!-- System.Text.Json support starts from net 4.6.2 -->
-        <TargetFrameworks>net35;net40;net45;net462;netstandard2.0;netstandard1.3</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0;net35;net40;net45;net462;netstandard1.3</TargetFrameworks>
     </PropertyGroup>
 
     <Import Project="..\Shared.props" />
