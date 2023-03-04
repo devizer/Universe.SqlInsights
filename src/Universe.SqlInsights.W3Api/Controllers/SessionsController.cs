@@ -67,6 +67,13 @@ namespace Universe.SqlInsights.W3Api.Controllers
         }
 
         [HttpPost]
+        public async Task<ActionResult> ResumeSession(IdSessionParameters args)
+        {
+            await _Storage.ResumeSession(args.IdSession);
+            return "OK".ToJsonResult();
+        }
+
+        [HttpPost]
         public async Task<ActionResult> RenameSession(RenameSessionParameters args)
         {
             if (string.IsNullOrEmpty(args?.Caption))
