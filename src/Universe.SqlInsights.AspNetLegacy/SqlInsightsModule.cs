@@ -135,7 +135,7 @@ namespace Universe.SqlInsights.AspNetLegacy
                     AppName = sqlInsightsConfiguration.AppName,
                     HostId = sqlInsightsConfiguration.HostId,
                     Key = LegacySqlProfilerContext.Instance.ActionKeyPath,
-                    At = DateTime.Now,
+                    At = DateTime.UtcNow,
                     IsOK = lastError == null,
                     AppDuration = newLine.AppDuration,
                     AppKernelUsage = newLine.AppKernelUsage,
