@@ -52,6 +52,7 @@ const expireOptions = [
     { label: 'for 24 hours', minutes: 60*24, color: green },
     { label: 'never expire', minutes: null, color: red },
 ];
+const defaultExpireOptions = expireOptions[0]; 
 
 export default class SessionsEditorDialog extends Component {
     static displayName = SessionsEditorDialog.name;
@@ -70,7 +71,7 @@ export default class SessionsEditorDialog extends Component {
         this.state = {
             session: this.props.session,
             isOpened: this.props.isOpened,
-            selectedExpire: expireOptions[expireOptions.length - 1],
+            selectedExpire: defaultExpireOptions,
             buttons: this.props.buttons,
             titleMode: this.props.titleMode,
         };
@@ -83,12 +84,14 @@ export default class SessionsEditorDialog extends Component {
             || nextProps.onClose !== this.state.onClose
             || nextProps.buttons !== this.state.buttons
         ) {
+            const session = {...(nextProps.session ?? {}), MaxDurationMinutes: defaultExpireOptions.minutes };
             this.setState({
-                session: nextProps.session,
+                session: session,
                 titleMode: nextProps.titleMode,
                 isOpened: nextProps.isOpened,
                 onClose: nextProps.onClose,
                 buttons: nextProps.buttons,
+                selectedExpire: defaultExpireOptions,
             });
         }
     }

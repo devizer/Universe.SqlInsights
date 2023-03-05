@@ -1,8 +1,12 @@
 ﻿import moment from "moment/moment";
 
 export function calculateSessionFields(session) {
+    session.StartedAt = moment.utc(session.StartedAt).toDate();
     if (session.MaxDurationMinutes) {
-        session.ExpiringDate = moment(session.StartedAt).add(session.MaxDurationMinutes, 'm').toDate();
+        // session.ExpiringDate = moment(session.StartedAt).add(session.MaxDurationMinutes, 'm').toDate();
+        // session.ExpiringDate = moment(new Date(session.StartedAt)).add(session.MaxDurationMinutes, 'm').toDate();
+        session.ExpiringDate = moment.utc(session.StartedAt).add(session.MaxDurationMinutes, 'm').toDate();
+        
     }
 
     session.CalculatedEnding = session.EndedAt;
