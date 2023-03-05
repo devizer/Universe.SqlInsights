@@ -1,6 +1,7 @@
 ﻿import * as Helper from "../Helper"
 import React, { Component } from 'react';
 import sessionsStore from "../stores/SessionsStore";
+import {calculateSessionFields, isSessionAlive} from "../stores/CalculatedSessionProperties"
 import {ActionKeyPathUi} from "../Shared/ActionKeyPathUi";
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -298,6 +299,9 @@ export default class SessionsTable extends Component {
             if (isStopped || isExpired) sessionMenuOptions.push({title: "Resume …", icon: SessionIcons.IconResume(), buttons: buttonsOnResume, editorTitle: "Resume session"});
             if (!isStopped && !isExpired) sessionMenuOptions.push({title: "Stop …", icon: SessionIcons.IconStop(), buttons: buttonsOnStop, editorTitle: "Stop session"});
         }
+        
+        const aliveSessionsCount = (this.state.sessions ?? []).filter(x => isSessionAlive(x)).length;
+        const headerSessionsText = aliveSessionsCount === 0 ? "(no alive sessions)" : aliveSessionsCount === 1 ? "(just one alive session)" : `(${aliveSessionsCount} alive sessions)`;  
 
         return (
             <React.Fragment>
@@ -330,7 +334,7 @@ export default class SessionsTable extends Component {
                                 sortable: false,
                             },
                             {
-                                Header: "Session",
+                                Header: `Session ${headerSessionsText}`,
                                 accessor: "Caption",
                                 minWidth: 540,
                                 Cell: cellCaption,

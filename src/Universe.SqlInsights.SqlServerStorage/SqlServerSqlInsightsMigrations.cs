@@ -38,7 +38,7 @@ namespace Universe.SqlInsights.SqlServerStorage
             var man = cnn.Manage();
             Logs.AppendLine($" * IsLocalDB: {man.IsLocalDB}");
             Logs.AppendLine($" * Short Version: {man.ShortServerVersion}");
-            Logs.AppendLine($" * Medium Version:{man.MediumServerVersion}");
+            Logs.AppendLine($" * Medium Version: {man.MediumServerVersion}");
             Logs.AppendLine($" * Long Version: {man.LongServerVersion}");
             // Server 2016 (13.x) SP1 (or later), any edition. For SQL Server 2014 (12.x) and SQL Server 2016 (13.x) RTM (pre-SP1) you need Enterprise, Developer, or Evaluation edition.
             var supportMOT = man.IsMemoryOptimizedTableSupported;

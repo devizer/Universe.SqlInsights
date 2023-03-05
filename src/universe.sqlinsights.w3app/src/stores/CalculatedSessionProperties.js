@@ -15,3 +15,10 @@ export function calculateSessionFields(session) {
     // session.isExpired = session.isExpired.bind(session);
 
 }
+
+export function isSessionAlive(session) {
+    const isStopped = Boolean(session?.IsFinished);
+    // const isExpired = this.state.sessionOfMenu && this.state.sessionOfMenu.ExpiringDate < new Date();
+    const isExpired = session?.ExpiringDate && session.ExpiringDate < new Date();
+    return !isStopped && !isExpired;
+}

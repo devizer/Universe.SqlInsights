@@ -45,9 +45,10 @@ class SessionsStore extends EventEmitter {
 
     createNewSession(caption, maxDurationMinutes) {
         const session = {Caption: caption, MaxDurationMinutes: maxDurationMinutes, StartedAt: new Date()};
+        calculateSessionFields(session);
         this.sessions.push(session);
         
-        this.invokeSessionManagementApi("Sessions/CreateSession", {Caption: caption});
+        this.invokeSessionManagementApi("Sessions/CreateSession", {Caption: caption, MaxDurationMinutes: maxDurationMinutes});
     }
 
     renameSession(idSession, caption) {
