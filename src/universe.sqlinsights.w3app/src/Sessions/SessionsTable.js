@@ -47,6 +47,20 @@ const useStyles2 = makeStyles((theme) => ({
     },
 }));
 
+const getNewSessionCaption = sessions => {
+    sessions = sessions ?? [];
+    let index = sessions.length + 1;
+    while(index <= 999) {
+        const caption = `New Session ${index}`;
+        const captionUpper = caption.toUpperCase(); 
+        const foundSession = sessions.find(x => x.Caption && x.Caption.toUpperCase().startsWith(captionUpper));
+        if (!foundSession) return caption;
+        index++;
+    }
+    
+    return `New Session at ${new Date()}`;
+} 
+
 export default class SessionsTable extends Component {
     static displayName = SessionsTable.name;
 
@@ -189,8 +203,8 @@ export default class SessionsTable extends Component {
                 {caption: "Start Session", variant: "contained", color: "primary", action: actionNewSession}
             ];
 
-            const sessionsTemp = this.state.sessions;
-            const newSessionCaption = `New Session ${1 + (sessionsTemp ? sessionsTemp.length : 0)}`;
+            // const newSessionCaption = `New Session ${1 + (this.state.sessions ?? []).length}`;
+            const newSessionCaption = getNewSessionCaption(this.state.sessions);
             this.setState({
                 isEditorOpened: true,
                 sessionOfEditor: {IdSession: -1, Caption: newSessionCaption},
@@ -378,7 +392,7 @@ export default class SessionsTable extends Component {
                         {this.state.sessionOfMenu?.Caption}
                     </Typography>
                     <hr/>
-
+                    
                     {sessionMenuOptions.map((option) => (
                         <MenuItem key={option.title} selected={false} onClick={handleClickSessionMenu(option)}>
                             {option.icon}&nbsp;&nbsp;
