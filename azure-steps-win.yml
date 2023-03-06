@@ -201,6 +201,7 @@ steps:
 
   - bash: |
       dotnet --info
+      cmd.exe /C "taskkill.exe /F /T /IM dotnet.exe"
       export DOTNET_VERSIONS="5.0 6.0 7.0"
       script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash; 
       dotnet --info
@@ -300,7 +301,6 @@ steps:
       Say Done
     condition: succeededOrFailed()
     displayName: 'Test JAM Again'
-
 
 
   - task: PublishTestResults@2
