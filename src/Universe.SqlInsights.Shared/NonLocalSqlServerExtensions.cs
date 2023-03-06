@@ -14,11 +14,21 @@ namespace Universe.SqlInsights.Shared
                 using (SqlConnection con = new SqlConnection(config.ConnectionString))
                 {
                     string shellCommand = $"del \"{traceFile}.trc\"";
-                    string sql = "DECLARE @result int; Exec @result = xp_cmdshell @command_string; Select @Result;";
+                    string sql = @"
+Declare @host_platform nvarchar(4000) = null;
+If ((@@MICROSOFTVERSION / 16777216) >= 14) -- Version 2017+
+  And Exists (Select 1 From sys.all_objects Where name = 'dm_os_host_info' and type = 'V' and is_ms_shipped = 1)
+Select @host_platform = host_platform from sys.dm_os_host_info;
+If (@host_platform = 'Windows')
+Begin
+  DECLARE @result int; 
+  Exec @result = xp_cmdshell @command_string; 
+  Select @Result;
+End";
                     try
                     {
                         con.Open();
-                        // TODO: ONLY OF WINDOWS !!!!!!!!!!!!!!!!!!!!!!!
+                        // TODO: ONLY ON WINDOWS !!!!!!!!!!!!!!!!!!!!!!!
                         using (SqlCommand cmd = new SqlCommand(sql, con))
                         {
                             cmd.Parameters.Add("@command_string", SqlDbType.NVarChar, 4000).Value = shellCommand;
