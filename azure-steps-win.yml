@@ -292,6 +292,17 @@ steps:
     displayName: 'RUN W3API (optional)'
 
 
+  - bash: |
+      set -eu; set -o pipefail;
+      cd ~/jam/src/Universe.SqlServerJam.Tests
+
+      dotnet test -c Release -f net60
+      Say Done
+    condition: succeededOrFailed()
+    displayName: 'Test JAM Again'
+
+
+
   - task: PublishTestResults@2
     condition: succeededOrFailed()
     inputs:
