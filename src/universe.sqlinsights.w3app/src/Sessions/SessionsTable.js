@@ -290,7 +290,7 @@ export default class SessionsTable extends Component {
             const actionResume = session => {
                 const requestBody = {IdSession: session.IdSession};
                 console.log(`%c RESUMING SESSION`, 'color: darkred', requestBody);
-                sessionsStore.resumeSession(session.IdSession);
+                sessionsStore.resumeSession(session.IdSession, session.MaxDurationMinutes);
             };
             const buttonsOnResume = [
                 {caption: "Resume", variant: "contained", color: "primary", action: actionResume}

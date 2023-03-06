@@ -31,6 +31,12 @@ namespace Universe.SqlInsights.W3Api.Controllers
             public int? MaxDurationMinutes { get; set; }
         }
 
+        public class ResumeSessionParameters
+        {
+            public long IdSession { get; set; }
+            public int? MaxDurationMinutes { get; set; }
+
+        }
         public class IdSessionParameters
         {
             public long IdSession { get; set; }
@@ -67,9 +73,9 @@ namespace Universe.SqlInsights.W3Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> ResumeSession(IdSessionParameters args)
+        public async Task<ActionResult> ResumeSession(ResumeSessionParameters args)
         {
-            await _Storage.ResumeSession(args.IdSession);
+            await _Storage.ResumeSession(args.IdSession, args.MaxDurationMinutes);
             return "OK".ToJsonResult();
         }
 

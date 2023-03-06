@@ -29,7 +29,7 @@ namespace Universe.SqlInsights.Shared
         Task DeleteSession(long idSession);
         Task RenameSession(long idSession, string caption);
         Task FinishSession(long idSession);
-        Task ResumeSession(long idSession);
+        Task ResumeSession(long idSession, int? maxDurationMinutes);
 
 
         Task<IEnumerable<LongIdAndString>> GetAppNames();

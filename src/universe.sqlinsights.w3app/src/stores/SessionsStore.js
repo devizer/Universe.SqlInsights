@@ -85,15 +85,16 @@ class SessionsStore extends EventEmitter {
         this.invokeSessionManagementApi("Sessions/FinishSession", {IdSession: idSession});
     }
 
-    resumeSession(idSession) {
+    resumeSession(idSession, maxDurationMinutes) {
         const session = this.sessions.find(x => x.IdSession === idSession);
         if (session) {
             session.IsFinished = false;
             session.EndedAt = null;
+            session.MaxDurationMinutes = maxDurationMinutes ?? null;
             calculateSessionFields(session);
         }
         
-        this.invokeSessionManagementApi("Sessions/ResumeSession", {IdSession: idSession});
+        this.invokeSessionManagementApi("Sessions/ResumeSession", {IdSession: idSession, MaxDurationMinutes: maxDurationMinutes});
     }
     
     invokeSessionManagementApi(path,body) {

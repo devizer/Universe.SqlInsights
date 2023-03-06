@@ -114,12 +114,12 @@ Values(
             }
         }
 
-        public async Task ResumeSession(long idSession)
+        public async Task ResumeSession(long idSession, int? maxDurationMinutes)
         {
-            const string sql = @"Update SqlInsightsSession Set IsFinished = (0), EndedAt = null Where IdSession = @IdSession;"; 
+            const string sql = @"Update SqlInsightsSession Set IsFinished = (0), EndedAt = null, MaxDurationMinutes = @MaxDurationMinutes Where IdSession = @IdSession;"; 
             using (var con = GetConnection())
             {
-                await con.ExecuteAsync(sql, new {IdSession = idSession});
+                await con.ExecuteAsync(sql, new {IdSession = idSession, MaxDurationMinutes = maxDurationMinutes });
             }
         }
 

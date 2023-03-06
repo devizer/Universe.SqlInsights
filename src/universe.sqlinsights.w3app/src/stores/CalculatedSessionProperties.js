@@ -5,11 +5,12 @@ export function calculateSessionFields(session) {
     if (session.MaxDurationMinutes) {
         // session.ExpiringDate = moment(session.StartedAt).add(session.MaxDurationMinutes, 'm').toDate();
         // session.ExpiringDate = moment(new Date(session.StartedAt)).add(session.MaxDurationMinutes, 'm').toDate();
+        // session.ExpiringDate = moment.utc(session.StartedAt).add(session.MaxDurationMinutes, 'm').toDate();
         session.ExpiringDate = moment.utc(session.StartedAt).add(session.MaxDurationMinutes, 'm').toDate();
-        
     }
 
-    session.CalculatedEnding = session.EndedAt;
+    if (session.EndedAt) session.CalculatedEnding = moment.utc(session.EndedAt).toDate();
+    
     if (!session.CalculatedEnding && session.ExpiringDate) {
         session.CalculatedEnding = session.ExpiringDate;
     }
