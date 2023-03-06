@@ -13,5 +13,11 @@
         string HistoryConnectionString { get; }
         int MaxTraceFileSizeKb { get; }
         string SqlClientAppNameFormat { get; }
+
+        // Need Sysadmin Permission for xp_cmdshell proc
+        bool DisposeByShellCommand { get; }
+        
+        // Does not need additional permission
+        string SharedSqlTracesDirectory { get; }
     }
 }

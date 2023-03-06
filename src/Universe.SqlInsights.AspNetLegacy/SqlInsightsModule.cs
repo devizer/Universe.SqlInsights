@@ -124,6 +124,8 @@ namespace Universe.SqlInsights.AspNetLegacy
                     newLine.SqlErrors = details.Count(x => x.SqlErrorCode.HasValue);
                     traceReader.Stop();
                     traceReader.Dispose();
+
+                    sqlInsightsConfiguration.DeleteTraceFile(traceReader.TraceFile);
                 }
                 else
                 {

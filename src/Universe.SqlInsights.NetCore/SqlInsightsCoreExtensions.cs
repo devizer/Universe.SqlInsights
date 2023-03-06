@@ -117,6 +117,8 @@ namespace Universe.SqlInsights.NetCore
                     traceReader.Stop();
                     traceReader.Dispose();
 
+                    config.DeleteTraceFile(traceReader.TraceFile);
+
                     Exception lastError = serviceProvider.GetRequiredService<ExceptionHolder>().Error;
 
                     ActionDetailsWithCounters actionDetails = new ActionDetailsWithCounters()

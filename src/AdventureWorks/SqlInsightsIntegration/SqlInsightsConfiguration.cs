@@ -26,6 +26,9 @@ namespace AdventureWorks.SqlInsightsIntegration
         public int MaxTraceFileSizeKb { get; } = 128 * 1024;
         public int LatestInmemoryDetailRows { get; } = 1;
 
+        public bool DisposeByShellCommand { get; } = true;
+        public string SharedSqlTracesDirectory { get; } = null;
+
         public static readonly SqlInsightsConfiguration Instance = new SqlInsightsConfiguration();
         private SqlInsightsConfiguration() {}
     }

@@ -35,6 +35,9 @@ namespace Universe.SqlInsights.W3Api.SqlInsightsIntegration
         public int MaxTraceFileSizeKb { get; } = 128 * 1024;
         public int LatestInmemoryDetailRows { get; } = 1;
 
+        public bool DisposeByShellCommand { get; } = true;
+        public string SharedSqlTracesDirectory { get; } = null;
+
         private SqlInsightsConfiguration()
         {
             _ReportFullFileName = new Lazy<string>(GetReportFillFileName);

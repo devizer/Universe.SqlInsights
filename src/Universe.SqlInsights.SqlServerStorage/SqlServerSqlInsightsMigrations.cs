@@ -40,6 +40,14 @@ namespace Universe.SqlInsights.SqlServerStorage
             Logs.AppendLine($" * Short Version: {man.ShortServerVersion}");
             Logs.AppendLine($" * Medium Version: {man.MediumServerVersion}");
             Logs.AppendLine($" * Long Version: {man.LongServerVersion}");
+
+            if ((man.FixedServerRoles & FixedServerRoles.SysAdmin) != 0)
+            {
+                // TODO: Only if ISqlInsightsConfiguration.DisposeByShellCommand == true
+                man.ServerConfigurationSettings.XpCmdShell = true;
+                Logs.AppendLine($" * Allow XpCmdShell: {man.ServerConfigurationSettings.XpCmdShell}");
+            }
+
             // Server 2016 (13.x) SP1 (or later), any edition. For SQL Server 2014 (12.x) and SQL Server 2016 (13.x) RTM (pre-SP1) you need Enterprise, Developer, or Evaluation edition.
             var supportMOT = man.IsMemoryOptimizedTableSupported;
             Logs.AppendLine($" * Support MOT: {supportMOT}{(DisableMemoryOptimizedTables & supportMOT ? ", But Disabled": "")}");
