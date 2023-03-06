@@ -18,6 +18,7 @@ namespace Universe.SqlInsights.Shared
                     try
                     {
                         con.Open();
+                        // TODO: ONLY OF WINDOWS !!!!!!!!!!!!!!!!!!!!!!!
                         using (SqlCommand cmd = new SqlCommand(sql, con))
                         {
                             cmd.Parameters.Add("@command_string", SqlDbType.NVarChar, 4000).Value = shellCommand;
@@ -33,7 +34,7 @@ namespace Universe.SqlInsights.Shared
                 }
             }
 
-            else if (!string.IsNullOrEmpty(config.SharedSqlTracesDirectory))
+            if (!string.IsNullOrEmpty(config.SharedSqlTracesDirectory))
             {
                 string fullPath = Path.Combine(config.SqlTracesDirectory, Path.GetFileName(traceFile) + ".trc");
                 if (File.Exists(fullPath)) File.Delete(fullPath);
