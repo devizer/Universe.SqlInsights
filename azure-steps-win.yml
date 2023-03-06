@@ -35,11 +35,14 @@ steps:
 
   - bash: |
       set -eu; set -o pipefail;
+      script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
+      Say --Reset-Stopwatch
       Say "CPU: $(Get-CpuName)"
       git clone https://github.com/devizer/Universe.SqlServerJam ~/jam
       cd ~/jam/src/Universe.SqlServerJam.Tests
 
       dotnet test -c Release -f net60
+      Say Done
     condition: succeededOrFailed()
     displayName: 'Test JAM'
 
