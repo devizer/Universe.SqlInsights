@@ -28,7 +28,7 @@ namespace Universe.SqlInsights.Shared
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"xp_cmdshell failed to delete trace file '{traceFile}.trc'{Environment.NewLine}{ex}");
+                        Console.WriteLine($"xp_cmdshell failed to delete trace file '{traceFile}.trc. Please grant permission to the '{config.AppName}' app or switch off cleanup via xp_cmdshell.'{Environment.NewLine}{ex}");
                     }
                 }
             }
