@@ -37,11 +37,11 @@ namespace Universe.SqlInsights.SqlServerStorage
             cnn.ConnectionString = this.ConnectionString;
             var man = cnn.Manage();
             Logs.AppendLine($" * IsLocalDB: {man.IsLocalDB}");
-            Logs.AppendLine($" * Short Version: {man.ShortServerVersion}");
+            Logs.AppendLine($" * Short Version: {man.ShortServerVersion} on {man.HostPlatform}");
             Logs.AppendLine($" * Medium Version: {man.MediumServerVersion}");
             Logs.AppendLine($" * Long Version: {man.LongServerVersion}");
 
-            if ((man.FixedServerRoles & FixedServerRoles.SysAdmin) != 0)
+            if (man.IsWindows && (man.FixedServerRoles & FixedServerRoles.SysAdmin) != 0)
             {
                 // TODO: Only if ISqlInsightsConfiguration.DisposeByShellCommand == true
                 man.ServerConfigurationSettings.XpCmdShell = true;
