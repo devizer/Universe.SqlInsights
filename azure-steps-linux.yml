@@ -146,7 +146,7 @@ steps:
       export SQLINSIGHTS_REPORT_FULLNAME="${SQLINSIGHTS_REPORT_FOLDER}/Report.Txt"
       pushd src/Universe.SqlInsights.W3Api;
 
-      export ConnectionStrings__SqlInsights="Data Source=localhost,1433;User ID=sa;Password=p@assw0rd!"
+      export ConnectionStrings__SqlInsights="Data Source=localhost,1433;User ID=sa;Password=p@assw0rd!;Initial Catalog=SqlInsightsDb42"
 
       (dotnet run | tee "$SYSTEM_ARTIFACTSDIRECTORY/w3api (acceptance test).log") &
       popd
