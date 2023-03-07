@@ -13,10 +13,11 @@ steps:
         "**"
 
   - bash: |
+      set -eu
       cd src/universe.sqlinsights.w3app
       cd build
-      echo "SERVING STATIC W3APP"
-      ls -la
+      echo "SERVING STATIC W3APP. Content of ./static/js:"
+      ls -la static/js
       dotnet serve --version 2>nul || dotnet tool install --global dotnet-serve
       dotnet serve --version
       start /max dotnet serve -p 6060 -o
