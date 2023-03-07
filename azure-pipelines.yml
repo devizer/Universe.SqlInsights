@@ -7,7 +7,8 @@ variables:
 
 jobs:
 
-  - job: Build
+  - job: Build_W3_App
+    displayName: 'W3App'
     pool:
       vmImage: "ubuntu-20.04"
     steps:
