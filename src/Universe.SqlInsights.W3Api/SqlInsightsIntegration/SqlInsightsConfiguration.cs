@@ -25,7 +25,7 @@ namespace Universe.SqlInsights.W3Api.SqlInsightsIntegration
 
         private Lazy<string> _ReportFullFileName;
         public string ReportFullFileName => _ReportFullFileName.Value;
-        public string SqlTracesDirectory => RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "C:\\Temp\\SqlInsights-Traces" : "/tmp";
+        public string SqlTracesDirectory => RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "C:\\Temp\\SqlInsights-Traces" : "/tmp/SqlInsights-Traces";
 
         public string ConnectionString =>
             Configuration.GetConnectionString("SqlInsights")
