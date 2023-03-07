@@ -23,14 +23,15 @@ steps:
         "**"
 
   - bash: |
-      set -eu
+      set -eu; set -o pipefail
       cd src/universe.sqlinsights.w3app
       cd build
       echo "SERVING STATIC W3APP. Content of ./static/js:"
       ls -la static/js
       dotnet serve --version 2>nul || dotnet tool install --global dotnet-serve
       dotnet serve --version
-      start /max dotnet serve -p 6060 -o
+      nuhup dotnet serve -p 6060 -o |& tee ~/w3app.log &
+      sleep 2; cat ~/w3app.log
     condition: true
     displayName: 'w3app: run'
 
