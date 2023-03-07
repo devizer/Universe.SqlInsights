@@ -30,7 +30,7 @@ steps:
       ls -la static/js
       dotnet serve --version 2>nul || dotnet tool install --global dotnet-serve
       dotnet serve --version
-      nuhup dotnet serve -p 6060 -o |& tee ~/w3app.log &
+      nohup dotnet serve -p 6060 -o |& tee ~/w3app.log &
       sleep 2; cat ~/w3app.log
     condition: true
     displayName: 'w3app: run'
