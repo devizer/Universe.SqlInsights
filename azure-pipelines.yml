@@ -28,7 +28,8 @@ jobs:
         artifact: 'w3app'
     
   
-  - job: Test
+  - job: IfLinux
+    displayName: 'If'
     dependsOn:
       - Build_W3_App
     strategy:
@@ -72,7 +73,8 @@ jobs:
     steps:
       - template: azure-steps-linux.yml
   
-  - job: If
+  - job: IfWindows
+    displayName: If
     # condition: eq('Never','')
     dependsOn:
       - Build_W3_App
@@ -147,8 +149,8 @@ jobs:
       vmImage: 'ubuntu-20.04'
     timeoutInMinutes: 30
     dependsOn:
-      - Test
-      - If
+      - IfLinux
+      - IfWindows
 
     steps: 
     - script: |
