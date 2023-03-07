@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
 using Universe.SqlInsights.NetCore;
@@ -24,7 +25,7 @@ namespace Universe.SqlInsights.W3Api.SqlInsightsIntegration
 
         private Lazy<string> _ReportFullFileName;
         public string ReportFullFileName => _ReportFullFileName.Value;
-        public string SqlTracesDirectory { get; } = "C:\\Temp\\SqlInsights-Traces";
+        public string SqlTracesDirectory => RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "C:\\Temp\\SqlInsights-Traces" : "/tmp";
 
         public string ConnectionString =>
             Configuration.GetConnectionString("SqlInsights")
