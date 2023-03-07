@@ -33,6 +33,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Typography from '@material-ui/core/Typography';
 import * as SessionIcons from './SvgIcons/Icons';
+import sessionsListener from "../stores/SessionsListener";
 // import {IconRename} from './SvgIcons/Icons';
 
 const MenuIcon = (size=10,color='#333') => (<MenuIconSvg style={{width: size,height:size,fill:color,strokeWidth:'1px',stroke:color }} />);
@@ -88,6 +89,7 @@ export default class SessionsTable extends Component {
     {
         let x = sessionsStore.on('storeUpdated', this.updateSessions);
         DocumentVisibilityStore.on(this.handleVisibility);
+        sessionsListener.refreshAsync();
     }
 
     componentWillUnmount() {
