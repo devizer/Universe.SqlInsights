@@ -3,27 +3,6 @@
 
 steps:
 
-  - task: DownloadPipelineArtifact@2
-    condition: succeededOrFailed()
-    displayName: 'w3app: download'
-    inputs:
-      artifactName: w3app
-      path: $(Build.SourcesDirectory)/src/universe.sqlinsights.w3app/build
-      patterns: 
-        "**"
-
-  - bash: |
-      set -eu
-      cd src/universe.sqlinsights.w3app
-      cd build
-      echo "SERVING STATIC W3APP. Content of ./static/js:"
-      ls -la static/js
-      dotnet serve --version 2>nul || dotnet tool install --global dotnet-serve
-      dotnet serve --version
-      start /max dotnet serve -p 6060 -o
-    condition: eq(variables['Agent.OS'], 'Windows_NT')
-    displayName: 'w3app: run'
-
   - powershell: |
       (Get-Counter -ListSet *).Paths | Where-Object { $_ -like "*Transfers*" }
     displayName: 'List Perfmormance Counters'
@@ -201,6 +180,27 @@ steps:
       dotnet --info
     condition: succeededOrFailed()
     displayName: '.NET Install'
+
+  - task: DownloadPipelineArtifact@2
+    condition: succeededOrFailed()
+    displayName: 'w3app: download'
+    inputs:
+      artifactName: w3app
+      path: $(Build.SourcesDirectory)/src/universe.sqlinsights.w3app/build
+      patterns: 
+        "**"
+
+  - bash: |
+      set -eu
+      cd src/universe.sqlinsights.w3app
+      cd build
+      echo "SERVING STATIC W3APP. Content of ./static/js:"
+      ls -la static/js
+      dotnet serve --version 2>nul || dotnet tool install --global dotnet-serve
+      dotnet serve --version
+      start /max dotnet serve -p 6060 -o
+    condition: eq(variables['Agent.OS'], 'Windows_NT')
+    displayName: 'w3app: run'
 
   - script: |
       call 0a-Net-Restore-All.cmd
