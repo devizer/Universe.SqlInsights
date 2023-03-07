@@ -2,16 +2,16 @@
 
     <PropertyGroup>
         <!-- net35;net40;net45; -->
-        <!-- System.Text.Json support starts from net 4.6.2 -->
-        <TargetFrameworks>netstandard2.0;net35;net40;net45;net462;netstandard1.3</TargetFrameworks>
+        <!-- System.Text.Json 6.0.7 starts from net 4.6.1 -->
+        <TargetFrameworks>netstandard2.0;net35;net40;net45;net461;netstandard1.3</TargetFrameworks>
     </PropertyGroup>
 
     <Import Project="..\Shared.props" />
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net462' Or '$(TargetFramework)' == 'netstandard2.0' ">
-      <PackageReference Include="System.Text.Json" Version="7.0" />
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net461' Or '$(TargetFramework)' == 'netstandard2.0' ">
+      <PackageReference Include="System.Text.Json" Version="6.0.7" />
     </ItemGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
       <!-- for System.Text.Json -->
       <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0" />
     </ItemGroup>
@@ -45,11 +45,11 @@
         <PackageReference Include="System.Threading.Thread" Version="4.3.0" />
     </ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard1.3' Or '$(TargetFramework)' == 'net462' ">
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard1.3' Or '$(TargetFramework)' == 'net461' ">
         <PackageReference Include="Dapper" Version="1.60.6" />
     </ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard2.0' And '$(TargetFramework)' != 'netstandard1.3' And '$(TargetFramework)' != 'net20' And '$(TargetFramework)' != 'net30' and '$(TargetFramework)' != 'net462'">
+    <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard2.0' And '$(TargetFramework)' != 'netstandard1.3' And '$(TargetFramework)' != 'net20' And '$(TargetFramework)' != 'net30' and '$(TargetFramework)' != 'net461'">
         <PackageReference Include="Dapper" Version="1.42.0" />
     </ItemGroup>
 

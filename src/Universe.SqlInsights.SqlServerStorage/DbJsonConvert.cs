@@ -27,7 +27,7 @@
         }
     }
 
-#if !NETSTANDARD2_0 && !NET462
+#if !NETSTANDARD2_0 && !NET461
     public class DbJsonConvert : DbJsonConvertLegacy
     {
     }
