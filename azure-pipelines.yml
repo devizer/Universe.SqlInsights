@@ -13,6 +13,9 @@ jobs:
     steps:
       - bash: |
          dotnet --info
+         script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
+         export NODE_VER=v14.19.1
+         script=https://raw.githubusercontent.com/devizer/glist/master/install-dotnet-and-nodejs.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash -s node
          cd src/universe.sqlinsights.w3app
          node --version
          time yarn install 
