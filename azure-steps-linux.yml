@@ -29,6 +29,11 @@ steps:
       curl -kfSL -o /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
       sudo dpkg -i /tmp/chrome.deb
       sudo apt-get install -f
+      for c in chrome-browser www-browser do;
+        echo "COMMAND '$c': [$(command -v $c)]"
+      done
+      printf "/usr/bin/env bash\n chrome-browser --headless --disable-gpu \"\$@\"\n" | sudo tee /usr/local/bin/www-browser > /dev/null
+      sudo chmod + x /usr/local/bin/www-browser
     condition: true
     displayName: 'w3app: install chrome'
 
