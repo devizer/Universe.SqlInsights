@@ -27,11 +27,11 @@ steps:
       curl -kfSL -o /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
       sudo dpkg -i /tmp/chrome.deb
       sudo apt-get install -f -y
-      for c in chrome-browser www-browser; do
-        echo "COMMAND '$c': [$(command -v $c)]"
-      done
       printf "/usr/bin/env bash\n google-chrome --headless --disable-gpu --remote-debugging-port=\$((9200 + \$RANDOM % 100)) \"\$@\"\n" | sudo tee /usr/local/bin/www-browser
       sudo chmod +x /usr/local/bin/www-browser
+      for c in google-chrome www-browser; do
+        echo "COMMAND '$c': [$(command -v $c)]"
+      done
     condition: true
     displayName: 'w3app: install chrome'
 
