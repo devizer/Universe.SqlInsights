@@ -22,6 +22,16 @@ steps:
       patterns: 
         "**"
 
+
+
+  - bash: |
+      set -eu; set -o pipefail
+      curl -kfSL -o /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+      sudo dpkg -i /tmp/chrome.deb
+      sudo apt-get install -f
+    condition: true
+    displayName: 'w3app: install chrome'
+
   - bash: |
       set -eu; set -o pipefail
       cd src/universe.sqlinsights.w3app
