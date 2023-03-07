@@ -8,7 +8,7 @@ steps:
     displayName: 'List Perfmormance Counters'
 
   - powershell: |
-      Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 20
+      Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 7
       $true
     displayName: 'Show Transfer for 20 seconds'
 
@@ -95,33 +95,6 @@ steps:
       true
     displayName: 'Show'
 
-  - task: NodeTool@0 
-    displayName: 'v16.x NodeJS' 
-    inputs: 
-      versionSpec: '16.x'  
-      force32bit: false 
-      # Optional checkLatest: false
-  
-  - bash: |
-      node --version
-      # choco install nvm -my
-      # nvm install 14
-      # choco install nodejs-lts --version=14.21.3 -my
-      winget install -e --id OpenJS.NodeJS --version 14.14.0
-      node --version
-
-    displayName: 'NodeJS Install'
-    
-
-  # - bash: |
-  #     curl -o local-databaseengine-v15-x64.msi https://master.dl.sourceforge.net/project/db-engine/local-databaseengine-v15-x64.msi?viasf=1
-  #   displayName: 'Test SF.NET 53Mb'
-
-  # - bash: |
-  #     curl -o v10.0.5500-x64.exe https://master.dl.sourceforge.net/project/db-engine/database-engine-x64-10.0.5500.exe?viasf=1
-  #   displayName: 'Test2 SF.NET 113Mb'
-
-    
   - powershell: |
        $ErrorActionPreference = "SilentlyContinue"
        
@@ -169,7 +142,7 @@ steps:
     displayName: 'Prepare SQL Server'
 
   - powershell: |
-      Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 20
+      Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 7
       $true
     displayName: 'Show Transfer for 20 seconds'
 
@@ -215,7 +188,7 @@ steps:
     displayName: 'dotnet restore'
 
   - powershell: |
-      Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 20
+      Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 7
       $true
     displayName: 'Show Transfer for 20 seconds'
 
@@ -245,23 +218,27 @@ steps:
     condition: ne(variables['DB_DATA_DIR'], '')
     displayName: 'RAM Disk Usage'
 
-  - script: |
-      echo network-timeout 600000 >> %USERPROFILE%\.yarnrc
-      pushd src\universe.sqlinsights.w3app
-      If Not Exist node_modules (call yarn install)
-      popd
-    condition: eq(variables['Agent.OS'], 'Windows_NT')
-    displayName: 'yarn install'
+  - task: DownloadPipelineArtifact@2
+    condition: succeededOrFailed()
+    displayName: 'Download w3app'
+    inputs:
+      path: $(Build.SourcesDirectory)/src/universe.sqlinsights.w3app/build
+      patterns: 
+        "w3app"
 
   - script: |
-      call 2b-Build-and-Serve-SqlInsights-Prod.cmd
+      cd src\universe.sqlinsights.w3app
+      dir /b /s
+      cd build
+      dotnet serve --version 2>nul || dotnet tool install --global dotnet-serve
+      start /max "w3app" dotnet serve -p 6060 -o
     condition: eq(variables['Agent.OS'], 'Windows_NT')
-    displayName: 'yarn: build & serve'
+    displayName: 'w3app: run'
 
   - powershell: |
-      Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 20
+      Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 7
       $true
-    displayName: 'Show Transfer for 20 seconds'
+    displayName: 'Show Transfer for 7 seconds'
 
   - bash: |
       echo Starting W3Api
