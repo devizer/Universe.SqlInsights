@@ -13,7 +13,6 @@ jobs:
       vmImage: "ubuntu-20.04"
     steps:
       - bash: |
-         dotnet --info
          script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
          export NODE_VER=v14.19.1 SKIP_NPM_UPGRADE=True
          time (script=https://raw.githubusercontent.com/devizer/glist/master/install-dotnet-and-nodejs.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash -s node)
@@ -30,6 +29,8 @@ jobs:
     
   
   - job: Test
+    dependsOn:
+      - Build_W3_App
     strategy:
       maxParallel: 6
       matrix:
@@ -73,6 +74,8 @@ jobs:
   
   - job: If
     # condition: eq('Never','')
+    dependsOn:
+      - Build_W3_App
     strategy:
       maxParallel: 7
       matrix:
