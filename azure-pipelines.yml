@@ -21,6 +21,11 @@ jobs:
          time yarn install 
          time yarn build
         displayName: 'Build w3app'
+
+      - publish: $(Build.SourcesDirectory)/src/universe.sqlinsights.w3app/build
+        displayName: 'Publish Artifact'
+        condition: succeededOrFailed()
+        artifact: 'w3app'
     
   
   - job: Test
