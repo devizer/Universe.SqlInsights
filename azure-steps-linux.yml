@@ -152,7 +152,7 @@ steps:
       popd
       sleep 77
       
-      for proc in dotnet-serve dotnet; do pkill $proc" || true; done
+      for proc in dotnet-serve dotnet; do pkill "$proc" || true; done
       7z a "${SYSTEM_ARTIFACTSDIRECTORY}/SqlInsights Report.7z" "${SQLINSIGHTS_REPORT_FOLDER}"
       (echo "CPU: $(Get-CpuName)"; echo "Job: ${AGENT_JOBNAME}"; cat "${SQLINSIGHTS_REPORT_FULLNAME}") > /tmp/report; cp -f /tmp/report "${SQLINSIGHTS_REPORT_FULLNAME}"
       cp -f "${SQLINSIGHTS_REPORT_FULLNAME}" "${SYSTEM_ARTIFACTSDIRECTORY}/SqlInsights Report.txt"
