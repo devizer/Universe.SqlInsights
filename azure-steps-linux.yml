@@ -126,6 +126,22 @@ steps:
     condition: succeededOrFailed()
     displayName: 'Test'
 
+  - bash: |
+      echo Starting W3Api
+      export SQLINSIGHTS_REPORT_FOLDER="/tmp/SqlInsights-W3Api-Internal-Logs"
+      export SQLINSIGHTS_REPORT_FULLNAME="${SQLINSIGHTS_REPORT_FOLDER}/Report.Txt"
+      pushd src/Universe.SqlInsights.W3Api;
+      (dotnet run | tee "$SYSTEM_ARTIFACTSDIRECTORY/w3api (acceptance test).log") &
+      popd
+      sleep 77
+      
+      for proc in dotnet-serve dotnet; do pkill $proc"; done
+      7z a "${SYSTEM_ARTIFACTSDIRECTORY}/SqlInsights Report.7z" "${SQLINSIGHTS_REPORT_FOLDER}"
+      (echo "CPU: $(Get-CpuName)"; echo "Job: ${AGENT_JOBNAME}"; cat "${SQLINSIGHTS_REPORT_FULLNAME}") > /tmp/report; cp -f /tmp/report "${SQLINSIGHTS_REPORT_FULLNAME}"
+      cp -f "${SQLINSIGHTS_REPORT_FULLNAME}" "${SYSTEM_ARTIFACTSDIRECTORY}/SqlInsights Report.txt"
+      true
+    condition: eq(variables['TEST_W3API'], 'true')
+    displayName: 'RUN W3API (optional)'
     
 
   - bash: |
