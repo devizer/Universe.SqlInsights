@@ -13,12 +13,13 @@ steps:
         "**"
 
   - bash: |
-      npx --version
       cd src/universe.sqlinsights.w3app
-      ls -laR
-      cd build/w3app
+      cd build
+      echo "SERVING STATIC W3APP"
+      ls -la
       dotnet serve --version 2>nul || dotnet tool install --global dotnet-serve
-      # start /max "w3app" dotnet serve -p 6060 -o
+      dotnet serve --version
+      start /max dotnet serve -p 6060 -o
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     displayName: 'w3app: run'
 
