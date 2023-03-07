@@ -63,6 +63,7 @@ export default class SessionsEditorDialog extends Component {
         isOpened: PropTypes.bool.isRequired,
         onClose: PropTypes.func.isRequired,
         buttons: PropTypes.array.isRequired,
+        visibleEditors: PropTypes.array.isRequired,
     }
 
     constructor(props) {
@@ -74,6 +75,7 @@ export default class SessionsEditorDialog extends Component {
             selectedExpire: defaultExpireOptions,
             buttons: this.props.buttons,
             titleMode: this.props.titleMode,
+            visibleEditors: this.props.visibleEditors,
         };
     }
 
@@ -83,6 +85,7 @@ export default class SessionsEditorDialog extends Component {
             || nextProps.isOpened !== this.state.isOpened
             || nextProps.onClose !== this.state.onClose
             || nextProps.buttons !== this.state.buttons
+            || nextProps.visibleEditors !== this.state.visibleEditors
         ) {
             const session = {...(nextProps.session ?? {}), MaxDurationMinutes: defaultExpireOptions.minutes };
             this.setState({
@@ -92,6 +95,7 @@ export default class SessionsEditorDialog extends Component {
                 onClose: nextProps.onClose,
                 buttons: nextProps.buttons,
                 selectedExpire: defaultExpireOptions,
+                visibleEditors: nextProps.visibleEditors,
             });
         }
     }
@@ -117,40 +121,51 @@ export default class SessionsEditorDialog extends Component {
                 selectedExpire: expireOption,
                 session: { ...this.state.session, MaxDurationMinutes: expireOption.minutes }
             });
-        } 
+        }
+
+        const visibleCaptionEditor = Boolean((this.state.visibleEditors ?? []).find(x => x === "CaptionEditor"));
+        const visibleMaxDurationMinutesEditor = Boolean((this.state.visibleEditors ?? []).find(x => x === "MaxDurationMinutesEditor"));
         
         
         return (
         <Dialog open={this.props.isOpened} onClose={handleClose} aria-labelledby="form-dialog-title" fullWidth={true} maxWidth="sm">
             <DialogTitle id="form-dialog-title">{this.props.titleMode} “{this.state.session?.Caption}” </DialogTitle>
             <DialogContent>
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    id="caption"
-                    label="Caption"
-                    type="text"
-                    fullWidth
-                    value={this.state.session?.Caption}
-                    onChange={e => { const session=this.state.session??{}; session.Caption=e.target.value; this.setState({session})} }
-                />
-                <DialogContentText className="center-aligned" style={{color:"black"}}>
-                    <br/>
-                    {expireOptions.map(expireOption => (
-                        <>
-                            &nbsp;
-                            <GreenRadio
-                                checked={selectedExpire?.label === expireOption.label}
-                                onChange={ handleRadioExpire(expireOption) }
-                                value={expireOption.minutes}
-                                name="radio-button-expire"
-                                inputProps={{ 'aria-label': expireOption.label }}
-                            />
-                            {expireOption.label}
-                            &nbsp;
-                        </>
-                    ))}
-                </DialogContentText>
+                {visibleCaptionEditor &&
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="caption"
+                        label="Caption"
+                        type="text"
+                        fullWidth
+                        value={this.state.session?.Caption}
+                        onChange={e => {
+                            const session = this.state.session ?? {};
+                            session.Caption = e.target.value;
+                            this.setState({session})
+                        }}
+                    />
+                }
+                {visibleMaxDurationMinutesEditor &&
+                    <DialogContentText className="center-aligned" style={{color: "black"}}>
+                        <br/>
+                        {expireOptions.map(expireOption => (
+                            <>
+                                &nbsp;
+                                <GreenRadio
+                                    checked={selectedExpire?.label === expireOption.label}
+                                    onChange={handleRadioExpire(expireOption)}
+                                    value={expireOption.minutes}
+                                    name="radio-button-expire"
+                                    inputProps={{'aria-label': expireOption.label}}
+                                />
+                                {expireOption.label}
+                                &nbsp;
+                            </>
+                        ))}
+                    </DialogContentText>
+                }
             </DialogContent>
             <DialogActions>
                 <Typography variant="caption" display="block" gutterBottom noWrap className={"right-aligned"} style={{padding: 16}}>
