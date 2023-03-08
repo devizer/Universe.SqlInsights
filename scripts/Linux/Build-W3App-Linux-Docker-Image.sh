@@ -23,7 +23,7 @@ pushd ../../src/universe.sqlinsights.w3app
 time yarn install 
 time yarn build
 cp -f -a build "$dir"
-
+popd
 
 docker_version="$(date +%F)"
 Say "Docker Image version: [${docker_version}]"
@@ -34,7 +34,7 @@ export BASE_IMAGE='nginx:latest'
 platform="linux/amd64,linux/arm32v5,linux/arm32v6,linux/arm32v7,linux/arm64v8,linux/i386,linux/mips64le,linux/ppc64le,linux/s390x"
 
 Say "Try x64 only"
-time docker build -t temp-x64 .
+time docker build -t w3app-x64 .
 
 Say "Build all the platforms"
 # revert to --push
