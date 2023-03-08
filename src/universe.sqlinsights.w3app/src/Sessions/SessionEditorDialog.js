@@ -126,6 +126,17 @@ export default class SessionsEditorDialog extends Component {
         const visibleCaptionEditor = Boolean((this.state.visibleEditors ?? []).find(x => x === "CaptionEditor"));
         const visibleMaxDurationMinutesEditor = Boolean((this.state.visibleEditors ?? []).find(x => x === "MaxDurationMinutesEditor"));
         
+        const handleCaptionKey = event => {
+            console.log("Caption Key Down:", event);
+            if (event.code === "Enter" || event.code === "NumpadEnter") {
+                if (this.props.buttons?.length > 0) {
+                    const lastButton = this.props.buttons[this.props.buttons.length - 1];
+                    console.warn("LAST BUTTON TRIGGER", lastButton);
+                    handleButton(lastButton);
+                }
+            }
+        }
+        
         
         return (
         <Dialog open={this.props.isOpened} onClose={handleClose} aria-labelledby="form-dialog-title" fullWidth={true} maxWidth="sm">
@@ -139,6 +150,7 @@ export default class SessionsEditorDialog extends Component {
                         label="Caption"
                         type="text"
                         fullWidth
+                        onKeyDown={handleCaptionKey}
                         value={this.state.session?.Caption}
                         onChange={e => {
                             const session = this.state.session ?? {};
