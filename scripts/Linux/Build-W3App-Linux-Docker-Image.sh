@@ -23,6 +23,7 @@ cp -f -a build "$dir"
 
 
 docker_version="$(date +%F)"
+Say "Docker Image version: [${docker_version}]"
 # docker image rm -f $(docker image ls -aq)
 export OS=Linux
 export TAGS="-t devizervlad/sqlinsights-dashboard:v${docker_version} -t devizervlad/sqlinsights-dashboard:latest"
