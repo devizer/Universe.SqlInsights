@@ -32,12 +32,6 @@ platform="linux/amd64,linux/arm32v5,linux/arm32v6,linux/arm32v7,linux/arm64v8,li
 
 # revert to --push
 time docker buildx build \
-  --build-arg BASE_IMAGE="${BASE_IMAGE}" \
-  --build-arg BUILD_URL="${BUILD_URL}" \
-  --build-arg JOB_URL="${JOB_URL}" \
-  --build-arg BUILD_SOURCEVERSION="${BUILD_SOURCEVERSION}" \
-  --build-arg BUILD_SOURCEBRANCHNAME="${BUILD_SOURCEBRANCHNAME}" \
-  --build-arg BUILD_BUILDID="${BUILD_BUILDID}" \
   --platform $platform --load \
   ${TAGS} .
 
