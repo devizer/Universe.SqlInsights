@@ -29,5 +29,10 @@ trigger:
   batch: false
   branches:
     include:
-      - manualonly
-
+    - main
+  paths:
+    exclude:
+    - '**'
+    include:
+    - 'azure-pipelines-W3App-Docker-Image.yml'
+    - 'scripts/Linux/**'
