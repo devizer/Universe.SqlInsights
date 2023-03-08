@@ -1,0 +1,9 @@
+﻿<Project>
+
+    <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" >
+        <Message Importance="high" Text="Restoring dependencies using 'yarn'. This may take several minutes..." />
+        <Exec WorkingDirectory="$(MSBuildThisFileDirectory)" Command="yarn install" />
+        <Exec WorkingDirectory="$(MSBuildThisFileDirectory)" Command="yarn build" />
+    </Target>
+
+</Project>

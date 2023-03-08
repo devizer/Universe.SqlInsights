@@ -50,15 +50,16 @@
   },
   "browserslist": {
     "production": [
-      ">0.1%",
-      "not dead",
-      "not ie <= 10",
-      "not op_mini all"
+      ">0.05%",
+      "not op_mini all",
+      "safari >= 9.1",
+      "ie >= 10"
     ],
     "development": [
       "last 3 chrome version",
       "last 3 firefox version",
-      "last 3 safari version"
+      "last 3 safari version",
+      "last 3 opera version"
     ]
   },
   "devDependencies": {

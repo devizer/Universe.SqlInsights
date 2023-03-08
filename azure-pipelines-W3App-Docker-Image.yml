@@ -1,0 +1,33 @@
+variables:
+  Project: 'Universe.SqlInsights'
+  TEST_W3API: true
+  # Default image
+  VMIMAGE: 'windows-2019'
+  DEFAULT_RAM_DISK_SIZE: "1200"
+
+jobs:
+
+  - job: Build_W3_App_Docker_Image
+    displayName: 'W3App Docker Image'
+    pool:
+      vmImage: "ubuntu-22.04"
+    steps:
+      - bash: |
+         script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
+         Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
+         cd scripts/Linux
+         bash -e Build-W3App-Linux-Docker-Image.sh
+        displayName: 'Build w3app Docker Image'
+
+      - publish: $(Build.SourcesDirectory)/src/universe.sqlinsights.w3app/build
+        displayName: 'Publish Artifact'
+        condition: succeededOrFailed()
+        artifact: 'w3app'
+    
+
+trigger:
+  batch: false
+  branches:
+    include:
+      - manualonly
+
