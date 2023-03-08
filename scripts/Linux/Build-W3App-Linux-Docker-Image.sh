@@ -19,7 +19,7 @@ dir="$(pwd)"
 pushd ../../src/universe.sqlinsights.w3app
 time yarn install 
 time yarn build
-cp -f build "$dir"
+cp -f -a build "$dir"
 
 
 docker_version="$(date +%F)"
