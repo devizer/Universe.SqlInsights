@@ -39,7 +39,7 @@ platform="linux/amd64,linux/arm32v5,linux/arm32v6,linux/arm32v7,linux/arm64v8,li
 Say "BUILD ALL THE PLATFORMS"
 # revert to --push
 time docker buildx build \
-  --platform $platform --load \
+  --platform $platform --push \
   ${TAGS} .
 
 Say "Built with --load only"
