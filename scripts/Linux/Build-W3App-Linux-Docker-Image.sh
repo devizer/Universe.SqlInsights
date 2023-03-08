@@ -9,6 +9,7 @@ docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 sudo apt-get install qemu-user-static -y
 
 docker buildx inspect --bootstrap
+Say "Supported architectures"
 docker buildx ls
 
 # BUILD W3APP APP
