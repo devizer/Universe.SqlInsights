@@ -28,11 +28,12 @@ popd
 Say "BUILD X64 ONLY CONTAINER"
 time docker build -t w3app-x64 .
 
+TARGET_IMAGE="sqlinsights-dashboard"
 docker_version="$(date +%F)"
 Say "Docker Image version: [${docker_version}]"
 # docker image rm -f $(docker image ls -aq)
 export OS=Linux
-export TAGS="-t devizervlad/sqlinsights-dashboard:v${docker_version} -t devizervlad/sqlinsights-dashboard:latest"
+export TAGS="-t devizervlad/$TARGET_IMAGE:v${docker_version} -t devizervlad/$TARGET_IMAGE:latest"
 export BASE_IMAGE='nginx:latest'
 platform="linux/amd64,linux/arm32v5,linux/arm32v6,linux/arm32v7,linux/arm64v8,linux/i386,linux/mips64le,linux/ppc64le,linux/s390x"
 
