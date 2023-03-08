@@ -1,4 +1,4 @@
-FROM nginx:latest
+FROM nginx:stable
 
 # ENV SQL_INSIGHTS_W3API_URL
 
