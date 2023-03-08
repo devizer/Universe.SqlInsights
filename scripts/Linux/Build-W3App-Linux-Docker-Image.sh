@@ -8,6 +8,8 @@ docker image rm -f devizervlad/sqlinsights-dashboard:latest || true
 docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 sudo apt-get install qemu-user-static -y
 
+docker buildx create --name advancedx
+docker buildx use advancedx
 docker buildx inspect --bootstrap
 Say "Supported architectures"
 docker buildx ls
