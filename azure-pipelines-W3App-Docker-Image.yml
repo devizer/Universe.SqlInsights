@@ -4,13 +4,14 @@ variables:
   # Default image
   VMIMAGE: 'windows-2019'
   DEFAULT_RAM_DISK_SIZE: "1200"
+  W3API_NET: net5.0
 
 jobs:
 
   - job: Build_W3_App_Docker_Image
     displayName: 'W3App Docker Image and GitHub Release'
     pool:
-      vmImage: "ubuntu-22.04"
+      vmImage: "ubuntu-20.04"
     steps:
       - bash: |
          script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null

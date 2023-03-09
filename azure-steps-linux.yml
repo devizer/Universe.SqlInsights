@@ -136,7 +136,7 @@ steps:
         sudo mkdir -p "$SQLINSIGHTS_DATA_DIR"
         Say "SQLINSIGHTS_DATA_DIR: [$SQLINSIGHTS_DATA_DIR]"
       fi
-      dotnet test -c Release --no-build -f net6.0
+      dotnet test -c Release --no-build -f $W3API_NET
     condition: succeededOrFailed()
     displayName: 'Test'
 
@@ -168,7 +168,7 @@ steps:
       cd ~/jam/src/Universe.SqlServerJam.Tests
 
       export SQLSERVER_WELLKNOWN_In_Docker="Data Source=localhost,1433;User ID=sa;Password=p@assw0rd!"
-      dotnet test -c Release -f net60
+      dotnet test -c Release -f $W3API_NET
     condition: succeededOrFailed()
     displayName: 'Test JAM'
 

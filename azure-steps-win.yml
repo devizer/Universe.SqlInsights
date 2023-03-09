@@ -41,7 +41,7 @@ steps:
       git clone https://github.com/devizer/Universe.SqlServerJam ~/jam
       cd ~/jam/src/Universe.SqlServerJam.Tests
 
-      dotnet test -c Release -f net60
+      dotnet test -c Release -f $W3API_NET
       Say Done
     condition: succeededOrFailed()
     displayName: 'Test JAM'
@@ -223,12 +223,12 @@ steps:
       fi
       cd src/Universe.SqlInsights.SqlServerStorage.Tests
       export TEST_UNDER_COVERAGE=True
-      dotnet test --collect:"XPlat Code Coverage" --logger trx -f net6.0
+      dotnet test --collect:"XPlat Code Coverage" --logger trx -f $W3API_NET
 
       Say "Benchmark Seed"
       rm -f $SYSTEM_ARTIFACTSDIRECTORY/AddAction.log
       export TEST_UNDER_COVERAGE=False
-      dotnet test -c Release -f net6.0 --filter "Name~Test1_Seed"
+      dotnet test -c Release -f $W3API_NET --filter "Name~Test1_Seed"
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     displayName: 'TEST STORAGE +BENCHMARK'
 
@@ -277,7 +277,7 @@ steps:
       set -eu; set -o pipefail;
       cd ~/jam/src/Universe.SqlServerJam.Tests
 
-      dotnet test -c Release -f net60
+      dotnet test -c Release -f $W3API_NET
       Say Done
     condition: succeededOrFailed()
     displayName: 'Test JAM Again'
