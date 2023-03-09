@@ -32,7 +32,7 @@ rids="osx-x64 osx-arm64 win-x64 win-x86 win-arm64 win-arm linux-x64 linux-arm li
 rids="linux-x64 linux-arm linux-arm64"
 for r in $rids; do
   n=$((n+1))
-  Say "#${n}: BUILD [$r]"
+  Say "#${n}: BUILD [$r] $SQLINSIGHTS_VERSION"
   dotnet publish --self-contained -r $r -f net6.0 -o bin/plain/$r -v:q -p:Version=$SQLINSIGHTS_VERSION_SHORT
   pushd bin/plain/$r
     chmod 644 *.dll
