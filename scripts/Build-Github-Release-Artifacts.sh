@@ -5,7 +5,7 @@ prefix="sqlinsights-w3api"
 mkdir -p "$public"
 n=0
 for r in osx-x64 win-x64 win-x86 win-arm64 win-arm linux-x64 linux-arm linux-arm64 linux-musl-x64; do
-  n=$((n++))
+  n=$((n+1))
   Say "#${n}: BUILD [$r]"
   dotnet publish --self-contained -r $r -f net6.0 -o bin/plain/$r -v:q
   pushd bin/plain/$r
