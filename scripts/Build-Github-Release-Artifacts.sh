@@ -15,6 +15,7 @@ export SQLINSIGHTS_VERSION="v${version}"
 
 pushd src/Universe.SqlInsights.W3Api
 public=$(pwd)/bin/public
+mkdir -p "$public"
 echo "$SQLINSIGHTS_VERSION" > "$public"/VERSION.txt
 
 Say "Grab universe.sqlinsights.w3app"
@@ -25,7 +26,6 @@ time tar cf - . | pigz -p $(nproc) -b 128 -9  > "$public"/w3app.tar.gz
 popd
 
 prefix="sqlinsights-dashbaord"
-mkdir -p "$public"
 n=0
 rids="osx-x64 osx-arm64 win-x64 win-x86 win-arm64 win-arm linux-x64 linux-arm linux-arm64 linux-musl-x64 osx.10.10-x64 osx.10.11-x64"
 rids="linux-x64 linux-arm linux-arm64"
