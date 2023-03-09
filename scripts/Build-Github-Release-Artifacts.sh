@@ -1,10 +1,13 @@
 set -eu; set -o pipefail
 
+function Filter-7z() {
+  grep "archive\|bytes" || true;
+}
+
 Say "Grap universe.sqlinsights.w3app"
 pushd $BUILD_REPOSITORY_LOCALPATH/src/universe.sqlinsights.w3app/build
 pwd
-ls -laR
-7z a -mx=9 -ms=on -mqs=on "$SYSTEM_ARTIFACTSDIRECTORY"/w3app.7z .
+7z a -mx=9 -ms=on -mqs=on "$SYSTEM_ARTIFACTSDIRECTORY"/w3app.7z . | Filter-7z
 popd
 
 pushd src/Universe.SqlInsights.W3Api
@@ -20,8 +23,8 @@ for r in osx-x64 win-x64 win-x86 win-arm64 win-arm linux-x64 linux-arm linux-arm
     chmod 644 *.dll
     test -s Universe.SqlInsights.W3Api && chmod 755 Universe.SqlInsights.W3Api *.sh
     if [[ "$r" == "win"* ]]; then
-      time 7z a -tzip -mx=9 "$public"/$prefix-$r.zip *
-      time 7z a -t7z -mx=9 -ms=on -mqs=on "$public"/$prefix-$r.7z *
+      time 7z a -tzip -mx=9 "$public"/$prefix-$r.zip * | Filter-7z
+      time 7z a -t7z -mx=9 -ms=on -mqs=on "$public"/$prefix-$r.7z * | Filter-7z
     else
       # time tar cf - . | xz -9 -e -z -T0 > "$public"/$prefix-$r.tar.xz
       time tar cf - . | 7za a dummy -txz -mx=9 -si -so > "$public"/$prefix-$r.tar.xz
@@ -32,4 +35,3 @@ for r in osx-x64 win-x64 win-x86 win-arm64 win-arm linux-x64 linux-arm linux-arm
 done
 
 cp -r -a "$public" "$SYSTEM_ARTIFACTSDIRECTORY"/
-
