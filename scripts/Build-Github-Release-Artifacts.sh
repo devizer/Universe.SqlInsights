@@ -13,6 +13,7 @@ Say "Grap universe.sqlinsights.w3app"
 pushd $BUILD_REPOSITORY_LOCALPATH/src/universe.sqlinsights.w3app/build
 pwd
 7z a -mx=9 -ms=on -mqs=on "$public"/w3app.7z . | Filter-7z
+time tar cf - . | pigz -p $(nproc) -b 128 -9  > "$public"/w3app.tar.gz
 popd
 
 prefix="sqlinsights-w3api"
@@ -47,8 +48,8 @@ pushd /tmp/src-copy
 revision="$(set TZ=GMT; git log -n 999999 --date=raw --pretty=format:"%cd" | wc -l)"
 popd
 version="0.0.${revision}"
-export SQLINSIGHTS_VERSION="${version}"
+export SQLINSIGHTS_VERSION="v${version}-pre"
 Say "Create Github Release ${version}"
-gh release create -t "SqlInsights W3 API" -n "v${version}" -p v${version}-pre "$public"/*
+gh release create -t "SqlInsights W3 API" -n "v${version}" -p "$SQLINSIGHTS_VERSION" "$public"/*
 
 popd

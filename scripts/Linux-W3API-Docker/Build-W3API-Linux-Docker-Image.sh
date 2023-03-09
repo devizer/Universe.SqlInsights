@@ -3,7 +3,8 @@ set -eu; set -o pipefail
 
 TARGET_IMAGE="sqlinsights-dashboard"
 platform="linux/amd64,linux/arm/v7,linux/arm64"
-export TAGS="-t devizervlad/$TARGET_IMAGE:v${docker_version} -t devizervlad/$TARGET_IMAGE:latest"
+
+export TAGS="-t devizervlad/$TARGET_IMAGE:${SQLINSIGHTS_VERSION} -t devizervlad/$TARGET_IMAGE:latest"
 
 Say "BUILD ALL THE PLATFORMS"
 # revert to --push
