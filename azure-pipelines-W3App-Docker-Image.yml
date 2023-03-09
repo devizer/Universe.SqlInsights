@@ -8,7 +8,7 @@ variables:
 jobs:
 
   - job: Build_W3_App_Docker_Image
-    displayName: 'W3App Docker Image'
+    displayName: 'W3App Docker Image and GitHub Release'
     pool:
       vmImage: "ubuntu-22.04"
     steps:
@@ -25,8 +25,7 @@ jobs:
 
       - bash: |
          Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
-         cd scripts
-         bash -e Build-Github-Release-Artifacts.sh
+         bash -e scripts/Build-Github-Release-Artifacts.sh
         displayName: 'GitHub Release'
 
       - publish: $(Build.SourcesDirectory)/src/universe.sqlinsights.w3app/build
