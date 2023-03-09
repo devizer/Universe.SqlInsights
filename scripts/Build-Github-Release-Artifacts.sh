@@ -6,14 +6,15 @@ function Filter-7z() {
   grep "archive\|bytes" || true;
 }
 
+pushd src/Universe.SqlInsights.W3Api
+public=$(pwd)/bin/public
+
 Say "Grap universe.sqlinsights.w3app"
 pushd $BUILD_REPOSITORY_LOCALPATH/src/universe.sqlinsights.w3app/build
 pwd
-7z a -mx=9 -ms=on -mqs=on "$SYSTEM_ARTIFACTSDIRECTORY"/w3app.7z . | Filter-7z
+7z a -mx=9 -ms=on -mqs=on "$public"/w3app.7z . | Filter-7z
 popd
 
-pushd src/Universe.SqlInsights.W3Api
-public=$(pwd)/bin/public
 prefix="sqlinsights-w3api"
 mkdir -p "$public"
 n=0
