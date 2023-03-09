@@ -47,7 +47,7 @@ Say "/etc/nginx"
 docker cp test-w3app:/etc/nginx ~/etc-nginx/
 7z a $SYSTEM_ARTIFACTSDIRECTORY/etc-nging.7z ~/etc-nginx/*
 
-TARGET_IMAGE="sqlinsights-dashboard"
+TARGET_IMAGE="sqlinsights-dashboard-frontend"
 docker_version="$(date +%F)"
 Say "Docker Image version: [${docker_version}]"
 # docker image rm -f $(docker image ls -aq)

@@ -45,5 +45,8 @@ pushd /tmp/src-copy
 revision="$(set TZ=GMT; git log -n 999999 --date=raw --pretty=format:"%cd" | wc -l)"
 popd
 version="0.0.${revision}"
+export SQLINSIGHTS_VERSION="${version}"
 Say "Create Github Release ${version}"
 gh release create -t "SqlInsights W3 API" -n "v${version}" -p v${version}-pre "$public"/*
+
+popd
