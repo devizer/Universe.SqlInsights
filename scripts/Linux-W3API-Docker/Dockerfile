@@ -2,7 +2,7 @@ FROM debian:bullseye-slim
 
 ARG SQLINSIGHTS_VERSION
 
-RUN set -eu; set -o pipefail; export SQLINSIGHTS_VERSION; \
+RUN set -eu; export SQLINSIGHTS_VERSION; \
   apt-get update -qq; apt-get install sudo curl -y -qq; \
   suffix="arm"; arch="$(dpkg --print-architecture)"; if [[ "$arch" == "amd64" ]]; then suffix="x64"; fi; if [[ "$arch" == "arm64" ]]; then suffix="arm64"; fi; \
   url="https://github.com/devizer/Universe.SqlInsights/releases/download/$SQLINSIGHTS_VERSION/sqlinsights-w3api-linux-${suffix}.tar.gz"; \
