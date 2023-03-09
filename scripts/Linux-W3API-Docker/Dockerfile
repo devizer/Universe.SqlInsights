@@ -5,7 +5,8 @@ ARG SQLINSIGHTS_VERSION
 RUN set -eu; export SQLINSIGHTS_VERSION; \
   apt-get update -qq; apt-get install sudo curl -y -qq; \
   suffix="arm"; arch="$(dpkg --print-architecture)"; if [[ "$arch" == "amd64" ]]; then suffix="x64"; fi; if [[ "$arch" == "arm64" ]]; then suffix="arm64"; fi; \
-  url="https://github.com/devizer/Universe.SqlInsights/releases/download/$SQLINSIGHTS_VERSION/sqlinsights-w3api-linux-${suffix}.tar.gz"; \
+  echo "ARCH: [$arch]. SUFFIX: [$suffix]"; \
+  url="https://github.com/devizer/Universe.SqlInsights/releases/download/$SQLINSIGHTS_VERSION/sqlinsights-dashboard-linux-${suffix}.tar.gz"; \
   echo "DOWNLOADING [$url]"; \
   curl -kSL -o /tmp/gz.gz "$url"; \
   mkdir -p /opt/sqlinsights-dashboard; tar xzf /tmp/gz.gz -C /opt/sqlinsights-dashboard; \
