@@ -1,3 +1,4 @@
+cd ~; rm -rf ~/source/sqlinsights
 test ! -d ~/source/sqlinsights && git clone https://github.com/devizer/Universe.SqlInsights ~/source/sqlinsights
 
 cd ~/source/sqlinsights/src/Universe.SqlInsights.W3Api
