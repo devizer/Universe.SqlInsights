@@ -11,6 +11,6 @@ RUN set -eu; export SQLINSIGHTS_VERSION; \
   curl -kSL -o /tmp/gz.gz "$url"; \
   mkdir -p /opt/sqlinsights-dashboard; tar xzf /tmp/gz.gz -C /opt/sqlinsights-dashboard; \
   rm -rf /tmp/* /var/cache/apt/* /var/lib/apt/*; \
-  echo "DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOONE"
+  echo "DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOONE: [$suffix]"
 
 CMD set -eu; cd /opt/sqlinsights-dashboard; ASPNETCORE_URLS=http://0.0.0.0:80; DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1; export ASPNETCORE_URLS; export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT; ./Universe.SqlInsights.W3Api
