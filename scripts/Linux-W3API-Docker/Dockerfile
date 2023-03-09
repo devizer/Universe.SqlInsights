@@ -4,7 +4,7 @@ ARG SQLINSIGHTS_VERSION
 
 RUN set -eu; export SQLINSIGHTS_VERSION; \
   apt-get update -qq; apt-get install sudo curl -y -qq; \
-  suffix="arm"; arch="$(dpkg --print-architecture)"; if [ "$arch" == "amd64" ]; then suffix="x64"; fi; if [ "$arch" == "arm64" ]; then suffix="arm64"; fi; \
+  suffix="arm"; arch="$(dpkg --print-architecture)"; if [ "$arch" = "amd64" ]; then suffix="x64"; fi; if [ "$arch" = "arm64" ]; then suffix="arm64"; fi; \
   echo "uname -m: [$(uname -m)]. ARCH: [$arch]. SUFFIX: [$suffix]"; \
   url="https://github.com/devizer/Universe.SqlInsights/releases/download/$SQLINSIGHTS_VERSION/sqlinsights-dashboard-linux-${suffix}.tar.gz"; \
   echo "DOWNLOADING [$url]"; \
