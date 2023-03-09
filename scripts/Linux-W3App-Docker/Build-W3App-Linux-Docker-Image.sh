@@ -3,7 +3,7 @@ set -eu; set -o pipefail
 set -e
 
 
-# Configure Docker
+Say "CONFIGURE DOCKER"
 docker image rm -f devizervlad/sqlinsights-dashboard:latest || true
 docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 sudo apt-get install qemu-user-static -y
@@ -37,7 +37,7 @@ Say "TEST X64 ONLY CONTAINER"
 docker run --name test-w3app -d -p 8080:80 -e SQL_INSIGHTS_W3API_URL="http://my.overridden.api:7654/api/vNext/" w3app-x64
 sleep 3
 echo CURL
-curl -I http://localhost:8080 | cat
+curl -s -I http://localhost:8080 | cat
 echo LOGS
 docker logs test-w3app
 Say "OVERRIDDEN /usr/share/nginx/html/index.html"
