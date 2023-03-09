@@ -1,4 +1,4 @@
-set -eu; set -o pipefial
+set -eu; set -o pipefail
 pushd src/Universe.SqlInsights.W3Api
 public=$(pwd)/bin/public
 mkdir -p "$public"
