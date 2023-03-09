@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -eu; set -o pipefail
-set -e
 
+Say "gh version: [$(gh --version | head -1)]"
 
 Say "CONFIGURE DOCKER"
 docker image rm -f devizervlad/sqlinsights-dashboard:latest || true
