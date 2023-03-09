@@ -28,6 +28,11 @@ jobs:
         condition: succeededOrFailed()
         artifact: 'w3app'
     
+      - publish: $(SYSTEM.ARTIFACTSDIRECTORY)
+        displayName: 'Publish Artifact'
+        condition: succeededOrFailed()
+        artifact: '$(Agent.JobName)'
+    
 
 trigger:
   batch: false
