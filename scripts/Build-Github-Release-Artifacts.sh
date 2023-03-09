@@ -21,6 +21,9 @@ done
 
 cp -r -a "$public" "$SYSTEM_ARTIFACTSDIRECTORY"/
 
+Say "Grap universe.sqlinsights.w3app"
 cd $BUILD_REPOSITORY_LOCALPATH/src/universe.sqlinsights.w3app/build
+pwd
+ls -laR
 7z a -mx=9 -ms=on mqs=on "$SYSTEM_ARTIFACTSDIRECTORY"/w3app.7z .
 
