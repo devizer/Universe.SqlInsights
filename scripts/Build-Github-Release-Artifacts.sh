@@ -21,7 +21,7 @@ for r in osx-x64 win-x64 win-x86 win-arm64 win-arm linux-x64 linux-arm linux-arm
   dotnet publish --self-contained -r $r -f net6.0 -o bin/plain/$r -v:q
   pushd bin/plain/$r
     chmod 644 *.dll
-    test -s Universe.SqlInsights.W3Api && chmod 755 Universe.SqlInsights.W3Api *.sh
+    test -s Universe.SqlInsights.W3Api && chmod 755 Universe.SqlInsights.W3Api
     if [[ "$r" == "win"* ]]; then
       time 7z a -tzip -mx=9 "$public"/$prefix-$r.zip * | Filter-7z
       time 7z a -t7z -mx=9 -ms=on -mqs=on "$public"/$prefix-$r.7z * | Filter-7z
