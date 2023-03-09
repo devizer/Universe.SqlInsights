@@ -46,4 +46,4 @@ revision="$(set TZ=GMT; git log -n 999999 --date=raw --pretty=format:"%cd" | wc 
 popd
 version="0.0.${revision}"
 Say "Create Github Release ${version}"
-gh release create -p v${version}-pre "$public"/*
+gh release create -t "SqlInsights W3 API" -n "v${version}" -p v${version}-pre "$public"/*
