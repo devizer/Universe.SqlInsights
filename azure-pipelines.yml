@@ -215,7 +215,7 @@ trigger:
   paths:
     exclude:
     - 'azure-pipelines-W3App-Docker-Image.yml'
-    - 'scripts/Linux/**'
+    - 'scripts/Linux-W3App-Docker/**'
     include:
     - '**'
 

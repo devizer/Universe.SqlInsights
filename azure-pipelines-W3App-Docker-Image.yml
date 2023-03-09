@@ -17,7 +17,7 @@ jobs:
          Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
          docker login -u devizervlad -p "$PASSWORD"
          printenv | sort
-         cd scripts/Linux
+         cd scripts/Linux-W3App-Docker
          bash -e Build-W3App-Linux-Docker-Image.sh
         displayName: 'Build w3app Docker Image'
         env:
@@ -39,4 +39,4 @@ trigger:
     - '**'
     include:
     - 'azure-pipelines-W3App-Docker-Image.yml'
-    - 'scripts/Linux/**'
+    - 'scripts/Linux-W3App-Docker/**'
