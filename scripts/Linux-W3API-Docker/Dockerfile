@@ -13,4 +13,4 @@ RUN set -eu; export SQLINSIGHTS_VERSION; \
   rm -rf /tmp/* /var/cache/apt/* /var/lib/apt/*; \
   echo "DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOONE"
 
-CMD set -eu; cd /opt/sqlinsights-dashboard; ASPNETCORE_URLS=http://0.0.0.0:80; DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1; export ASPNETCORE_URLS; export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT; Universe.SqlInsights.W3Api
+CMD set -eu; cd /opt/sqlinsights-dashboard; ASPNETCORE_URLS=http://0.0.0.0:80; DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1; export ASPNETCORE_URLS; export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT; ./Universe.SqlInsights.W3Api
