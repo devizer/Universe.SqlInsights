@@ -8,13 +8,15 @@ export ConnectionStrings__SqlInsights="Server=192.168.213.2;Database=SqlInsights
 export ConnectionStrings__SqlInsights="Server=192.168.0.42;Database=SqlInsights_v4;User ID=sa;Password=\`1qazxsw2"
 nohup dotnet run -c Release 2>&1 > ~/w3api.log &
 
-cd ~/source/sqlinsights/src/universe.sqlinsights.w3app
-yarn install 
-yarn build
-export PORT=6060
-cd build
-nohup npx serve &
-tail -f ~/w3api.log
+if [[ "$(uname -s)" == Darwin ]]; then
+  cd ~/source/sqlinsights/src/universe.sqlinsights.w3app
+  yarn install 
+  yarn build
+  export PORT=6060
+  cd build
+  nohup npx serve &
+fi
 
+tail -f ~/w3api.log
 
 
