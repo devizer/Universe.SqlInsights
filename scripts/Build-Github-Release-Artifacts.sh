@@ -26,7 +26,7 @@ pwd
 time tar cf - . | pigz -p $(nproc) -b 128 -9  > "$public"/w3app.tar.gz
 popd
 
-prefix="sqlinsights-dashbaord"
+prefix="sqlinsights-dashboard"
 n=0
 rids="osx-x64 osx-arm64 win-x64 win-x86 win-arm64 win-arm linux-x64 linux-arm linux-arm64 linux-musl-x64 osx.10.10-x64 osx.10.11-x64"
 rids="linux-x64 linux-arm linux-arm64"
