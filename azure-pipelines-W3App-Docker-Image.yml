@@ -23,6 +23,12 @@ jobs:
         env:
             PASSWORD: $(DOCKER_PASSWORD)
 
+      - bash: |
+         Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
+         cd scripts
+         bash -e Build-Github-Release-Artifacts.sh
+        displayName: 'GitHub Release'
+
       - publish: $(Build.SourcesDirectory)/src/universe.sqlinsights.w3app/build
         displayName: 'Publish Artifact'
         condition: succeededOrFailed()
