@@ -44,7 +44,7 @@ Say "OVERRIDDEN /usr/share/nginx/html/index.html"
 docker exec -t test-w3app cat /usr/share/nginx/html/index.html
 
 Say "/etc/nginx"
-docker cp test-w3app /etc/nginx ~/etc-nginx/
+docker cp test-w3app:/etc/nginx ~/etc-nginx/
 7z a $SYSTEM_ARTIFACTSDIRECTORY/etc-nging.7z ~/etc-nginx/*
 
 TARGET_IMAGE="sqlinsights-dashboard"
