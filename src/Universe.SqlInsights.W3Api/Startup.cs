@@ -134,7 +134,9 @@ namespace Universe.SqlInsights.W3Api
                     SqlConnectionStringBuilder csb = new SqlConnectionStringBuilder(connectionString);
                     server = csb.DataSource;
                     db = csb.InitialCatalog;
-                    var history = new SqlServerSqlInsightsStorage(SqlClientFactory.Instance, connectionString);
+                    // var dbProviderFactory = Microsoft.Data.SqlClient.SqlClientFactory.Instance;
+                    var dbProviderFactory = System.Data.SqlClient.SqlClientFactory.Instance;
+                    var history = new SqlServerSqlInsightsStorage(dbProviderFactory, connectionString);
                     history.GetAliveSessions();
                     await history.GetActionsSummaryTimestamp(0);
                     var summary = await history.GetActionsSummary(0);
