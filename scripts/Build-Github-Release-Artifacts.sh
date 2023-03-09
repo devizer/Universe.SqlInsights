@@ -11,7 +11,7 @@ for r in osx-x64 win-x64 win-x86 win-arm64 win-arm linux-x64 linux-arm linux-arm
   pushd bin/plain/$r
     if [[ "$r" == "win"* ]]; then
       7z a -tzip -mx=9 "$public"/$prefix-$r.zip *
-      7z a -t7z -mx=9 -mq=on -mqs=on "$public"/$prefix-$r.7z *
+      7z a -t7z -mx=9 -ms=on -mqs=on "$public"/$prefix-$r.7z *
     else
       tar cf - . | xz -9 -e -z > "$public"/$prefix-$r.tar.xz
       tar cf - . | gzip -9 -c  > "$public"/$prefix-$r.tar.gz
