@@ -12,8 +12,7 @@
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net461' Or '$(TargetFramework)' == 'netstandard2.0' ">
-        <!-- 5.1.0 Causes System.InvalidOperationException: Internal connection fatal error.-->
-        <PackageReference Include="Microsoft.Data.SqlClient" Version="4.1.0" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.0" />
     </ItemGroup>
 
     <ItemGroup>
