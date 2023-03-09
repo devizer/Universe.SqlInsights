@@ -20,10 +20,16 @@ export NODE_VER=v14.19.1 SKIP_NPM_UPGRADE=True
 time (script=https://raw.githubusercontent.com/devizer/glist/master/install-dotnet-and-nodejs.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash -s node)
 dir="$(pwd)"
 pushd ../../src/universe.sqlinsights.w3app
-time yarn install 
+time yarn install
 time yarn build
 cp -f -a build "$dir"
 popd
+
+Say "BUILD [config-w3app.sh]"
+export INDEX_HTML=../../src/universe.sqlinsights.w3app/build/index.html
+pwsh Build-NGINX-Startup.ps1
+chmod +x config-w3app.sh || true
+cat config-w3app.sh
 
 Say "BUILD X64 ONLY CONTAINER"
 time docker build -t w3app-x64 .
