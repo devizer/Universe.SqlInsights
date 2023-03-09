@@ -39,7 +39,7 @@ sleep 3
 echo LOGS
 docker logs test-w3app
 Say "OVERRIDDEN /usr/share/nginx/html/index.html"
-docker exec test-w3app -t cat /usr/share/nginx/html/index.html
+docker exec -t test-w3app cat /usr/share/nginx/html/index.html
 
 TARGET_IMAGE="sqlinsights-dashboard"
 docker_version="$(date +%F)"
