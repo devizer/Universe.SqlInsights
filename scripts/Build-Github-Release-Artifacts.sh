@@ -21,7 +21,8 @@ for r in osx-x64 win-x64 win-x86 win-arm64 win-arm linux-x64 linux-arm linux-arm
       time 7z a -tzip -mx=9 "$public"/$prefix-$r.zip *
       time 7z a -t7z -mx=9 -ms=on -mqs=on "$public"/$prefix-$r.7z *
     else
-      time tar cf - . | xz -9 -e -z -T0 > "$public"/$prefix-$r.tar.xz
+      # time tar cf - . | xz -9 -e -z -T0 > "$public"/$prefix-$r.tar.xz
+      time tar cf - . | 7za a dummy -txz -mx=1 -si -so > "$public"/$prefix-$r.tar.xz
       time tar cf - . | gzip -9 -c  > "$public"/$prefix-$r.tar.gz
     fi
   popd
