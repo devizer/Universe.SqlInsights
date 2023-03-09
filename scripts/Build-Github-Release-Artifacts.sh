@@ -18,7 +18,9 @@ popd
 prefix="sqlinsights-w3api"
 mkdir -p "$public"
 n=0
-for r in osx-x64 osx-arm64 win-x64 win-x86 win-arm64 win-arm linux-x64 linux-arm linux-arm64 linux-musl-x64 osx.10.10-x64 osx.10.11-x64; do
+rids="osx-x64 osx-arm64 win-x64 win-x86 win-arm64 win-arm linux-x64 linux-arm linux-arm64 linux-musl-x64 osx.10.10-x64 osx.10.11-x64"
+rids="linux-x64 linux-arm linux-arm64"
+for r in $rids; do
   n=$((n+1))
   Say "#${n}: BUILD [$r]"
   dotnet publish --self-contained -r $r -f net6.0 -o bin/plain/$r -v:q
