@@ -127,20 +127,25 @@ namespace Universe.SqlInsights.W3Api
             Task.Run(async () =>
             {
                 Stopwatch sw = Stopwatch.StartNew();
+                string server = ">unknown<", db = ">unknown<";
                 try
                 {
-                    var history = new SqlServerSqlInsightsStorage(SqlClientFactory.Instance, Configuration.GetConnectionString("SqlInsights"));
+                    var connectionString = Configuration.GetConnectionString("SqlInsights");
+                    SqlConnectionStringBuilder csb = new SqlConnectionStringBuilder(connectionString);
+                    server = csb.DataSource;
+                    db = csb.InitialCatalog;
+                    var history = new SqlServerSqlInsightsStorage(SqlClientFactory.Instance, connectionString);
                     history.GetAliveSessions();
                     await history.GetActionsSummaryTimestamp(0);
                     var summary = await history.GetActionsSummary(0);
                     var keyPath = summary.FirstOrDefault()?.Key ?? new SqlInsightsActionKeyPath();
                     await history.GetKeyPathTimestampOfDetails(0, keyPath);
                     await history.GetActionsByKeyPath(0, keyPath, lastN: 1);
-                    logger.LogInformation($"Pre-jit of ISqlInsightsStorage completed in {sw.Elapsed}");
+                    logger.LogInformation($"Pre-jit of ISqlInsightsStorage completed in {sw.Elapsed}. Server '{server}'. Database '{db}'");
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(ex, $"Pre-jit of ISqlInsightsStorage tool {sw.Elapsed} and failed");
+                    logger.LogError(ex, $"Pre-jit of ISqlInsightsStorage tool {sw.Elapsed} and failed.  Server '{server}'. Database '{db}'");
                 }
             });
         }
