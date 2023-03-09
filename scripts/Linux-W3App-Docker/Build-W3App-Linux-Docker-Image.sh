@@ -43,6 +43,10 @@ docker logs test-w3app
 Say "OVERRIDDEN /usr/share/nginx/html/index.html"
 docker exec -t test-w3app cat /usr/share/nginx/html/index.html
 
+Say "/etc/nginx"
+docker cp test-w3app /etc/nginx ~/etc-nginx/
+7z a $SYSTEM_ARTIFACTSDIRECTORY/etc-nging.7z ~/etc-nginx/*
+
 TARGET_IMAGE="sqlinsights-dashboard"
 docker_version="$(date +%F)"
 Say "Docker Image version: [${docker_version}]"
@@ -60,6 +64,8 @@ time docker buildx build \
   --platform $platform --push \
   ${TAGS} .
 
-Say "Built with --load only"
+# Say "Built with --load only"
+
+docker image ls
 
 # docker run --restart on-failure --name agent007 --privileged --hostname agent007 -it devizervlad/azpa:latest 
