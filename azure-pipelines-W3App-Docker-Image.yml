@@ -51,3 +51,4 @@ trigger:
     include:
     - 'azure-pipelines-W3App-Docker-Image.yml'
     - 'scripts/Linux-W3App-Docker/**'
+    - 'scripts/Build-Github-Release-Artifacts.sh'
