@@ -11,7 +11,7 @@ $s2=$src.Substring($p2)
 $dest=@"
 #!/usr/bin/env bash
 if [[ -n "`${SQL_INSIGHTS_W3API_URL:-}" ]]; then
-  echo "Overriding SQL_INSIGHTS_W3API_URL for index.html by '`$SQL_INSIGHTS_W3API_URL'"
+  echo "[SqlInsights W3App Config] Overriding SQL_INSIGHTS_W3API_URL for index.html by '`$SQL_INSIGHTS_W3API_URL'"
   echo '$s1'
 "@
 $dest += "`${SQL_INSIGHTS_W3API_URL:-}" + @"
@@ -20,6 +20,3 @@ fi
 "@
 
 echo $dest > config-w3app.sh
-
-
-

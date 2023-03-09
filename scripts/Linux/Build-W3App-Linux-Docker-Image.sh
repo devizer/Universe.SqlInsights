@@ -34,8 +34,10 @@ cat config-w3app.sh
 Say "BUILD X64 ONLY CONTAINER"
 time docker build -t w3app-x64 .
 Say "TEST X64 ONLY CONTAINER"
-docker run --name test-w3app -d -e SQL_INSIGHTS_W3API_URL="http://my.overridden.api:7654/api/vNext/" w3app-x64
+docker run --name test-w3app -d -p 8080:80 -e SQL_INSIGHTS_W3API_URL="http://my.overridden.api:7654/api/vNext/" w3app-x64
 sleep 3
+echo CURL
+curl -I http://localhost:8080
 echo LOGS
 docker logs test-w3app
 Say "OVERRIDDEN /usr/share/nginx/html/index.html"
