@@ -15,9 +15,13 @@ jobs:
       - bash: |
          script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
          Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
+         docker login -u devizervlad -p "$PASSWORD"
+         printenv | sort
          cd scripts/Linux
          bash -e Build-W3App-Linux-Docker-Image.sh
         displayName: 'Build w3app Docker Image'
+        env:
+            PASSWORD: $(DOCKER_PASSWORD)
 
       - publish: $(Build.SourcesDirectory)/src/universe.sqlinsights.w3app/build
         displayName: 'Publish Artifact'
