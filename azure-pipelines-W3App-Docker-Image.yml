@@ -24,9 +24,13 @@ jobs:
             PASSWORD: $(DOCKER_PASSWORD)
 
       - bash: |
+         set -eu; set -o pipefail
          Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
+         echo $PASSWORD | gh auth login --with-token
          bash -e scripts/Build-Github-Release-Artifacts.sh
         displayName: 'GitHub Release'
+        env:
+            PASSWORD: $(GITHUB_TOKEN)
 
       - publish: $(Build.SourcesDirectory)/src/universe.sqlinsights.w3app/build
         displayName: 'Publish Artifact'

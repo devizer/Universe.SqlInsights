@@ -38,3 +38,11 @@ for r in osx-x64 osx-arm64 win-x64 win-x86 win-arm64 win-arm linux-x64 linux-arm
 done
 
 cp -r -a "$public" "$SYSTEM_ARTIFACTSDIRECTORY"/
+
+git clone "$BUILD_REPOSITORY_URI" /tmp/src-copy
+pushd /tmp/src-copy
+revision="$(set TZ=GMT; git log -n 999999 --date=raw --pretty=format:"%cd" | wc -l)"
+popd
+version="0.0.${revision}"
+Say "Create Github Release ${version}"
+gh release create -p v${version}-pre "$public"/*
