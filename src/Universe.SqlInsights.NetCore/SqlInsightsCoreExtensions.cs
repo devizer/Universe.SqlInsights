@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -74,10 +75,17 @@ namespace Universe.SqlInsights.NetCore
                 traceReader.MaxFileSize = config.MaxTraceFileSizeKb;
                 string appName = string.Format(config.SqlClientAppNameFormat, idHolder.Id.ToString("N"));
                 TraceRowFilter appFilter = TraceRowFilter.CreateByApplication(appName);
-                traceReader.Start(config.ConnectionString, 
-                    config.SqlTracesDirectory, 
-                    TraceColumns.Application | TraceColumns.Sql,
-                    appFilter);
+                try
+                {
+                    traceReader.Start(config.ConnectionString,
+                        config.SqlTracesDirectory,
+                        TraceColumns.Application | TraceColumns.Sql,
+                        appFilter);
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException($"Unable to create trace file in the '{config.SqlTracesDirectory}' directory", ex);
+                }
 
                 CpuUsageAsyncWatcher watcher = new CpuUsageAsyncWatcher();
                 Stopwatch stopwatch = Stopwatch.StartNew();
