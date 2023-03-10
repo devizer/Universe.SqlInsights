@@ -36,7 +36,7 @@ jobs:
          Say "SQLINSIGHTS_VERSION: [$SQLINSIGHTS_VERSION]"
          
          pushd scripts/Linux-W3API-Docker-FXDependent
-         bash -e Build-W3App-Linux-Docker-Image.sh
+         source Build-W3App-Linux-Docker-Image.sh
          popd
 
          pushd scripts/Linux-W3API-Docker
