@@ -9,7 +9,7 @@ RUN set -eu; export SQLINSIGHTS_VERSION; \
   curl -ksSL -o /tmp/a https://dot.net/v1/dotnet-install.sh; \
   for v in 2.1 2.2 3.0 3.1 5.0 6.0 7.0; do \
     echo "INSTALLING ASPNET CORE RUNTIME [$v]"; \
-    bash /tmp/a --runtime aspnetcore --channel $v -i /usr/share/dotnet; 
+    bash /tmp/a --runtime aspnetcore --channel $v -i /usr/share/dotnet; \
   done; \
   suffix="arm"; arch="$(dpkg --print-architecture)"; if [ "$arch" = "amd64" ]; then suffix="x64"; fi; if [ "$arch" = "arm64" ]; then suffix="arm64"; fi; \
   echo "uname -m: [$(uname -m)]. ARCH: [$arch]. SUFFIX: [$suffix]"; \
