@@ -17,7 +17,13 @@ namespace Universe.SqlInsights.SqlServerStorage
         public readonly string ConnectionString;
         public readonly StringBuilder Logs = new StringBuilder();
         public bool ThrowOnDbCreationError { get; set; } = false;
-        public static volatile bool DisableMemoryOptimizedTables;
+
+        // public static volatile bool DisableMemoryOptimizedTables;
+        public static bool DisableMemoryOptimizedTables
+        {
+            get => true;
+            set { }
+        }
 
         public SqlServerSqlInsightsMigrations(DbProviderFactory providerFactory, string connectionString)
         {
