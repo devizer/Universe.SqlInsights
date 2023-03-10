@@ -71,3 +71,4 @@ trigger:
     - 'scripts/Linux-W3App-Docker/**'
     - 'scripts/Build-Github-Release-Artifacts.sh'
     - 'scripts/Linux-W3API-Docker/**'
+    - 'scripts/Linux-W3API-Docker-FXDependent/**'
