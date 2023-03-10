@@ -1,3 +1,7 @@
+function installRuntime() {
+  curl -ksSL -o /tmp/a https://dot.net/v1/dotnet-install.sh; bash /tmp/a --runtime aspnetcore --channel 5.0 -i /opt/asptnet5
+}
+
 pkill dotnet; pkill node; 
 cd ~; rm -rf ~/source/sqlinsights
 test ! -d ~/source/sqlinsights && git clone https://github.com/devizer/Universe.SqlInsights ~/source/sqlinsights

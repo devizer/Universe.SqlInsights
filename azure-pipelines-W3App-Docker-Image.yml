@@ -18,8 +18,14 @@ jobs:
          Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
          docker login -u devizervlad -p "$PASSWORD"
          printenv | sort
-         cd scripts/Linux-W3App-Docker
+         
+         pushd scripts/Linux-W3API-Docker-FXDependent
          bash -e Build-W3App-Linux-Docker-Image.sh
+         popd
+
+         pushd scripts/Linux-W3App-Docker
+         bash -e Build-W3App-Linux-Docker-Image.sh
+         popd
         displayName: 'Build w3app Docker Image'
         env:
             PASSWORD: $(DOCKER_PASSWORD)

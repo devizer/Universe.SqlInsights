@@ -2,6 +2,7 @@ using System;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -24,10 +25,12 @@ namespace Universe.SqlInsights.W3Api
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            Console.WriteLine($"Runtime: {RuntimeInformation.FrameworkDescription}");
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
