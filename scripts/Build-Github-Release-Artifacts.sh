@@ -30,6 +30,7 @@ prefix="sqlinsights-dashboard"
 
 Say "BUILD FX DEPENDENT $SQLINSIGHTS_VERSION"
 dotnet publish -f $W3API_NET -o bin/fxdepend -v:q -p:Version=$SQLINSIGHTS_VERSION_SHORT
+mkdir -p bin/fxdepend/wwwroot;  cp -r -a "$BUILD_REPOSITORY_LOCALPATH/src/universe.sqlinsights.w3app/build"/. bin/fxdepend/wwwroot
 pushd bin/fxdepend
   time tar cf - . | pigz -p $(nproc) -b 128 -9  > "$public"/$prefix-fxdependent.tar.gz
   time tar cf - . | 7za a dummy -txz -mx=9 -si -so > "$public"/$prefix-fxdependent.tar.xz
@@ -44,6 +45,7 @@ for r in $rids; do
   n=$((n+1))
   Say "#${n}: BUILD SELF-CONTAINED [$r] $SQLINSIGHTS_VERSION"
   dotnet publish --self-contained -r $r -f $W3API_NET -o bin/plain/$r -v:q -p:Version=$SQLINSIGHTS_VERSION_SHORT
+  mkdir -p bin/plain/$r/wwwroot; cp -r -a "$BUILD_REPOSITORY_LOCALPATH/src/universe.sqlinsights.w3app/build"/. bin/plain/$r/wwwroot
   pushd bin/plain/$r
     chmod 644 *.dll
     test -s Universe.SqlInsights.W3Api && chmod 755 Universe.SqlInsights.W3Api
