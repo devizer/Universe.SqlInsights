@@ -33,6 +33,8 @@ dotnet publish -f $W3API_NET -o bin/fxdepend -v:q -p:Version=$SQLINSIGHTS_VERSIO
 pushd bin/fxdepend
   time tar cf - . | pigz -p $(nproc) -b 128 -9  > "$public"/$prefix-fxdependent.tar.gz
   time tar cf - . | 7za a dummy -txz -mx=9 -si -so > "$public"/$prefix-fxdependent.tar.xz
+  time 7z a -tzip -mx=9 "$public"/$prefix-fxdependent.zip * | Filter-7z
+  time 7z a -t7z -mx=9 -ms=on -mqs=on "$public"/$prefix-fxdependent.7z * | Filter-7z
 popd
 
 n=0

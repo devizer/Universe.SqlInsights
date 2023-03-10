@@ -13,7 +13,7 @@ RUN set -eu; export SQLINSIGHTS_VERSION; \
   curl -kSL -o /tmp/gz.gz "$url"; \
   tar xzf /tmp/gz.gz -C /opt/sqlinsights-dashboard; \
   rm -rf /tmp/* /var/cache/apt/* /var/lib/apt/*; \
-  echo "DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOONE: [$suffix]"
+  echo "[Self-Contained] DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOONE: [$suffix]"
 
 CMD set -eu; \
   test -s /opt/sqlinsights-dashboard/VERSION && echo "SqlInsights Dashboard $(cat /opt/sqlinsights-dashboard/VERSION) is starting ..."; \
