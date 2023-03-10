@@ -13,8 +13,8 @@ RUN set -eu; export SQLINSIGHTS_VERSION; \
   done; \
   \
   echo "Downloading Source"; \
-  curl -ksSL -o /tmp/src.tar.gz https://codeload.github.com/devizer/Universe.SqlInsights/tar.gz/refs/tags/$SQLINSIGHTS_VERSION; \
-  mkdir -p /opt/src; tar xzf /tmp/src.tar.gz -C /opt/src; \
+  curl -ksSL -o /tmp/src.tar.gz "https://codeload.github.com/devizer/Universe.SqlInsights/tar.gz/refs/tags/$SQLINSIGHTS_VERSION"; \
+  mkdir -p /opt/src; tar xzf /tmp/src.tar.gz -C /opt/src; ls -laR /opt/src; \
   cd /opt/src/src/Universe.SqlInsights.W3Api; \
   echo "RESTOOOOORING ..."; dotnet restore; \
   dotnet build -c Release -f net5.0; \
