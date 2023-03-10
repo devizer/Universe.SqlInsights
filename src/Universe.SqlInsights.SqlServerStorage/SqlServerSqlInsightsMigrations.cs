@@ -56,8 +56,8 @@ namespace Universe.SqlInsights.SqlServerStorage
             
             // MOT Folder
             var sampleFile = cnn.Query<string>("Select Top 1 filename from sys.sysfiles").FirstOrDefault();
-            var dataFolder = sampleFile != null ? Path.GetDirectoryName(sampleFile) : null;
-            var motFileFolder = Path.Combine(dataFolder, $"MOT for {dbName}");
+            var dataFolder = sampleFile != null ? CrossPath.GetDirectoryName(man.IsWindows, sampleFile) : null;
+            var motFileFolder = CrossPath.Combine(man.IsWindows, dataFolder, $"MOT for {dbName}");
             Logs.AppendLine($" * MOT Files Folder: {dataFolder}");
 
             var existingTables = cnn.Query<string>("Select name from SYSOBJECTS WHERE xtype = 'U' and name like '%SqlInsights%'").ToArray();
