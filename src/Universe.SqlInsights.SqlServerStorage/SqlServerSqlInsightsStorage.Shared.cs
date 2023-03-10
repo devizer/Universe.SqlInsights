@@ -28,6 +28,7 @@ namespace Universe.SqlInsights.SqlServerStorage
         
         public static void ResetCacheForTests()
         {
+            // TODO: DI for net framework
             AreMigrationsChecked = false;
             StringsStorage.ResetCacheForTests();
             MetadataCache.ResetCacheForTests();

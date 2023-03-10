@@ -1,9 +1,10 @@
+pkill dotnet; pkill node; 
 cd ~; rm -rf ~/source/sqlinsights
 test ! -d ~/source/sqlinsights && git clone https://github.com/devizer/Universe.SqlInsights ~/source/sqlinsights
 
 export ConnectionStrings__SqlInsights="Server=192.168.0.42;Database=SqlInsights_v4;User ID=sa;Password=\`1qazxsw2"
 export SQLINSIGHTS_CONNECTION_STRING="$ConnectionStrings__SqlInsights"
-cd ~/source/sqlinsights/src/Universe.SqlInsights.SqlServerStorage.Tests; dotnet test -f net5.0 -c Release
+cd ~/source/sqlinsights/src/Universe.SqlInsights.SqlServerStorage.Tests; git pull; dotnet test -f net5.0 -c Release
 
 
 cd ~/source/sqlinsights/src/Universe.SqlInsights.W3Api

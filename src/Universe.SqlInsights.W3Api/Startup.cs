@@ -147,7 +147,7 @@ namespace Universe.SqlInsights.W3Api
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(ex, $"Pre-jit of ISqlInsightsStorage tool {sw.Elapsed} and failed.  Server '{server}'. Database '{db}'");
+                    logger.LogError(ex, $"Pre-jit of ISqlInsightsStorage took {sw.Elapsed} and failed.  Server '{server}'. Database '{db}'");
                 }
             });
         }

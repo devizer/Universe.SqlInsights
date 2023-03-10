@@ -1,0 +1,1 @@
+SQL Server 15.0.2095.3 2019 RTM needs update for arm client, but works with Linix, Mac and Windows on x64
