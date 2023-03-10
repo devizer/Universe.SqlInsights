@@ -36,13 +36,12 @@ jobs:
          Say "SQLINSIGHTS_VERSION: [$SQLINSIGHTS_VERSION]"
          
          pushd scripts/Linux-W3API-Docker-FXDependent
-         source Build-W3App-Linux-Docker-Image.sh
+         source Build-W3API-Linux-Docker-Image.sh
          popd
 
          pushd scripts/Linux-W3API-Docker
          source Build-W3API-Linux-Docker-Image.sh
          popd
-
 
         displayName: 'GitHub Release'
         env:
