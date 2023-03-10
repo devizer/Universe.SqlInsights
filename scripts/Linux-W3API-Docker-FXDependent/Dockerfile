@@ -7,7 +7,7 @@ RUN set -eu; export SQLINSIGHTS_VERSION; \
   mkdir -p /opt/sqlinsights-dashboard; echo $SQLINSIGHTS_VERSION > /opt/sqlinsights-dashboard/VERSION; \
   url=https://raw.githubusercontent.com/devizer/glist/master/install-dotnet-dependencies.sh; (curl -ksSL $url) | UPDATE_REPOS="" bash -e && echo "Successfully installed .NET Core Dependencies"; \
   echo "INSTALLING ASPNET CORE RUNTIME"; \
-  for v in 2.1 2.2 3.0 3.1 5.0 6.0 7.0 do; curl -ksSL -o /tmp/a https://dot.net/v1/dotnet-install.sh; bash /tmp/a --runtime aspnetcore --channel $v -i /usr/share/dotnet; done; \
+  for v in 2.1 2.2 3.0 3.1 5.0 6.0 7.0; do; curl -ksSL -o /tmp/a https://dot.net/v1/dotnet-install.sh; bash /tmp/a --runtime aspnetcore --channel $v -i /usr/share/dotnet; done; \
   suffix="arm"; arch="$(dpkg --print-architecture)"; if [ "$arch" = "amd64" ]; then suffix="x64"; fi; if [ "$arch" = "arm64" ]; then suffix="arm64"; fi; \
   echo "uname -m: [$(uname -m)]. ARCH: [$arch]. SUFFIX: [$suffix]"; \
   url="https://github.com/devizer/Universe.SqlInsights/releases/download/$SQLINSIGHTS_VERSION/sqlinsights-dashboard-fxdependent.tar.gz"; \
