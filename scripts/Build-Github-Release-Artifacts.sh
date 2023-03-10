@@ -28,7 +28,7 @@ popd
 
 prefix="sqlinsights-dashboard"
 
-Say "BUILD FX DEPENDENT [$r] $SQLINSIGHTS_VERSION"
+Say "BUILD FX DEPENDENT $SQLINSIGHTS_VERSION"
 dotnet publish -f $W3API_NET -o bin/fxdepend -v:q -p:Version=$SQLINSIGHTS_VERSION_SHORT
 pushd bin/fxdepend
   time tar cf - . | pigz -p $(nproc) -b 128 -9  > "$public"/$prefix-fxdependent.tar.gz
