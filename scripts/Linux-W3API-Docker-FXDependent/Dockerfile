@@ -9,7 +9,7 @@ RUN set -eu; export SQLINSIGHTS_VERSION; \
   echo "uname -m: [$(uname -m)]. ARCH: [$arch]. SUFFIX: [$suffix]"; \
   url=https://raw.githubusercontent.com/devizer/glist/master/install-dotnet-dependencies.sh; (curl -ksSL $url) | UPDATE_REPOS="" bash -e && echo "Successfully installed .NET Core Dependencies"; \
   curl -ksSL -o /tmp/a https://dot.net/v1/dotnet-install.sh; \
-  for v in 5.0; do \
+  for v in 5.0 6.0; do \
     echo "INSTALLING NET SDK RUNTIME [$v] [$suffix]"; \
     bash /tmp/a --channel $v -i /usr/share/dotnet || true; \
   done; \
