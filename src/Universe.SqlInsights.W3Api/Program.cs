@@ -1,3 +1,5 @@
+using System;
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Universe.SqlInsights.W3Api.Helpers;
@@ -8,6 +10,9 @@ namespace Universe.SqlInsights.W3Api
     {
         public static void Main(string[] args)
         {
+            Console.WriteLine($"Runtime Version: {RuntimeInformation.FrameworkDescription}");
+            Console.WriteLine($"SqlInsights Dashboard Web Api Version: {typeof(Program).Assembly.GetName().Version}");
+
             AssemblyVisualizer.Subscribe();
             CreateHostBuilder(args).Build().Run();
         }

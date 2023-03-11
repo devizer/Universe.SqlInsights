@@ -26,7 +26,6 @@ namespace Universe.SqlInsights.W3Api
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            Console.WriteLine($"Runtime: {RuntimeInformation.FrameworkDescription}");
         }
 
         public void ConfigureServices(IServiceCollection services)
