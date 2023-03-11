@@ -87,6 +87,7 @@ namespace Universe.SqlInsights.W3Api.Helpers
 
         }
 
+        [Conditional("DEBUG")]
         public static void Subscribe()
         {
             AppDomain.CurrentDomain.AssemblyLoad += delegate(object sender, AssemblyLoadEventArgs args)
@@ -109,6 +110,7 @@ namespace Universe.SqlInsights.W3Api.Helpers
             }
         }
 
+        [Conditional("DEBUG")]
         public static void Show(string caption)
         {
             var assemblies = AppDomain.CurrentDomain

@@ -7,8 +7,8 @@
   Added inspection for SqlServerStorage.AddAction.
   Added System.Text.Json for .Net Core and .NET 4.6.2+ targets.
 2.2
-  Added Sessions and corresponding create/start/stop/delete actions.
-2.1
   Added Windows and Linux test coverage with SQL Server 2005 - 2022 on windows, and 2017 - 2022 on linux.
+2.1
+  Added Sessions and corresponding create/start/stop/delete actions.
 2.0
   Added copy code on dashboard.

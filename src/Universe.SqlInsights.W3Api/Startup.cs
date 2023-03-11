@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -22,6 +22,8 @@ namespace Universe.SqlInsights.W3Api
 {
     public class Startup
     {
+        // private DbProviderFactory DbProvider = Microsoft.Data.SqlClient.SqlClientFactory.Instance;
+        private DbProviderFactory DbProvider = SqlClientFactory.Instance;
         public IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration)
@@ -31,6 +33,7 @@ namespace Universe.SqlInsights.W3Api
 
         public void ConfigureServices(IServiceCollection services)
         {
+            AddDbProviderFactoryService(services);
 
             services.AddCors(options =>
             {
@@ -63,8 +66,8 @@ namespace Universe.SqlInsights.W3Api
                 var dbOptions = provider.GetRequiredService<DbOptions>();
                 if (string.IsNullOrEmpty(dbOptions.ConnectionString))
                     throw new InvalidOperationException("Misconfigured DbOptions.ConnectionString");
-                
-                return new SqlServerSqlInsightsStorage(SqlClientFactory.Instance, dbOptions.ConnectionString);
+
+                return new SqlServerSqlInsightsStorage(DbProvider, dbOptions.ConnectionString);
             });
 
             services.AddSingleton<SqlInsightsReport>(SqlInsightsReport.Instance);
@@ -86,12 +89,10 @@ namespace Universe.SqlInsights.W3Api
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
-        {
-            // TODO: START MIGRATE ON STARTUP, crash if fail
-            PreJit(logger);
 
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, DbProviderFactory dbProviderFactory, IWebHostEnvironment env, ILogger<Startup> logger)
+        {
 
             app.ValidateSqlInsightsServices();
             app.UseSqlInsights();
@@ -125,10 +126,25 @@ namespace Universe.SqlInsights.W3Api
             var sqlInsightsConfiguration = scope.ServiceProvider.GetRequiredService<ISqlInsightsConfiguration>();
             var reportFullFileName = sqlInsightsConfiguration.ReportFullFileName;
             SqlInsightsReport.AutoFlush(reportFullFileName, 100);
+            
+            // TODO: START MIGRATE ON STARTUP, crash if fail
+            PreJit(logger, dbProviderFactory);
+        }
+        
+        private void AddDbProviderFactoryService(IServiceCollection services)
+        {
+            const StringComparison ignoreCase = StringComparison.OrdinalIgnoreCase;
+            var rawDbProviderFactory = Configuration.GetValue<string>("DbProviderFactory");
+            DbProviderFactory dbProviderFactory = "System".Equals(rawDbProviderFactory, ignoreCase)
+                ? System.Data.SqlClient.SqlClientFactory.Instance
+                : "Microsoft".Equals(rawDbProviderFactory, ignoreCase)
+                    ? Microsoft.Data.SqlClient.SqlClientFactory.Instance
+                    : throw new ArgumentException("Invalid DbProviderFactory configuration value. 'System' or 'Microsoft are allowed'");
 
+            services.AddSingleton<DbProviderFactory>(x => dbProviderFactory);
         }
 
-        void PreJit(ILogger logger)
+        void PreJit(ILogger logger, DbProviderFactory dbProviderFactory)
         {
             Task.Run(async () =>
             {
@@ -140,7 +156,7 @@ namespace Universe.SqlInsights.W3Api
                     SqlConnectionStringBuilder csb = new SqlConnectionStringBuilder(connectionString);
                     server = csb.DataSource;
                     db = csb.InitialCatalog;
-                    var dbProviderFactory = Microsoft.Data.SqlClient.SqlClientFactory.Instance;
+                    // var dbProviderFactory = Microsoft.Data.SqlClient.SqlClientFactory.Instance;
                     // var dbProviderFactory = System.Data.SqlClient.SqlClientFactory.Instance;
                     var history = new SqlServerSqlInsightsStorage(dbProviderFactory, connectionString);
                     history.GetAliveSessions();
