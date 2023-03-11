@@ -56,8 +56,7 @@ done
 
 cp -r -a "$public" "$SYSTEM_ARTIFACTSDIRECTORY"/
 
-Say "Create Github Release ${version}"
+Say "Create Github Release ${SQLINSIGHTS_VERSION}"
 # -p mean pre-release
-gh release create -p -t "SqlInsights Dashboard Web API" -n "v${version}" "$SQLINSIGHTS_VERSION" "$public"/*
-
+gh release create -p -t "SqlInsights Dashboard Web API" -n "Ver ${SQLINSIGHTS_VERSION}" "$SQLINSIGHTS_VERSION" "$public"/*
 popd
