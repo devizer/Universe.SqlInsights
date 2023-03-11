@@ -15,7 +15,8 @@ RUN set -eu; export SQLINSIGHTS_VERSION; \
   rm -rf /tmp/* /var/cache/apt/* /var/lib/apt/*; \
   echo "[Self-Contained] DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOONE: [$suffix]"
 
+# DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 is not supported by Microsoft.Data.SqlClient
 CMD set -eu; \
   test -s /opt/sqlinsights-dashboard/VERSION && echo "SqlInsights Dashboard $(cat /opt/sqlinsights-dashboard/VERSION) is starting ..."; \
   cd /opt/sqlinsights-dashboard; \
-  ASPNETCORE_URLS=http://0.0.0.0:80 DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 ./Universe.SqlInsights.W3Api
+  ASPNETCORE_URLS=http://0.0.0.0:80 ./Universe.SqlInsights.W3Api
