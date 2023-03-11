@@ -22,6 +22,16 @@ jobs:
 
          docker login -u devizervlad -p "$PASSWORD1"
          echo "$PASSWORD2" | gh auth login --with-token
+
+         Say "CONFIGURE DOCKER"
+         docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+         sudo apt-get install qemu-user-static -y -qq | { grep "Setting" || true; }
+         docker buildx create --name advancedx
+         docker buildx use advancedx
+         docker buildx inspect --bootstrap
+         Say "Supported architectures"
+         docker buildx ls
+
          printenv | sort
         displayName: 'Bootstrap'
         env:

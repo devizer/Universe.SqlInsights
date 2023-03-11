@@ -3,16 +3,7 @@ set -eu; set -o pipefail
 
 Say "gh version: [$(gh --version | head -1)]"
 
-Say "CONFIGURE DOCKER"
-docker image rm -f devizervlad/sqlinsights-dashboard:latest || true
-docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-sudo apt-get install qemu-user-static -y
-
-docker buildx create --name advancedx
-docker buildx use advancedx
-docker buildx inspect --bootstrap
-Say "Supported architectures"
-docker buildx ls
+docker image rm -f devizervlad/sqlinsights-dashboard:latest >/dev/null || true
 
 Say "BUILD W3APP APP"
 script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
