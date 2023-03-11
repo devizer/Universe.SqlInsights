@@ -1,5 +1,6 @@
 set -eu; set -o pipefail
 
+rm -rf /tmp/src-copy || true
 git clone "$BUILD_REPOSITORY_URI" /tmp/src-copy
 pushd /tmp/src-copy
 revision="$(set TZ=GMT; git log -n 999999 --date=raw --pretty=format:"%cd" | wc -l)"

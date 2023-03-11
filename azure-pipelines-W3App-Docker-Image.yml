@@ -30,43 +30,45 @@ jobs:
 
       - bash: |
          set -eu; set -o pipefail
+         Say "SQLINSIGHTS_VERSION: [$SQLINSIGHTS_VERSION]"
+         Say "SQLINSIGHTS_VERSION_SHORT: [$SQLINSIGHTS_VERSION_SHORT]"
 
          pushd scripts/Linux-W3App-Docker
            bash -e Build-W3App-Linux-Docker-Image.sh
          popd
-        displayName: 'w3app $(SQLINSIGHTS_VERSION): Build And Docker'
+        displayName: "w3app $(SQLINSIGHTS_VERSION): Build And Docker"
 
       - bash: |
          set -eu; set -o pipefail
          Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
          source scripts/Build-Github-Release-Artifacts.sh
         condition: succeededOrFailed()
-        displayName: 'W3API $(SQLINSIGHTS_VERSION): Build and GITHUB Release'
+        displayName: "W3API $(SQLINSIGHTS_VERSION): Build and GITHUB Release"
          
 
       - bash: |
          set -eu; set -o pipefail
          Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
-         
          Say "SQLINSIGHTS_VERSION: [$SQLINSIGHTS_VERSION]"
+         Say "SQLINSIGHTS_VERSION_SHORT: [$SQLINSIGHTS_VERSION_SHORT]"
          
          pushd scripts/Linux-W3API-Docker-FXDependent
          source Build-W3API-Linux-Docker-Image.sh
          popd
         condition: succeededOrFailed()
-        displayName: 'W3API $(SQLINSIGHTS_VERSION): FXDependent Docker Images'
+        displayName: "W3API $(SQLINSIGHTS_VERSION): FXDependent Docker Images"
 
       - bash: |
          set -eu; set -o pipefail
          Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
-         
          Say "SQLINSIGHTS_VERSION: [$SQLINSIGHTS_VERSION]"
+         Say "SQLINSIGHTS_VERSION_SHORT: [$SQLINSIGHTS_VERSION_SHORT]"
          
          pushd scripts/Linux-W3API-Docker
          source Build-W3API-Linux-Docker-Image.sh
          popd
         condition: succeededOrFailed()
-        displayName: 'W3API $(SQLINSIGHTS_VERSION): SELF-CONTAINED Docker Images'
+        displayName: "W3API $(SQLINSIGHTS_VERSION): SELF-CONTAINED Docker Images"
 
       - publish: $(Build.SourcesDirectory)/src/universe.sqlinsights.w3app/build
         displayName: 'Publish Artifact'
