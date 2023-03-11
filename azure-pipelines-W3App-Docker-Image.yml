@@ -41,20 +41,21 @@ jobs:
 
       - bash: |
          set -eu; set -o pipefail
+         Say "CPU: $(Get-CpuName)"
          Say "SQLINSIGHTS_VERSION: [$SQLINSIGHTS_VERSION]"
          Say "SQLINSIGHTS_VERSION_SHORT: [$SQLINSIGHTS_VERSION_SHORT]"
 
          pushd scripts/Linux-W3App-Docker
            bash -e Build-W3App-Linux-Docker-Image.sh
          popd
-        displayName: "w3app: Build And Docker"
+        displayName: "w3app: Docker frontend image"
 
       - bash: |
          set -eu; set -o pipefail
          Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
          source scripts/Build-Github-Release-Artifacts.sh
         condition: succeededOrFailed()
-        displayName: "W3API: Build and GITHUB Release"
+        displayName: "W3API: GITHUB Release"
          
 
       - bash: |

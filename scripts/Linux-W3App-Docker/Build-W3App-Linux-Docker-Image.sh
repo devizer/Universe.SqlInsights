@@ -43,7 +43,7 @@ docker_version="$(date +%F)"
 Say "Docker Image version: [${docker_version}]"
 # docker image rm -f $(docker image ls -aq)
 export OS=Linux
-export TAGS="-t devizervlad/$TARGET_IMAGE:v${docker_version} -t devizervlad/$TARGET_IMAGE:latest"
+export TAGS="-t devizervlad/$TARGET_IMAGE:${SQLINSIGHTS_VERSION} -t devizervlad/$TARGET_IMAGE:latest"
 export BASE_IMAGE='nginx:latest'
 platform="linux/amd64,linux/arm32v5,linux/arm32v6,linux/arm32v7,linux/arm64v8,linux/i386,linux/mips64le,linux/ppc64le,linux/s390x"
 platform="linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386,linux/mips64le,linux/ppc64le,linux/s390x"
