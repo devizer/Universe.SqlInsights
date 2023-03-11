@@ -72,7 +72,7 @@ namespace Universe.SqlInsights.SqlServerStorage
         }
 
 
-#if NETSTANDARD
+#if NETSTANDARD || NET5_0
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static UInt64? RowVersion2Int64(byte[] binaryVersion)

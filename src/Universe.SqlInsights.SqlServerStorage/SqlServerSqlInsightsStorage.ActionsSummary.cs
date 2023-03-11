@@ -10,7 +10,7 @@ namespace Universe.SqlInsights.SqlServerStorage
 {
     partial class SqlServerSqlInsightsStorage 
     {
-#if NETSTANDARD
+#if NETSTANDARD || NET5_0
         
         class SelectKeyAndDataResult
         {

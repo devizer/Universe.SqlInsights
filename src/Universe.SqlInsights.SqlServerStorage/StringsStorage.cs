@@ -113,7 +113,7 @@ namespace Universe.SqlInsights.SqlServerStorage
             throw new InvalidOperationException($"Fail: {operationTitle()}", error);
         }
 
-#if NETSTANDARD
+#if NETSTANDARD || NET5_0
         public async Task<IEnumerable<LongIdAndString>> GetAllStringsByKind(StringKind kind)
         {
             const string sql = "Select IdString, StartsWith, Tail From SqlInsightsString Where Kind = @Kind";
