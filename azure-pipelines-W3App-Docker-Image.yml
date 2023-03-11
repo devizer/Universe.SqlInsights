@@ -40,6 +40,7 @@ jobs:
          set -eu; set -o pipefail
          Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
          source scripts/Build-Github-Release-Artifacts.sh
+        condition: succeededOrFailed()
         displayName: 'W3API $(SQLINSIGHTS_VERSION): Build and GITHUB Release'
          
 
@@ -52,6 +53,7 @@ jobs:
          pushd scripts/Linux-W3API-Docker-FXDependent
          source Build-W3API-Linux-Docker-Image.sh
          popd
+        condition: succeededOrFailed()
         displayName: 'W3API $(SQLINSIGHTS_VERSION): FXDependent Docker Images'
 
       - bash: |
@@ -63,6 +65,7 @@ jobs:
          pushd scripts/Linux-W3API-Docker
          source Build-W3API-Linux-Docker-Image.sh
          popd
+        condition: succeededOrFailed()
         displayName: 'W3API $(SQLINSIGHTS_VERSION): SELF-CONTAINED Docker Images'
 
       - publish: $(Build.SourcesDirectory)/src/universe.sqlinsights.w3app/build
