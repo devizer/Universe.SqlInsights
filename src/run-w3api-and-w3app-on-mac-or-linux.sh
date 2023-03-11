@@ -12,10 +12,7 @@ cd ~/source/sqlinsights/src/Universe.SqlInsights.SqlServerStorage.Tests; git pul
 
 
 cd ~/source/sqlinsights/src/Universe.SqlInsights.W3Api
-git pull
-time dotnet build -c Release
-# export ConnectionStrings__SqlInsights="Server=192.168.213.2;Database=SqlInsights_v4;User ID=sa;Password=\`1qazxsw2"
-pkill dotnet; sleep 4; nohup dotnet run -c Release -p:Version=66.66.66.66 2>&1 > ~/w3api.log &
+pkill dotnet; git pull; sleep 4; nohup dotnet run -c Release -p:Version=9.9.9.9 2>&1 > ~/w3api.log &
 
 if [[ "$(uname -s)" == Darwin ]]; then
   cd ~/source/sqlinsights/src/universe.sqlinsights.w3app
