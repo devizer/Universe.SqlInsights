@@ -24,6 +24,7 @@ jobs:
          echo "$PASSWORD2" | gh auth login --with-token
 
          Say "CONFIGURE DOCKER"
+         docker pull -q multiarch/qemu-user-static
          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
          sudo apt-get install qemu-user-static -y -qq | { grep "Setting" || true; }
          docker buildx create --name advancedx
@@ -32,7 +33,7 @@ jobs:
          Say "Supported architectures"
          docker buildx ls
 
-         printenv | sort
+         echo ""; printenv | sort
         displayName: 'Bootstrap'
         env:
             PASSWORD1: $(DOCKER_PASSWORD)
