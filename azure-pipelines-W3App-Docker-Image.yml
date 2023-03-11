@@ -12,48 +12,66 @@ jobs:
     displayName: 'W3App Docker Image and GitHub Release'
     pool:
       vmImage: "ubuntu-20.04"
+
     steps:
       - bash: |
+         set -eu; set -o pipefail
          script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
          Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
-         docker login -u devizervlad -p "$PASSWORD"
+         source scripts/Calc-Current-Version.sh
+
+         docker login -u devizervlad -p "$PASSWORD1"
+         echo "$PASSWORD2" | gh auth login --with-token
          printenv | sort
-         
-         pushd scripts/Linux-W3App-Docker
-         bash -e Build-W3App-Linux-Docker-Image.sh
-         popd
-        displayName: 'Build w3app Docker Image'
+        displayName: 'Bootstrap'
         env:
-            PASSWORD: $(DOCKER_PASSWORD)
+            PASSWORD1: $(DOCKER_PASSWORD)
+            PASSWORD2: $(GITHUB_TOKEN)
+
+      - bash: |
+         set -eu; set -o pipefail
+
+         pushd scripts/Linux-W3App-Docker
+           bash -e Build-W3App-Linux-Docker-Image.sh
+         popd
+        displayName: 'w3app $(SQLINSIGHTS_VERSION): Build And Docker'
 
       - bash: |
          set -eu; set -o pipefail
          Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
-         echo $PASSWORD | gh auth login --with-token
          source scripts/Build-Github-Release-Artifacts.sh
+        displayName: 'W3API $(SQLINSIGHTS_VERSION): Build and GITHUB Release'
+         
 
-         Say "Building W3API docker images in [$(pwd)]"
+      - bash: |
+         set -eu; set -o pipefail
+         Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
+         
          Say "SQLINSIGHTS_VERSION: [$SQLINSIGHTS_VERSION]"
          
          pushd scripts/Linux-W3API-Docker-FXDependent
          source Build-W3API-Linux-Docker-Image.sh
          popd
+        displayName: 'W3API $(SQLINSIGHTS_VERSION): FXDependent Docker Images'
 
+      - bash: |
+         set -eu; set -o pipefail
+         Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
+         
+         Say "SQLINSIGHTS_VERSION: [$SQLINSIGHTS_VERSION]"
+         
          pushd scripts/Linux-W3API-Docker
          source Build-W3API-Linux-Docker-Image.sh
          popd
-
-        displayName: 'GitHub Release'
-        env:
-            PASSWORD: $(GITHUB_TOKEN)
+        displayName: 'W3API $(SQLINSIGHTS_VERSION): SELF-CONTAINED Docker Images'
 
       - publish: $(Build.SourcesDirectory)/src/universe.sqlinsights.w3app/build
         displayName: 'Publish Artifact'
         condition: succeededOrFailed()
-        artifact: 'w3app'
+        artifact: 'w3app $(SQLINSIGHTS_VERSION)'
     
       - publish: $(SYSTEM.ARTIFACTSDIRECTORY)
-        displayName: 'Publish Artifact'
+        displayName: 'Publish Artifact $(SQLINSIGHTS_VERSION)'
         condition: succeededOrFailed()
         artifact: '$(Agent.JobName)'
     
