@@ -22,8 +22,11 @@ prefix="sqlinsights-dashboard"
 
 Say "BUILD FX DEPENDENT $SQLINSIGHTS_VERSION"
 dotnet publish -f $W3API_NET -o bin/fxdepend -v:q -p:Version=$SQLINSIGHTS_VERSION_SHORT
-mkdir -p bin/fxdepend/wwwroot;  cp -r -a "$BUILD_REPOSITORY_LOCALPATH/src/universe.sqlinsights.w3app/build"/. bin/fxdepend/wwwroot
+mkdir -p bin/fxdepend/wwwroot; 
+cp -r -a "$BUILD_REPOSITORY_LOCALPATH/src/universe.sqlinsights.w3app/build"/. bin/fxdepend/wwwroot
+# SQL_INSIGHTS_W3API_URL_PLACEHOLDER --> /api/v1/SqlInsights
 pushd bin/fxdepend
+  sed -i 's/SQL_INSIGHTS_W3API_URL_PLACEHOLDER/\/api\/v1\/SqlInsights/g' wwwroot/index.html
   time tar cf - . | pigz -p $(nproc) -b 128 -9  > "$public"/$prefix-fxdependent.tar.gz
   time tar cf - . | 7za a dummy -txz -mx=9 -si -so > "$public"/$prefix-fxdependent.tar.xz
   time 7z a -tzip -mx=9 "$public"/$prefix-fxdependent.zip * | Filter-7z
@@ -39,6 +42,7 @@ for r in $rids; do
   dotnet publish --self-contained -r $r -f $W3API_NET -o bin/plain/$r -v:q -p:Version=$SQLINSIGHTS_VERSION_SHORT
   mkdir -p bin/plain/$r/wwwroot; cp -r -a "$BUILD_REPOSITORY_LOCALPATH/src/universe.sqlinsights.w3app/build"/. bin/plain/$r/wwwroot
   pushd bin/plain/$r
+    sed -i 's/SQL_INSIGHTS_W3API_URL_PLACEHOLDER/\/api\/v1\/SqlInsights/g' wwwroot/index.html
     chmod 644 *.dll
     test -s Universe.SqlInsights.W3Api && chmod 755 Universe.SqlInsights.W3Api
     if [[ "$r" == "win"* ]]; then
