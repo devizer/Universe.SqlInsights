@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Universe.SqlInsights.W3Api.Helpers;
 
 namespace Universe.SqlInsights.W3Api
 {
@@ -7,6 +8,7 @@ namespace Universe.SqlInsights.W3Api
     {
         public static void Main(string[] args)
         {
+            AssemblyVisualizer.Subscribe();
             CreateHostBuilder(args).Build().Run();
         }
 

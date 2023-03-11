@@ -14,6 +14,7 @@ using Microsoft.OpenApi.Models;
 using Universe.SqlInsights.NetCore;
 using Universe.SqlInsights.Shared;
 using Universe.SqlInsights.SqlServerStorage;
+using Universe.SqlInsights.W3Api.Helpers;
 using Universe.SqlInsights.W3Api.SqlInsightsIntegration;
 
 namespace Universe.SqlInsights.W3Api
@@ -151,6 +152,10 @@ namespace Universe.SqlInsights.W3Api
                 catch (Exception ex)
                 {
                     logger.LogError(ex, $"Pre-jit of ISqlInsightsStorage took {sw.Elapsed} and failed.  Server '{server}'. Database '{db}'");
+                }
+                finally
+                {
+                    AssemblyVisualizer.Show("Assemblies after JET");
                 }
             });
         }
