@@ -36,14 +36,14 @@ jobs:
          pushd scripts/Linux-W3App-Docker
            bash -e Build-W3App-Linux-Docker-Image.sh
          popd
-        displayName: "w3app $(SQLINSIGHTS_VERSION): Build And Docker"
+        displayName: "w3app: Build And Docker"
 
       - bash: |
          set -eu; set -o pipefail
          Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
          source scripts/Build-Github-Release-Artifacts.sh
         condition: succeededOrFailed()
-        displayName: "W3API $(SQLINSIGHTS_VERSION): Build and GITHUB Release"
+        displayName: "W3API: Build and GITHUB Release"
          
 
       - bash: |
@@ -56,7 +56,7 @@ jobs:
          source Build-W3API-Linux-Docker-Image.sh
          popd
         condition: succeededOrFailed()
-        displayName: "W3API $(SQLINSIGHTS_VERSION): FXDependent Docker Images"
+        displayName: "W3API: FXDependent Docker Images"
 
       - bash: |
          set -eu; set -o pipefail
@@ -68,7 +68,7 @@ jobs:
          source Build-W3API-Linux-Docker-Image.sh
          popd
         condition: succeededOrFailed()
-        displayName: "W3API $(SQLINSIGHTS_VERSION): SELF-CONTAINED Docker Images"
+        displayName: "W3API: SELF-CONTAINED Docker Images"
 
       - publish: $(Build.SourcesDirectory)/src/universe.sqlinsights.w3app/build
         displayName: 'Publish Artifact'
@@ -76,7 +76,7 @@ jobs:
         artifact: 'w3app $(SQLINSIGHTS_VERSION)'
     
       - publish: $(SYSTEM.ARTIFACTSDIRECTORY)
-        displayName: 'Publish Artifact $(SQLINSIGHTS_VERSION)'
+        displayName: 'Publish Artifact'
         condition: succeededOrFailed()
         artifact: '$(Agent.JobName)'
     
