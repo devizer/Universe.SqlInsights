@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Universe.SqlInsights.NetCore;
 using Universe.SqlInsights.Shared;
+using Universe.SqlServerJam;
 
 namespace Universe.SqlInsights.W3Api.SqlInsightsIntegration
 {
@@ -15,6 +17,12 @@ namespace Universe.SqlInsights.W3Api.SqlInsightsIntegration
         public SqlInsightsConfiguration(IConfiguration configuration) : this()
         {
             Configuration = configuration;
+
+            _IsServerHostOnWindows = new Lazy<bool>(() =>
+            {
+                Microsoft.Data.SqlClient.SqlConnection cnn = new SqlConnection(ConnectionString);
+                return cnn.Manage().IsWindows;
+            });
         }
 
         public string AppName { get; } = "SqlInsights";
@@ -25,7 +33,9 @@ namespace Universe.SqlInsights.W3Api.SqlInsightsIntegration
 
         private Lazy<string> _ReportFullFileName;
         public string ReportFullFileName => _ReportFullFileName.Value;
-        public string SqlTracesDirectory => RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "C:\\Temp\\SqlInsights-Traces" : "/tmp/SqlInsights-Traces";
+        public string SqlTracesDirectory => _IsServerHostOnWindows.Value ? "C:\\Temp\\SqlInsights-Traces" : "/tmp/SqlInsights-Traces";
+
+        private Lazy<bool> _IsServerHostOnWindows;
 
         public string ConnectionString =>
             Configuration.GetConnectionString("SqlInsights")
