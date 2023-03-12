@@ -175,7 +175,7 @@ namespace Universe.SqlInsights.W3Api
                 }
                 finally
                 {
-                    AssemblyVisualizer.Show("Assemblies after JET");
+                    AssemblyVisualizer.Show("Assemblies after JIT of ISqlServerInsightsStorage");
                 }
             });
         }
