@@ -23,4 +23,4 @@ RUN set -eu; export SQLINSIGHTS_VERSION; \
 CMD set -eu; \
   test -s /opt/sqlinsights-dashboard/VERSION && echo "SqlInsights Dashboard $(cat /opt/sqlinsights-dashboard/VERSION) is starting ..."; \
   cd /opt/sqlinsights-dashboard; \
-  ASPNETCORE_URLS=http://0.0.0.0:80 DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 /usr/share/dotnet/dotnet Universe.SqlInsights.W3Api.dll
+  ASPNETCORE_URLS=http://0.0.0.0:80 DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 dotnet Universe.SqlInsights.W3Api.dll

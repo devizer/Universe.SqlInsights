@@ -40,7 +40,7 @@ docker cp test-w3app:/etc/nginx ~/etc-nginx/
 
 TARGET_IMAGE="sqlinsights-dashboard-frontend"
 docker_version="$(date +%F)"
-Say "Docker Image version: [${docker_version}]"
+Say "Docker Image version: [${SQLINSIGHTS_VERSION}]"
 # docker image rm -f $(docker image ls -aq)
 export OS=Linux
 export TAGS="-t devizervlad/$TARGET_IMAGE:${SQLINSIGHTS_VERSION} -t devizervlad/$TARGET_IMAGE:latest"
