@@ -40,6 +40,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         public static bool IsMotSupported()
         {
             SqlConnectionStringBuilder master = new SqlConnectionStringBuilder(TheConnectionString);
+            master.InitialCatalog = "";
             SqlConnection con = new SqlConnection(master.ConnectionString);
             return con.Manage().IsMemoryOptimizedTableSupported;
         }
