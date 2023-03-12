@@ -17,8 +17,7 @@ namespace Universe.SqlInsights.W3Api
                 return;
             }
             
-            Console.WriteLine($"Runtime Version: {RuntimeInformation.FrameworkDescription}");
-            Console.WriteLine($"SqlInsights Dashboard Web Api Version: {typeof(Program).Assembly.GetName().Version}");
+            Console.WriteLine($"Starting SqlInsights Dashboard Web Api. Version: {typeof(Program).Assembly.GetName().Version}. Runtime Version: {RuntimeInformation.FrameworkDescription}.");
 
             AssemblyVisualizer.Subscribe();
             CreateHostBuilder(args).Build().Run();
