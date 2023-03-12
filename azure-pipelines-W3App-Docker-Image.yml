@@ -5,7 +5,7 @@ variables:
   VMIMAGE: 'windows-2019'
   DEFAULT_RAM_DISK_SIZE: "1200"
   W3API_NET: net6.0
-  # Also scripts\Linux-W3API-Docker-FXDependent\Dockerfile
+  # Also scripts\Linux-W3API-Docker-FXDependent\Dockerfile and rid=osx-arm64 in scripts\Build-Github-Release-Artifacts.sh
 
 jobs:
 
