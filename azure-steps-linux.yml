@@ -170,6 +170,7 @@ steps:
       cd ~/jam/src/Universe.SqlServerJam.Tests
 
       export SQLSERVER_WELLKNOWN_In_Docker="TrustServerCertificate=True;Data Source=localhost,1433;User ID=sa;Password=p@assw0rd!"
+      ls -la
       dotnet test -c Release -f $W3API_NET
     condition: succeededOrFailed()
     displayName: 'Test JAM'

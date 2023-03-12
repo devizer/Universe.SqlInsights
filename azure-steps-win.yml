@@ -41,6 +41,7 @@ steps:
       git clone https://github.com/devizer/Universe.SqlServerJam ~/jam
       cd ~/jam/src/Universe.SqlServerJam.Tests
 
+      ls -la
       dotnet test -c Release -f $W3API_NET
       Say Done
     condition: succeededOrFailed()
