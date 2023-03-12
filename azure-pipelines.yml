@@ -4,7 +4,7 @@ variables:
   # Default image
   VMIMAGE: 'windows-2019'
   DEFAULT_RAM_DISK_SIZE: "1200"
-  W3API_NET: net5.0
+  W3API_NET: net6.0
 
 jobs:
 
