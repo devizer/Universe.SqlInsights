@@ -23,7 +23,7 @@ namespace Universe.SqlInsights.W3Api
     public class Startup
     {
         // private DbProviderFactory DbProvider = Microsoft.Data.SqlClient.SqlClientFactory.Instance;
-        private DbProviderFactory DbProvider = SqlClientFactory.Instance;
+        // private DbProviderFactory DbProvider = SqlClientFactory.Instance;
         public IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration)
@@ -33,7 +33,7 @@ namespace Universe.SqlInsights.W3Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            AddDbProviderFactoryService(services);
+            var dbProviderFactory = AddDbProviderFactoryService(services);
 
             services.AddCors(options =>
             {
@@ -67,7 +67,7 @@ namespace Universe.SqlInsights.W3Api
                 if (string.IsNullOrEmpty(dbOptions.ConnectionString))
                     throw new InvalidOperationException("Misconfigured DbOptions.ConnectionString");
 
-                return new SqlServerSqlInsightsStorage(DbProvider, dbOptions.ConnectionString);
+                return new SqlServerSqlInsightsStorage(dbProviderFactory, dbOptions.ConnectionString);
             });
 
             services.AddSingleton<SqlInsightsReport>(SqlInsightsReport.Instance);
@@ -131,7 +131,7 @@ namespace Universe.SqlInsights.W3Api
             PreJit(logger, dbProviderFactory);
         }
         
-        private void AddDbProviderFactoryService(IServiceCollection services)
+        private DbProviderFactory AddDbProviderFactoryService(IServiceCollection services)
         {
             const StringComparison ignoreCase = StringComparison.OrdinalIgnoreCase;
             var rawDbProviderFactory = Configuration.GetValue<string>("DbProviderFactory");
@@ -142,6 +142,8 @@ namespace Universe.SqlInsights.W3Api
                     : throw new ArgumentException("Invalid DbProviderFactory configuration value. 'System' or 'Microsoft are allowed'");
 
             services.AddSingleton<DbProviderFactory>(x => dbProviderFactory);
+            Console.WriteLine($"[Startup Configuration] DbProviderFactory: {dbProviderFactory.GetType().Namespace}");
+            return dbProviderFactory;
         }
 
         void PreJit(ILogger logger, DbProviderFactory dbProviderFactory)
