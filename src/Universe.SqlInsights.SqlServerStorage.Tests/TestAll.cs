@@ -177,7 +177,6 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             await storage.DeleteSession(targetSession.IdSession);
             var sessionsAfter = await storage.GetSessions();
             Assert.IsNull(sessionsAfter.FirstOrDefault(x => x.IdSession == targetSession.IdSession));
-
         }
         
         [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetTestCases))]

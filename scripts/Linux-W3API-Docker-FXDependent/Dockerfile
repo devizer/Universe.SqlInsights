@@ -1,9 +1,8 @@
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
-# v5 - debian 10
+# v5 - debian 10, v6 - debian 11
 
 ARG SQLINSIGHTS_VERSION
 COPY build /opt/sqlinsights-dashboard
-# RUN ls -la /opt/sqlinsights-dashboard
 
 # DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 is unsupported for Microsoft DbProviderFactory
 CMD set -eu; \

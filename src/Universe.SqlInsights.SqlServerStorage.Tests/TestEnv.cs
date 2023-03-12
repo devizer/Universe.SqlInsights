@@ -14,7 +14,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         // private static readonly string TheConnectionString = "Data Source=(local);Database=SqlServerSqlInsightsStorage_Tests; Integrated Security=SSPI";
         public static string TheConnectionString => string.IsNullOrEmpty(OptionalDbConnectionString) ? "Data Source=(local);Integrated Security=SSPI" : OptionalDbConnectionString;
         
-        public static readonly string DbNamePattern = "SqlInsights {0} Tests";
+        public static readonly string DbNamePattern = "SqlInsights {0} Tests for {1}";
 
         // OPTIONAL
         public static string OptionalDbDataDir => Environment.GetEnvironmentVariable("SQLINSIGHTS_DATA_DIR");
