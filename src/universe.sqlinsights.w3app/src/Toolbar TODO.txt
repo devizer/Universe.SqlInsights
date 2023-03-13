@@ -1,0 +1,16 @@
+[X] Live Summary, Refresh
+Avg|Total Summary
+
+[X] Live Actions, Refresh
+
+New Session
+
+Summary App Filter (Any app)
+Summary Host Filter (Any app)
+Summary Sql Server Filter (Not Implemented)
+___________________________
+
+Summary Avarage
+
+Summary Apps
+Summary Hosts

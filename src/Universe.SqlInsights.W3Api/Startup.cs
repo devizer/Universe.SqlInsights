@@ -83,6 +83,9 @@ namespace Universe.SqlInsights.W3Api
                 options.Filters.Add(typeof(CustomGroupingActionFilter));
             });
             
+            Console.WriteLine($"[Startup] Need Response Compression: {NeedResponseCompression()}");
+            if (NeedResponseCompression()) services.AddResponseCompression(); // x => { x.MimeTypes = CompressedMimeTypes.List; }
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Universe.SqlInsights.W3Api", Version = "v1"});
@@ -115,11 +118,14 @@ namespace Universe.SqlInsights.W3Api
 
             app.UseRouting();
 
+            if (NeedResponseCompression()) app.UseResponseCompression();
+            
             app.UseDefaultFiles(new DefaultFilesOptions() { DefaultFileNames = new List<string>() { "index.html"}});
             app.UseStaticFiles();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
 
             // AutoFlush
             using var scope = app.ApplicationServices.CreateScope();
@@ -178,6 +184,15 @@ namespace Universe.SqlInsights.W3Api
                     AssemblyVisualizer.Show("Assemblies after JIT of ISqlServerInsightsStorage");
                 }
             });
+        }
+
+        bool NeedResponseCompression()
+        {
+            var raw = this.Configuration.GetValue<string>("ResponseCompression");
+            return
+                "True".Equals(raw, StringComparison.OrdinalIgnoreCase)
+                || "On".Equals(raw, StringComparison.OrdinalIgnoreCase)
+                || "1" == raw;
         }
 
     }

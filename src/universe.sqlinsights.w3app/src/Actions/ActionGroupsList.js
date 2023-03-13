@@ -59,7 +59,7 @@ export default class ActionGroupsList extends Component {
         const isLoaded = this.state.actions !== null;
         const actions = this.state.actions === null ? [] : this.state.actions;
         Helper.toConsole(`Rendering TOTAL ACTION GROUPS`, actions.length);
-        const handleChangeKind = (event) => {
+        const handleChangeSummaryKind = (event) => {
             this.setState({kind: event.target.value})
         };
 
@@ -126,7 +126,7 @@ export default class ActionGroupsList extends Component {
             
         return (
             <React.Fragment>
-                    <RadioGroup row aria-label="kind" name="kind" value={this.state.kind} onChange={handleChangeKind} className='center-aligned'>
+                    <RadioGroup row aria-label="kind" name="kind" value={this.state.kind} onChange={handleChangeSummaryKind} className='center-aligned'>
                         <div style={{textAlign: 'center', width: '100%'}}>
                         <FormControlLabel control={<null />} label="Display:" />
                         <FormControlLabel value="average" control={<Radio />} label="Average" />
