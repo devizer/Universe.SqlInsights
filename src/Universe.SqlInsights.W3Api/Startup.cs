@@ -34,7 +34,7 @@ namespace Universe.SqlInsights.W3Api
         public void ConfigureServices(IServiceCollection services)
         {
             var dbProviderFactory = AddDbProviderFactoryService(services);
-
+            
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
@@ -96,7 +96,6 @@ namespace Universe.SqlInsights.W3Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, DbProviderFactory dbProviderFactory, IWebHostEnvironment env, ILogger<Startup> logger)
         {
-
             app.ValidateSqlInsightsServices();
             app.UseSqlInsights();
             
@@ -194,7 +193,6 @@ namespace Universe.SqlInsights.W3Api
                 || "On".Equals(raw, StringComparison.OrdinalIgnoreCase)
                 || "1" == raw;
         }
-
     }
 
     public class DbOptions
