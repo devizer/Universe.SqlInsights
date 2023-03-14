@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -59,15 +60,22 @@ namespace Universe.SqlInsights.W3Api
 
         private static string GetListenOnUrlsFromAppSettings()
         {
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: true)
-                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true)
-                .Build();
+            var appLocation = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            try
+            {
+                IConfigurationRoot configuration = new ConfigurationBuilder()
+                    .SetBasePath(appLocation)
+                    .AddJsonFile("appsettings.json", optional: true)
+                    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true)
+                    .Build();
 
-            var listenOnUrl = configuration.GetValue<string>("ListenOnUrls");
-            if (!string.IsNullOrEmpty(listenOnUrl)) return listenOnUrl;
-            return !string.IsNullOrEmpty(listenOnUrl) ? listenOnUrl : null;
+                var listenOnUrl = configuration.GetValue<string>("ListenOnUrls");
+                return !string.IsNullOrEmpty(listenOnUrl) ? listenOnUrl : null;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }
