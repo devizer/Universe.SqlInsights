@@ -1,7 +1,10 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using Universe.SqlInsights.W3Api.Helpers;
@@ -20,12 +23,14 @@ namespace Universe.SqlInsights.W3Api
             
             Console.WriteLine($"Starting SqlInsights Dashboard Web Api. Version: {typeof(Program).Assembly.GetName().Version}. Runtime Version: {RuntimeInformation.FrameworkDescription}.");
 
-            if (WindowsServiceHelpers.IsWindowsService())
+            var listenOnUrls = GetListenOnUrls();
+            if (!string.IsNullOrEmpty(listenOnUrls))
             {
-                var sqlInsightsUrls = Environment.GetEnvironmentVariable("SQLINSIGHTS_DASHBOARD_URLS");
-                if (!string.IsNullOrEmpty(sqlInsightsUrls))
-                    Environment.SetEnvironmentVariable("ASPNETCORE_URLS", sqlInsightsUrls);
+                Console.WriteLine($"Forced ASPNETCORE_URLS: '{listenOnUrls}'");
+                Environment.SetEnvironmentVariable("ASPNETCORE_URLS", listenOnUrls);
             }
+            
+            // Console.WriteLine($"GetListenOnUrlsFromAppSettings(): {GetListenOnUrlsFromAppSettings()}");
 
             AssemblyVisualizer.Subscribe();
             CreateHostBuilder(args).Build().Run();
@@ -38,5 +43,31 @@ namespace Universe.SqlInsights.W3Api
                     configure.ServiceName = "SqlInsightsDashboard";
                 })
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
+
+        static string GetListenOnUrls()
+        {
+            if (WindowsServiceHelpers.IsWindowsService())
+            {
+                var sqlInsightsUrls = Environment.GetEnvironmentVariable("SQLINSIGHTS_DASHBOARD_URLS");
+                if (!string.IsNullOrEmpty(sqlInsightsUrls)) return sqlInsightsUrls;
+                var listenOnUrlFromAppSettings = GetListenOnUrlsFromAppSettings();
+                if (!string.IsNullOrEmpty(listenOnUrlFromAppSettings)) return listenOnUrlFromAppSettings;
+            }
+
+            return null;
+        }
+
+        private static string GetListenOnUrlsFromAppSettings()
+        {
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: true)
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true)
+                .Build();
+
+            var listenOnUrl = configuration.GetValue<string>("ListenOnUrls");
+            if (!string.IsNullOrEmpty(listenOnUrl)) return listenOnUrl;
+            return !string.IsNullOrEmpty(listenOnUrl) ? listenOnUrl : null;
+        }
     }
 }

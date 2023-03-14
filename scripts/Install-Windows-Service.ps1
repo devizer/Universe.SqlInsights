@@ -1,7 +1,8 @@
 param( 
   [string] $DB = "TrustServerCertificate=True;Server=(local)\SQL_2012_SP3;Database=SqlInsights Warehouse v2;Trusted_Connection=True;TrustServerCertificate=True;",
   [string] $Compression = "False",
-  [string] $CoverItself = "True"
+  [string] $CoverItself = "True",
+  [string] $ListenOn = "http://*:5050"
 )
 
 function To-Boolean($name,$value) {
@@ -18,22 +19,30 @@ $csb = new-object System.Data.SqlClient.SqlConnectionStringBuilder $DB
 $server=$csb.DataSource
 $dbName=$csb.InitialCatalog
 
+$archSuffix="x64";
+if ($ENV:PROCESSOR_ARCHITECTURE -eq "X86") { $archSuffix="x86" };
+if ($ENV:PROCESSOR_ARCHITECTURE -eq "ARM64") { $archSuffix="arm64" };
+if ($ENV:PROCESSOR_ARCHITECTURE -eq "ARM") { $archSuffix="arm" };
+$file="sqlinsights-dashboard-win-$archSuffix.zip"
+$url="https://github.com/devizer/Universe.SqlInsights/releases/latest/download/$file"
+
 function Say-Parameter { param( [string] $name, [string] $value)
-    Write-Host "  - $(($name + ":").PadRight(12,[char]32)) '" -NoNewline
+    Write-Host "  - $(($name + ":").PadRight(13,[char]32)) '" -NoNewline
     Write-Host "$value" -NoNewline -ForegroundColor Green
     Write-Host "'"
 }
 
 Write-Host "Installing SqlInsights Dashboard using parameters:"
-Say-Parameter Compression $Compression
-Say-Parameter CoverItself $CoverItself
-Say-Parameter Server $server
-Say-Parameter Database $dbName
+Say-Parameter "Compression" $Compression
+Say-Parameter "CoverItself" $CoverItself
+Say-Parameter "Server" $server
+Say-Parameter "Database" $dbName
+Say-Parameter "Download" $file
+Say-Parameter "Listen On" $ListenOn
 
 $ProgressPreference = 'SilentlyContinue'
 
 $connectionString=$DB;
-$url="https://github.com/devizer/Universe.SqlInsights/releases/latest/download/sqlinsights-dashboard-win-x64.zip"
 
 function Get-Elapsed
 {
@@ -63,6 +72,7 @@ function Get-CPU() {
 }
 
 function Download-File([string] $url, [string]$outfile) {
+  [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
   $_ = [System.IO.Directory]::CreateDirectory([System.IO.Path]::GetDirectoryName($outfile))
   [System.Net.ServicePointManager]::ServerCertificateValidationCallback={$true};
   for ($i=1; $i -le 3; $i++) { 
@@ -93,7 +103,7 @@ function SaveAsJson {
 Say "CPU: $(Get-CPU)"
 Say "$((Get-Ram).Info)"
 
-$zipFile=[System.IO.Path]::Combine((Get-Download-Folder), "sqlinsights-dashboard-win-x64.zip")
+$zipFile=[System.IO.Path]::Combine((Get-Download-Folder), $file)
 Say "Downloading to '$($zipFile)'"
 $isDownloadOk = Download-File "$url" $zipFile
 Say "Download Completed"
@@ -131,6 +141,9 @@ if ($jsonSettings) {
   $jsonSettings.ConnectionStrings.SqlInsights = $connectionString
   $jsonSettings.ResponseCompression = $Compression;
   $jsonSettings.CoverItself = $CoverItself;
+  if ($listenOn) {
+    $jsonSettings | add-member -Name "ListenOnUrls" -value $listenOn -MemberType NoteProperty
+  }
   SaveAsJson $jsonSettings $jsonSettingsFile
 } else {
   Write-Host "Unable to parse json setting file '$jsonSettingsFile'" -ForegroundColor Red
