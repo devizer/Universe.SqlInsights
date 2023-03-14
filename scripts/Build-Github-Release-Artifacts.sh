@@ -59,6 +59,26 @@ for r in $rids; do
   popd
 done
 
+# HASH SUMS
+function build_all_known_hash_sums() {
+  pushd "$public"
+  rm -f /tmp/hash-sums
+  for f in *; do 
+  echo "HASH for '$f' in [$public]"
+  for alg in md5 sha1 sha224 sha256 sha384 sha512; do
+    if [[ "$(command -v ${alg}sum)" != "" ]]; then
+      local sum=$(eval ${alg}sum "'"$file"'" | awk '{print $1}')
+      printf "$f|$alg|$sum" >> /tmp/hash-sums
+    else
+      echo "warning! ${alg}sum missing"
+    fi
+  done
+  popd
+  cp -f /tmp/hash-sums.txt "$public"/hash-sums.txt
+}
+
+build_all_known_hash_sums
+
 cp -r -a "$public" "$SYSTEM_ARTIFACTSDIRECTORY"/
 
 Say "Create Github Release ${SQLINSIGHTS_VERSION}"
