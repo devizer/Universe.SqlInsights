@@ -75,7 +75,7 @@ function build_all_known_hash_sums() {
     done
   done
   popd
-  cp -f /tmp/hash-sums.txt "$public"/hash-sums.txt
+  cp -f /tmp/hash-sums "$public"/hash-sums.txt
 }
 
 build_all_known_hash_sums
