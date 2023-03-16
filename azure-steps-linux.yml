@@ -4,7 +4,7 @@
 steps:
 
   - pwsh: |
-      scripts\Measure-Action.ps1 
+      . scripts/Measure-Action.ps1
       Measure-Action "Install Nuget Package Provider" {Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force}
       Measure-Action "Install PowerShellGet" {Install-Module PowerShellGet -AllowClobber -Force}
       Measure-Action "Install the Platform-Info module" {Install-Module Platform-Info -Force}
