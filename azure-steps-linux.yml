@@ -15,6 +15,15 @@ steps:
       script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash; 
     displayName: 'Bootstrap'
 
+  - pwsh: |
+      Install-Module Platform-Info -Force
+      Write-Host "Latest Version of Platform-Info: '$((Find-Module Platform-Info -EA SilentlyContinue).Version)'"
+      Write-Host "Installed Version of Platform-Info: '$((Get-InstalledModule Platform-Info -EA SilentlyContinue).Version)'"
+      Write-Host "CPU: $(Get-Cpu-Name)"
+      Write-Host "Platform: $(Get-Os-Platform)"
+      Write-Host "Memory $((Get-Memory-Info).Description)"
+    displayName: 'Bootstrap pwsh'
+
   - task: DownloadPipelineArtifact@2
     condition: succeededOrFailed()
     displayName: 'w3app: download'

@@ -3,6 +3,15 @@
 
 steps:
 
+  - pwsh: |
+      Install-Module Platform-Info -Force
+      Write-Host "Latest Version of Platform-Info: '$((Find-Module Platform-Info -EA SilentlyContinue).Version)'"
+      Write-Host "Installed Version of Platform-Info: '$((Get-InstalledModule Platform-Info -EA SilentlyContinue).Version)'"
+      Write-Host "CPU: $(Get-Cpu-Name)"
+      Write-Host "Platform: $(Get-Os-Platform)"
+      Write-Host "Memory $((Get-Memory-Info).Description)"
+    displayName: 'Bootstrap pwsh'
+
   - powershell: |
       (Get-Counter -ListSet *).Paths | Where-Object { $_ -like "*Transfers*" }
     displayName: 'List Perfmormance Counters'
