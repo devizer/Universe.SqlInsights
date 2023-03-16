@@ -5,10 +5,10 @@ steps:
 
   - pwsh: |
       . scripts/Measure-Action.ps1
-      Measure-Action "List Package Providers" {Get-PackageProvider -ListAvailable}
-      Get-PackageProvider -ListAvailable
-      Measure-Action "Install Nuget Package Provider" {Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force}
-      Measure-Action "Install PowerShellGet" {Install-Module PowerShellGet -AllowClobber -Force}
+      # Measure-Action "List Package Providers" {Get-PackageProvider -ListAvailable}
+      # Get-PackageProvider -ListAvailable
+      # Measure-Action "Install Nuget Package Provider" {Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force}
+      # Measure-Action "Install PowerShellGet" {Install-Module PowerShellGet -AllowClobber -Force}
       Measure-Action "Install the Platform-Info module" {Install-Module Platform-Info -Force}
 
       Write-Host "Latest Version of Platform-Info: '$((Find-Module Platform-Info -EA SilentlyContinue).Version)'"
