@@ -5,10 +5,14 @@ steps:
 
   - pwsh: |
       $startAt = [System.Diagnostics.Stopwatch]::StartNew()
+      Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+      Write-Host "Install NuGet package provider took $($startAt.Elapsed)"
+      $startAt = [System.Diagnostics.Stopwatch]::StartNew()
       Install-Module Platform-Info -Force
       Write-Host "Install-Module Platform-Info took $($startAt.Elapsed)"
       Write-Host "Latest Version of Platform-Info: '$((Find-Module Platform-Info -EA SilentlyContinue).Version)'"
       Write-Host "Installed Version of Platform-Info: '$((Get-InstalledModule Platform-Info -EA SilentlyContinue).Version)'"
+      
       Write-Host "CPU: $(Get-Cpu-Name)"
       Write-Host "Platform: $(Get-Os-Platform)"
       Write-Host "Memory $((Get-Memory-Info).Description)"
