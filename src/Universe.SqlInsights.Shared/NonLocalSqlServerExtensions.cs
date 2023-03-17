@@ -39,13 +39,15 @@ End";
                             cmd.ExecuteNonQuery();
                         }
                         
-                        Console.WriteLine($"SUCCESS: [{shellCommand}] successfully completed");
+#if DEBUG
+                        Console.WriteLine($"SUCCESS: [{shellCommand}] successfully completed on SQL Server");
+#endif
 
                         // Console.WriteLine($"xp_cmdshell: TRACE FILE '{traceFile}.trc' successfully deleted");
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"xp_cmdshell failed to delete trace file '{traceFile}.trc. Please grant permission to the '{config.AppName}' app or switch off cleanup via xp_cmdshell.'{Environment.NewLine}{ex}");
+                        Console.WriteLine($"Warning! xp_cmdshell failed to delete trace file '{traceFile}.trc. Please grant permission to the '{config.AppName}' app or switch off cleanup via xp_cmdshell.'{Environment.NewLine}{ex}");
                     }
                 }
             }
