@@ -36,6 +36,8 @@ End";
                             cmd.Parameters.Add("@command_string", SqlDbType.NVarChar, 4000).Value = shellCommand;
                             cmd.ExecuteNonQuery();
                         }
+                        
+                        Console.WriteLine($"SUCCESS: [{shellCommand}] successfully completed");
 
                         // Console.WriteLine($"xp_cmdshell: TRACE FILE '{traceFile}.trc' successfully deleted");
                     }

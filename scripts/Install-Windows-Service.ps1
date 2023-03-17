@@ -74,7 +74,9 @@ function Get-CPU() {
 function Download-File([string] $url, [string]$outfile) {
   [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
   $_ = [System.IO.Directory]::CreateDirectory([System.IO.Path]::GetDirectoryName($outfile))
-  [System.Net.ServicePointManager]::ServerCertificateValidationCallback={$true};
+  if ($PSVersionTable.PSEdition -ne "Core") {
+    [System.Net.ServicePointManager]::ServerCertificateValidationCallback={$true};
+  }
   for ($i=1; $i -le 3; $i++) { 
     $d=new-object System.Net.WebClient; 
     try { 
