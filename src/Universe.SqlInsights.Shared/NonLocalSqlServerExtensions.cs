@@ -13,7 +13,7 @@ namespace Universe.SqlInsights.Shared
             {
                 using (SqlConnection con = new SqlConnection(config.ConnectionString))
                 {
-                    // TODO: Replace Hack by explicit tracefile arg
+                    // TODO: Replace REPLACE(@command_string, '/', '\') Hack by explicit tracefile arg
                     string shellCommand = $"del \"{traceFile}.trc\"";
                     string sql = @"
 Declare @host_platform nvarchar(4000) = null;
