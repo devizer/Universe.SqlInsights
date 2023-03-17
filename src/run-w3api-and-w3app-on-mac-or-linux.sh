@@ -11,8 +11,9 @@ export SQLINSIGHTS_CONNECTION_STRING="$ConnectionStrings__SqlInsights"
 cd ~/source/sqlinsights/src/Universe.SqlInsights.SqlServerStorage.Tests; git pull; dotnet test -f net5.0 -c Release
 
 
+export ASPNETCORE_URLS=http://0.0.0.0:1234
 cd ~/source/sqlinsights/src/Universe.SqlInsights.W3Api
-pkill dotnet; git pull; sleep 4; nohup dotnet run -c Release -p:Version=9.9.9.9 2>&1 > ~/w3api.log &
+pkill dotnet; git pull; sleep 4; nohup dotnet run -c Release --no-launch-profile -p:Version=9.9.9.9 2>&1 > ~/w3api.log &
 
 if [[ "$(uname -s)" == Darwin ]]; then
   cd ~/source/sqlinsights/src/universe.sqlinsights.w3app

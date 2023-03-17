@@ -13,6 +13,7 @@ namespace Universe.SqlInsights.Shared
             {
                 using (SqlConnection con = new SqlConnection(config.ConnectionString))
                 {
+                    // TODO: Replace Hack by explicit tracefile arg
                     string shellCommand = $"del \"{traceFile}.trc\"";
                     string sql = @"
 Declare @host_platform nvarchar(4000) = null;
@@ -23,7 +24,8 @@ Select @host_platform = host_platform from sys.dm_os_host_info;
 
 If (@host_platform = 'Windows')
 Begin
-  DECLARE @result int; 
+  DECLARE @result int;
+  @command_string = REPLACE(@command_string, '/', '\');
   Exec @result = xp_cmdshell @command_string; 
   Select @Result;
 End";
