@@ -25,7 +25,7 @@ Select @host_platform = host_platform from sys.dm_os_host_info;
 If (@host_platform = 'Windows')
 Begin
   DECLARE @result int;
-  @command_string = REPLACE(@command_string, '/', '\');
+  SET @command_string = REPLACE(@command_string, '/', '\');
   Exec @result = xp_cmdshell @command_string; 
   Select @Result;
 End";
