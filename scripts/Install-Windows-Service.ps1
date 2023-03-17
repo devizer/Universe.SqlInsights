@@ -1,8 +1,8 @@
 param( 
-  [string] $DB = "TrustServerCertificate=True;Server=(local)\SQL_2012_SP3;Database=SqlInsights Warehouse v2;Trusted_Connection=True;TrustServerCertificate=True;",
-  [string] $Compression = "False",
+  [string] $DB = "TrustServerCertificate=True;Server=(local);Database=SqlInsights Warehouse;User Id=sa;Password=``1qazxsw2",
+  [string] $Compression = "True",
   [string] $CoverItself = "True",
-  [string] $ListenOn = "http://*:5050"
+  [string] $ListenOn = "http://*:8080"
 )
 
 function To-Boolean($name,$value) {
@@ -35,7 +35,7 @@ function Say-Parameter { param( [string] $name, [string] $value)
 Write-Host "Installing SqlInsights Dashboard using parameters:"
 Say-Parameter "Compression" $Compression
 Say-Parameter "CoverItself" $CoverItself
-Say-Parameter "Server" $server
+Say-Parameter "SQL Server" $server
 Say-Parameter "Database" $dbName
 Say-Parameter "Download" $file
 Say-Parameter "Listen On" $ListenOn
