@@ -62,47 +62,47 @@ namespace Universe.SqlInsights.NetCore
             
             traceReader.Stop();
             traceReader.Dispose();
+            
+            config.DeleteTraceFile(traceReader.TraceFile);
 
-                ActionDetailsWithCounters actionDetailsWithCounters = new ActionDetailsWithCounters()
+            ActionDetailsWithCounters actionDetailsWithCounters = new ActionDetailsWithCounters()
+            {
+                Key = keyPath,
+                AppDuration = duration,
+                AppKernelUsage = (cpuUsage?.KernelUsage.TotalSeconds).GetValueOrDefault(),
+                AppUserUsage = (cpuUsage?.UserUsage.TotalSeconds).GetValueOrDefault(),
+                AppName = config.AppName,
+                HostId = config.HostId,
+                At = DateTime.UtcNow,
+                IsOK = exception == null,
+                BriefException = null,
+                BriefSqlError = null,
+                ExceptionAsString = null,
+                SqlStatements = details.Select(x => new ActionDetailsWithCounters.SqlStatement()
                 {
-                    Key = keyPath,
-                    AppDuration = duration,
-                    AppKernelUsage = (cpuUsage?.KernelUsage.TotalSeconds).GetValueOrDefault(),
-                    AppUserUsage = (cpuUsage?.UserUsage.TotalSeconds).GetValueOrDefault(),
-                    AppName = config.AppName,
-                    HostId = config.HostId,
-                    At = DateTime.UtcNow,
-                    IsOK = exception == null,
-                    BriefException = null,
-                    BriefSqlError = null,
-                    ExceptionAsString = null,
-                    SqlStatements = details.Select(x => new ActionDetailsWithCounters.SqlStatement()
-                    {
-                        Counters = x.Counters,
-                        SpName = x.SpName,
-                        Sql = x.Sql,
-                        SqlErrorCode = x.SqlErrorCode,
-                        SqlErrorText = x.SqlErrorText,
-                    }).ToList()
+                    Counters = x.Counters,
+                    SpName = x.SpName,
+                    Sql = x.Sql,
+                    SqlErrorCode = x.SqlErrorCode,
+                    SqlErrorText = x.SqlErrorText,
+                }).ToList()
+            };
+
+            SqlExceptionInfo sqlException = exception.FindSqlError();
+            if (sqlException != null)
+            {
+                actionDetailsWithCounters.BriefSqlError = new BriefSqlError()
+                {
+                    Message = sqlException.Message,
+                    SqlErrorCode = sqlException.Number,
                 };
+            }
 
-                SqlExceptionInfo sqlException = exception.FindSqlError();
-                if (sqlException != null)
-                {
-                    actionDetailsWithCounters.BriefSqlError = new BriefSqlError()
-                    {
-                        Message = sqlException.Message,
-                        SqlErrorCode = sqlException.Number,
-                    };
-                }
-
-                if (exception != null)
-                {
-                    actionDetailsWithCounters.ExceptionAsString = exception.ToString();
-                    actionDetailsWithCounters.BriefException = exception.GetBriefExceptionKey();
-                }
-
-
+            if (exception != null)
+            {
+                actionDetailsWithCounters.ExceptionAsString = exception.ToString();
+                actionDetailsWithCounters.BriefException = exception.GetBriefExceptionKey();
+            }
 
             SqlInsightsReport.Instance.Add(actionDetailsWithCounters);
 
