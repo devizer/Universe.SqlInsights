@@ -95,7 +95,7 @@ CONTAINS MEMORY_OPTIMIZED_DATA;";
                 string sqlAddMotFile = @$"
 ALTER DATABASE [{dbName}] ADD FILE (
     name='SqlInsight MemoryOptimizedTables', filename='{motFileFolder}')
-TO FILEGROUP MemoryOptimizedTablesFileGroup;";
+    TO FILEGROUP MemoryOptimizedTablesFileGroup;";
 
                 string sqlEnableTransactions = $@"
 ALTER DATABASE [{dbName}]
@@ -103,8 +103,9 @@ SET MEMORY_OPTIMIZED_ELEVATE_TO_SNAPSHOT = ON;
 ";
                 sqlConfigureMotList.AddRange(new[] { sqlAutoCloseOff, sqlAddMotFileGroup, sqlAddMotFile, sqlEnableTransactions});
             }
-            
-            string sqlWithMemory = supportMOT ? " WITH (MEMORY_OPTIMIZED=ON, DURABILITY=SCHEMA_ONLY)" : "";
+
+            // SCHEMA_AND_DATA, SCHEMA_ONLY
+            string sqlWithMemory = supportMOT ? " WITH (MEMORY_OPTIMIZED=ON, DURABILITY=SCHEMA_AND_DATA)" : "";
 
             Func<string, string> IfMemory = sql => supportMOT ? sql : "";  
             Func<string, string> IfLegacy = sql => !supportMOT ? sql : "";  
