@@ -98,7 +98,14 @@ namespace Universe.SqlInsights.SqlServerStorage
 
                         // next.Key = actionActionSummary.Key;
                         var sqlUpsert = exists ? sqlUpdate : sqlInsert;
+                        // Stopwatch startSerializeActionSummaryCounters = Stopwatch.StartNew();
                         var dataSummary = DbJsonConvert.Serialize(next);
+                        if (DebugAddAction)
+                        {
+                            // var msecSerializeActionSummaryCounters = startSerializeActionSummaryCounters.ElapsedTicks * 1000d / Stopwatch.Frequency;
+                            // Console.WriteLine($"SerializeActionSummaryCounters [Flawor={DbJsonConvert.Flawor}]: {msecSerializeActionSummaryCounters:n3}");
+                        }
+
                         // TODO (without ReadCommitted only):
                         // System.Data.SqlClient.SqlException (0x80131904): Violation of PRIMARY KEY constraint 'PK_SqlInsightsKeyPathSummary'. Cannot insert duplicate key in object 'dbo.SqlInsightsKeyPathSummary'. The duplicate key value is (ASP.NET Core→SqlInsights→Summary→[POST], 0, 1, 3).
                         try
@@ -160,7 +167,9 @@ Update Top (1) SqlInsightsKeyPathSummaryTimestamp Set Guid = NewId(), Version = 
 Select Top 1 Version From SqlInsightsKeyPathSummaryTimestamp;
 ";
 */
+            Stopwatch startAt = Stopwatch.StartNew();
             const string sqlNextVersion = @"UPDATE Top (1) [SqlInsightsKeyPathSummaryTimestamp] Set Version = Version + 1 Output Inserted.Version;";
+
 
             long nextVersion = -1;
             bool isDeadLock = false;
@@ -189,9 +198,10 @@ Select Top 1 Version From SqlInsightsKeyPathSummaryTimestamp;
                     var sqlError = SqlExceptionExtensions.IsSqlException(nextVersionQueryError);
                     if (sqlError != null) errorDetails = $"[{nextVersionQueryError.GetType()} N{sqlError.Number}] '{nextVersionQueryError.Message}'"; 
                 }
-                
+
+                var msec = startAt.ElapsedTicks * 1000d / Stopwatch.Frequency;
                 Console.WriteLine(
-                    $"[NextVersionQuery {fail}/{total}] {msecNextVersion:n2} IsDeadlock: {(!isDeadLock ? "no" : "--<=DEADLOCK=>--")}{(nextVersionQueryError == null ? null : $" {errorDetails}")}");
+                    $"[NextVersionQuery {fail}/{total} took {msec:n2}] {msecNextVersion:n2} IsDeadlock: {(!isDeadLock ? "no" : "--<=DEADLOCK=>--")}{(nextVersionQueryError == null ? null : $" {errorDetails}")}");
             }
 
             if (nextVersionQueryError != null)

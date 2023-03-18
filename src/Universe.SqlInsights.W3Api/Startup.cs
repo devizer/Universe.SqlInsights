@@ -224,7 +224,7 @@ namespace Universe.SqlInsights.W3Api
 
         void PreJit(ILogger logger, DbProviderFactory dbProviderFactory)
         {
-            Task.Run(async () =>
+            var taskPreJit = Task.Run(async () =>
             {
                 Stopwatch sw = Stopwatch.StartNew();
                 string server = ">unknown<", db = ">unknown<";
@@ -254,6 +254,9 @@ namespace Universe.SqlInsights.W3Api
                     AssemblyVisualizer.Show("Assemblies after JIT of ISqlServerInsightsStorage");
                 }
             });
+
+            taskPreJit.ConfigureAwait(true);
+            taskPreJit.Wait();
         }
 
         bool NeedResponseCompression()
