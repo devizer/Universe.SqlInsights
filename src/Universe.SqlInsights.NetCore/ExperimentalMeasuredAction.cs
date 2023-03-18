@@ -18,7 +18,8 @@ namespace Universe.SqlInsights.NetCore
         public static void Perform(
             ISqlInsightsConfiguration config,
             SqlInsightsActionKeyPath keyPath,
-            Action<string> action
+            Action<string> action,
+            ICrossPlatformLogger logger
             )
         {
             string idAction = Guid.NewGuid().ToString("N");
@@ -139,7 +140,8 @@ namespace Universe.SqlInsights.NetCore
                 log.AppendLine($"{MultilinePadding(sqlCode, "    │ ")}");
             }
             
-            Console.WriteLine(log);
+            // Console.WriteLine(log);
+            logger?.LogInformation(log.ToString());
         }
 
         static string MultilinePadding(string arg)

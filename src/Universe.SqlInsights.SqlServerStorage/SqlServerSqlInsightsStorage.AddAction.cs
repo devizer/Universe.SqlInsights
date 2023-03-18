@@ -167,7 +167,6 @@ Update Top (1) SqlInsightsKeyPathSummaryTimestamp Set Guid = NewId(), Version = 
 Select Top 1 Version From SqlInsightsKeyPathSummaryTimestamp;
 ";
 */
-            Stopwatch startAt = Stopwatch.StartNew();
             const string sqlNextVersion = @"UPDATE Top (1) [SqlInsightsKeyPathSummaryTimestamp] Set Version = Version + 1 Output Inserted.Version;";
 
 
@@ -199,9 +198,8 @@ Select Top 1 Version From SqlInsightsKeyPathSummaryTimestamp;
                     if (sqlError != null) errorDetails = $"[{nextVersionQueryError.GetType()} N{sqlError.Number}] '{nextVersionQueryError.Message}'"; 
                 }
 
-                var msec = startAt.ElapsedTicks * 1000d / Stopwatch.Frequency;
                 Console.WriteLine(
-                    $"[NextVersionQuery {fail}/{total} took {msec:n2}] {msecNextVersion:n2} IsDeadlock: {(!isDeadLock ? "no" : "--<=DEADLOCK=>--")}{(nextVersionQueryError == null ? null : $" {errorDetails}")}");
+                    $"[NextVersionQuery {fail}/{total} took {msecNextVersion:n2}] IsDeadlock: {(!isDeadLock ? "no" : "--<=DEADLOCK=>--")}{(nextVersionQueryError == null ? null : $" {errorDetails}")}");
             }
 
             if (nextVersionQueryError != null)

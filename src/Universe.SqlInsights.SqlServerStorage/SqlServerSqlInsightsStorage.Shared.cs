@@ -17,6 +17,8 @@ namespace Universe.SqlInsights.SqlServerStorage
         private static volatile bool AreMigrationsChecked = false;
         private static readonly object SyncMigrations = new object();
 
+        public ICrossPlatformLogger Logger { get; set; } = NullCrossPlatformLogger.Instance;
+
         public SqlServerSqlInsightsStorage(DbProviderFactory providerFactory, string connectionString)
         {
             ProviderFactory = providerFactory ?? throw new ArgumentNullException(nameof(providerFactory));
@@ -43,7 +45,7 @@ namespace Universe.SqlInsights.SqlServerStorage
                     {
                         var migrations = new SqlServerSqlInsightsMigrations(ProviderFactory, ConnectionString);
                         migrations.Migrate();
-                        Console.WriteLine($"IMPLICIT MIGRATIONs LOGS{Environment.NewLine}{migrations.Logs}");
+                        Logger?.LogInformation($"IMPLICIT MIGRATIONs LOGS{Environment.NewLine}{migrations.Logs}");
                         AreMigrationsChecked = true;
                     }
 

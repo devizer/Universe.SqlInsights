@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
-using System.IO;
 using System.Linq;
 using System.Text;
 using Dapper;
@@ -18,7 +17,7 @@ namespace Universe.SqlInsights.SqlServerStorage
         public readonly StringBuilder Logs = new StringBuilder();
         public bool ThrowOnDbCreationError { get; set; } = false;
 
-        public static volatile bool DisableMemoryOptimizedTables;
+        public static volatile bool DisableMemoryOptimizedTables = false;
         /*
         public static bool DisableMemoryOptimizedTables
         {
@@ -204,6 +203,7 @@ Create Table SqlInsightsAction(
     HostId bigint Not Null,
     IsOK bit Not Null,
     Data nvarchar(max) Not Null,
+    InternalVersion RowVersion Not Null,
     -- Constraint PK_SqlInsightsAction Primary Key (IdAction),
     Constraint PK_SqlInsightsAction Primary Key {(supportMOT ? "NON" : "")}Clustered (KeyPath, IdSession, IdAction)
 {IfLegacy($@"

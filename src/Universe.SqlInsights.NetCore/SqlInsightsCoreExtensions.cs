@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Universe.CpuUsage;
 using Universe.SqlInsights.Shared;
 using Universe.SqlTrace;
@@ -52,6 +53,10 @@ namespace Universe.SqlInsights.NetCore
         
         public static IApplicationBuilder UseSqlInsights(this IApplicationBuilder app)
         {
+            var loggerFactory = app.ApplicationServices.CreateScope().ServiceProvider.GetRequiredService<ILoggerFactory>();
+            var coreLogger = loggerFactory.CreateLogger("Traceable Storage → AddAction()");
+            var logger = new NetCoreLogger(coreLogger);
+
             app.Use(middleware: async delegate(HttpContext context, Func<Task> next)
             {
                 // var aboutRequest = $"{context.Request?.GetDisplayUrl()} {context.Request?.Method}, {context.TraceIdentifier}";
@@ -183,7 +188,8 @@ namespace Universe.SqlInsights.NetCore
                                     var traceableStorage = storage as ITraceableStorage;
                                     traceableStorage.ConnectionString = connectionString;
                                     storage?.AddAction(actionDetails);
-                                }
+                                },
+                                logger
                             );
                         }
                         else

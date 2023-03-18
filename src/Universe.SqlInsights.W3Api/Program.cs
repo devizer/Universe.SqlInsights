@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Hosting.WindowsServices;
+using Serilog;
+using Serilog.Events;
 using Universe.SqlInsights.W3Api.Helpers;
 
 namespace Universe.SqlInsights.W3Api
@@ -39,6 +41,12 @@ namespace Universe.SqlInsights.W3Api
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .UseSerilog((context, provider, config) =>
+                {
+                    var outputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] '{SourceContext}'{NewLine}{Message}{NewLine}{Exception}";
+                    config.WriteTo.File(GetLogFileFullName(), outputTemplate: outputTemplate);
+                    config.WriteTo.Console(LogEventLevel.Information);
+                })
                 .UseWindowsService(configure =>
                 {
                     configure.ServiceName = "SqlInsightsDashboard";
@@ -60,7 +68,7 @@ namespace Universe.SqlInsights.W3Api
 
         private static string GetListenOnUrlsFromAppSettings()
         {
-            var appLocation = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            var appLocation = AppDirectory;
             try
             {
                 IConfigurationRoot configuration = new ConfigurationBuilder()
@@ -76,6 +84,24 @@ namespace Universe.SqlInsights.W3Api
             {
                 return null;
             }
+        }
+
+        public static string AppDirectory => Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+
+        static string GetLogFileFolder()
+        {
+            if (WindowsServiceHelpers.IsWindowsService())
+            {
+                var systemDrive = Environment.GetEnvironmentVariable("SystemDrive") ?? "C:\\";
+                return Path.Combine(systemDrive, "Temp", "SqlInsights Dashboard Logs");
+            }
+
+            return Path.Combine(AppDirectory, "Logs");
+        }
+
+        static string GetLogFileFullName()
+        {
+            return Path.Combine(GetLogFileFolder(), DateTime.Now.ToString("yyyy MM dd HH꞉mm꞉ss") + ".log");
         }
     }
 }

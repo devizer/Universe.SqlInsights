@@ -74,7 +74,13 @@ namespace Universe.SqlInsights.W3Api
                 if (string.IsNullOrEmpty(dbOptions.ConnectionString))
                     throw new InvalidOperationException("Misconfigured DbOptions.ConnectionString");
 
-                return new SqlServerSqlInsightsStorage(dbProviderFactory, dbOptions.ConnectionString);
+                var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
+                var logger = loggerFactory.CreateLogger("SqlServerSqlInsightsStorage");
+                ICrossPlatformLogger crossLogger = new NetCoreLogger(logger);
+                return new SqlServerSqlInsightsStorage(dbProviderFactory, dbOptions.ConnectionString)
+                {
+                    Logger = crossLogger,
+                };
             });
 
             services.AddSingleton<SqlInsightsReport>(SqlInsightsReport.Instance);
@@ -236,11 +242,14 @@ namespace Universe.SqlInsights.W3Api
                     db = csb.InitialCatalog;
                     // var dbProviderFactory = Microsoft.Data.SqlClient.SqlClientFactory.Instance;
                     // var dbProviderFactory = System.Data.SqlClient.SqlClientFactory.Instance;
-                    var history = new SqlServerSqlInsightsStorage(dbProviderFactory, connectionString);
+                    var history = new SqlServerSqlInsightsStorage(dbProviderFactory, connectionString)
+                    {
+                        Logger = new NetCoreLogger(logger),
+                    };
                     history.GetAliveSessions();
                     await history.GetActionsSummaryTimestamp(0);
                     var summary = await history.GetActionsSummary(0);
-                    var keyPath = summary.FirstOrDefault()?.Key ?? new SqlInsightsActionKeyPath();
+                    var keyPath = summary.FirstOrDefault()?.Key ?? new SqlInsightsActionKeyPath("Pre JIT");
                     await history.GetKeyPathTimestampOfDetails(0, keyPath);
                     await history.GetActionsByKeyPath(0, keyPath, lastN: 1);
                     logger.LogInformation($"Pre-jit of ISqlInsightsStorage completed in {sw.Elapsed}. Server '{server}'. Database '{db}'");
@@ -248,10 +257,10 @@ namespace Universe.SqlInsights.W3Api
                 catch (Exception ex)
                 {
                     logger.LogError(ex, $"Pre-jit of ISqlInsightsStorage took {sw.Elapsed} and failed.  Server '{server}'. Database '{db}'");
+                    AssemblyVisualizer.Show("Assemblies after JIT of ISqlServerInsightsStorage");
                 }
                 finally
                 {
-                    AssemblyVisualizer.Show("Assemblies after JIT of ISqlServerInsightsStorage");
                 }
             });
 
