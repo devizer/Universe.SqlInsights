@@ -160,7 +160,8 @@ namespace Universe.SqlInsights.W3Api
             
             JsonExceptionHandlerMiddlewareCustomContext appInfo = new JsonExceptionHandlerMiddlewareCustomContext()
             {
-                { "App", $"SqlInsights Dashboard v{typeof(Startup).Assembly.GetName().Version?.ToString(3)}" }
+                { "App", $"SqlInsights Dashboard v{typeof(Startup).Assembly.GetName().Version?.ToString(3)}" },
+                { "OS Platform", CrossInfo.ThePlatform },
             };
 
             try
