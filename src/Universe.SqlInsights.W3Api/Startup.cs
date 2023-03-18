@@ -167,10 +167,11 @@ namespace Universe.SqlInsights.W3Api
             {
                 SqlConnectionStringBuilder b = new SqlConnectionStringBuilder(GetConnectionStringByConfiguration());
                 appInfo.Add("SQL Server", b.DataSource);
-                appInfo.Add("Warehouse Database", b.InitialCatalog);
+                appInfo.Add("SQL Warehouse Database", b.InitialCatalog);
                 if (b.IntegratedSecurity)
                 {
-                    appInfo.Add("SQL Integrated Security", $"True. User Name: {GetCurrentUserName()}");
+                    appInfo.Add("SQL Integrated Security", true);
+                    appInfo.Add("SQL Integrated Security User", GetCurrentUserName());
                 }
                 else
                 {
