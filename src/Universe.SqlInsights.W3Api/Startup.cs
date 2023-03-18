@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Diagnostics;
@@ -153,7 +154,7 @@ namespace Universe.SqlInsights.W3Api
             SqlInsightsReport.AutoFlush(reportFullFileName, 100);
             
             // TODO: START MIGRATE ON STARTUP, crash if fail
-            PreJit(logger, dbProviderFactory);
+            PreJit(logger, dbProviderFactory, app.ApplicationServices.CreateScope().ServiceProvider.GetRequiredService<ISqlInsightsConfiguration>());
         }
 
         private string GetConnectionStringByConfiguration()
@@ -228,7 +229,7 @@ namespace Universe.SqlInsights.W3Api
             return dbProviderFactory;
         }
 
-        void PreJit(ILogger logger, DbProviderFactory dbProviderFactory)
+        void PreJit(ILogger logger, DbProviderFactory dbProviderFactory, ISqlInsightsConfiguration sqlInsightsConfiguration)
         {
             var taskPreJit = Task.Run(async () =>
             {
@@ -252,11 +253,19 @@ namespace Universe.SqlInsights.W3Api
                     var keyPath = summary.FirstOrDefault()?.Key ?? new SqlInsightsActionKeyPath("Pre JIT");
                     await history.GetKeyPathTimestampOfDetails(0, keyPath);
                     await history.GetActionsByKeyPath(0, keyPath, lastN: 1);
+                    // Experimental
+                    using (IDbConnection cnn = dbProviderFactory.CreateConnection())
+                    {
+                        cnn.ConnectionString = connectionString;
+                        StringsStorage ss = new StringsStorage(cnn, null);
+                        ss.AcquireString(StringKind.AppName, sqlInsightsConfiguration.AppName);
+                    }
+                    
                     logger.LogInformation($"Pre-jit of ISqlInsightsStorage completed in {sw.Elapsed}. Server '{server}'. Database '{db}'");
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(ex, $"Pre-jit of ISqlInsightsStorage took {sw.Elapsed} and failed.  Server '{server}'. Database '{db}'");
+                    logger.LogError(ex, $"Pre-jit of ISqlInsightsStorage took {sw.Elapsed} and failed. Server '{server}'. Database '{db}'");
                     AssemblyVisualizer.Show("Assemblies after JIT of ISqlServerInsightsStorage");
                 }
                 finally
