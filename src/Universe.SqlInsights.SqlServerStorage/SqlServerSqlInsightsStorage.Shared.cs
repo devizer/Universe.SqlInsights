@@ -5,8 +5,6 @@ using System.Data.Common;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using Universe.SqlInsights.Shared;
 
 namespace Universe.SqlInsights.SqlServerStorage

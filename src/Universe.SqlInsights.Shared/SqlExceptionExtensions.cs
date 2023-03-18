@@ -25,7 +25,7 @@ namespace Universe.SqlInsights.Shared
                 ret.Add("[" + ex.GetType().Name + (sqlError == null ? "" : " #") + sqlError + "] " + ex.Message);
             }
 
-            return string.Join(" --> ", ret.ToArray());
+            return string.Join(" → ", ret.ToArray());
         }
 
         // Support Both System and Microsoft Sql Client

@@ -3,20 +3,27 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using Universe.SqlInsights.NetCore;
 using Universe.SqlInsights.Shared;
 using Universe.SqlInsights.SqlServerStorage;
 using Universe.SqlInsights.W3Api.Helpers;
 using Universe.SqlInsights.W3Api.SqlInsightsIntegration;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Universe.SqlInsights.W3Api
 {
@@ -53,7 +60,7 @@ namespace Universe.SqlInsights.W3Api
             {
                 var config = provider.GetRequiredService<ISqlInsightsConfiguration>();
                 var idHolder = provider.GetRequiredService<ActionIdHolder>();
-                SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(Configuration.GetConnectionString("SqlInsights"))
+                SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(GetConnectionStringByConfiguration())
                 {
                     ApplicationName = string.Format(config.SqlClientAppNameFormat, idHolder.Id.ToString("N"))
                 };
@@ -93,17 +100,24 @@ namespace Universe.SqlInsights.W3Api
         }
 
 
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, DbProviderFactory dbProviderFactory, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             app.ValidateSqlInsightsServices();
-            app.UseSqlInsights();
-            
-            if (env.IsDevelopment())
+
+            if (false && env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-            
+            else
+            {
+                var appInfo = GetErrorCustomContext();
+                app.UseMiddleware<JsonExceptionHandlerMiddleware>(appInfo);
+            }
+
+            app.UseSqlInsights();
+
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
@@ -135,7 +149,62 @@ namespace Universe.SqlInsights.W3Api
             // TODO: START MIGRATE ON STARTUP, crash if fail
             PreJit(logger, dbProviderFactory);
         }
-        
+
+        private string GetConnectionStringByConfiguration()
+        {
+            return Configuration.GetConnectionString("SqlInsights");
+        }
+
+        private JsonExceptionHandlerMiddlewareCustomContext GetErrorCustomContext()
+        {
+            
+            JsonExceptionHandlerMiddlewareCustomContext appInfo = new JsonExceptionHandlerMiddlewareCustomContext()
+            {
+                { "App", $"SqlInsights Dashboard v{typeof(Startup).Assembly.GetName().Version?.ToString(3)}" }
+            };
+
+            try
+            {
+                SqlConnectionStringBuilder b = new SqlConnectionStringBuilder(GetConnectionStringByConfiguration());
+                appInfo.Add("SQL Server", b.DataSource);
+                appInfo.Add("Warehouse Database", b.InitialCatalog);
+                if (b.IntegratedSecurity)
+                {
+                    appInfo.Add("SQL Integrated Security", $"True. User Name: {GetCurrentUserName()}");
+                }
+                else
+                {
+                    appInfo.Add("SQL User ID", b.UserID);
+                }
+            }
+            catch (Exception ex)
+            {
+                appInfo.Add("Error", $"Malformed Storage Connection String. {ex.GetExceptionDigest()}");
+            }
+
+            return appInfo;
+        }
+
+        private static string GetCurrentUserName()
+        {
+            
+            string userName = ">Unknown<";
+            string domainName = null;
+            try
+            {
+                userName = Environment.UserName;
+            }
+            catch { }
+            try
+            {
+                domainName = Environment.UserDomainName;
+            }
+            catch { }
+
+            if (!string.IsNullOrEmpty(domainName)) userName = @$"{domainName}\{userName}";
+            return userName;
+        }
+
         private DbProviderFactory AddDbProviderFactoryService(IServiceCollection services)
         {
             const StringComparison ignoreCase = StringComparison.OrdinalIgnoreCase;
@@ -187,7 +256,12 @@ namespace Universe.SqlInsights.W3Api
 
         bool NeedResponseCompression()
         {
-            var raw = this.Configuration.GetValue<string>("ResponseCompression");
+            return GetBooleanConfigurationValue("ResponseCompression");
+        }
+
+        private bool GetBooleanConfigurationValue(string configPath)
+        {
+            var raw = this.Configuration.GetValue<string>(configPath);
             return
                 "True".Equals(raw, StringComparison.OrdinalIgnoreCase)
                 || "On".Equals(raw, StringComparison.OrdinalIgnoreCase)
