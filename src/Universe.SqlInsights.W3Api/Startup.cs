@@ -282,14 +282,7 @@ namespace Universe.SqlInsights.W3Api
             return GetBooleanConfigurationValue("ResponseCompression");
         }
 
-        private bool GetBooleanConfigurationValue(string configPath)
-        {
-            var raw = this.Configuration.GetValue<string>(configPath);
-            return
-                "True".Equals(raw, StringComparison.OrdinalIgnoreCase)
-                || "On".Equals(raw, StringComparison.OrdinalIgnoreCase)
-                || "1" == raw;
-        }
+        private bool GetBooleanConfigurationValue(string configPath) => this.Configuration.GetBooleanValue(configPath);
     }
 
     public class DbOptions

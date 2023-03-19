@@ -39,22 +39,29 @@ namespace Universe.SqlInsights.W3Api
             CreateHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .UseSerilog((context, provider, config) =>
-                {
-                    var outputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] '{SourceContext}'{NewLine}{Message}{NewLine}{Exception}";
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            IHostBuilder builder = Host.CreateDefaultBuilder(args);
+            if (IsLogFilesEnabled)
+            {
+                builder
+                    .UseSerilog((context, provider, config) =>
+                    {
+                        var outputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] '{SourceContext}'{NewLine}{Message}{NewLine}{Exception}";
 
-                    var logFileFullName = GetLogFileFullName();
-                    Console.WriteLine($"Local Log File Name: '{logFileFullName}'");
-                    config.WriteTo.File(logFileFullName, outputTemplate: outputTemplate);
-                    config.WriteTo.Console(LogEventLevel.Information, outputTemplate: outputTemplate);
-                })
-                .UseWindowsService(configure =>
-                {
-                    configure.ServiceName = "SqlInsightsDashboard";
-                })
+                        var logFileFullName = GetLogFileFullName();
+                        Console.WriteLine($"Local Log File Name: '{logFileFullName}'");
+                        config.WriteTo.File(logFileFullName, outputTemplate: outputTemplate);
+                        config.WriteTo.Console(LogEventLevel.Information, outputTemplate: outputTemplate);
+                    });
+            }
+
+            builder
+                .UseWindowsService(configure => { configure.ServiceName = "SqlInsightsDashboard"; })
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
+
+            return builder;
+        }
 
         static string GetListenOnUrls()
         {
@@ -130,5 +137,7 @@ namespace Universe.SqlInsights.W3Api
         {
             return Path.Combine(GetLogFileFolder(), DateTime.Now.ToString("yyyy-MM-dd HH꞉mm꞉ss") + ".log");
         }
+
+        static bool IsLogFilesEnabled => ConfigurationRoot.GetBooleanValue("LocalLogsFolder:Enable");
     }
 }
