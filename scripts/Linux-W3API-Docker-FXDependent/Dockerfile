@@ -5,6 +5,7 @@ ARG SQLINSIGHTS_VERSION
 COPY build /opt/sqlinsights-dashboard
 
 # DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 is unsupported for Microsoft DbProviderFactory
+# LC_ALL="C.UTF-8" is available on DXDependent
 CMD set -eu; \
   test -s /opt/sqlinsights-dashboard/VERSION && echo "SqlInsights Dashboard $(cat /opt/sqlinsights-dashboard/VERSION) is starting ..."; \
   cd /opt/sqlinsights-dashboard; \

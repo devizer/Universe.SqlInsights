@@ -45,7 +45,7 @@ namespace Universe.SqlInsights.W3Api
                 {
                     var outputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] '{SourceContext}'{NewLine}{Message}{NewLine}{Exception}";
                     config.WriteTo.File(GetLogFileFullName(), outputTemplate: outputTemplate);
-                    config.WriteTo.Console(LogEventLevel.Information);
+                    config.WriteTo.Console(LogEventLevel.Information, outputTemplate: outputTemplate);
                 })
                 .UseWindowsService(configure =>
                 {
@@ -75,6 +75,7 @@ namespace Universe.SqlInsights.W3Api
                     .SetBasePath(appLocation)
                     .AddJsonFile("appsettings.json", optional: true)
                     .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true)
+                    .AddEnvironmentVariables()
                     .Build();
 
                 var listenOnUrl = configuration.GetValue<string>("ListenOnUrls");
@@ -96,12 +97,13 @@ namespace Universe.SqlInsights.W3Api
                 return Path.Combine(systemDrive, "Temp", "SqlInsights Dashboard Logs");
             }
 
+            // TODO: It is only for development
             return Path.Combine(AppDirectory, "Logs");
         }
 
         static string GetLogFileFullName()
         {
-            return Path.Combine(GetLogFileFolder(), DateTime.Now.ToString("yyyy MM dd HH꞉mm꞉ss") + ".log");
+            return Path.Combine(GetLogFileFolder(), DateTime.Now.ToString("yyyy-MM-dd HH꞉mm꞉ss") + ".log");
         }
     }
 }
