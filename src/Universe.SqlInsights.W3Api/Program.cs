@@ -106,7 +106,7 @@ namespace Universe.SqlInsights.W3Api
 
         static string GetLogFileFolder()
         {
-            var key = $"LocalLogsFolder:{(RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "Windows" : "Nix")}";
+            var key = $"LocalLogsFolder:{(RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "Windows" : "Unix")}";
             var ret = ConfigurationRoot.GetValue<string>(key);
             ret = string.IsNullOrEmpty(ret) ? null : Environment.ExpandEnvironmentVariables(ret);
 
