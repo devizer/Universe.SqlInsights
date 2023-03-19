@@ -237,10 +237,11 @@ namespace Universe.SqlInsights.W3Api
                 string server = ">unknown<", db = ">unknown<";
                 try
                 {
-                    var connectionString = Configuration.GetConnectionString("SqlInsights");
+                    var connectionString = GetConnectionStringByConfiguration();
                     SqlConnectionStringBuilder csb = new SqlConnectionStringBuilder(connectionString);
                     server = csb.DataSource;
                     db = csb.InitialCatalog;
+                    logger.LogInformation($"Starting Pre-JIT of Storage. Server '{server}'. Database '{db}'. Factory '{dbProviderFactory.GetType().Namespace}'");
                     // var dbProviderFactory = Microsoft.Data.SqlClient.SqlClientFactory.Instance;
                     // var dbProviderFactory = System.Data.SqlClient.SqlClientFactory.Instance;
                     var history = new SqlServerSqlInsightsStorage(dbProviderFactory, connectionString)

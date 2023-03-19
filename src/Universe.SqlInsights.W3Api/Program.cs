@@ -3,9 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using Serilog;
@@ -47,11 +47,20 @@ namespace Universe.SqlInsights.W3Api
                 builder
                     .UseSerilog((context, provider, config) =>
                     {
-                        var outputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] '{SourceContext}'{NewLine}{Message}{NewLine}{Exception}";
+                        var outputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] \"{SourceContext}\"{NewLine}{Message}{NewLine}{Exception}";
 
                         var logFileFullName = GetLogFileFullName();
                         Console.WriteLine($"[Startup Configuration] Local Log File Name: '{logFileFullName}'");
-                        config.WriteTo.File(logFileFullName, outputTemplate: outputTemplate);
+                        config.WriteTo.File(
+                            logFileFullName,
+                            outputTemplate: outputTemplate,
+                            fileSizeLimitBytes: 250 * 1024 * 1024,
+                            rollOnFileSizeLimit: true,
+                            retainedFileCountLimit: 2,
+                            flushToDiskInterval: TimeSpan.FromSeconds(1),
+                            encoding: new UTF8Encoding(true),
+                            shared: true
+                        );
                         config.WriteTo.Console(LogEventLevel.Information, outputTemplate: outputTemplate);
                     });
             }
