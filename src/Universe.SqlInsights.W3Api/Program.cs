@@ -50,10 +50,14 @@ namespace Universe.SqlInsights.W3Api
                         var outputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] '{SourceContext}'{NewLine}{Message}{NewLine}{Exception}";
 
                         var logFileFullName = GetLogFileFullName();
-                        Console.WriteLine($"Local Log File Name: '{logFileFullName}'");
+                        Console.WriteLine($"[Startup Configuration] Local Log File Name: '{logFileFullName}'");
                         config.WriteTo.File(logFileFullName, outputTemplate: outputTemplate);
                         config.WriteTo.Console(LogEventLevel.Information, outputTemplate: outputTemplate);
                     });
+            }
+            else
+            {
+                Console.WriteLine($"[Startup Configuration] Additional Local File Logging is Disabled");
             }
 
             builder

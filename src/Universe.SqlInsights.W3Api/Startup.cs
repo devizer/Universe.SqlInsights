@@ -97,7 +97,7 @@ namespace Universe.SqlInsights.W3Api
                 options.Filters.Add(typeof(CustomGroupingActionFilter));
             });
             
-            Console.WriteLine($"[Startup] Need Response Compression: {NeedResponseCompression()}");
+            Console.WriteLine($"[Startup Configuration] Need Response Compression: {NeedResponseCompression()}");
             if (NeedResponseCompression()) services.AddResponseCompression(); // x => { x.MimeTypes = CompressedMimeTypes.List; }
             
             services.AddSwaggerGen(c =>
