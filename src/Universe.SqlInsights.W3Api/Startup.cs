@@ -113,7 +113,7 @@ namespace Universe.SqlInsights.W3Api
         {
             app.ValidateSqlInsightsServices();
 
-            if (false && env.IsDevelopment())
+            if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }

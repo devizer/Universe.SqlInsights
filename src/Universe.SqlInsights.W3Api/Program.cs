@@ -44,7 +44,10 @@ namespace Universe.SqlInsights.W3Api
                 .UseSerilog((context, provider, config) =>
                 {
                     var outputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] '{SourceContext}'{NewLine}{Message}{NewLine}{Exception}";
-                    config.WriteTo.File(GetLogFileFullName(), outputTemplate: outputTemplate);
+
+                    var logFileFullName = GetLogFileFullName();
+                    Console.WriteLine($"Local Log File Name: '{logFileFullName}'");
+                    config.WriteTo.File(logFileFullName, outputTemplate: outputTemplate);
                     config.WriteTo.Console(LogEventLevel.Information, outputTemplate: outputTemplate);
                 })
                 .UseWindowsService(configure =>
@@ -68,15 +71,9 @@ namespace Universe.SqlInsights.W3Api
 
         private static string GetListenOnUrlsFromAppSettings()
         {
-            var appLocation = AppDirectory;
             try
             {
-                IConfigurationRoot configuration = new ConfigurationBuilder()
-                    .SetBasePath(appLocation)
-                    .AddJsonFile("appsettings.json", optional: true)
-                    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true)
-                    .AddEnvironmentVariables()
-                    .Build();
+                var configuration = ConfigurationRoot;
 
                 var listenOnUrl = configuration.GetValue<string>("ListenOnUrls");
                 return !string.IsNullOrEmpty(listenOnUrl) ? listenOnUrl : null;
@@ -87,18 +84,46 @@ namespace Universe.SqlInsights.W3Api
             }
         }
 
+        // TODO: Lazy
+        public static IConfigurationRoot ConfigurationRoot => _ConfigurationRoot.Value;
+
+        private static Lazy<IConfigurationRoot> _ConfigurationRoot = new Lazy<IConfigurationRoot>(GetConfigurationRoot);
+        private static IConfigurationRoot GetConfigurationRoot()
+        {
+            var appLocation = AppDirectory;
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                .SetBasePath(appLocation)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true, reloadOnChange: false)
+                .AddEnvironmentVariables()
+                .Build();
+            
+            return configuration;
+        }
+
         public static string AppDirectory => Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+
 
         static string GetLogFileFolder()
         {
-            if (WindowsServiceHelpers.IsWindowsService())
+            var key = $"LocalLogsFolder:{(RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "Windows" : "Nix")}";
+            var ret = ConfigurationRoot.GetValue<string>(key);
+            ret = string.IsNullOrEmpty(ret) ? null : Environment.ExpandEnvironmentVariables(ret);
+
+            if (string.IsNullOrEmpty(ret))
             {
-                var systemDrive = Environment.GetEnvironmentVariable("SystemDrive") ?? "C:\\";
-                return Path.Combine(systemDrive, "Temp", "SqlInsights Dashboard Logs");
+                // Only for development
+                if (WindowsServiceHelpers.IsWindowsService())
+                {
+                    var systemDrive = Environment.GetEnvironmentVariable("SystemDrive") ?? "C:\\";
+                    return Path.Combine(systemDrive, "Temp", "SqlInsights Dashboard Logs");
+                }
+
+                // TODO: It is only for development
+                return Path.Combine(AppDirectory, "Logs");
             }
 
-            // TODO: It is only for development
-            return Path.Combine(AppDirectory, "Logs");
+            return ret;
         }
 
         static string GetLogFileFullName()
