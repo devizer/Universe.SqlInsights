@@ -19,6 +19,12 @@ steps:
       Write-Host "Memory $((Get-Memory-Info).Description)"
     displayName: 'Bootstrap pwsh'
 
+  - bash: |
+     script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
+     try-and-retry try-and-retry docker manifest inspect mcr.microsoft.com/dotnet/aspnet:6.0
+     true
+    displayName: "Docker ispect images"
+
   - powershell: |
       (Get-Counter -ListSet *).Paths | Where-Object { $_ -like "*Transfers*" }
     displayName: 'List Perfmormance Counters'
