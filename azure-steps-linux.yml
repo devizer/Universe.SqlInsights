@@ -20,15 +20,6 @@ steps:
     displayName: 'Bootstrap pwsh'
 
   - bash: |
-     script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
-     for v in 5.0 6.0 7.0 8.0.100-preview.2; do
-       echo "ASP.NET $v"
-       try-and-retry try-and-retry docker manifest inspect mcr.microsoft.com/dotnet/aspnet:$v
-     done 
-     true
-    displayName: "Docker ispect images"
-
-  - bash: |
       set -eu; set -o pipefail;
       script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
       Say --Reset-Stopwatch
