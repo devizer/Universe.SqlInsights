@@ -125,7 +125,7 @@ jobs:
           "**"
 
     - bash: |
-        ls -la "$SYSTEM_ARTIFACTSDIRECTORY"
+        ls -laR "$SYSTEM_ARTIFACTSDIRECTORY"
       displayName: 'Show'
 
 
