@@ -21,8 +21,8 @@ jobs:
          Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
          source scripts/Calc-Current-Version.sh
          
-         mkdir -p $SYSTEM_ARTIFACTSDIRECTORY/VERSION-ARTIFACT"
-         printf $SQLINSIGHTS_VERSION > $SYSTEM_ARTIFACTSDIRECTORY/VERSION-ARTIFACT/VERSION.TXT"
+         mkdir -p "$SYSTEM_ARTIFACTSDIRECTORY/VERSION-ARTIFACT"
+         printf $SQLINSIGHTS_VERSION > "$SYSTEM_ARTIFACTSDIRECTORY/VERSION-ARTIFACT/VERSION.TXT"
 
          docker login -u devizervlad -p "$PASSWORD1"
          echo "$PASSWORD2" | gh auth login --with-token
