@@ -20,6 +20,9 @@ jobs:
          script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
          Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
          source scripts/Calc-Current-Version.sh
+         
+         mkdir -p $SYSTEM_ARTIFACTSDIRECTORY/VERSION-ARTIFACT"
+         printf $SQLINSIGHTS_VERSION > $SYSTEM_ARTIFACTSDIRECTORY/VERSION-ARTIFACT/VERSION.TXT"
 
          docker login -u devizervlad -p "$PASSWORD1"
          echo "$PASSWORD2" | gh auth login --with-token
@@ -40,6 +43,11 @@ jobs:
             PASSWORD1: $(DOCKER_PASSWORD)
             PASSWORD2: $(GITHUB_TOKEN)
 
+      - publish: $(SYSTEM.ARTIFACTSDIRECTORY)/VERSION-ARTIFACT
+        displayName: 'Publish *VERSION* Artifact'
+        condition: succeededOrFailed()
+        artifact: 'VERSION'
+    
       - bash: |
          set -eu; set -o pipefail
          Say "CPU: $(Get-CpuName)"
@@ -92,7 +100,34 @@ jobs:
         displayName: 'Publish Artifact'
         condition: succeededOrFailed()
         artifact: '$(Agent.JobName)'
-    
+
+
+  - job: 'Windows_Nano_Server'
+    displayName: 'Windows Docker Images'
+    condition: succeededOrFailed()
+    pool:
+      vmImage: 'windows-2022'
+    timeoutInMinutes: 30
+    dependsOn: Build_W3_App_Docker_Image
+
+    steps: 
+    - bash: |
+        script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
+        Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
+      displayName: 'Bootstrap'
+
+    - task: DownloadPipelineArtifact@2
+      condition: succeededOrFailed()
+      displayName: 'Download VERSION'
+      inputs:
+        path: $(SYSTEM.ARTIFACTSDIRECTORY)
+        patterns: 
+          "VERSION"
+
+    - bash: |
+        ls -la "$SYSTEM_ARTIFACTSDIRECTORY"
+      displayName: 'Show'
+
 
 trigger:
   batch: false
