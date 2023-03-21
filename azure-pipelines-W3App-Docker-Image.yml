@@ -141,8 +141,8 @@ jobs:
         Say "URL: '$url'"
         curl -o ~/sqlinsights-dashboard-win-x64.7z -kSL "$url"
         7z x -y -oscripts/Windows-W3API-Docker ~/sqlinsights-dashboard-win-x64.7z
-        Say "Files in 'scripts/Windows-W3API-Docker'"
-        ls -laR scripts/Windows-W3API-Docker
+        # Say "Files in 'scripts/Windows-W3API-Docker'"
+        # ls -la scripts/Windows-W3API-Docker
 
         Say "Starting docker images build ..."
         pushd scripts
