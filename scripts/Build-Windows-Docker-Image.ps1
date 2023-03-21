@@ -46,7 +46,7 @@ foreach($nanoVersion in $nanoVersions) {
 }
 
 Say "Create Manifest Args: [$manifestCreateParams]"
-& docker manifest create $manifestCreateParams
+& cmd.exe /c "docker manifest create $manifestCreateParams"
 
 Say "1st Intermediate Inspect Manifest"
 & docker manifest inspect "$($image):$($version)"
