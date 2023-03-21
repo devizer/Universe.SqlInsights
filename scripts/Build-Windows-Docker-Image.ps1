@@ -29,3 +29,5 @@ foreach($nanoVersion in $nanoVersions) {
   & docker build --build-arg TAG=$tag -t devizervlad/sqlinsights-dashboard-nanoserver:$tag .
 }
 popd
+
+Say "DONE"

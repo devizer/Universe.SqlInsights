@@ -10,7 +10,7 @@ variables:
 jobs:
 
   - job: Build_W3_App_Docker_Image
-    displayName: 'W3App Docker Image and GitHub Release'
+    displayName: 'W3API Linux Docker Image and GitHub Release'
     pool:
       vmImage: "ubuntu-20.04"
 
@@ -92,12 +92,12 @@ jobs:
         displayName: "W3API: FXDependent Docker Images"
 
       - publish: $(Build.SourcesDirectory)/src/universe.sqlinsights.w3app/build
-        displayName: 'Publish Artifact'
+        displayName: 'Publish w3app Artifact'
         condition: succeededOrFailed()
         artifact: 'w3app $(SQLINSIGHTS_VERSION)'
     
       - publish: $(SYSTEM.ARTIFACTSDIRECTORY)
-        displayName: 'Publish Artifact'
+        displayName: 'Publish Artifact (full)'
         condition: succeededOrFailed()
         artifact: '$(Agent.JobName)'
 
@@ -118,7 +118,7 @@ jobs:
 
     - task: DownloadPipelineArtifact@2
       condition: succeededOrFailed()
-      displayName: 'Download VERSION'
+      displayName: 'Download VERSION artifact'
       inputs:
         path: $(SYSTEM.ARTIFACTSDIRECTORY)
         patterns: 
@@ -130,7 +130,7 @@ jobs:
 
     - bash: |
         export SQLINSIGHTS_VERSION="$(cat "$SYSTEM_ARTIFACTSDIRECTORY/VERSION/VERSION.TXT")"
-        Say "DOWNLOADING VERSION '${SQLINSIGHTS_VERSION}'"
+        Say "DOWNLOADING SQLINSIGHTS_VERSION='${SQLINSIGHTS_VERSION}'"
         url="https://github.com/devizer/Universe.SqlInsights/releases/download/$SQLINSIGHTS_VERSION/sqlinsights-dashboard-win-x64.7z"; 
         Say "URL: '$url'"
         curl -o ~/sqlinsights-dashboard-win-x64.7z -kSL "$url"
