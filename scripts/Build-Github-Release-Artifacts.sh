@@ -27,15 +27,18 @@ cp -r -a "$BUILD_REPOSITORY_LOCALPATH/src/universe.sqlinsights.w3app/build"/. bi
 # SQL_INSIGHTS_W3API_URL_PLACEHOLDER --> /api/v1/SqlInsights
 pushd bin/fxdepend
   sed -i 's/SQL_INSIGHTS_W3API_URL_PLACEHOLDER/\/api\/v1\/SqlInsights/g' wwwroot/index.html
-  time tar cf - . | pigz -p $(nproc) -b 128 -9  > "$public"/$prefix-fxdependent.tar.gz
-  time tar cf - . | 7za a dummy -txz -mx=9 -si -so > "$public"/$prefix-fxdependent.tar.xz
-  time 7z a -tzip -mx=9 "$public"/$prefix-fxdependent.zip * | Filter-7z
-  time 7z a -t7z -mx=9 -ms=on -mqs=on "$public"/$prefix-fxdependent.7z * | Filter-7z
+  time tar cf - . | pigz -p $(nproc) -b 128 -${COMPRESSION_LEVEL}  > "$public"/$prefix-fxdependent.tar.gz
+  time tar cf - . | 7za a dummy -txz -mx=${COMPRESSION_LEVEL} -si -so > "$public"/$prefix-fxdependent.tar.xz
+  time 7z a -tzip -mx=${COMPRESSION_LEVEL} "$public"/$prefix-fxdependent.zip * | Filter-7z
+  time 7z a -t7z -mx=${COMPRESSION_LEVEL} -ms=on -mqs=on "$public"/$prefix-fxdependent.7z * | Filter-7z
 popd
 
 n=0
 # only net 6
 rids="osx-x64 osx-arm64 win-x64 win-x86 win-arm64 win-arm linux-x64 linux-arm linux-arm64 linux-musl-x64 osx.10.10-x64 osx.10.11-x64"
+if [[ -n "${SHORT_ARTIFACT_RIDS:-}" ]]; then
+  rids="linux-x64 linux-arm linux-arm64 win-x64"
+fi
 # rids="linux-x64 linux-arm linux-arm64"
 for r in $rids; do
   n=$((n+1))
@@ -47,12 +50,12 @@ for r in $rids; do
     chmod 644 *.dll
     test -s Universe.SqlInsights.W3Api && chmod 755 Universe.SqlInsights.W3Api
     if [[ "$r" == "win"* ]]; then
-      time 7z a -tzip -mx=9 "$public"/$prefix-$r.zip * | Filter-7z
-      time 7z a -t7z -mx=9 -ms=on -mqs=on "$public"/$prefix-$r.7z * | Filter-7z
+      time 7z a -tzip -mx=${COMPRESSION_LEVEL} "$public"/$prefix-$r.zip * | Filter-7z
+      time 7z a -t7z -mx=${COMPRESSION_LEVEL} -ms=on -mqs=on "$public"/$prefix-$r.7z * | Filter-7z
     else
       # time tar cf - . | xz -9 -e -z -T0 > "$public"/$prefix-$r.tar.xz
-      time tar cf - . | pigz -p $(nproc) -b 128 -9  > "$public"/$prefix-$r.tar.gz
-      time tar cf - . | 7za a dummy -txz -mx=9 -si -so > "$public"/$prefix-$r.tar.xz
+      time tar cf - . | pigz -p $(nproc) -b 128 -${COMPRESSION_LEVEL}  > "$public"/$prefix-$r.tar.gz
+      time tar cf - . | 7za a dummy -txz -mx=${COMPRESSION_LEVEL} -si -so > "$public"/$prefix-$r.tar.xz
       # pigz -p 8 -b 128 -9
       # gzip -9 -c
     fi
