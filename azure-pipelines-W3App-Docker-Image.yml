@@ -128,6 +128,13 @@ jobs:
         ls -laR "$SYSTEM_ARTIFACTSDIRECTORY"
       displayName: 'Show'
 
+    - bash: |
+        export VERSION="$(cat "$SYSTEM_ARTIFACTSDIRECTORY/VERSION/VERSION.TXT")"
+        Say "DOWNLOADING VERSION '${VERSION}'"
+        url="https://github.com/devizer/Universe.SqlInsights/releases/download/$SQLINSIGHTS_VERSION/sqlinsights-dashboard-win-x64.7z"; \
+        
+      displayName: 'Show'
+
 
 trigger:
   batch: false

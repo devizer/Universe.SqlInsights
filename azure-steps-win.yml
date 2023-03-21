@@ -31,7 +31,7 @@ steps:
      for v in 1709 1803 1809 1903 1909 2004 2009 20H2 ltsc2022 ltsc2019; do
        Say "NANO SERVER $v"
        echo mcr.microsoft.com/windows/nanoserver:$v >> "$SYSTEM_ARTIFACTSDIRECTORY/NANO SERVER docker imaged.txt"
-       try-and-retry docker manifest inspect mcr.microsoft.com/windows/nanoserver:$v |& tee "$SYSTEM_ARTIFACTSDIRECTORY/NANO SERVER docker imaged.txt"
+       try-and-retry docker manifest inspect mcr.microsoft.com/windows/nanoserver:$v |& tee -a "$SYSTEM_ARTIFACTSDIRECTORY/NANO SERVER docker imaged.txt"
      done 
 
      true
