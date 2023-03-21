@@ -131,8 +131,18 @@ jobs:
     - bash: |
         export VERSION="$(cat "$SYSTEM_ARTIFACTSDIRECTORY/VERSION/VERSION.TXT")"
         Say "DOWNLOADING VERSION '${VERSION}'"
-        url="https://github.com/devizer/Universe.SqlInsights/releases/download/$SQLINSIGHTS_VERSION/sqlinsights-dashboard-win-x64.7z"; \
-        
+        url="https://github.com/devizer/Universe.SqlInsights/releases/download/$SQLINSIGHTS_VERSION/sqlinsights-dashboard-win-x64.7z"; 
+        Say "URL: '$url'"
+        curl -o ~/sqlinsights-dashboard-win-x64.7z -kSL "$url"
+        7z x -y -oscripts/Windows-W3API-Docker ~/sqlinsights-dashboard-win-x64.7z
+        Say "Files in 'scripts/Windows-W3API-Docker'"
+        ls -laR scripts/Windows-W3API-Docker
+
+        Say "Starting docker images build ..."
+        pushd scripts
+        powershell -f Build-Windows-Docker-Image.ps1
+        popd
+
       displayName: 'Show'
 
 
