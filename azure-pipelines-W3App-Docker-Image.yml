@@ -122,7 +122,7 @@ jobs:
       inputs:
         path: $(SYSTEM.ARTIFACTSDIRECTORY)
         patterns: 
-          "VERSION"
+          "**"
 
     - bash: |
         ls -la "$SYSTEM_ARTIFACTSDIRECTORY"
