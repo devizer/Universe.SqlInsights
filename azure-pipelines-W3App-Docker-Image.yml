@@ -143,7 +143,7 @@ jobs:
         powershell -f Build-Windows-Docker-Image.ps1
         popd
 
-      displayName: 'Show'
+      displayName: 'Build NANO SERVER Images'
 
 
 trigger:
