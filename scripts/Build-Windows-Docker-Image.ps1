@@ -31,7 +31,7 @@ foreach($nanoVersion in $nanoVersions) {
   $imageTag="$($version)-$($tag)"
   echo "";
   Say "Building Tag '$tag', version $ver"
-  docker pull -q "$($image):$($imageTag)"
+  docker pull -q "mcr.microsoft.com/windows/nanoserver:$ver"
   & docker build --build-arg TAG=$tag -t "$($image):$($imageTag)" .
   Say "Push $($image):$($imageTag)"
   & docker push "$($image):$($imageTag)"
