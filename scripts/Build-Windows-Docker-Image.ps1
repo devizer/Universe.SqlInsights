@@ -9,6 +9,7 @@ function Say { param( [string] $message )
     Write-Host "$message" -ForegroundColor Yellow
 }
 
+
 $nanoVersions = $(
   @{  TAG = "ltsc2022"; Version = "10.0.20348.1607" },
   @{  TAG = "20H2";     Version = "10.0.19042.1889" },
@@ -21,13 +22,43 @@ $nanoVersions = $(
   @{  TAG = "1709";     Version = "10.0.16299.1087" }
 )
 
+$version=$ENV:SQLINSIGHTS_VERSION
+$image="devizervlad/sqlinsights-dashboard-nanoserver"
 pushd Windows-W3API-Docker
 foreach($nanoVersion in $nanoVersions) {
   $tag=$nanoVersion.Tag;
   $ver=$nanoVersion.Version
+  $imageTag="$($version)-$($tag)"
   Say "Building Tag '$tag', version $ver"
-  & docker build --build-arg TAG=$tag -t devizervlad/sqlinsights-dashboard-nanoserver:$tag .
+  & docker build --build-arg TAG=$tag -t $($image):$($imageTag) .
+  Say "Push $($image):$($imageTag)"
+  & docker push "$($image):$($imageTag)"
 }
-popd
+
+$manifestCreateParams = "$($image):$($version)"
+foreach($nanoVersion in $nanoVersions) {
+  $tag=$nanoVersion.Tag;
+  $ver=$nanoVersion.Version
+  $imageTag="$($version)-$($tag)"
+  $manifestCreateParams += " --amend $($image):$($imageTag)"
+}
+
+Say "Create Manifest Args: [$manifestCreateParams]"
+& docker manifest create $manifestCreateParams
+
+Say "1st Intermediate Inspect Manifest"
+& docker manifest inspect "$($image):$($version)"
+
+foreach($nanoVersion in $nanoVersions) {
+  $tag=$nanoVersion.Tag;
+  $ver=$nanoVersion.Version
+  $imageTag="$($version)-$($tag)"
+  Say "Annotate version OS VERSION '$ver' for tag '$tag'"
+  & docker manifest annotate --arch amd64 --os windows --os-version $ver "$($image):$($version)" "$($image):$($imageTag)" 
+}
+
+Say "2nd Final Inspect Manifest"
+& docker manifest inspect "$($image):$($version)"
 
 Say "DONE"
+popd
