@@ -5,8 +5,8 @@ variables:
   VMIMAGE: 'windows-2019'
   DEFAULT_RAM_DISK_SIZE: "1200"
   W3API_NET: net6.0
-  COMPRESSION_LEVEL: 9
-  SHORT_ARTIFACT_RIDS: ""
+  COMPRESSION_LEVEL: 1
+  SHORT_ARTIFACT_RIDS: "Try"
   # Also scripts\Linux-W3API-Docker-FXDependent\Dockerfile and rid=osx-arm64 in scripts\Build-Github-Release-Artifacts.sh
 
 jobs:

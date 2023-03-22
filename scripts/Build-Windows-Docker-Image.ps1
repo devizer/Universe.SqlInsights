@@ -33,8 +33,8 @@ foreach($nanoVersion in $nanoVersions) {
   Say "BUILDING TAG '$tag', VERSION $ver"
   docker pull -q "mcr.microsoft.com/windows/nanoserver:$ver"
   & docker build --build-arg TAG=$tag -t "$($image):$($imageTag)" .
-  Say "PUSH $($image):$($imageTag)"
-  & docker push "$($image):$($imageTag)"
+  # Say "PUSH $($image):$($imageTag)"
+  # & docker push "$($image):$($imageTag)"
 }
 
 $manifestCreateParams = "$($image):$($version)"
@@ -48,6 +48,7 @@ foreach($nanoVersion in $nanoVersions) {
 Say "CREATE MANIFEST ARGUMENTS: [$manifestCreateParams]"
 & cmd.exe /c "docker manifest create $manifestCreateParams"
 
+Say "TAG '$($version)' AS 'latest'"
 & docker tag "$($image):$($version)" "$($image):latest"
 
 Say "1ST INTERMEDIATE INSPECT MANIFEST"
