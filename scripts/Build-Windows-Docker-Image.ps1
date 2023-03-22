@@ -51,11 +51,14 @@ foreach($nanoVersion in $nanoVersions) {
 Say "CREATE MANIFEST ARGUMENTS: [$manifestCreateParams]"
 & cmd.exe /c "docker manifest create $manifestCreateParams"
 
-Say "TAG '$($version)' AS 'latest'"
-& docker tag "$($image):$($version)" "$($image):latest"
-
 Say "1ST INTERMEDIATE INSPECT MANIFEST"
 & docker manifest inspect "$($image):$($version)"
+
+Say "DOCKER MANIFEST PUSH"
+& docker manifest push "$($image):$($version)"
+
+Say "TAG '$($version)' AS 'latest'"
+& docker tag "$($image):$($version)" "$($image):latest"
 
 Say "PUSH ALL TAGS FOR '$($image)'"
 & docker push --all-tags "$($image)"
