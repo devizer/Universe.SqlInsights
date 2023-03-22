@@ -66,6 +66,9 @@ Say "PUSH '$version' FOR '$($image)'"
 Say "PUSH 'latest' FOR '$($image)'"
 & docker push "$($image):latest"
 
+Say "DOCKER IMAGES"
+docker images
+
 <#
 foreach($nanoVersion in $nanoVersions) {
   $tag=$nanoVersion.Tag;
