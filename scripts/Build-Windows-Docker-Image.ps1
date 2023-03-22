@@ -9,29 +9,43 @@ function Say { param( [string] $message )
     Write-Host "$message" -ForegroundColor Yellow
 }
 
+
 function Delete-Docker-Hub-Tag() {
-  param(
-    $DOCKER_HUB_ORG="devizervlad",
-    $DOCKER_HUB_REPO="sqlinsights-dashboard-nanoserver",
-    $DOCKER_HUB_USER="devizervlad",
-    $DOCKER_HUB_PASSWORD,
-    $TAG
-  )
-  
-  # https://devopscell.com/docker/dockerhub/2018/04/09/delete-docker-image-tag-dockerhub.html
-  $login_data=@{username=$DOCKER_HUB_USER;password="$DOCKER_HUB_PASSWORD"}
-  $login_data_str=$login_data | ConvertTo-Json
-  Write-Host "POSTING for token: [$login_data_str]"
-  $tokenResponse = Invoke-WebRequest -Uri "https://hub.docker.com/v2/users/login/" -Body $login_data_str -Method POST -ContentType "application/json"
+  param([Hashtable] $Options, [string] $Tag)
+  if (-not $Options.Token) {
+      # https://devopscell.com/docker/dockerhub/2018/04/09/delete-docker-image-tag-dockerhub.html
+      $login_data=@{ username=$Options.User; password=$Options.Password }
+      try {
+        $tokenResponse = Invoke-WebRequest -Uri "https://hub.docker.com/v2/users/login/" -Body "$($login_data | ConvertTo-Json)" -Method POST -ContentType "application/json"
+        $token=($tokenResponse | ConvertFrom-Json).token
+        $Options | Add-Member -NotePropertyName Token -NotePropertyValue "$token"
+        Write-Host "SUCCESSFUL TOKEN"
+      } catch {
+        $statusCode = "$($_.Exception.Status)"
+        Write-Host "DOCKER HUB AUTH FAILED"
+      }
+      if ($statusCode -eq "ProtocolError") { $about="Unauthorized"; }
+  }
 
-  Write-Host "Token Reponse: [$tokenResponse]"
-  $token=($tokenResponse | ConvertFrom-Json).token
-  Write-Host "Delete Tag token: [$token]"
-
-  $result=(& curl.exe -v -H "Authorization: JWT $token" -X DELETE "https://hub.docker.com/v2/repositories/$DOCKER_HUB_ORG/$DOCKER_HUB_REPO/tags/$TAG/" | Out-string)
-  # "https://hub.docker.com/v2/repositories/${ORGANIZATION}/${IMAGE}/tags/${TAG}/"
+  try {
+    $result = Invoke-WebRequest -Headers @{Authorization="JWT $($Options.Token)"} -Uri "https://hub.docker.com/v2/repositories/$($Options.Org)/$($Options.Repo)/tags/$TAG/" -Method DELETE
+    Write-Host "SUCCESSFUL DELETED TAG '$Tag'"
+    return $true
+  } catch {
+    $result = $_.Exception.Response.GetResponseStream()
+    $reader = New-Object System.IO.StreamReader($result)
+    $reader.BaseStream.Position = 0
+    $reader.DiscardBufferedData()
+    $responseBody = $reader.ReadToEnd();
+    $responseBody = $responseBody.TrimEnd(@([char]13,[char]10))
+    Write-Host "DELETE TAG ERROR: $responseBody"
+    return $false
+  }
   return $result
 }
+
+# $options=@{ Org="devizervlad"; Repo="sqlinsights-dashboard-nanoserver"; User="devizervlad"; Password=$ENV:PASSWRD2; }
+# Delete-Docker-Hub-Tag $options "Tag1"
 
 
 
@@ -91,12 +105,13 @@ foreach($tagVer in @($version, "latest")) {
 }
 
 # Delete Intermediate Tags
+$options=@{ Org="devizervlad"; Repo="sqlinsights-dashboard-nanoserver"; User="devizervlad"; Password=$ENV:PASSWORD1; }
 foreach($nanoVersion in $nanoVersions) {
   $tag=$nanoVersion.Tag;
   $ver=$nanoVersion.Version
   $imageTag="$($version)-$($tag)"
   Say "DELETE INTERMEDIATE TAG [$imageTag]"
-  Delete-Docker-Hub-Tag -DOCKER_HUB_PASSWORD $ENV:PASSWORD1 -TAG "$imageTag"
+  Delete-Docker-Hub-Tag $options "$imageTag"
 }
 
 <# 
