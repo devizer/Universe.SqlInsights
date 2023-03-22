@@ -61,7 +61,7 @@ foreach($nanoVersion in $nanoVersions) {
   docker pull -q "mcr.microsoft.com/windows/nanoserver:$ver"
   & docker build --build-arg TAG=$tag -t "$($image):$($imageTag)" .
   Say "PUSH $($image):$($imageTag), mandatory"
-  & docker push "$($image):$($imageTag)"
+  & docker push -q "$($image):$($imageTag)"
 }
 echo "________________________________________________________________________________"
 
