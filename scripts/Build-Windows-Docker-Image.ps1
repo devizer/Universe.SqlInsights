@@ -40,36 +40,48 @@ foreach($nanoVersion in $nanoVersions) {
 }
 echo "________________________________________________________________________________"
 
-$manifestCreateParams = "$($image):$($version)"
-foreach($nanoVersion in $nanoVersions) {
-  $tag=$nanoVersion.Tag;
-  $ver=$nanoVersion.Version
-  $imageTag="$($version)-$($tag)"
-  $manifestCreateParams += " --amend $($image):$($imageTag)"
+# TODO: v2.5.714 is multiarch, but v2.5.715 IS NOT. What the hell
+# https://docs.docker.com/engine/reference/commandline/manifest/
+
+
+foreach($ver in @($version, "latest")) {
+
+  $manifestCreateParams = "$($image):$($ver)"
+  foreach($nanoVersion in $nanoVersions) {
+    $tag=$nanoVersion.Tag;
+    $ver=$nanoVersion.Version
+    $imageTag="$($version)-$($tag)"
+    $manifestCreateParams += " --amend $($image):$($imageTag)"
+  }
+
+  Say "CREATE MANIFEST ARGUMENTS for '$ver': [$manifestCreateParams]"
+  & cmd.exe /c "docker manifest create $manifestCreateParams"
+
+  Say "1ST INTERMEDIATE INSPECT MANIFEST for '$ver'"
+  & docker manifest inspect "$($image):$($ver)"
+
+  Say "DOCKER MANIFEST PUSH for '$ver'"
+  & docker manifest push "$($image):$($ver)"
 }
+<# 
+  BAD IDEA: It breaks multiarch
+  Say "Pull [$($image):$($version)]"
+  docker pull "$($image):$($version)"
 
-Say "CREATE MANIFEST ARGUMENTS: [$manifestCreateParams]"
-& cmd.exe /c "docker manifest create $manifestCreateParams"
+  Say "TAG '$($version)' AS 'latest'"
+  & docker tag "$($image):$($version)" "$($image):latest"
 
-Say "1ST INTERMEDIATE INSPECT MANIFEST"
-& docker manifest inspect "$($image):$($version)"
+  Say "PUSH ALL TAGS FOR '$($image)'"
+  & docker push --all-tags "$($image)"
 
-Say "DOCKER MANIFEST PUSH"
-& docker manifest push "$($image):$($version)"
-Say "Pull [$($image):$($version)]"
-docker pull "$($image):$($version)"
+  Say "PUSH '$version' FOR '$($image)'"
+  & docker push "$($image):$version"
 
-Say "TAG '$($version)' AS 'latest'"
-& docker tag "$($image):$($version)" "$($image):latest"
+  Say "PUSH 'latest' FOR '$($image)'"
+  & docker push "$($image):latest"
 
-Say "PUSH ALL TAGS FOR '$($image)'"
-& docker push --all-tags "$($image)"
+#>
 
-Say "PUSH '$version' FOR '$($image)'"
-& docker push "$($image):$version"
-
-Say "PUSH 'latest' FOR '$($image)'"
-& docker push "$($image):latest"
 
 Say "DOCKER IMAGES"
 docker images
