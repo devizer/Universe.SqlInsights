@@ -25,12 +25,14 @@ $nanoVersions = $(
 $version=$ENV:SQLINSIGHTS_VERSION
 $image="devizervlad/sqlinsights-dashboard-nanoserver"
 pushd Windows-W3API-Docker
+$n=0
 foreach($nanoVersion in $nanoVersions) {
+  $n++
   $tag=$nanoVersion.Tag;
   $ver=$nanoVersion.Version
   $imageTag="$($version)-$($tag)"
   echo "";
-  Say "BUILDING TAG '$tag', VERSION $ver"
+  Say "$n of $($nanoVersions.Length). BUILDING TAG '$tag', VERSION $ver"
   docker pull -q "mcr.microsoft.com/windows/nanoserver:$ver"
   & docker build --build-arg TAG=$tag -t "$($image):$($imageTag)" .
   # Say "PUSH $($image):$($imageTag)"
