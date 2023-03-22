@@ -1,5 +1,8 @@
 set -eu; set -o pipefail
 
+Say "COMPRESSION_LEVEL: [$COMPRESSION_LEVEL]"
+Say "SHORT_ARTIFACT_RIDS: [$SHORT_ARTIFACT_RIDS]"
+
 if [[ "$(command -v pigz)" == "" ]]; then Say "Install pigz"; sudo apt-get update -y -qq; sudo apt-get install pigz -y -qq; fi
 
 function Filter-7z() {
