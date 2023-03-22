@@ -42,11 +42,12 @@ echo "__________________________________________________________________________
 
 # TODO: v2.5.714 is multiarch, but v2.5.715 IS NOT. What the hell
 # https://docs.docker.com/engine/reference/commandline/manifest/
+# https://github.com/docker/hub-tool
 
 
-foreach($ver in @($version, "latest")) {
+foreach($tagVer in @($version, "latest")) {
 
-  $manifestCreateParams = "$($image):$($ver)"
+  $manifestCreateParams = "$($image):$($tagVer)"
   foreach($nanoVersion in $nanoVersions) {
     $tag=$nanoVersion.Tag;
     $ver=$nanoVersion.Version
@@ -54,14 +55,14 @@ foreach($ver in @($version, "latest")) {
     $manifestCreateParams += " --amend $($image):$($imageTag)"
   }
 
-  Say "CREATE MANIFEST ARGUMENTS for '$ver': [$manifestCreateParams]"
+  Say "CREATE MANIFEST ARGUMENTS for '$tagVer': [$manifestCreateParams]"
   & cmd.exe /c "docker manifest create $manifestCreateParams"
 
-  Say "1ST INTERMEDIATE INSPECT MANIFEST for '$ver'"
-  & docker manifest inspect "$($image):$($ver)"
+  Say "1ST INTERMEDIATE INSPECT MANIFEST for '$tagVer'"
+  & docker manifest inspect "$($image):$($tagVer)"
 
-  Say "DOCKER MANIFEST PUSH for '$ver'"
-  & docker manifest push "$($image):$($ver)"
+  Say "DOCKER MANIFEST PUSH for '$tagVer'"
+  & docker manifest push "$($image):$($tagVer)"
 }
 <# 
   BAD IDEA: It breaks multiarch
