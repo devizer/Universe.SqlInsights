@@ -56,6 +56,8 @@ Say "1ST INTERMEDIATE INSPECT MANIFEST"
 
 Say "DOCKER MANIFEST PUSH"
 & docker manifest push "$($image):$($version)"
+Say "Pull [$($image):$($version)]"
+docker pull "$($image):$($version)"
 
 Say "TAG '$($version)' AS 'latest'"
 & docker tag "$($image):$($version)" "$($image):latest"
