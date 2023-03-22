@@ -30,10 +30,10 @@ foreach($nanoVersion in $nanoVersions) {
   $ver=$nanoVersion.Version
   $imageTag="$($version)-$($tag)"
   echo "";
-  Say "Building Tag '$tag', version $ver"
+  Say "BUILDING TAG '$tag', VERSION $ver"
   docker pull -q "mcr.microsoft.com/windows/nanoserver:$ver"
   & docker build --build-arg TAG=$tag -t "$($image):$($imageTag)" .
-  Say "Push $($image):$($imageTag)"
+  Say "PUSH $($image):$($imageTag)"
   & docker push "$($image):$($imageTag)"
 }
 
@@ -45,12 +45,18 @@ foreach($nanoVersion in $nanoVersions) {
   $manifestCreateParams += " --amend $($image):$($imageTag)"
 }
 
-Say "Create Manifest Args: [$manifestCreateParams]"
+Say "CREATE MANIFEST ARGUMENTS: [$manifestCreateParams]"
 & cmd.exe /c "docker manifest create $manifestCreateParams"
 
-Say "1st Intermediate Inspect Manifest"
+& docker tag "$($image):$($version)" "$($image):latest"
+
+Say "1ST INTERMEDIATE INSPECT MANIFEST"
 & docker manifest inspect "$($image):$($version)"
 
+Say "PUSH ALL TAGS FOR '$($image)'"
+& docker push --all-tags "$($image)"
+
+<#
 foreach($nanoVersion in $nanoVersions) {
   $tag=$nanoVersion.Tag;
   $ver=$nanoVersion.Version
@@ -61,6 +67,7 @@ foreach($nanoVersion in $nanoVersions) {
 
 Say "2nd Final Inspect Manifest"
 & docker manifest inspect "$($image):$($version)"
+#>
 
 Say "DONE"
 popd
