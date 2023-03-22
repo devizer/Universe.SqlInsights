@@ -9,6 +9,31 @@ function Say { param( [string] $message )
     Write-Host "$message" -ForegroundColor Yellow
 }
 
+function Delete-Docker-Hub-Tag() {
+  param(
+    $DOCKER_HUB_ORG="devizervlad",
+    $DOCKER_HUB_REPO="sqlinsights-dashboard-nanoserver",
+    $DOCKER_HUB_USER="devizervlad",
+    $DOCKER_HUB_PASSWORD,
+    $TAG
+  )
+  
+  # https://devopscell.com/docker/dockerhub/2018/04/09/delete-docker-image-tag-dockerhub.html
+  $login_data=@{username=$DOCKER_HUB_USER;password="$DOCKER_HUB_PASSWORD"}
+  $login_data_str=$login_data | ConvertTo-Json
+  Write-Host "POSTING for token: [$login_data_str]"
+  $tokenResponse = Invoke-WebRequest -Uri "https://hub.docker.com/v2/users/login/" -Body $login_data_str -Method POST -ContentType "application/json"
+
+  Write-Host "Token Reponse: [$tokenResponse]"
+  $token=($tokenResponse | ConvertFrom-Json).token
+  Write-Host "Delete Tag token: [$token]"
+
+  $result=(& curl.exe -v -H "Authorization: JWT $token" -X DELETE "https://hub.docker.com/v2/repositories/$DOCKER_HUB_ORG/$DOCKER_HUB_REPO/tags/$TAG/" | Out-string)
+  # "https://hub.docker.com/v2/repositories/${ORGANIZATION}/${IMAGE}/tags/${TAG}/"
+  return $result
+}
+
+
 
 $nanoVersions = $(
   @{  TAG = "ltsc2022"; Version = "10.0.20348.1607" },
@@ -64,6 +89,16 @@ foreach($tagVer in @($version, "latest")) {
   Say "DOCKER MANIFEST PUSH for '$tagVer'"
   & docker manifest push "$($image):$($tagVer)"
 }
+
+# Delete Intermediate Tags
+foreach($nanoVersion in $nanoVersions) {
+  $tag=$nanoVersion.Tag;
+  $ver=$nanoVersion.Version
+  $imageTag="$($version)-$($tag)"
+  Say "DELETE TAG [$imageTag]"
+  Delete-Docker-Hub-Tag -DOCKER_HUB_PASSWORD $ENV:PASSWORD1 -TAG "$imageTag"
+}
+
 <# 
   BAD IDEA: It breaks multiarch
   Say "Pull [$($image):$($version)]"

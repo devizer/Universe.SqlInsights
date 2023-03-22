@@ -150,6 +150,8 @@ jobs:
         popd
 
       displayName: 'Build NANO SERVER Images'
+      env:
+          PASSWORD1: $(DOCKER_PASSWORD)
 
 
 trigger:
