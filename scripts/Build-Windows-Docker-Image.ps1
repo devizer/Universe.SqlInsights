@@ -38,6 +38,7 @@ foreach($nanoVersion in $nanoVersions) {
   Say "PUSH $($image):$($imageTag), mandatory"
   & docker push "$($image):$($imageTag)"
 }
+echo "________________________________________________________________________________"
 
 $manifestCreateParams = "$($image):$($version)"
 foreach($nanoVersion in $nanoVersions) {
