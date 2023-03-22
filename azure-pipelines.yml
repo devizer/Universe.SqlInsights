@@ -224,12 +224,9 @@ trigger:
     include:
     - main
   paths:
-    exclude:
-    - 'azure-pipelines-W3App-Docker-Image.yml'
-    - 'scripts/Linux-W3App-Docker/**'
-    - 'scripts/Build-Github-Release-Artifacts.sh'
-    - 'scripts/Linux-W3API-Docker/**'
-    - 'scripts/Linux-W3API-Docker-FXDependent/**'
     include:
     - '**'
+    exclude:
+    - 'azure-pipelines-W3App-Docker-Image.yml'
+    - 'scripts/**'
 

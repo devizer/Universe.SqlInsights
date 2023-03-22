@@ -5,8 +5,8 @@ variables:
   VMIMAGE: 'windows-2019'
   DEFAULT_RAM_DISK_SIZE: "1200"
   W3API_NET: net6.0
-  COMPRESSION_LEVEL: 1
-  SHORT_ARTIFACT_RIDS: "Try"
+  COMPRESSION_LEVEL: 9
+  SHORT_ARTIFACT_RIDS: ""
   # Also scripts\Linux-W3API-Docker-FXDependent\Dockerfile and rid=osx-arm64 in scripts\Build-Github-Release-Artifacts.sh
 
 jobs:
@@ -162,7 +162,4 @@ trigger:
     - '**'
     include:
     - 'azure-pipelines-W3App-Docker-Image.yml'
-    - 'scripts/Linux-W3App-Docker/**'
-    - 'scripts/Build-Github-Release-Artifacts.sh'
-    - 'scripts/Linux-W3API-Docker/**'
-    - 'scripts/Linux-W3API-Docker-FXDependent/**'
+    - 'scripts/**'
