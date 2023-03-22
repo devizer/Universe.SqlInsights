@@ -35,8 +35,8 @@ foreach($nanoVersion in $nanoVersions) {
   Say "$n of $($nanoVersions.Length). BUILDING TAG '$tag', VERSION $ver"
   docker pull -q "mcr.microsoft.com/windows/nanoserver:$ver"
   & docker build --build-arg TAG=$tag -t "$($image):$($imageTag)" .
-  # Say "PUSH $($image):$($imageTag)"
-  # & docker push "$($image):$($imageTag)"
+  Say "PUSH $($image):$($imageTag), mandatory"
+  & docker push "$($image):$($imageTag)"
 }
 
 $manifestCreateParams = "$($image):$($version)"
