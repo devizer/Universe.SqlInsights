@@ -95,7 +95,7 @@ foreach($nanoVersion in $nanoVersions) {
   $tag=$nanoVersion.Tag;
   $ver=$nanoVersion.Version
   $imageTag="$($version)-$($tag)"
-  Say "DELETE TAG [$imageTag]"
+  Say "DELETE INTERMEDIATE TAG [$imageTag]"
   Delete-Docker-Hub-Tag -DOCKER_HUB_PASSWORD $ENV:PASSWORD1 -TAG "$imageTag"
 }
 
