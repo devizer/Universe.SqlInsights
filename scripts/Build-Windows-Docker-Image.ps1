@@ -57,6 +57,12 @@ Say "1ST INTERMEDIATE INSPECT MANIFEST"
 Say "PUSH ALL TAGS FOR '$($image)'"
 & docker push --all-tags "$($image)"
 
+Say "PUSH '$version' FOR '$($image)'"
+& docker push "$($image):$version"
+
+Say "PUSH 'latest' FOR '$($image)'"
+& docker push "$($image):latest"
+
 <#
 foreach($nanoVersion in $nanoVersions) {
   $tag=$nanoVersion.Tag;
