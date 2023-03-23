@@ -20,6 +20,7 @@ steps:
     displayName: 'Bootstrap pwsh'
 
   - powershell: |
+      $ErrorActionPreference="Continue"
       scripts\Enumerate-NanoServer-Tags.ps1
       $true
     condition: eq(variables['Agent.JobName'], 'If SQL Server 2008')
