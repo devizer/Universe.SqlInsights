@@ -19,6 +19,12 @@ steps:
       Write-Host "Memory $((Get-Memory-Info).Description)"
     displayName: 'Bootstrap pwsh'
 
+  - powershell: |
+      scripts\Enumerate-NanoServer-Tags.ps1
+      $true
+    condition: eq(variables['Agent.JobName'], 'If SQL Server 2008')
+    displayName: 'Enumerate NanoServer Tags'
+
   - bash: |
      script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
      for v in 5.0 6.0 7.0 8.0-preview 8.0-preview-windowsservercore-ltsc2022; do
