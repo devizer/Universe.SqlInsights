@@ -13,7 +13,7 @@ foreach($tag in $tags) {
     $output=(& docker.exe manifest inspect "mcr.microsoft.com/windows/nanoserver:$tag" | Out-String)
     echo $output > "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\Nano Server Manifests\$tag.txt"
     Write-Host "OUTPUT for $tag"; Write-Host $output
-    $json=($output | ConvertTo-Json)
+    $json=($output | ConvertFrom-Json)
     # $count=$json.manifests.Length
     # $platform=$json.manifests[0].platform
     # $ver=$platform | Get-Member -Name "os.version" -MemberType Property
