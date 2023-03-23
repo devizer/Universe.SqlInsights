@@ -14,8 +14,8 @@ foreach($tag in $tags) {
     echo $output > "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\Nano Server Manifests\$tag.txt"
     Write-Host "OUTPUT for $tag"; Write-Host $output
     $json=($output | ConvertTo-Json)
-    $count=$json.manifests.Length
-    $platform=$json.manifests[0].platform
+    # $count=$json.manifests.Length
+    # $platform=$json.manifests[0].platform
     # $ver=$platform | Get-Member -Name "os.version" -MemberType Property
     $ver=$json.manifests[0].platform."os.version"
   }
