@@ -7,13 +7,20 @@ New-Item -ItemType Directory -Path "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\Nano Serve
 $n=0;
 foreach($tag in $tags) {
   $n++
-  $output=(& docker.exe manifest inspect "mcr.microsoft.com/windows/nanoserver:$tag" | Out-String)
-  echo $output > "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\Nano Server Manifests\$tag.txt"
-  Write-Host "OUTPUT for $tag"; Write-Host $output
-  $json=($output | ConvertTo-Json)
-  $json=(& docker.exe manifest inspect "mcr.microsoft.com/windows/nanoserver:$tag" | ConvertTo-Json)
-  $count=$json.manifests.Length
-  $ver=$json.manifests[0].platform | Get-Member -Name "os.version" -MemberType Property
-  Write-Host "$n of $($tags.Length) '$($tag)': manifests count = $count, os.version=$ver"
+  if ($tag -like "10.*") { 
+    $ver=$tag
+  } else {
+    $output=(& docker.exe manifest inspect "mcr.microsoft.com/windows/nanoserver:$tag" | Out-String)
+    echo $output > "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\Nano Server Manifests\$tag.txt"
+    Write-Host "OUTPUT for $tag"; Write-Host $output
+    $json=($output | ConvertTo-Json)
+    $json=(& docker.exe manifest inspect "mcr.microsoft.com/windows/nanoserver:$tag" | ConvertTo-Json)
+    $count=$json.manifests.Length
+    $platform=$json.manifests[0].platform
+    # $ver=$platform | Get-Member -Name "os.version" -MemberType Property
+    $ver=$json.manifests[0].platform."os.version"
+  }
+  # $ver=$json.manifests[0].platform."os.version"
+  Write-Host "$n of $($tags.Length) '$($tag)': os.version=$ver"
   echo "$($tag): $ver" | tee "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\Nano Server Versions.txt" -Append
 }
