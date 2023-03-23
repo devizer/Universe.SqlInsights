@@ -58,7 +58,9 @@ $nanoVersions = $(
   @{  TAG = "ltsc2019"; Version = "10.0.17763.4131" }, # 1809
 # @{  TAG = "1809";     Version = "10.0.17763.4131" }, # LTS 2019
   @{  TAG = "1803";     Version = "10.0.17134.1305" },
-  @{  TAG = "1709";     Version = "10.0.16299.1087" }
+  @{  TAG = "1709";     Version = "10.0.16299.1087" },
+  @{  TAG = "sac2016";  Version = "10.0.14393.2068" }  # 1607
+  
 )
 
 $version=$ENV:SQLINSIGHTS_VERSION
