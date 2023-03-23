@@ -63,9 +63,16 @@ $nanoVersions = $(
   
 )
 
+pushd Windows-W3API-Docker
+
 $version=$ENV:SQLINSIGHTS_VERSION
 $image="devizervlad/sqlinsights-dashboard-nanoserver"
-pushd Windows-W3API-Docker
+
+Say "Building :1607"
+docker build --build-arg TAG=sac2016 -t "$($image):1607" .
+docker push -q "$($image):1607"
+docker manifest inspect "$($image):1607"
+
 $n=0
 foreach($nanoVersion in $nanoVersions) {
   $n++
