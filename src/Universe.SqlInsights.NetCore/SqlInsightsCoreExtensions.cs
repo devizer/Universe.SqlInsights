@@ -127,6 +127,7 @@ namespace Universe.SqlInsights.NetCore
 {((char)160)} App Side details: {watcher.ToHumanString()}");
 #endif
 
+                    stopwatch.Stop();
                     traceReader.Stop();
                     traceReader.Dispose();
 
