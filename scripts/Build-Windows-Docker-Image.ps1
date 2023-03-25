@@ -5,8 +5,10 @@ function Get-Elapsed
 }; Get-Elapsed | out-null;
 
 function Say { param( [string] $message )
-    Write-Host "$(Get-Elapsed) " -NoNewline -ForegroundColor Magenta
-    Write-Host "$message" -ForegroundColor Yellow
+    # Write-Host "$(Get-Elapsed) " -NoNewline -ForegroundColor Magenta
+    # Write-Host "$message" -ForegroundColor Yellow
+    [System.Console]::Write("[35m" + "$(Get-Elapsed) " + "[0m")
+    [System.Console]::WriteLine("$message ")
 }
 
 
