@@ -22,8 +22,8 @@ function Say { <# param( [string] $message ) #>
     }
     if ($hasAnsi) {
       $e="$([char]27)"
-      [System.Console]::Write("$e[96m$e[1m" + "$($elapsed) " + "$e[0m")
-      [System.Console]::WriteLine("$e[93m$e[1m" + "$fullMessage" + "$e[0m")
+      [System.Console]::Write("$e[94m$e[1m" + "$($elapsed) " + "$e[0m")
+      [System.Console]::WriteLine("$e[33m$e[1m" + "$fullMessage" + "$e[0m")
     } else {
       Write-Host "$($elapsed) " -NoNewline -ForegroundColor Magenta
       Write-Host "$fullMessage" -ForegroundColor Yellow
