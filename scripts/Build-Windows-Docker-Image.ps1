@@ -7,12 +7,26 @@ function Get-Elapsed
 }; Get-Elapsed | out-null;
 
 function Say { param( [string] $message )
-    # Write-Host "$(Get-Elapsed) " -NoNewline -ForegroundColor Magenta
-    # Write-Host "$message" -ForegroundColor Yellow
     # https://ss64.com/nt/echoansi.txt
     # https://ss64.com/nt/syntax-ansi.html
-    [System.Console]::Write("[96m" + "$(Get-Elapsed) " + "[0m")
-    [System.Console]::WriteLine("[93m" + "$message " + "[0m")
+    $hasAnsi = $false
+    if ([System.Environment]::OSVersion.Platform -like "Win*") {
+      [System.Version] $ver = [System.Environment]::OSVersion.Version;
+      $ver1909 = new-object "System.Version"(10, 0, 18363);
+      $ver1511 = new-object "System.Version"(10, 0, 10586);
+      if ($ver -ge $ver1909) { $hasAnsi = $true; }
+      elseif ($ver -ge $ver1511) {
+        $hasAnsi = $true;
+        New-ItemProperty -Path "HKCU:\Console" -Name "VirtualTerminalLevel" -Value 1 -PropertyType DWORD -Force;
+      }
+    }
+    if ($hasAnsi) {
+      [System.Console]::Write("[96m" + "$(Get-Elapsed) " + "[0m")
+      [System.Console]::WriteLine("[93m" + "$message " + "[0m")
+    } else {
+      Write-Host "$(Get-Elapsed) " -NoNewline -ForegroundColor Magenta
+      Write-Host "$message" -ForegroundColor Yellow
+  }
 }
 
 
