@@ -1,3 +1,5 @@
+# https://learn.microsoft.com/en-us/virtualization/windowscontainers/deploy-containers/version-compatibility
+
 function Get-Elapsed
 {
     if ($Global:startAt -eq $null) { $Global:startAt = [System.Diagnostics.Stopwatch]::StartNew(); }
@@ -7,8 +9,10 @@ function Get-Elapsed
 function Say { param( [string] $message )
     # Write-Host "$(Get-Elapsed) " -NoNewline -ForegroundColor Magenta
     # Write-Host "$message" -ForegroundColor Yellow
-    [System.Console]::Write("[35m" + "$(Get-Elapsed) " + "[0m")
-    [System.Console]::WriteLine("$message ")
+    # https://ss64.com/nt/echoansi.txt
+    # https://ss64.com/nt/syntax-ansi.html
+    [System.Console]::Write("[96m" + "$(Get-Elapsed) " + "[0m")
+    [System.Console]::WriteLine("[93m" + "$message " + "[0m")
 }
 
 
