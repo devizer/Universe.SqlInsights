@@ -1,14 +1,14 @@
 # https://learn.microsoft.com/en-us/virtualization/windowscontainers/deploy-containers/version-compatibility
 
-function Get-Elapsed
-{
-    if ($Global:startAt -eq $null) { $Global:startAt = [System.Diagnostics.Stopwatch]::StartNew(); }
-    [System.String]::Concat("[", (new-object System.DateTime(0)).AddMilliseconds($Global:startAt.ElapsedMilliseconds).ToString("mm:ss"), "]");
-}; Get-Elapsed | out-null;
+function Say { <# param( [string] $message ) #>
+    if ($Global:startSayAt -eq $null) { $Global:startSayAt = [System.Diagnostics.Stopwatch]::StartNew(); }
+    $fmt=$Global:SayTimeFormat;
+    if ("$fmt" -eq "") { $fmt = "mm:ss"; }
+    $elapsed = "[" + (new-object System.DateTime(0)).AddMilliseconds($Global:startSayAt.ElapsedMilliseconds).ToString($fmt) + "]";
 
-function Say { param( [string] $message )
     # https://ss64.com/nt/echoansi.txt
     # https://ss64.com/nt/syntax-ansi.html
+    $fullMessage="$Args"
     $hasAnsi = $false
     if ([System.Environment]::OSVersion.Platform -like "Win*") {
       [System.Version] $ver = [System.Environment]::OSVersion.Version;
@@ -21,13 +21,14 @@ function Say { param( [string] $message )
       }
     }
     if ($hasAnsi) {
-      [System.Console]::Write("[96m" + "$(Get-Elapsed) " + "[0m")
-      [System.Console]::WriteLine("[93m" + "$message " + "[0m")
+      $e="$([char]27)"
+      [System.Console]::Write("$e[96m$e[1m" + "$($elapsed) " + "$e[0m")
+      [System.Console]::WriteLine("$e[93m$e[1m" + "$fullMessage" + "$e[0m")
     } else {
-      Write-Host "$(Get-Elapsed) " -NoNewline -ForegroundColor Magenta
-      Write-Host "$message" -ForegroundColor Yellow
+      Write-Host "$($elapsed) " -NoNewline -ForegroundColor Magenta
+      Write-Host "$fullMessage" -ForegroundColor Yellow
   }
-}
+}; $Global:startSayAt = [System.Diagnostics.Stopwatch]::StartNew();
 
 
 function Delete-Docker-Hub-Tag() {
