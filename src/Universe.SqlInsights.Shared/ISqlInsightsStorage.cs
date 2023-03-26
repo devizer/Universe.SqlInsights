@@ -11,6 +11,7 @@ namespace Universe.SqlInsights.Shared
     public interface ISqlInsightsStorage
     {
         // To Inject (NET 3.5 +) 
+        // TODO: ASYNC
         void AddAction(ActionDetailsWithCounters reqAction);
         
         // Used by AddAction only
