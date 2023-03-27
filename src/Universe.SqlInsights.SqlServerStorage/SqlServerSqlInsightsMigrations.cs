@@ -17,7 +17,7 @@ namespace Universe.SqlInsights.SqlServerStorage
         public readonly StringBuilder Logs = new StringBuilder();
         public bool ThrowOnDbCreationError { get; set; } = false;
 
-        public static volatile bool DisableMemoryOptimizedTables = false;
+        public static volatile bool DisableMemoryOptimizedTables = true;
         /*
         public static bool DisableMemoryOptimizedTables
         {

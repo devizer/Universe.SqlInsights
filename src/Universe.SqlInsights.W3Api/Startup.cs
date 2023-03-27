@@ -113,6 +113,7 @@ namespace Universe.SqlInsights.W3Api
         {
             app.ValidateSqlInsightsServices();
 
+            app.UseSqlInsights(); // BEFORE Exception Handler
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -123,7 +124,6 @@ namespace Universe.SqlInsights.W3Api
                 app.UseMiddleware<JsonExceptionHandlerMiddleware>(appInfo);
             }
 
-            app.UseSqlInsights();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>

@@ -21,7 +21,7 @@ namespace AdventureWorks.SqlInsightsIntegration
         public string ReportFullFileName { get; } = "C:\\Temp\\AdventureWorks-Dev-Report.txt";
         public string SqlTracesDirectory { get; } = "C:\\Temp\\AdventureWorks-Traces";
         public string ConnectionString { get; } = ConfigurationManager.ConnectionStrings["AdventureWorks"].ToString();
-        public string HistoryConnectionString => "server=(local);Initial Catalog=SqlInsights_v4; Integrated Security=SSPI";
+        public string HistoryConnectionString => "server=(local);Initial Catalog=SqlInsights Local Warehouse; Integrated Security=SSPI";
         public string SqlClientAppNameFormat => $"{this.AppName}-{{0}}";
         public int MaxTraceFileSizeKb { get; } = 128 * 1024;
         public int LatestInmemoryDetailRows { get; } = 1;
