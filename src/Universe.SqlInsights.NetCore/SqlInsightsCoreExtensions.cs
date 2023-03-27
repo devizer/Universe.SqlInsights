@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
@@ -197,6 +198,20 @@ namespace Universe.SqlInsights.NetCore
                         {
                             storage?.AddAction(actionDetails);
                         }
+                    }
+
+                    // TODO: Implement 'isPoolingOn' (cached) and 'dbConnection' (opened?)   
+                    bool isPoolingOn = false;
+                    if (isPoolingOn)
+                    {
+                        IDbConnection dbConnection = null;
+#if !NETCOREAPP1_0 && !NETCOREAPP1_1 
+                        if (dbConnection is Microsoft.Data.SqlClient.SqlConnection msDbConnection)
+                            Microsoft.Data.SqlClient.SqlConnection.ClearPool(msDbConnection);
+                        else
+#endif
+                        if (dbConnection is System.Data.SqlClient.SqlConnection systemDbConnection)
+                            System.Data.SqlClient.SqlConnection.ClearPool(systemDbConnection);
                     }
 
                     // Console.WriteLine($"⚠ Processed  {aboutRequest}");
