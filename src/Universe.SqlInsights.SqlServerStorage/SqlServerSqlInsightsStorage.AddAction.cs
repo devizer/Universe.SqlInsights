@@ -26,15 +26,29 @@ namespace Universe.SqlInsights.SqlServerStorage
 
             bool isMemoryOptimized = MetadataCache.IsMemoryOptimized(ConnectionString);
 
-            string
-                sqlSelect =
-                    $"SELECT [Data] From [SqlInsightsKeyPathSummary] {(isMemoryOptimized ? "" : "WITH (UPDLOCK,ROWLOCK)")} Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession";
-            
-            const string    
-                sqlInsert =
-                    "INSERT [SqlInsightsKeyPathSummary] (KeyPath, IdSession, AppName, HostId, Data, Version) Values(@KeyPath, @IdSession, @AppName, @HostId, @Data, @Version);",
-                sqlUpdate =
-                    "UPDATE [SqlInsightsKeyPathSummary] Set Data = @Data, Version = @Version Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession";
+            string sqlMergeActionSummary = @$"If Exists(
+  Select 1 From [SqlInsightsKeyPathSummary] {(isMemoryOptimized ? "" : "WITH (UPDLOCK,ROWLOCK)")}
+  Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession)
+Update [SqlInsightsKeyPathSummary] Set 
+  [Count] = [Count] + @Count,
+  ErrorsCount = ErrorsCount + @ErrorsCount,
+  AppDuration = AppDuration + @AppDuration,
+  AppKernelUsage = AppKernelUsage + @AppKernelUsage,
+  AppUserUsage = AppUserUsage + @AppUserUsage,
+  SqlDuration = SqlDuration + @SqlDuration,
+  SqlCPU = SqlCPU + @SqlCPU,
+  SqlReads = SqlReads + @SqlReads,
+  SqlWrites = SqlWrites + @SqlWrites,
+  SqlRowCounts = SqlRowCounts + @SqlRowCounts,
+  SqlRequests = SqlRequests + @SqlRequests,
+  SqlErrors = SqlErrors + @SqlErrors
+Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession;
+Else
+Insert Into [SqlInsightsKeyPathSummary]
+(KeyPath, IdSession, AppName, HostId, Version, [Count], ErrorsCount, AppDuration, AppKernelUsage, AppUserUsage, SqlDuration, SqlCPU, SqlReads, SqlWrites, SqlRowCounts, SqlRequests, SqlErrors)
+Values(@KeyPath, @IdSession, @AppName, @HostId, @Version, @Count, @ErrorsCount, @AppDuration, @AppKernelUsage, @AppUserUsage, @SqlDuration, @SqlCPU, @SqlReads, @SqlWrites, @SqlRowCounts, @SqlRequests, @SqlErrors);
+";
+
 
             var aliveSessions = GetAliveSessions().ToList();
 
@@ -68,61 +82,36 @@ namespace Universe.SqlInsights.SqlServerStorage
                     {
                         // SUMMARY: SqlInsightsKeyPathSummary
                         ActionSummaryCounters actionActionSummary = reqAction.AsSummary();
-                        var query = con
-                            .Query<SelectDataResult>(sqlSelect, new
-                            {
-                                IdSession = idSession,
-                                KeyPath = keyPath,
-                                AppName = idAppName,
-                                HostId = idHostId,
-                            }, tran);
-
-                        string rawDataPrev = query.FirstOrDefault()?.Data;
-
-                        bool exists = rawDataPrev != null;
-                        ActionSummaryCounters
-                            next,
-                            prev = !exists
-                                ? new ActionSummaryCounters()
-                                : DbJsonConvert.Deserialize<ActionSummaryCounters>(rawDataPrev);
-
-                        if (exists)
-                        {
-                            prev.Add(actionActionSummary);
-                            next = prev;
-                        }
-                        else
-                        {
-                            next = actionActionSummary;
-                        }
-
-                        // next.Key = actionActionSummary.Key;
-                        var sqlUpsert = exists ? sqlUpdate : sqlInsert;
-                        // Stopwatch startSerializeActionSummaryCounters = Stopwatch.StartNew();
-                        var dataSummary = DbJsonConvert.Serialize(next);
-                        if (DebugAddAction)
-                        {
-                            // var msecSerializeActionSummaryCounters = startSerializeActionSummaryCounters.ElapsedTicks * 1000d / Stopwatch.Frequency;
-                            // Console.WriteLine($"SerializeActionSummaryCounters [Flawor={DbJsonConvert.Flawor}]: {msecSerializeActionSummaryCounters:n3}");
-                        }
-
-                        // TODO (without ReadCommitted only):
-                        // System.Data.SqlClient.SqlException (0x80131904): Violation of PRIMARY KEY constraint 'PK_SqlInsightsKeyPathSummary'. Cannot insert duplicate key in object 'dbo.SqlInsightsKeyPathSummary'. The duplicate key value is (ASP.NET Core→SqlInsights→Summary→[POST], 0, 1, 3).
                         try
                         {
-                            con.Execute(sqlUpsert, new
-                            {
-                                KeyPath = keyPath,
-                                IdSession = idSession,
-                                Data = dataSummary,
-                                AppName = idAppName,
-                                HostId = idHostId,
-                                Version = nextVersion,
-                            }, tran);
+                            // TODO (without ReadCommitted only):
+                            // System.Data.SqlClient.SqlException (0x80131904): Violation of PRIMARY KEY constraint 'PK_SqlInsightsKeyPathSummary'. Cannot insert duplicate key in object 'dbo.SqlInsightsKeyPathSummary'. The duplicate key value is (ASP.NET Core→SqlInsights→Summary→[POST], 0, 1, 3).
+                            var query = con
+                                .Execute(sqlMergeActionSummary, new
+                                {
+                                    IdSession = idSession,
+                                    KeyPath = keyPath,
+                                    AppName = idAppName,
+                                    HostId = idHostId,
+                                    Version = nextVersion,
+                                    Count = actionActionSummary.Count,
+                                    ErrorsCount = actionActionSummary.RequestErrors,
+                                    AppDuration = Math.Round(actionActionSummary.AppDuration, 6),
+                                    AppKernelUsage = Math.Round(actionActionSummary.AppKernelUsage, 6),
+                                    AppUserUsage = Math.Round(actionActionSummary.AppUserUsage, 6),
+                                    SqlDuration = actionActionSummary.SqlCounters.Duration,
+                                    SqlCPU = actionActionSummary.SqlCounters.CPU,
+                                    SqlReads = actionActionSummary.SqlCounters.Reads,
+                                    SqlWrites = actionActionSummary.SqlCounters.Writes,
+                                    SqlRowCounts = actionActionSummary.SqlCounters.RowCounts,
+                                    SqlRequests = actionActionSummary.SqlCounters.Requests,
+                                    SqlErrors = actionActionSummary.SqlErrors,
+                                }, tran);
+
                         }
                         catch (Exception ex)
                         {
-                            throw new InvalidOperationException($"Unable to {(exists ? "update" : "insert")} action summary SqlInsightsKeyPathSummary", ex);
+                            throw new InvalidOperationException($"Unable to merge action summary on SqlInsightsKeyPathSummary", ex);
                         }
 
                         // DETAILS: SqlInsightsAction
@@ -157,55 +146,11 @@ Values(@At, @IdSession, @KeyPath, @IsOK, @AppName, @HostId, @Data)";
         }
 
 
-        private static int TotalNextVersion, FailNextVersion;
-        // TODO: If deadlock retry again
         private static long GetNextVersion(IDbConnection con, IDbTransaction transaction)
         {
-            /*
-            const string sqlNextVersion = @"
-Update Top (1) SqlInsightsKeyPathSummaryTimestamp Set Guid = NewId(), Version = Version + 1;
-Select Top 1 Version From SqlInsightsKeyPathSummaryTimestamp;
-";
-*/
-            const string sqlNextVersion = @"UPDATE Top (1) [SqlInsightsKeyPathSummaryTimestamp] Set Version = Version + 1 Output Inserted.Version;";
-
-
-            long nextVersion = -1;
-            bool isDeadLock = false;
-            Exception nextVersionQueryError = null;
-            Stopwatch startNextVersion = Stopwatch.StartNew();
-            int total = Interlocked.Increment(ref TotalNextVersion), fail = FailNextVersion;
-            try
-            {
-                IEnumerable<long> nextVersionQuery = con.Query<long>(sqlNextVersion, null, transaction);
-                nextVersion = nextVersionQuery.FirstOrDefault() + 1;
-            }
-            catch (Exception ex)
-            {
-                fail = Interlocked.Increment(ref FailNextVersion);
-                nextVersionQueryError = ex;
-                isDeadLock = ex.FindSqlError()?.Number == 1205;
-            }
-
-            if (DebugAddAction)
-            {
-                var msecNextVersion = startNextVersion.ElapsedTicks * 1000d / Stopwatch.Frequency;
-                string errorDetails = null;
-                if (nextVersionQueryError != null)
-                {
-                     errorDetails = $"[{nextVersionQueryError.GetType()}] '{nextVersionQueryError.Message}'";
-                    var sqlError = SqlExceptionExtensions.IsSqlException(nextVersionQueryError);
-                    if (sqlError != null) errorDetails = $"[{nextVersionQueryError.GetType()} N{sqlError.Number}] '{nextVersionQueryError.Message}'"; 
-                }
-
-                Console.WriteLine(
-                    $"[NextVersionQuery {fail}/{total} took {msecNextVersion:n2}] IsDeadlock: {(!isDeadLock ? "no" : "--<=DEADLOCK=>--")}{(nextVersionQueryError == null ? null : $" {errorDetails}")}");
-            }
-
-            if (nextVersionQueryError != null)
-                throw new InvalidOperationException("Unable to fetch next version", nextVersionQueryError);
-
-            return nextVersion;
+            var rowVersion = con.ExecuteScalar<byte[]>("Select @@DBTS;");
+            return (long)RowVersion2Int64(rowVersion);
         }
+
     }
 }

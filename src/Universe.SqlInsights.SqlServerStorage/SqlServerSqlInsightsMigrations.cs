@@ -179,7 +179,23 @@ Create Table SqlInsightsKeyPathSummary(
     HostId bigint Not Null,
     IdSession bigint Not Null,
     Version BigInt Not Null,
-    Data nvarchar(max) Not Null,
+
+    -- Data nvarchar(max) Not Null,
+    [Count] bigint Not Null,
+    ErrorsCount bigint Not Null,
+    AppDuration real Not Null,
+    AppKernelUsage real Not Null,
+    AppUserUsage real Not Null,
+    SqlDuration bigint Not Null,
+    SqlCPU bigint Not Null,
+    SqlReads bigint Not Null,
+    SqlWrites bigint Not Null,
+    SqlRowCounts bigint Not Null,
+    SqlRequests bigint Not Null,
+    SqlErrors bigint Not Null,
+    
+    {IfLegacy("InternalVersion RowVersion Not Null,")}
+
     Constraint PK_SqlInsightsKeyPathSummary Primary Key {(supportMOT ? "NON" : "")}Clustered (KeyPath, IdSession, AppName, HostId),
     Constraint FK_SqlInsightsKeyPathSummary_SqlInsightsSession FOREIGN KEY (IdSession) REFERENCES SqlInsightsSession(IdSession),
     Constraint FK_SqlInsightsKeyPathSummary_AppName FOREIGN KEY (AppName) REFERENCES SqlInsightsString(IdString),

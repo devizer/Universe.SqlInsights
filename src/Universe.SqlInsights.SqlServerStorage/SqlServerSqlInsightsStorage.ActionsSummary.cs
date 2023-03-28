@@ -21,13 +21,25 @@ namespace Universe.SqlInsights.SqlServerStorage
         public async Task<IEnumerable<ActionSummaryCounters>> GetActionsSummary(long idSession, string optionalApp = null, string optionalHost = null)
         {
             StringBuilder sql = new StringBuilder(@"
-Select 
-    KeyPath, 
-    Data 
+Select
+    KeyPath,
+    -- Data,
+    [Count],
+    ErrorsCount,
+    AppDuration,
+    AppKernelUsage,
+    AppUserUsage,
+    SqlDuration,
+    SqlCPU,
+    SqlReads,
+    SqlWrites,
+    SqlRowCounts,
+    SqlRequests,
+    SqlErrors
 From 
     SqlInsightsKeyPathSummary 
 Where 
-    IdSession = @IdSession");
+    IdSession = @IdSession"); // And/Or AppName equals, HostId equals args
             
             using (var con = GetConnection())
             {
@@ -37,18 +49,19 @@ Where
                 sqlParams.Add("IdSession", idSession);
                 sql.Append(optionalParams.SqlWhere);
                 
-                IEnumerable<SelectKeyAndDataResult> resultSet = await con.QueryAsync<SelectKeyAndDataResult>(sql.ToString(), sqlParams);
+                IEnumerable<SummaryDataRow> resultSet = await con.QueryAsync<SummaryDataRow>(sql.ToString(), sqlParams);
 
                 // Ok: Group By x.KeyPath and sum all
-                var groups = resultSet.GroupBy(x => x.KeyPath, x => x.Data);
+                var groups = resultSet.GroupBy(x => x.KeyPath, x => x);
                 List<ActionSummaryCounters> ret = new List<ActionSummaryCounters>();
                 foreach (var src in groups)
                 {
+                    
                     ActionSummaryCounters next = new ActionSummaryCounters();
                     SqlInsightsActionKeyPath key = null;
                     foreach (var raw in src)
                     {
-                        var deserialized = DbJsonConvert.Deserialize<ActionSummaryCounters>(raw);
+                        var deserialized = raw.ToActionSummaryCounters();
                         key = deserialized.Key;
                         next.Add(deserialized);
                     }
@@ -58,16 +71,10 @@ Where
                 }
 
                 return ret;
-                
-                var query = resultSet.Select(x =>
-                {
-                    return DbJsonConvert.Deserialize<ActionSummaryCounters>(x.Data);
-                });
-
-                return query.ToList();
             }
         }
 
+        // Done: Remove Data Json
         public async Task<string> GetActionsSummaryTimestamp(long idSession, string optionalApp = null, string optionalHost = null)
         {
             var sql = new StringBuilder(@$"
