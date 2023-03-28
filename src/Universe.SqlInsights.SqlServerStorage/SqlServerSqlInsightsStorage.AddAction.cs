@@ -30,6 +30,7 @@ namespace Universe.SqlInsights.SqlServerStorage
   Select 1 From [SqlInsightsKeyPathSummary] {(isMemoryOptimized ? "" : "WITH (UPDLOCK,ROWLOCK)")}
   Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession)
 Update [SqlInsightsKeyPathSummary] Set 
+  Version = @Version,
   [Count] = [Count] + @Count,
   ErrorsCount = ErrorsCount + @ErrorsCount,
   AppDuration = AppDuration + @AppDuration,
