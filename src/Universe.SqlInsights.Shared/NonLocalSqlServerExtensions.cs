@@ -16,7 +16,7 @@ namespace Universe.SqlInsights.Shared
                     // TODO: Replace REPLACE(@command_string, '/', '\') Hack by explicit tracefile arg
                     string shellCommand = $"del \"{traceFile}.trc\"";
                     string sql = @"
-Declare @host_platform nvarchar(4000) = null;
+Declare @host_platform nvarchar(4000);
 If ((@@MICROSOFTVERSION / 16777216) <= 13) Set @host_platform = 'Windows' -- Version up to 2016
 If ((@@MICROSOFTVERSION / 16777216) >= 14) -- Version 2017+
   And Exists (Select 1 From sys.all_objects Where name = 'dm_os_host_info' and type = 'V' and is_ms_shipped = 1)
