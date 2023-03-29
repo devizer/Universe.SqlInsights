@@ -30,7 +30,7 @@ namespace Universe.SqlInsights.SqlServerStorage
   Select 1 From [SqlInsightsKeyPathSummary] {(isMemoryOptimized ? "" : "WITH (UPDLOCK,ROWLOCK)")}
   Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession)
 Update [SqlInsightsKeyPathSummary] Set 
-  Version = @Version,
+  Version = Cast(@@DBTS as BigInt),
   [Count] = [Count] + @Count,
   ErrorsCount = ErrorsCount + @ErrorsCount,
   AppDuration = AppDuration + @AppDuration,
@@ -47,7 +47,7 @@ Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSessi
 Else
 Insert Into [SqlInsightsKeyPathSummary]
 (KeyPath, IdSession, AppName, HostId, Version, [Count], ErrorsCount, AppDuration, AppKernelUsage, AppUserUsage, SqlDuration, SqlCPU, SqlReads, SqlWrites, SqlRowCounts, SqlRequests, SqlErrors)
-Values(@KeyPath, @IdSession, @AppName, @HostId, @Version, @Count, @ErrorsCount, @AppDuration, @AppKernelUsage, @AppUserUsage, @SqlDuration, @SqlCPU, @SqlReads, @SqlWrites, @SqlRowCounts, @SqlRequests, @SqlErrors);
+Values(@KeyPath, @IdSession, @AppName, @HostId, Cast(@@DBTS as BigInt), @Count, @ErrorsCount, @AppDuration, @AppKernelUsage, @AppUserUsage, @SqlDuration, @SqlCPU, @SqlReads, @SqlWrites, @SqlRowCounts, @SqlRequests, @SqlErrors);
 ";
 
 
@@ -64,7 +64,7 @@ Values(@KeyPath, @IdSession, @AppName, @HostId, @Version, @Count, @ErrorsCount, 
 
             using (IDbConnection con = GetConnection())
             {
-                var nextVersion = GetNextVersion(con, transaction: null);
+                // long nextVersion = GetNextVersion(con, transaction: null);
                 StringsStorage stringStorage = new StringsStorage(con, transaction: null);
                 var idAppName = stringStorage.AcquireString(StringKind.AppName, reqAction.AppName);
                 var idHostId = stringStorage.AcquireString(StringKind.HostId, reqAction.HostId);
@@ -94,7 +94,6 @@ Values(@KeyPath, @IdSession, @AppName, @HostId, @Version, @Count, @ErrorsCount, 
                                     KeyPath = keyPath,
                                     AppName = idAppName,
                                     HostId = idHostId,
-                                    Version = nextVersion,
                                     Count = actionActionSummary.Count,
                                     ErrorsCount = actionActionSummary.RequestErrors,
                                     AppDuration = Math.Round(actionActionSummary.AppDuration, 6),
@@ -147,6 +146,7 @@ Values(@At, @IdSession, @KeyPath, @IsOK, @AppName, @HostId, @Data)";
         }
 
 
+        [Obsolete("Inlined", true)]
         private static long GetNextVersion(IDbConnection con, IDbTransaction transaction)
         {
             var rowVersion = con.ExecuteScalar<byte[]>("Select @@DBTS;");

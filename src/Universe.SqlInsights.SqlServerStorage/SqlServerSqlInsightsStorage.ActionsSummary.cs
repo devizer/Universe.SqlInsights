@@ -23,7 +23,6 @@ namespace Universe.SqlInsights.SqlServerStorage
             StringBuilder sql = new StringBuilder(@"
 Select
     KeyPath,
-    -- Data,
     [Count],
     ErrorsCount,
     AppDuration,
