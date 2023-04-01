@@ -198,11 +198,14 @@ steps:
        sqlcmd /? | find "Version"
        for %%a IN ("." "localhost,1433") DO (
         echo "TRY SERVER [%%a]"
+        sqlcmd -S %%a -h-1 -s"," -E -W -w 10000 -Q "SELECT Name, Description FROM fn_helpcollations() order by 1" > %SYSTEM_ARTIFACTSDIRECTORY%\fn_helpcollations.txt
         sqlcmd -S %%a -h-1 -s"," -E -W -w 10000 -Q "SET NOCOUNT ON; SELECT DATALENGTH(@@DBTS) as MYDBTS_LENGTH, @@DBTS as MYDBTS;"
         sqlcmd -S %%a -h-1 -s"," -E -W -w 10000 -Q "SET NOCOUNT ON; Select CONVERT(VARCHAR(128), SERVERPROPERTY ('productversion'))"
         sqlcmd -S %%a -h-1 -s"," -E -W -w 10000 -Q "SET NOCOUNT ON; Select @@Version"
         echo. && echo "CHECK Update ... Output"
         sqlcmd -S %%a -E -Q "Create Table Temp1(id int, rv ROWVERSION); Insert Into Temp1(id) Values(10); Update Top (1) Temp1 Set id=42 Output Inserted.Id as MyNewId;"
+        echo. && echo "fn_helpcollations"
+        sqlcmd -S %%a -h-1 -s"," -E -W -w 10000 -Q "SELECT Name, Description FROM fn_helpcollations() order by 1"
         echo.
        )
        true
