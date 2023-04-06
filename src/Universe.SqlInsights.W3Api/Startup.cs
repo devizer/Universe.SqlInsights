@@ -88,7 +88,7 @@ namespace Universe.SqlInsights.W3Api
             services.AddScoped<ActionIdHolder>();
             services.AddScoped<ExceptionHolder>();
             services.AddScoped<KeyPathHolder>();
-            services.AddScoped<ISqlInsightsConfiguration>(provider => new SqlInsightsConfiguration(Configuration));
+            services.AddSingleton<ISqlInsightsConfiguration>(provider => new SqlInsightsConfiguration(Configuration));
 
             
             services.AddControllers(options =>
