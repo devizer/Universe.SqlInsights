@@ -19,7 +19,7 @@ namespace Universe.SqlInsights.Shared
 Declare @host_platform nvarchar(4000);
 If ((@@MICROSOFTVERSION / 16777216) <= 13) Set @host_platform = 'Windows' -- Version up to 2016
 If ((@@MICROSOFTVERSION / 16777216) >= 14) -- Version 2017+
-  And Exists (Select 1 From sys.all_objects Where name = 'dm_os_host_info' and type = 'V' and is_ms_shipped = 1)
+  And Exists (Select 1 From sys.all_objects Where [name] = 'dm_os_host_info' and [type] = 'V' and is_ms_shipped = 1)
 Select @host_platform = host_platform from sys.dm_os_host_info;
 
 If (@host_platform = 'Windows')

@@ -36,9 +36,9 @@ namespace Universe.SqlInsights.SqlServerStorage
         {
             var sqlConnectionStringBuilder = new SqlConnectionStringBuilder(ConnectionString);
             string dbName = sqlConnectionStringBuilder.InitialCatalog;
-            string serverName = sqlConnectionStringBuilder.InitialCatalog;
+            string serverName = sqlConnectionStringBuilder.DataSource;
             Logs.AppendLine($" * DisableMemoryOptimizedTables: {DisableMemoryOptimizedTables}");
-            Logs.AppendLine($" * Db Name: [{dbName}]");
+            Logs.AppendLine($" * Db Name: [{dbName}] on server \"{serverName}\"");
             
             IDbConnection cnn = this.ProviderFactory.CreateConnection();
             cnn.ConnectionString = this.ConnectionString;
