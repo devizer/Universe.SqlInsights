@@ -48,7 +48,15 @@ namespace Universe.SqlInsights.SqlServerStorage
             Logs.AppendLine($" * Medium Version: {man.MediumServerVersion}");
             Logs.AppendLine($" * Long Version: {man.LongServerVersion}");
 
-            if (man.IsWindows && (man.FixedServerRoles & FixedServerRoles.SysAdmin) != 0)
+            string GetOptimizedCollation()
+            {
+	            var sqlGetOptimizedCollationName = "Select Top 1 Name From fn_helpcollations() Where Name Like '%UTF8' And Name Like '%Latin1_%' And Name Like '%_BIN2_%'";
+	            return cnn.ExecuteScalar<string>(sqlGetOptimizedCollationName);
+            }
+
+
+
+			if (man.IsWindows && (man.FixedServerRoles & FixedServerRoles.SysAdmin) != 0)
             {
                 // TODO: Only if ISqlInsightsConfiguration.DisposeByShellCommand == true
                 man.ServerConfigurationSettings.XpCmdShell = true;
@@ -60,9 +68,19 @@ namespace Universe.SqlInsights.SqlServerStorage
             Logs.AppendLine($" * Is Memory Optimized Tables Supported: {supportMOT}{(DisableMemoryOptimizedTables & supportMOT ? ", But Disabled": "")}");
 
             if (DisableMemoryOptimizedTables) supportMOT = false;
-            
-            // MOT Folder
-            var sampleFile = cnn.Query<string>("Select Top 1 filename from sys.sysfiles").FirstOrDefault();
+
+            var optimizedCollation = GetOptimizedCollation();
+            Logs.AppendLine($" * Optimized Collation: {(string.IsNullOrEmpty(optimizedCollation) ? ">net supported, using default<" : $"'{optimizedCollation}'")}");
+            string legacyKeyPathType = "nvarchar(450)";
+            string optimizedKeyPathType = $"varchar(880) Collate {optimizedCollation}";
+            var sqlKeyPathType = string.IsNullOrEmpty(optimizedCollation) ? legacyKeyPathType : optimizedKeyPathType;
+            var sqlKeyPathTypeMot = supportMOT || string.IsNullOrEmpty(optimizedCollation) ? legacyKeyPathType : optimizedKeyPathType;
+
+            sqlKeyPathType = sqlKeyPathTypeMot = legacyKeyPathType;
+
+
+			// MOT Folder
+			var sampleFile = cnn.Query<string>("Select Top 1 filename from sys.sysfiles").FirstOrDefault();
             var dataFolder = sampleFile != null ? CrossPath.GetDirectoryName(man.IsWindows, sampleFile) : null;
             var motFileFolder = CrossPath.Combine(man.IsWindows, dataFolder, $"MOT for {dbName}");
             Logs.AppendLine($" * MOT Files Folder: {dataFolder}");
@@ -174,7 +192,7 @@ End
 If Object_ID('SqlInsightsKeyPathSummary') Is Null
 Begin
 Create Table SqlInsightsKeyPathSummary(
-    KeyPath nvarchar(450) Not Null,
+    KeyPath {sqlKeyPathTypeMot} Not Null,
     AppName bigint Not Null,
     HostId bigint Not Null,
     IdSession bigint Not Null,
@@ -214,7 +232,7 @@ Create Table SqlInsightsAction(
     IdAction bigint Identity Not Null,
     IdSession bigint Not Null,
     At DateTime Not Null,
-    KeyPath nvarchar(450) Not Null,
+    KeyPath {sqlKeyPathType} Not Null,
     AppName bigint Not Null,
     HostId bigint Not Null,
     IsOK bit Not Null,
@@ -228,7 +246,7 @@ Create Table SqlInsightsAction(
     -- Do we need this FK? 
     Constraint FK_SqlInsightsAction_SqlInsightsKeyPathSummary FOREIGN KEY (KeyPath, IdSession, AppName, HostId) REFERENCES SqlInsightsKeyPathSummary(KeyPath, IdSession, AppName, HostId),
     -- Next joins are NEVER used
-    -- Constraint FK_SqlInsightsAction_AppName FOREIGN KEY (AppName) REFERENCES SqlInsightsString(IdString), 
+    -- Constraint FK_SqlInsightsAction_AppName FOREIGN KEY (AppName) REFERENCES SqlInsightsString(IdString),
     -- Constraint FK_SqlInsightsAction_HostId FOREIGN KEY (HostId) REFERENCES SqlInsightsString(IdString),
 ")} 
 );
