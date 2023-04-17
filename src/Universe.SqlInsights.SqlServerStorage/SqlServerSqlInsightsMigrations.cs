@@ -18,13 +18,6 @@ namespace Universe.SqlInsights.SqlServerStorage
         public bool ThrowOnDbCreationError { get; set; } = false;
 
         public static volatile bool DisableMemoryOptimizedTables = true;
-        /*
-        public static bool DisableMemoryOptimizedTables
-        {
-            get => true;
-            set { }
-        }
-        */
 
         public SqlServerSqlInsightsMigrations(DbProviderFactory providerFactory, string connectionString)
         {
@@ -54,8 +47,6 @@ namespace Universe.SqlInsights.SqlServerStorage
 	            return cnn.ExecuteScalar<string>(sqlGetOptimizedCollationName);
             }
 
-
-
 			if (man.IsWindows && (man.FixedServerRoles & FixedServerRoles.SysAdmin) != 0)
             {
                 // TODO: Only if ISqlInsightsConfiguration.DisposeByShellCommand == true
@@ -70,14 +61,14 @@ namespace Universe.SqlInsights.SqlServerStorage
             if (DisableMemoryOptimizedTables) supportMOT = false;
 
             var optimizedCollation = GetOptimizedCollation();
-            Logs.AppendLine($" * Optimized Collation: {(string.IsNullOrEmpty(optimizedCollation) ? ">net supported, using default<" : $"'{optimizedCollation}'")}");
+            Logs.AppendLine($" * Optimized Collation: {(string.IsNullOrEmpty(optimizedCollation) ? ">not supported, using default<" : $"'{optimizedCollation}'")}");
             string legacyKeyPathType = "nvarchar(450)";
             string optimizedKeyPathType = $"varchar(880) Collate {optimizedCollation}";
             var sqlKeyPathType = string.IsNullOrEmpty(optimizedCollation) ? legacyKeyPathType : optimizedKeyPathType;
             var sqlKeyPathTypeMot = supportMOT || string.IsNullOrEmpty(optimizedCollation) ? legacyKeyPathType : optimizedKeyPathType;
 
+            // Disable UTF8 Strings
             sqlKeyPathType = sqlKeyPathTypeMot = legacyKeyPathType;
-
 
 			// MOT Folder
 			var sampleFile = cnn.Query<string>("Select Top 1 filename from sys.sysfiles").FirstOrDefault();
@@ -85,7 +76,7 @@ namespace Universe.SqlInsights.SqlServerStorage
             var motFileFolder = CrossPath.Combine(man.IsWindows, dataFolder, $"MOT for {dbName}");
             Logs.AppendLine($" * MOT Files Folder: {dataFolder}");
 
-            var existingTables = cnn.Query<string>("Select name from SYSOBJECTS WHERE xtype = 'U' and name like '%SqlInsights%'").ToArray();
+			var existingTables = cnn.Query<string>("Select name from SYSOBJECTS WHERE xtype = 'U' and name like '%SqlInsights%' Order By 1").ToArray();
             var existingTablesInfo = existingTables.Length == 0 ? ">Not Found<" : String.Join(",", existingTables.Select(x => $"[{x}]").ToArray());
             Logs.AppendLine($" * Existing Tables: {existingTablesInfo}");
 
@@ -316,13 +307,6 @@ End
                 using (con)
                 {
                     con.Execute(sqlCommands, null);
-                    /*
-                    var existingDbId = con.Query<int?>(sqlCommands, null, null, true, 10, CommandType.Text);
-                    if (existingDbId == null)
-                        Logs.AppendLine($" * New database [{dbName}] successfully created on server {master.DataSource}");
-                    else
-                        Logs.AppendLine($" * Existing database [{dbName}] exists on server {master.DataSource}");
-                */
                 }
             }
             catch
