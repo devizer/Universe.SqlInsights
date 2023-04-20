@@ -140,6 +140,7 @@ export default class ActionGroupsList extends Component {
             <React.Fragment>
                 <RadioGroup row aria-label="kind" name="kind" value={this.state.kind} onChange={handleChangeSummaryKind} className='center-aligned'>
                     <div style={{textAlign: 'center', width: '100%'}}>
+                        <FormControlLabel control={<null />} label="Live update:" style={{marginRight:6}} />
                         <Switch
                             checked={autoUpdateSummary}
                             onChange={handleAutoUpdateSummary}
@@ -147,8 +148,8 @@ export default class ActionGroupsList extends Component {
                             name="autoUpdateSummary"
                             inputProps={{ 'aria-label': 'auto update summary', title: "Auto Update Summary" }}
                         />
-                        <FormControlLabel control={<null />} label="" style={{paddingLeft: 20, paddingRight: 20}} />
-                        <FormControlLabel control={<null />} label="Display:" />
+                        <FormControlLabel control={<null />} label="" style={{paddingLeft: 25, paddingRight: 25}} />
+                        <FormControlLabel control={<null />} label="Display:"  style={{marginRight2:-4}} />
                         <FormControlLabel value="average" control={<Radio />} label="Average" />
                         <FormControlLabel value="total" control={<Radio />} label="Total" />
                     </div>
