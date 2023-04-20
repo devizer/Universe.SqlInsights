@@ -3,6 +3,7 @@
 export const DATA_SOURCE_UPDATED_ACTION = "DATA_SOURCE_UPDATED_ACTION";
 export const CONNECTION_STATUS_UPDATED_ACTION = "CONNECTION_STATUS_UPDATED_ACTION";
 
+
 export function DataSourceUpdated(dataSource) {
     dispatcher.dispatch({
         type: DATA_SOURCE_UPDATED_ACTION,
@@ -16,4 +17,5 @@ export function ConnectionStatusUpdated(isConnected) {
         value: isConnected
     })
 }
+
 

@@ -1,11 +1,10 @@
 ﻿import * as Helper from "../Helper"
 import * as DataSourceActions from './DataSourceActions'
-import DataSourceStore from "./DataSourceStore";
 import sessionsStore from "./SessionsStore";
-import dataSourceStore from "./DataSourceStore";
+// import dataSourceStore from "./DataSourceStore";
+import settingsStore from "./SettingsStore";
 
 import {API_URL} from '../BuildTimeConfiguration';
-
 
 // export const API_URL="http://localhost:8776/SqlInsights";
 // export const API_URL="http://localhost:50420/api/v1/SqlInsights";
@@ -17,23 +16,38 @@ class DataSourceListener {
 
     constructor() {
         this.watchdogTick = this.watchdogTick.bind(this);
+        this.requestDataSource = this.requestDataSource.bind(this);
         this.handleSessionChanged = this.handleSessionChanged.bind(this);
+        this.handleSettingsChanged = this.handleSettingsChanged.bind(this);
         
         this.timerId = setInterval(this.watchdogTick, 1000);
         
-        setTimeout(this.watchdogTick);
+        setTimeout(this.requestDataSource);
         sessionsStore.on('storeUpdated', this.handleSessionChanged);
+        settingsStore.on('storeUpdated', this.handleSettingsChanged);
+    }
+
+    handleSettingsChanged() {
+        if (settingsStore.getAutoUpdateSummary()) {
+            setTimeout(this.requestDataSource);
+        }
     }
     
     handleSessionChanged() {
         const currentSessionId = sessionsStore.getSelectedSession()?.IdSession ?? -2;
         if (currentSessionId !== prevSessionId) {
             prevSessionId = currentSessionId; 
-            setTimeout(this.watchdogTick);
+            setTimeout(this.requestDataSource);
         }
     }
 
+
     watchdogTick() {
+        if (settingsStore.getAutoUpdateSummary()) 
+            this.requestDataSource();
+    }
+
+    requestDataSource() {
         const selectedSession = sessionsStore.getSelectedSession();
         const selectedSessionId = selectedSession ? selectedSession.IdSession : -1;
         const req = Helper.createRequest('Summary', {IdSession: selectedSessionId, AppName: null, HostId: null});

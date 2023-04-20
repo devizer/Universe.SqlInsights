@@ -22,6 +22,7 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import PropTypes from "prop-types";
 import sessionsStore from "../stores/SessionsStore"
+import settingsStore from "../stores/SettingsStore";
 
 const SqlCode = ({codeString}) => {
     return (
@@ -89,7 +90,9 @@ export default class ActionList extends Component {
     }
     
     updateTick() {
-        this.checkActionsTimestamp();
+        if (settingsStore.getAutoUpdateSummary()) {
+            this.checkActionsTimestamp();
+        }
     }
     
 

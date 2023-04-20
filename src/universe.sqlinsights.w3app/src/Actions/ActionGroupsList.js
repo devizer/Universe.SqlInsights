@@ -6,12 +6,16 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import ReactTable from "react-table";
 import "react-table/react-table.css";
+import Switch from '@material-ui/core/Switch';
 
 import dataSourceStore from "../stores/DataSourceStore";
+import * as DataSourceActions from "../stores/DataSourceActions"
+import * as SettingsActions from "../stores/SettingsActions"
 import {ActionKeyPathUi} from "../Shared/ActionKeyPathUi";
 import ActionList from "./ActionList";
 import * as DocumentVisibilityStore from "../stores/DocumentVisibilityStore";
 import sessionsStore from "../stores/SessionsStore";
+import settingsStore from "../stores/SettingsStore";
 
 const noDataProps = {style:{color:"gray", marginTop:30, border: "1px solid grey"}};
 
@@ -34,6 +38,7 @@ export default class ActionGroupsList extends Component {
             selectedRow: null,
             kind: 'total', // or 'average'
             sorting: [{id: "AppDuration", desc: true}],
+            autoUpdateSummary: settingsStore.getAutoUpdateSummary(),
         };
     }
     
@@ -105,7 +110,7 @@ export default class ActionGroupsList extends Component {
                             selected: rowInfo.index,
                             selectedRow: selectedRow,
                         });
-                        Helper.toConsole("Action Selected", selectedRow);
+                        Helper.toConsole("Action KeyPath Selected", selectedRow);
                         if (this.props.onActionSelected)
                             this.props.onActionSelected(selectedRow);
                     },
@@ -123,16 +128,31 @@ export default class ActionGroupsList extends Component {
         const defaultMetricColumnWidth = 90;
         let noDataText = isLoaded ? "no actions triggered" : "waiting for cells";
         if (!sessionsStore.getSelectedSession()) noDataText = "select a session";
+        
+        const autoUpdateSummary = this.state.autoUpdateSummary;
+        const handleAutoUpdateSummary = (event) => {
+            const newAutoUpdateSummary = event.target.checked;
+            this.setState({autoUpdateSummary: newAutoUpdateSummary });
+            SettingsActions.AutoUpdateSummaryUpdated(newAutoUpdateSummary);
+        };
             
         return (
             <React.Fragment>
-                    <RadioGroup row aria-label="kind" name="kind" value={this.state.kind} onChange={handleChangeSummaryKind} className='center-aligned'>
-                        <div style={{textAlign: 'center', width: '100%'}}>
+                <RadioGroup row aria-label="kind" name="kind" value={this.state.kind} onChange={handleChangeSummaryKind} className='center-aligned'>
+                    <div style={{textAlign: 'center', width: '100%'}}>
+                        <Switch
+                            checked={autoUpdateSummary}
+                            onChange={handleAutoUpdateSummary}
+                            color="default"
+                            name="autoUpdateSummary"
+                            inputProps={{ 'aria-label': 'auto update summary', title: "Auto Update Summary" }}
+                        />
+                        <FormControlLabel control={<null />} label="" style={{paddingLeft: 20, paddingRight: 20}} />
                         <FormControlLabel control={<null />} label="Display:" />
                         <FormControlLabel value="average" control={<Radio />} label="Average" />
                         <FormControlLabel value="total" control={<Radio />} label="Total" />
-                        </div>
-                    </RadioGroup>
+                    </div>
+                </RadioGroup>
                 <ReactTable
                     data={actions}
                     sorted={this.state.sorting}
