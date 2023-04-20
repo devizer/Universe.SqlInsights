@@ -59,6 +59,7 @@ export default class ActionList extends Component {
         super(props);
         
         this.updateTick = this.updateTick.bind(this);
+        this.checkActionsTimestamp = this.checkActionsTimestamp.bind(this);
         
         Helper.toConsole("ActionList.CTOR {props.keyPath}", props.keyPath);
         
@@ -83,9 +84,11 @@ export default class ActionList extends Component {
 
     // https://stackoverflow.com/questions/32414308/updating-state-on-props-change-in-react-form
     componentWillReceiveProps(nextProps) {
-        if (nextProps.keyPath !== this.props.keyPath) {
+        Helper.toConsole(`On Selected Key Path Updated [${this.props.keyPath}]`, this.props.keyPath);
+        if (`${nextProps.keyPath}` !== `${this.props.keyPath}`) {
             this.setState({ actions: null, actionsTimestamp: null });
-            setTimeout(this.updateTick, 0);
+            // setTimeout(this.updateTick, 0);
+            setTimeout(this.checkActionsTimestamp, 0);
         }
     }
     
@@ -94,7 +97,6 @@ export default class ActionList extends Component {
             this.checkActionsTimestamp();
         }
     }
-    
 
     checkActionsTimestamp() {
         Helper.toConsole("Requesting TIMESTAMP of", this.props.keyPath);

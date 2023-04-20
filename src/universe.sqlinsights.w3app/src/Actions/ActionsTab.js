@@ -19,6 +19,7 @@ export default class ActionsTab extends Component {
     render() {
         
         const onActionSelected = action => {
+            // Done: Trigger ActionList.checkActionsTimestamp
             this.setState({selectedAction: action});
         }
         
