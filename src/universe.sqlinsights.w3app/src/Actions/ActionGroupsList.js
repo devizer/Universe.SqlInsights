@@ -8,6 +8,9 @@ import ReactTable from "react-table";
 import "react-table/react-table.css";
 import Switch from '@material-ui/core/Switch';
 
+import ListAltIcon from '@material-ui/icons/ListAlt';
+import IconButton from '@material-ui/core/IconButton';
+
 import dataSourceStore from "../stores/DataSourceStore";
 import * as DataSourceActions from "../stores/DataSourceActions"
 import * as SettingsActions from "../stores/SettingsActions"
@@ -16,6 +19,13 @@ import ActionList from "./ActionList";
 import * as DocumentVisibilityStore from "../stores/DocumentVisibilityStore";
 import sessionsStore from "../stores/SessionsStore";
 import settingsStore from "../stores/SettingsStore";
+import {Icon} from "@material-ui/core";
+
+import { ReactComponent as PlayIconSvg } from './Play.svg';
+import { ReactComponent as PauseIconSvg } from './Pause.svg';
+
+const PlayIcon = (size=20,color='#333') => (<PlayIconSvg style={{width: size,height:size,fill:color,strokeWidth:'1px',stroke:color }} />);
+const PauseIcon = (size=20,color='#333') => (<PauseIconSvg style={{width: size,height:size,fill:color,strokeWidth:'1px',stroke:color }} />);
 
 const noDataProps = {style:{color:"gray", marginTop:30, border: "1px solid grey"}};
 
@@ -147,11 +157,22 @@ export default class ActionGroupsList extends Component {
                             color="default"
                             name="autoUpdateSummary"
                             inputProps={{ 'aria-label': 'auto update summary', title: "Auto Update Summary" }}
+                            checkedIcon={PlayIcon()}
+                            icon={PauseIcon()}
                         />
-                        <FormControlLabel control={<null />} label="" style={{paddingLeft: 25, paddingRight: 25}} />
-                        <FormControlLabel control={<null />} label="Display:"  style={{marginRight2:-4}} />
+                        
+                        <FormControlLabel control={<null />} label="" style={{paddingLeft: 28, paddingRight: 28}} />
+                        
+                        <FormControlLabel control={<null />} label="Display:" style={{marginRight2:-4}} />
                         <FormControlLabel value="average" control={<Radio />} label="Average" />
                         <FormControlLabel value="total" control={<Radio />} label="Total" />
+                        
+                        <FormControlLabel control={<null />} label="" style={{paddingLeft: 28, paddingRight: 28}} />
+
+                        <FormControlLabel control={<null />} label="Filter: any app, any host, any db server" style={{marginRight:-4}} />
+                        <IconButton color="default" aria-label="filter by app or host" component="span">
+                            <ListAltIcon />
+                        </IconButton>                        
                     </div>
                 </RadioGroup>
                 <ReactTable
