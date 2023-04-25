@@ -20,12 +20,8 @@ import * as DocumentVisibilityStore from "../stores/DocumentVisibilityStore";
 import sessionsStore from "../stores/SessionsStore";
 import settingsStore from "../stores/SettingsStore";
 import {Icon} from "@material-ui/core";
+import {LiveUpdateSwitch} from "./LiveUpdateSwitch";
 
-import { ReactComponent as PlayIconSvg } from './Play.svg';
-import { ReactComponent as PauseIconSvg } from './Pause.svg';
-
-const PlayIcon = (size=20,color='#333') => (<PlayIconSvg style={{width: size,height:size,fill:color,strokeWidth:'1px',stroke:color }} />);
-const PauseIcon = (size=20,color='#333') => (<PauseIconSvg style={{width: size,height:size,fill:color,strokeWidth:'1px',stroke:color }} />);
 
 const noDataProps = {style:{color:"gray", marginTop:30, border: "1px solid grey"}};
 
@@ -151,15 +147,7 @@ export default class ActionGroupsList extends Component {
                 <RadioGroup row aria-label="kind" name="kind" value={this.state.kind} onChange={handleChangeSummaryKind} className='center-aligned'>
                     <div style={{textAlign: 'center', width: '100%'}}>
                         <FormControlLabel control={<null />} label="Live update:" style={{marginRight:6}} />
-                        <Switch
-                            checked={autoUpdateSummary}
-                            onChange={handleAutoUpdateSummary}
-                            color="default"
-                            name="autoUpdateSummary"
-                            inputProps={{ 'aria-label': 'auto update summary', title: "Auto Update Summary" }}
-                            checkedIcon={PlayIcon()}
-                            icon={PauseIcon()}
-                        />
+                        <LiveUpdateSwitch autoUpdateSummary={autoUpdateSummary} handleAutoUpdateSummary={handleAutoUpdateSummary} />
                         
                         <FormControlLabel control={<null />} label="" style={{paddingLeft: 28, paddingRight: 28}} />
                         
