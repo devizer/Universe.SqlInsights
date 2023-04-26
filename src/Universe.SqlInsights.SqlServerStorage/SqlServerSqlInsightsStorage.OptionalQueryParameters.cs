@@ -14,7 +14,7 @@ namespace Universe.SqlInsights.SqlServerStorage
     {
 #if NETSTANDARD || NET5_0
         
-        private OptionalParametersInfo BuildOptionalParameterts(StringsStorage strings, string optionalApp = null, string optionalHost = null)
+        private OptionalParametersInfo BuildOptionalParameters(StringsStorage strings, string optionalApp = null, string optionalHost = null)
         {
             StringBuilder sql = new StringBuilder();
             var sqlParams = new DynamicParameters();

@@ -43,7 +43,7 @@ Where
             using (var con = GetConnection())
             {
                 StringsStorage strings = new StringsStorage(con, null);
-                var optionalParams = BuildOptionalParameterts(strings, optionalApp, optionalHost);
+                var optionalParams = BuildOptionalParameters(strings, optionalApp, optionalHost);
                 var sqlParams = optionalParams.Parameters;
                 sqlParams.Add("IdSession", idSession);
                 sql.Append(optionalParams.SqlWhere);
@@ -87,7 +87,7 @@ Where
             using (var con = GetConnection())
             {
                 StringsStorage strings = new StringsStorage(con, null);
-                var optionalParams = BuildOptionalParameterts(strings, optionalApp, optionalHost);
+                var optionalParams = BuildOptionalParameters(strings, optionalApp, optionalHost);
                 var sqlParams = optionalParams.Parameters;
                 sqlParams.Add("IdSession", idSession);
                 sql.Append(optionalParams.SqlWhere);

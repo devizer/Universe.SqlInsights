@@ -65,6 +65,34 @@ namespace Universe.SqlInsights.W3Api.Controllers
             return ret.ToJsonResult();
         }
 
+        [HttpPost]
+        public async Task<ActionResult<FiltersResult>> PopulateFilters()
+        {
+            IEnumerable<LongIdAndString> appNames = await _Storage.GetAppNames();
+            IEnumerable<LongIdAndString> hostIdList = await _Storage.GetHostIds();
+            FiltersResult ret = new FiltersResult()
+            {
+                ApplicationList = appNames?.Select(x => new AppFilter() { App = x.Value }),
+                HostIdList = hostIdList?.Select(x => new HostIdFilter() { HostId = x.Value })
+            };
+            return ret.ToJsonResult();
+        }
+
+        public class FiltersResult
+        {
+            public IEnumerable<AppFilter> ApplicationList;
+            public IEnumerable<HostIdFilter> HostIdList;
+        }
+
+        public class AppFilter
+        {
+            public string App { get; set; }
+        }
+        public class HostIdFilter
+        {
+            public string HostId { get; set; }
+        }
+
         public class KeyPathModel
         {
             public string[] Path { get; set; }

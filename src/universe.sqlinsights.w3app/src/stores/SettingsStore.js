@@ -2,17 +2,30 @@
 import {EventEmitter} from "events";
 import * as SettingsActions from "./SettingsActions";
 
+
 class SettingsStore extends EventEmitter {
 
     constructor() {
         super();
         this.autoUpdateSummary = true;
+        this.appFilter = null;
+        this.hostFilter = null;
     }
 
     handleActions(action) {
         switch (action.type) {
             case SettingsActions.AUTO_UPDATE_SUMMARY_UPDATED_ACTION: {
                 this.autoUpdateSummary = action.value;
+                this.emit("storeUpdated");
+                break;
+            }
+            case SettingsActions.FILTER_APP_UPDATED_ACTION: {
+                this.appFilter = action.value;
+                this.emit("storeUpdated");
+                break;
+            }
+            case SettingsActions.FILTER_HOST_UPDATED_ACTION: {
+                this.hostFilter = action.value;
                 this.emit("storeUpdated");
                 break;
             }
@@ -23,6 +36,14 @@ class SettingsStore extends EventEmitter {
 
     getAutoUpdateSummary() {
         return this.autoUpdateSummary;
+    }
+    
+    getAppFilter() {
+        return this.appFilter;
+    }
+    
+    getHostFilter() {
+        return this.hostFilter;
     }
     
 }
