@@ -108,7 +108,7 @@ jobs:
 
   - job: 'Windows_Nano_Server'
     displayName: 'Windows Docker Images'
-    condition: succeededOrFailed()
+    # condition: succeededOrFailed()
     pool:
       vmImage: 'windows-2022'
     timeoutInMinutes: 30
