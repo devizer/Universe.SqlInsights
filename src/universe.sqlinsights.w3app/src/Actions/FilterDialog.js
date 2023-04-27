@@ -23,7 +23,6 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import * as Helper from "../Helper";
-import {calculateSessionFields} from "../stores/CalculatedSessionProperties";
 import * as SessionsActions from "../stores/SessionsActions";
 
 const checkBoxBlankIcon = <CheckBoxOutlineBlankIcon fontSize="small" />;
@@ -76,7 +75,7 @@ function CheckboxesTags({id, label, placeholder, allValues, value, onChange}) {
             multiple
             id={id ?? "checkboxes-filter"}
             options={allValues}
-            defaultValue={[]}
+            value={value ?? []}
             onChange={handleChange}
             disableCloseOnSelect
             getOptionLabel={(option) => option.title}
@@ -112,9 +111,17 @@ export default class FilterDialog extends Component {
 
         this.populateFilterDictionaries = this.populateFilterDictionaries.bind(this);
         
+        settingsStore.getAppFilter(); // Array Of Strings
+        settingsStore.getHostFilter(); // Array of Strings
+        
         this.state = {
             dialogVisible: props.dialogVisible,
-            filtersDictionary: null, // updated by fetch
+            filtersDictionary: null, // updated by fetch (apps and hosts as is from backend)
+            // rename to allTheApps and allTheHosts 
+            appsFilters: null,       // All the Apps fetched by backend (objects with calculated title property)
+            hostsFilters: null,      // All the Hosts fetched by backend (objects with calculated title property)
+            selectedApps: null,  // state of the UI, e.g. array of Objects
+            selectedHosts: null, // state of the UI, e.g. array of Objects
         };
     }
     
@@ -138,11 +145,17 @@ export default class FilterDialog extends Component {
                         console.log(`POPULATING FILTERS. Apps: ${filters.ApplicationList?.length}. Hosts: ${filters.HostIdList?.length}`, filters);
                         const appsFilters = filters.ApplicationList.map(x => ({ ...x, title: x.App }));
                         const hostsFilters = filters.HostIdList.map(x => ({ ...x, title: x.HostId }));
+                        const stringsOfAppsFilter = settingsStore.getAppFilter() ?? [];
+                        const stringsOfHostsFilter = settingsStore.getHostFilter() ?? [];
+                        const valueForAppsCombo = appsFilters.filter(x => stringsOfAppsFilter.find(y => y === x.App));
+                        const valueForHostsCombo = hostsFilters.filter(x => stringsOfHostsFilter.find(y => y === x.HostId));
                         // timeout for layout debug only 
                         setTimeout(() => this.setState({
                             filtersDictionary: filters,
                             appsFilters,
                             hostsFilters,
+                            selectedApps: valueForAppsCombo,
+                            selectedHosts: valueForHostsCombo,
                         }), 0);
                     }
                 })
@@ -165,19 +178,39 @@ export default class FilterDialog extends Component {
         const handleClear = (event) => {};
         const handleApply = (event) => {};
         
+        // Kind: "Hosts" | "Apps"
+        // Value: Array of Objects
+        const handleValueChanged = kind => value => {
+            const newState = {};
+            newState[`selected${kind}`] = value;
+            this.setState(newState);
+            // DONE: map objects to strings and call either 
+            // SettingsActions.AppFilterUpdated(arrayOfStrings)
+            // or 
+            // SettingsActions.HostFilterUpdated(arrayOfStrings)
+            if (kind === "Apps") {
+                SettingsActions.AppFilterUpdated(value.map(x => x.App));
+            }
+            else if (kind === "Hosts") {
+                SettingsActions.HostFilterUpdated(value.map(x => x.HostId));
+            }
+            else     
+                throw new Error(`Unknown kind parameter '${kind}'`);
+        } 
+        
         return (
             
             <Dialog open={this.state.dialogVisible} onClose={handleClose} aria-labelledby="form-dialog-title" fullWidth={true} maxWidth="md">
                 <DialogTitle id="form-dialog-title">Filter endpoints and background tasks by apps and/or hosts</DialogTitle>    
                 <DialogContent>
                     {this.state.filtersDictionary !== null && <React.Fragment>
-                        <CheckboxesTags id="filter-app" label="Applications" placeholder="app" allValues={this.state.appsFilters ?? []} />
+                        <CheckboxesTags id="filter-app" label="Applications" placeholder="app" allValues={this.state.appsFilters ?? []} value={this.state.selectedApps} onChange={handleValueChanged("Apps")} />
                         <div style={{height: 12}}>&nbsp;</div>
-                        <CheckboxesTags id="filter-host" label="Hosts" placeholder="host" allValues={this.state.hostsFilters ?? []} />
+                        <CheckboxesTags id="filter-host" label="Hosts" placeholder="host" allValues={this.state.hostsFilters ?? []} value={this.state.selectedHosts} onChange={handleValueChanged("Hosts")} />
                     </React.Fragment>}
-                    {this.state.filtersDictionary === null && <React.Fragment>
-                        <div style={{width:"100%", paddingTop: 52, paddingBottom: 52, color: "#888"}} className={"center-aligned"}>waiting for lists</div>
-                    </React.Fragment>}
+                    {this.state.filtersDictionary === null &&
+                        <div style={{width:"100%", paddingTop: 52, paddingBottom: 52, color: "#888"}} className={"center-aligned"}>waiting for lists ...</div>
+                    }
                 </DialogContent>
                 <DialogActions>
                     <Typography variant="caption" display="block" gutterBottom noWrap className={"right-aligned"} style={{padding: 16}}>

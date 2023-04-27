@@ -2,7 +2,6 @@
 import {EventEmitter} from "events";
 import * as SettingsActions from "./SettingsActions";
 
-
 class SettingsStore extends EventEmitter {
 
     constructor() {
@@ -21,11 +20,13 @@ class SettingsStore extends EventEmitter {
             }
             case SettingsActions.FILTER_APP_UPDATED_ACTION: {
                 this.appFilter = action.value;
+                console.log(`SettingsStore::appFilter updated: «${this.appFilter}»`);
                 this.emit("storeUpdated");
                 break;
             }
             case SettingsActions.FILTER_HOST_UPDATED_ACTION: {
                 this.hostFilter = action.value;
+                console.log(`SettingsStore::hostFilter updated: «${this.hostFilter}»`);
                 this.emit("storeUpdated");
                 break;
             }
