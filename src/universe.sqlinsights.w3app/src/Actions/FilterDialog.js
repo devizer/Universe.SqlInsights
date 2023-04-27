@@ -65,14 +65,19 @@ const top100Films = [
     { title: 'Interstellar', year: 2014 },
 ];
 
-function CheckboxesTags({id, label, placeholder}) {
+function CheckboxesTags({id, label, placeholder, allValues, value, onChange}) {
+    const handleChange = (event, val, reason) => {
+        console.log(`FILTER ${label} (${reason}). Checked: ${event.target.checked}.`, val )
+        if (onChange) onChange(val);
+    };
+    
     return (
         <Autocomplete
             multiple
             id={id ?? "checkboxes-filter"}
-            options={top100Films}
-            defaultValue={[top100Films[2],top100Films[3]]}
-            onChange={(e) => console.log(`FILTER ${label}`, e.target.checked)}
+            options={allValues}
+            defaultValue={[]}
+            onChange={handleChange}
             disableCloseOnSelect
             getOptionLabel={(option) => option.title}
             renderOption={(option, { selected }) => (
@@ -131,8 +136,14 @@ export default class FilterDialog extends Component {
                 .then(filters => {
                     if (filters != null) {
                         console.log(`POPULATING FILTERS. Apps: ${filters.ApplicationList?.length}. Hosts: ${filters.HostIdList?.length}`, filters);
+                        const appsFilters = filters.ApplicationList.map(x => ({ ...x, title: x.App }));
+                        const hostsFilters = filters.HostIdList.map(x => ({ ...x, title: x.HostId }));
                         // timeout for layout debug only 
-                        setTimeout(() => this.setState({filtersDictionary: filters}), 0);
+                        setTimeout(() => this.setState({
+                            filtersDictionary: filters,
+                            appsFilters,
+                            hostsFilters,
+                        }), 0);
                     }
                 })
                 .catch(error => {
@@ -160,9 +171,9 @@ export default class FilterDialog extends Component {
                 <DialogTitle id="form-dialog-title">Filter endpoints and background tasks by apps and/or hosts</DialogTitle>    
                 <DialogContent>
                     {this.state.filtersDictionary !== null && <React.Fragment>
-                        <CheckboxesTags id="filter-app" label="Applications" placeholder="app"/>
+                        <CheckboxesTags id="filter-app" label="Applications" placeholder="app" allValues={this.state.appsFilters ?? []} />
                         <div style={{height: 12}}>&nbsp;</div>
-                        <CheckboxesTags id="filter-host" label="Hosts" placeholder="host" />
+                        <CheckboxesTags id="filter-host" label="Hosts" placeholder="host" allValues={this.state.hostsFilters ?? []} />
                     </React.Fragment>}
                     {this.state.filtersDictionary === null && <React.Fragment>
                         <div style={{width:"100%", paddingTop: 52, paddingBottom: 52, color: "#888"}} className={"center-aligned"}>waiting for lists</div>
