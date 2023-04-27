@@ -35,8 +35,9 @@ export default class ActionGroupsList extends Component {
 
     constructor(props) {
         super(props);
-        
+
         this.updateDataSource = this.updateDataSource.bind(this);
+        this.updateSettings = this.updateSettings.bind(this);
         this.handleVisibility = this.handleVisibility.bind(this);
 
         this.state = {
@@ -57,15 +58,22 @@ export default class ActionGroupsList extends Component {
     componentDidMount()
     {
         let x = dataSourceStore.on('storeUpdated', this.updateDataSource);
+        settingsStore.on('storeUpdated', this.updateSettings);
         DocumentVisibilityStore.on(this.handleVisibility);
     }
 
     componentWillUnmount() {
         dataSourceStore.off('storeUpdated', this.updateDataSource);
+        settingsStore.off('storeUpdated', this.updateSettings);
     }
 
     updateDataSource() {
         this.setState({actions: dataSourceStore.getDataSource()});
+    }
+    
+    updateSettings() {
+        // Need to update filter label if auto update is off
+        this.setState({triggerSettingsUpdated: new Date()})
     }
     
     render() {
@@ -151,6 +159,14 @@ export default class ActionGroupsList extends Component {
         const handleOpenFilterDialog = (event) => {
             this.setState({filterDialogVisible: true});
         }
+        
+        const getFilterLabel = () => {
+            const appFilters = settingsStore.getAppFilter() ?? [];
+            const hostFilters = settingsStore.getHostFilter() ?? [];
+            const appFilterText = appFilters.length === 0 ? "any app" : appFilters.length === 1 ? "1 app" : `${appFilters.length} apps`;
+            const hostFilterText = hostFilters.length === 0 ? "any host" : hostFilters.length === 1 ? "1 host" : `${hostFilters.length} hosts`;
+            return `${appFilterText}, ${hostFilterText}`;
+        }
             
         return (
             <React.Fragment>
@@ -167,7 +183,7 @@ export default class ActionGroupsList extends Component {
                         
                         <FormControlLabel control={<null />} label="" style={{paddingLeft: 28, paddingRight: 28}} />
 
-                        <FormControlLabel control={<null />} label="Filter: any app, any host, any db server" style={{marginRight:-4}} />
+                        <FormControlLabel control={<null />} label={`Filter: ${getFilterLabel()}`} style={{marginRight:-4}} />
                         <IconButton color="default" aria-label="filter by app or host" component="span" onClick={handleOpenFilterDialog}>
                             <ListAltIcon />
                         </IconButton>                        
