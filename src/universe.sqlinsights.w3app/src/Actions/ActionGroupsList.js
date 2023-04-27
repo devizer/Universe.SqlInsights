@@ -21,6 +21,7 @@ import sessionsStore from "../stores/SessionsStore";
 import settingsStore from "../stores/SettingsStore";
 import {Icon} from "@material-ui/core";
 import {LiveUpdateSwitch} from "./LiveUpdateSwitch";
+import FilterDialog from "./FilterDialog";
 
 
 const noDataProps = {style:{color:"gray", marginTop:30, border: "1px solid grey"}};
@@ -45,6 +46,7 @@ export default class ActionGroupsList extends Component {
             kind: 'total', // or 'average'
             sorting: [{id: "AppDuration", desc: true}],
             autoUpdateSummary: settingsStore.getAutoUpdateSummary(),
+            filterDialogVisible: false,
         };
     }
     
@@ -141,6 +143,14 @@ export default class ActionGroupsList extends Component {
             this.setState({autoUpdateSummary: newAutoUpdateSummary });
             SettingsActions.AutoUpdateSummaryUpdated(newAutoUpdateSummary);
         };
+
+        const handleCloseFilterDialog = (event) => {
+            this.setState({filterDialogVisible: false});
+        }
+        
+        const handleOpenFilterDialog = (event) => {
+            this.setState({filterDialogVisible: true});
+        }
             
         return (
             <React.Fragment>
@@ -158,7 +168,7 @@ export default class ActionGroupsList extends Component {
                         <FormControlLabel control={<null />} label="" style={{paddingLeft: 28, paddingRight: 28}} />
 
                         <FormControlLabel control={<null />} label="Filter: any app, any host, any db server" style={{marginRight:-4}} />
-                        <IconButton color="default" aria-label="filter by app or host" component="span">
+                        <IconButton color="default" aria-label="filter by app or host" component="span" onClick={handleOpenFilterDialog}>
                             <ListAltIcon />
                         </IconButton>                        
                     </div>
@@ -285,6 +295,8 @@ export default class ActionGroupsList extends Component {
                         ]
                     }
                 />
+                
+                <FilterDialog dialogVisible={this.state.filterDialogVisible} onClose={handleCloseFilterDialog} />
                 
             </React.Fragment>
         );
