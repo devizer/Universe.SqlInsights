@@ -50,7 +50,8 @@ class DataSourceListener {
     requestDataSource() {
         const selectedSession = sessionsStore.getSelectedSession();
         const selectedSessionId = selectedSession ? selectedSession.IdSession : -1;
-        const req = Helper.createRequest('Summary', {IdSession: selectedSessionId, AppName: null, HostId: null});
+        const body = Helper.populateAppAndHostFiltersOfBody({IdSession: selectedSessionId});
+        const req = Helper.createRequest('Summary', body);
         let apiUrl = `${API_URL}/Summary`;
         try {
             fetch(req)

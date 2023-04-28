@@ -20,10 +20,10 @@ namespace Universe.SqlInsights.Shared
 
         // For universe.sqltrace.w3app
 #if NETSTANDARD
-        Task<IEnumerable<ActionSummaryCounters>> GetActionsSummary(long idSession, string optionalApp, string optionalHost);
-        Task<string> GetActionsSummaryTimestamp(long idSession, string optionalApp, string optionalHost);
-        Task<IEnumerable<ActionDetailsWithCounters>> GetActionsByKeyPath(long idSession, SqlInsightsActionKeyPath keyPath, int lastN, string optionalApp, string optionalHost);
-        Task<string> GetKeyPathTimestampOfDetails(long idSession, SqlInsightsActionKeyPath keyPath, string optionalApp, string optionalHost);
+        Task<IEnumerable<ActionSummaryCounters>> GetActionsSummary(long idSession, IEnumerable<string> optionalApps, IEnumerable<string> optionalHosts);
+        Task<string> GetActionsSummaryTimestamp(long idSession, IEnumerable<string> optionalApps, IEnumerable<string> optionalHosts);
+        Task<IEnumerable<ActionDetailsWithCounters>> GetActionsByKeyPath(long idSession, SqlInsightsActionKeyPath keyPath, int lastN, IEnumerable<string> optionalApps, IEnumerable<string> optionalHosts);
+        Task<string> GetKeyPathTimestampOfDetails(long idSession, SqlInsightsActionKeyPath keyPath, IEnumerable<string> optionalApps, IEnumerable<string> optionalHosts);
 
         Task<IEnumerable<SqlInsightsSession>> GetSessions();
         Task<long> CreateSession(string caption, int? maxDurationMinutes);

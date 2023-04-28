@@ -103,7 +103,8 @@ export default class ActionList extends Component {
         const apiTimestamp=`${API_URL}/ActionsTimestamp`;
         try {
             const idSession = sessionsStore.getSelectedSession()?.IdSession ?? -1;
-            const req = Helper.createRequest('ActionsTimestamp', {Path: this.props.keyPath, IdSession: idSession, AppName: null, HostId: null})
+            const body = Helper.populateAppAndHostFiltersOfBody({Path: this.props.keyPath, IdSession: idSession});
+            const req = Helper.createRequest('ActionsTimestamp', body)
             fetch(req)
                 .then(response => {
                     return response.ok ? response.json() : {error: response.status, details: response.json()}
@@ -131,7 +132,8 @@ export default class ActionList extends Component {
         const apiUrl=`${API_URL}/ActionsByKey`;
         try {
             const idSession = sessionsStore.getSelectedSession()?.IdSession ?? -1;
-            const req = Helper.createRequest('ActionsByKey', {Path: this.props.keyPath, IdSession: idSession, AppName: null, HostId: null})
+            const body = Helper.populateAppAndHostFiltersOfBody({Path: this.props.keyPath, IdSession: idSession});
+            const req = Helper.createRequest('ActionsByKey', body);
             fetch(req)
                 .then(response => {
                     // console.log(`Response.Status for ${apiUrl} obtained: ${response.status}`);

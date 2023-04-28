@@ -14,27 +14,65 @@ namespace Universe.SqlInsights.SqlServerStorage
     {
 #if NETSTANDARD || NET5_0
         
-        private OptionalParametersInfo BuildOptionalParameters(StringsStorage strings, string optionalApp = null, string optionalHost = null)
+        // IEnumerable<string> optionalApps = null, IEnumerable<string> optionalHosts = null
+        private OptionalParametersInfo BuildOptionalParameters(
+            StringsStorage strings,
+            IEnumerable<string> optionalApps,
+            IEnumerable<string> optionalHosts
+        )
         {
-            StringBuilder sql = new StringBuilder();
+            StringBuilder sqlWhere = new StringBuilder();
             var sqlParams = new DynamicParameters();
-            if (optionalApp != null)
+            if (optionalApps != null)
             {
-                long? idAppName = strings.AcquireString(StringKind.AppName, optionalApp);
-                sqlParams.Add("AppName", idAppName.Value);
-                sql.Append(" And AppName = @AppName");
+                int appIndex = 0;
+                foreach (var optionalApp in optionalApps)
+                {
+                    long? idAppName = strings.AcquireString(StringKind.AppName, optionalApp);
+                    sqlParams.Add($"App{++appIndex}", idAppName.Value);
+                }
+                sqlWhere.Append($" And AppName In ({string.Join(",",Enumerable.Range(1, appIndex).Select(x => $"@App{x}"))})");
             }
-            if (optionalHost != null)
+
+            if (optionalHosts != null)
             {
-                long? idHost = strings.AcquireString(StringKind.HostId, optionalHost);
-                sqlParams.Add("HostId", idHost.Value);
-                sql.Append(" And HostId = @HostId");
+                int hostIndex = 0;
+                foreach (var optionalHost in optionalHosts)
+                {
+                    long? idHost = strings.AcquireString(StringKind.HostId, optionalHost);
+                    sqlParams.Add($"Host{++hostIndex}", idHost.Value);
+                }
+                sqlWhere.Append($" And HostId In ({string.Join(",",Enumerable.Range(1, hostIndex).Select(x => $"@Host{x}"))})");
             }
             
             return new OptionalParametersInfo()
             {
                 Parameters = sqlParams,
-                SqlWhere = sql,
+                SqlWhere = sqlWhere,
+            };
+        }
+
+        private OptionalParametersInfo BuildOptionalParameters(StringsStorage strings, string optionalApp = null, string optionalHost = null)
+        {
+            StringBuilder sqlWhere = new StringBuilder();
+            var sqlParams = new DynamicParameters();
+            if (optionalApp != null)
+            {
+                long? idAppName = strings.AcquireString(StringKind.AppName, optionalApp);
+                sqlParams.Add("AppName", idAppName.Value);
+                sqlWhere.Append(" And AppName = @AppName");
+            }
+            if (optionalHost != null)
+            {
+                long? idHost = strings.AcquireString(StringKind.HostId, optionalHost);
+                sqlParams.Add("HostId", idHost.Value);
+                sqlWhere.Append(" And HostId = @HostId");
+            }
+            
+            return new OptionalParametersInfo()
+            {
+                Parameters = sqlParams,
+                SqlWhere = sqlWhere,
             };
         }
 

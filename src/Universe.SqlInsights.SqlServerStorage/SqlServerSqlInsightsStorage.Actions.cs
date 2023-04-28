@@ -19,7 +19,9 @@ namespace Universe.SqlInsights.SqlServerStorage
         }
 
         
-        public async Task<string> GetKeyPathTimestampOfDetails(long idSession, SqlInsightsActionKeyPath keyPath, string optionalApp = null, string optionalHost = null)
+        // TODO: Propagate parameters optionalApps, optionalHosts
+        // Same as GetActionsByKeyPath below
+        public async Task<string> GetKeyPathTimestampOfDetails(long idSession, SqlInsightsActionKeyPath keyPath, IEnumerable<string> optionalApps = null, IEnumerable<string> optionalHosts = null)
         {
             const string sql = "Select Top 1 IdAction From SqlInsightsAction Where KeyPath = @KeyPath And IdSession = @IdSession Order By IdAction Desc";
             using (var con = GetConnection())
@@ -30,16 +32,26 @@ namespace Universe.SqlInsights.SqlServerStorage
             }
         }
 
-        public async Task<IEnumerable<ActionDetailsWithCounters>> GetActionsByKeyPath(long idSession, SqlInsightsActionKeyPath keyPath, int lastN = 100, string optionalApp = null, string optionalHost = null)
+        public async Task<IEnumerable<ActionDetailsWithCounters>> GetActionsByKeyPath(long idSession, SqlInsightsActionKeyPath keyPath, int lastN = 100, IEnumerable<string> optionalApps = null, IEnumerable<string> optionalHosts = null)
         {
             if (lastN < 1) 
                 throw new ArgumentOutOfRangeException(nameof(lastN));
             
-            const string sql = "Select Top (@N) Data From SqlInsightsAction Where KeyPath = @KeyPath And IdSession = @IdSession Order By IdAction Desc";
             using (var con = GetConnection())
             {
+                StringsStorage strings = new StringsStorage(con, null);
+                var optionalParams = BuildOptionalParameters(strings, optionalApps, optionalHosts);
+                var sqlParams = optionalParams.Parameters;
+                var sqlWhere = optionalParams.SqlWhere;
+                
+                string sql = $"Select Top (@N) Data From SqlInsightsAction Where KeyPath = @KeyPath And IdSession = @IdSession{sqlWhere} Order By IdAction Desc";
+                
+                sqlParams.Add("KeyPath", SerializeKeyPath(keyPath));
+                sqlParams.Add("IdSession", idSession);
+                sqlParams.Add("N", lastN);
+                
                 var query = await con
-                    .QueryAsync<SelectDataResult>(sql, new {KeyPath = SerializeKeyPath(keyPath), IdSession = idSession, N = lastN});
+                    .QueryAsync<SelectDataResult>(sql, sqlParams);
 
                 var ret = query
                     .Select(x => DbJsonConvert.Deserialize<ActionDetailsWithCounters>(x.Data));

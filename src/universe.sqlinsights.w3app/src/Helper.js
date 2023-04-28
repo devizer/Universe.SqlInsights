@@ -1,4 +1,5 @@
 ﻿import {API_URL} from './BuildTimeConfiguration';
+import settingsStore from './stores/SettingsStore'
 
 export const toConsole = function(caption, obj) {
     if (process.env.NODE_ENV !== 'production') {
@@ -18,6 +19,11 @@ export const keyPathSeparator = {
     char: '→',
     code: 0x2192
 };
+
+export function populateAppAndHostFiltersOfBody(body) {
+    const ret = {...body, AppsFilter: settingsStore.getAppFilter(), HostsFilter: settingsStore.getHostFilter()};
+    return ret;
+}
 
 export function createRequest(action, body) {
     return new Request(`${API_URL}/${action}`, {

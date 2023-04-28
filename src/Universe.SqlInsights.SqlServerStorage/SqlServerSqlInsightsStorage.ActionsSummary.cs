@@ -18,7 +18,7 @@ namespace Universe.SqlInsights.SqlServerStorage
             public string Data { get; set; }
         }
 
-        public async Task<IEnumerable<ActionSummaryCounters>> GetActionsSummary(long idSession, string optionalApp = null, string optionalHost = null)
+        public async Task<IEnumerable<ActionSummaryCounters>> GetActionsSummary(long idSession, IEnumerable<string> optionalApps = null, IEnumerable<string> optionalHosts = null)
         {
             StringBuilder sql = new StringBuilder(@"
 Select
@@ -43,7 +43,7 @@ Where
             using (var con = GetConnection())
             {
                 StringsStorage strings = new StringsStorage(con, null);
-                var optionalParams = BuildOptionalParameters(strings, optionalApp, optionalHost);
+                var optionalParams = BuildOptionalParameters(strings, optionalApps, optionalHosts);
                 var sqlParams = optionalParams.Parameters;
                 sqlParams.Add("IdSession", idSession);
                 sql.Append(optionalParams.SqlWhere);
@@ -74,7 +74,7 @@ Where
         }
 
         // Done: Remove Data Json
-        public async Task<string> GetActionsSummaryTimestamp(long idSession, string optionalApp = null, string optionalHost = null)
+        public async Task<string> GetActionsSummaryTimestamp(long idSession, IEnumerable<string> optionalApps = null, IEnumerable<string> optionalHosts = null)
         {
             var sql = new StringBuilder(@$"
 Select 
@@ -87,7 +87,7 @@ Where
             using (var con = GetConnection())
             {
                 StringsStorage strings = new StringsStorage(con, null);
-                var optionalParams = BuildOptionalParameters(strings, optionalApp, optionalHost);
+                var optionalParams = BuildOptionalParameters(strings, optionalApps, optionalHosts);
                 var sqlParams = optionalParams.Parameters;
                 sqlParams.Add("IdSession", idSession);
                 sql.Append(optionalParams.SqlWhere);
