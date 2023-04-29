@@ -84,8 +84,8 @@ namespace Universe.SqlInsights.W3Api.Controllers
 
         public class FiltersResult
         {
-            public IEnumerable<AppFilter> ApplicationList;
-            public IEnumerable<HostIdFilter> HostIdList;
+            public IEnumerable<AppFilter> ApplicationList { get; set; }
+            public IEnumerable<HostIdFilter> HostIdList { get; set; }
         }
 
         public class AppFilter
