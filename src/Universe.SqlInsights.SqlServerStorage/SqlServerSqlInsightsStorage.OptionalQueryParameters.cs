@@ -31,7 +31,8 @@ namespace Universe.SqlInsights.SqlServerStorage
                     long? idAppName = strings.AcquireString(StringKind.AppName, optionalApp);
                     sqlParams.Add($"App{++appIndex}", idAppName.Value);
                 }
-                sqlWhere.Append($" And AppName In ({string.Join(",",Enumerable.Range(1, appIndex).Select(x => $"@App{x}"))})");
+                if (appIndex > 0)
+                    sqlWhere.Append($" And AppName In ({string.Join(",",Enumerable.Range(1, appIndex).Select(x => $"@App{x}"))})");
             }
 
             if (optionalHosts != null)
@@ -42,7 +43,8 @@ namespace Universe.SqlInsights.SqlServerStorage
                     long? idHost = strings.AcquireString(StringKind.HostId, optionalHost);
                     sqlParams.Add($"Host{++hostIndex}", idHost.Value);
                 }
-                sqlWhere.Append($" And HostId In ({string.Join(",",Enumerable.Range(1, hostIndex).Select(x => $"@Host{x}"))})");
+                if (hostIndex > 0)
+                    sqlWhere.Append($" And HostId In ({string.Join(",",Enumerable.Range(1, hostIndex).Select(x => $"@Host{x}"))})");
             }
             
             return new OptionalParametersInfo()
