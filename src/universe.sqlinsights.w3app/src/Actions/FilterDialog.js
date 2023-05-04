@@ -24,6 +24,7 @@ import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import * as Helper from "../Helper";
 import * as SessionsActions from "../stores/SessionsActions";
+import ReactComponentWithPerformance from "../Shared/ReactComponentWithPerformance";
 
 const checkBoxBlankIcon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkBoxCheckedIcon = <CheckBoxIcon fontSize="small" />;
@@ -64,6 +65,7 @@ function CheckboxesTags({id, label, placeholder, allValues, value, onChange}) {
 
 export default class FilterDialog extends Component {
     static displayName = FilterDialog.name;
+    internalName = () => "FilterDialog";
 
     static propTypes = {
         dialogVisible: PropTypes.bool,

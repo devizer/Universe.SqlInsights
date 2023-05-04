@@ -22,12 +22,15 @@ import settingsStore from "../stores/SettingsStore";
 import {Icon} from "@material-ui/core";
 import {LiveUpdateSwitch} from "./LiveUpdateSwitch";
 import FilterDialog from "./FilterDialog";
-
+import ReactComponentWithPerformance from "../Shared/ReactComponentWithPerformance";
 
 const noDataProps = {style:{color:"gray", marginTop:30, border: "1px solid grey"}};
+let renderCount = 0;
 
-export default class ActionGroupsList extends Component {
+export default class ActionGroupsList extends ReactComponentWithPerformance {
     static displayName = ActionGroupsList.name;
+    internalName = () => "ActionGroupList";
+
 
     static propTypes = {
         onActionSelected: PropTypes.func
@@ -77,6 +80,7 @@ export default class ActionGroupsList extends Component {
     }
     
     render() {
+        Helper.toConsole(`${++renderCount} Rendering «ActionGroupsList», name=${this.constructor.name}, displayName2=${this.constructor.displayName2}`);
         const isLoaded = this.state.actions !== null;
         const actions = this.state.actions === null ? [] : this.state.actions;
         Helper.toConsole(`Rendering TOTAL ACTION GROUPS`, actions.length);

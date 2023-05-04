@@ -154,6 +154,6 @@ if ($jsonSettings) {
 
 Say "Creating SqlInsights Dashboard Service"
 # Windows 7 Does not Support 'AutomaticDelayedStart'
-New-Service -Name SqlInsightsDashboard -BinaryPathName $binFullName -DisplayName "SqlInsights Dashboard" -Description "Provides Web Dashboard and Web API to SqlInsights Storage. Version v$version" -StartupType Automatic
+New-Service -Name SqlInsightsDashboard -BinaryPathName $binFullName -DisplayName "SqlInsights Dashboard" -Description "Provides Web Dashboard and Web API for SqlInsights Warehouse Storage. Version v$version" -StartupType Automatic
 Say "Starting SqlInsights Dashboard Service"
 & net.exe start SqlInsightsDashboard

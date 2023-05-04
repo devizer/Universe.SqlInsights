@@ -97,11 +97,6 @@ namespace Universe.SqlInsights.W3Api.Controllers
             public string HostId { get; set; }
         }
 
-        public class KeyPathModel
-        {
-            public string[] Path { get; set; }
-        }
-
         static SqlInsightsActionKeyPath ParseActionKeyPath(string groupId)
         {
             if (groupId == null) throw new ArgumentNullException(nameof(groupId), "keyPath is required");

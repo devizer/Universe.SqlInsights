@@ -20,7 +20,9 @@ import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import PropTypes from "prop-types";
 import sessionsStore from "../stores/SessionsStore"
 import settingsStore from "../stores/SettingsStore";
+import ReactComponentWithPerformance from "../Shared/ReactComponentWithPerformance";
 
+let renderCount = 0;
 const SqlCode = ({codeString}) => {
     return (
         <SyntaxHighlighter language="sql" style={docco} wrapLines={true} wrapLongLines={true} /*CodeTag={"span"} PreTag={"span"}*/>
@@ -45,8 +47,9 @@ const useStyles = makeStyles((theme) => ({
 
 const noDataProps = {style:{color:"gray", marginTop:30, border: "1px solid grey"}};
 
-export default class ActionList extends Component {
+export default class ActionList extends ReactComponentWithPerformance {
     static displayName = ActionList.name;
+    internalName = () => "ActionList";
 
     static propTypes = {
         keyPath: PropTypes.arrayOf(PropTypes.string),
@@ -158,6 +161,8 @@ export default class ActionList extends Component {
     }
 
     render() {
+        Helper.toConsole(`${++renderCount} Rendering «Actions»`);
+
         const actions = this.state.actions === null ? [] : this.state.actions;
         const isLoaded = this.state.actions !== null;
         let pageSize = actions.length === 0 ? 9 : Math.max(actions.length, 1);

@@ -17,5 +17,12 @@ module.exports = {
       },
     ],
   },
-  plugins: [new UglifyJsPlugin()],
+  plugins: [
+    new UglifyJsPlugin({
+        parallel: true,
+        sourceMap: true,
+    }), 
+    /* "webpack-react-component-name": "^4.0.5" */
+    new WebpackReactComponentNamePlugin222({include: () => true})
+  ],
 }

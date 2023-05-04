@@ -13,7 +13,6 @@ export default class ActionsTab extends Component {
     
     constructor(props) {
         super(props);
-        
     }
     
     render() {
