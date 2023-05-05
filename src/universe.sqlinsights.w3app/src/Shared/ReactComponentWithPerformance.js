@@ -18,7 +18,7 @@ export default class ReactComponentWithPerformance extends Component {
     }
     
     getSnapshotBeforeUpdate(prevProps, prevState) {
-        if (this.startRenderAt && this.renderCount <= 100) {
+        if (this.startRenderAt && this.renderCount < 100) {
             const name = this.internalName(); 
             const endRenderAt = window?.performance?.now ? window.performance.now() : +new Date();
             const renderTime = (endRenderAt - this.startRenderAt);
