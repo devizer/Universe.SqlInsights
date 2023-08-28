@@ -40,7 +40,7 @@ namespace AdventureWorks.HeadlessTests
             driver.Dispose();
         }
 
-        static void OpenOrderLinksOnCurrentPage(RemoteWebDriver driver)
+        static void OpenOrderLinksOnCurrentPage(WebDriver driver)
         {
             List<LinkInfo> links = GetLinks(driver.FindElements(By.CssSelector("a.OrderLink")).ToList());
 
