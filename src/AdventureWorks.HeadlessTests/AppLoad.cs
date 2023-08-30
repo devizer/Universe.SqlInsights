@@ -10,8 +10,8 @@ namespace AdventureWorks.HeadlessTests
     {
         public static void RunCustomers()
         {
-            ChromeDriver driver = new ChromeDriver();
-            for(int i=1; i<10;i++)
+            ChromeDriver driver = ChromeDriverFactory.Create();
+            for (int i=1; i<10;i++)
                 driver.Navigate().GoToUrl($"{Env.AppUrl}/Customer");
 
             List<LinkInfo> links = GetLinks(driver.FindElements(By.CssSelector("a.CustomerDetailsLink")).ToList());
@@ -30,7 +30,7 @@ namespace AdventureWorks.HeadlessTests
         }
         public static void RunSalesOrders()
         {
-            ChromeDriver driver = new ChromeDriver();
+            ChromeDriver driver = ChromeDriverFactory.Create();
             for (int i = 1; i < 10; i++) 
                 driver.Navigate().GoToUrl($"{Env.AppUrl}/SalesOrders");
 
