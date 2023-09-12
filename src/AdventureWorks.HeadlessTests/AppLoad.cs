@@ -57,13 +57,13 @@ namespace AdventureWorks.HeadlessTests
         public static List<LinkInfo> GetLinks(IEnumerable<IWebElement> elements)
         {
 
-            List<LinkInfo> links = elements.Select(x => new LinkInfo() {Link = x.GetAttribute("href"), Text = x.Text})
-            .ToList();
-            foreach (var link in elements)
+            List<LinkInfo> links = elements
+                .Select(x => new LinkInfo() { Link = x.GetAttribute("href"), Text = x.Text })
+                .ToList();
+
+            foreach (var link in links)
             {
-                var href = link.GetAttribute("href");
-                var text = link.Text;
-                Logs.Info($"Link {text}: {href}");
+                Logs.Info($"Link {link.Text}: {link.Link}");
             }
 
             return links;
