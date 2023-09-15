@@ -2,7 +2,6 @@
 using System.Linq;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Remote;
 
 namespace AdventureWorks.HeadlessTests
 {
@@ -11,8 +10,7 @@ namespace AdventureWorks.HeadlessTests
         public static void RunCustomers()
         {
             ChromeDriver driver = ChromeDriverFactory.Create();
-            for (int i=1; i<10;i++)
-                driver.Navigate().GoToUrl($"{Env.AppUrl}/Customer");
+            driver.Navigate().GoToUrl($"{Env.AppUrl}/Customer");
 
             List<LinkInfo> links = GetLinks(driver.FindElements(By.CssSelector("a.CustomerDetailsLink")).ToList());
 
@@ -23,7 +21,6 @@ namespace AdventureWorks.HeadlessTests
                 var charsCount = driver.FindElements(By.TagName("body")).FirstOrDefault()?.Text;
                 Logs.Info($"Opened client  {linkInfo.Text}: {linkInfo.Link}, {charsCount.Length} chars");
                 OpenOrderLinksOnCurrentPage(driver);
-                TinyDelay();
             }
 
             driver.Dispose();
@@ -31,8 +28,7 @@ namespace AdventureWorks.HeadlessTests
         public static void RunSalesOrders()
         {
             ChromeDriver driver = ChromeDriverFactory.Create();
-            for (int i = 1; i < 10; i++) 
-                driver.Navigate().GoToUrl($"{Env.AppUrl}/SalesOrders");
+            driver.Navigate().GoToUrl($"{Env.AppUrl}/SalesOrders");
 
             OpenOrderLinksOnCurrentPage(driver);
 
@@ -42,15 +38,14 @@ namespace AdventureWorks.HeadlessTests
 
         static void OpenOrderLinksOnCurrentPage(WebDriver driver)
         {
-            List<LinkInfo> links = GetLinks(driver.FindElements(By.CssSelector("a.OrderLink")).ToList());
+            List<LinkInfo> linksOrders = GetLinks(driver.FindElements(By.CssSelector("a.OrderLink")).ToList());
 
-            foreach (var linkInfo in links)
+            foreach (var linkOrder in linksOrders)
             {
-                Logs.Info($"Opening order {linkInfo.Text}: {linkInfo.Link}");
-                driver.Navigate().GoToUrl(linkInfo.Link);
+                Logs.Info($"Opening order {linkOrder.Text}: {linkOrder.Link}");
+                driver.Navigate().GoToUrl(linkOrder.Link);
                 var charsCount = driver.FindElements(By.TagName("body")).FirstOrDefault()?.Text;
-                Logs.Info($"Opened order  {linkInfo.Text}: {linkInfo.Link}, {charsCount.Length} chars");
-                TinyDelay();
+                Logs.Info($"Opened order  {linkOrder.Text}: {linkOrder.Link}, {charsCount.Length} chars");
             }
         }
 
@@ -69,9 +64,5 @@ namespace AdventureWorks.HeadlessTests
             return links;
         }
 
-        static void TinyDelay()
-        {
-            // Thread.Sleep(22);
-        }
     }
 }
