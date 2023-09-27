@@ -12,6 +12,9 @@ namespace AdventureWorks.HeadlessTests
     {
         private static int Counter = 0;
 
+        private static Lazy<ChromeDriver> _CurrentChromeDriver = new Lazy<ChromeDriver>(Create, LazyThreadSafetyMode.ExecutionAndPublication);
+        public static ChromeDriver CurrentChromeDriver = _CurrentChromeDriver.Value;
+
         public static ChromeDriver Create()
         {
             int? currentMajor = CurrentChromeVersionClient.TryGetMajorVersion();
