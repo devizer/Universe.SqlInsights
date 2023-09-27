@@ -31,9 +31,11 @@ jobs:
          node --version
          time yarn install 
          time yarn build
+        retryCountOnTaskFailure: 3
         displayName: 'Build w3app'
 
       - publish: $(Build.SourcesDirectory)/src/universe.sqlinsights.w3app/build
+        retryCountOnTaskFailure: 3
         displayName: 'Publish Artifact'
         condition: succeededOrFailed()
         artifact: 'w3app'
