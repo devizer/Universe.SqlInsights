@@ -181,6 +181,7 @@ steps:
 
        # Say "Copy log SQL-Setup.Logs"
        # cp "$($Env:Temp)\SQL-Setup.Logs" Setup.Logs -Force
+    condition: succeededOrFailed()
     displayName: 'Prepare SQL Server'
 
   - powershell: |
