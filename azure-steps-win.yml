@@ -320,6 +320,7 @@ steps:
       cp -f "${SQLINSIGHTS_REPORT_FULLNAME}" "${SYSTEM_ARTIFACTSDIRECTORY}\\SqlInsights Report.txt"
       true
     condition: eq(variables['TEST_W3API'], 'true')
+    timeoutInMinutes: 10
     displayName: 'RUN W3API (optional)'
 
 
