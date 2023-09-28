@@ -58,7 +58,9 @@ steps:
       cd build
       echo "SERVING STATIC W3APP. Content of ./static/js:"
       ls -la static/js
-      dotnet serve --version 2>nul || dotnet tool install --global dotnet-serve
+      Say "Installing dotnet-serve tool"
+      try-and-retry dotnet tool install --global dotnet-serve || true
+      dotnet serve --version 2>nul || try-and-retry dotnet tool install --global dotnet-serve
       dotnet serve --version
       nohup dotnet serve -p 6060 -o |& tee ~/w3app.log &
       sleep 2; cat ~/w3app.log
