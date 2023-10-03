@@ -50,6 +50,12 @@ jobs:
       maxParallel: 7
       matrix:
 
+        "SQL Server 2008 Advanced":
+          SQL: 'SqlServer 2008 Express Advanced: MSSQLSERVER'
+        "SQL Server 2008 Advanced on Windows Server 2022":
+          SQL: 'SqlServer 2008 Express Advanced: MSSQLSERVER'
+          VMIMAGE: 'windows-2022'
+ 
         "SQL Server 2008 R2":
           SQL: 'SqlServer 2008R2 Express: MSSQLSERVER'
           MSI_DUMP: true
@@ -117,7 +123,7 @@ jobs:
     dependsOn:
       - Build_W3_App
     strategy:
-      maxParallel: 6
+      maxParallel: 3
       matrix:
 
         "SQL Server 2022 on Ubuntu with RAM Disk":
