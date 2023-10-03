@@ -50,15 +50,6 @@ jobs:
       maxParallel: 7
       matrix:
 
-        "SQL Server 2008 On Server 2022":
-          SQL: 'SqlServer 2008 Express: MSSQLSERVER'
-          VMIMAGE: 'windows-2022'
-          ADD_LEGACY_WINDOWS_COMPONENTS: 'True' # Add-WindowsCapability -Online -Name ServerCore.AppCompatibility~~~~0.0.1.0
-        "SQL Server 2005 On Server 2022":
-          SQL: 'SqlServer 2005 Express: MSSQLSERVER'
-          VMIMAGE: 'windows-2022'
-          ADD_LEGACY_WINDOWS_COMPONENTS: 'True'
-
         "SQL Server 2008 R2":
           SQL: 'SqlServer 2008R2 Express: MSSQLSERVER'
           MSI_DUMP: true
