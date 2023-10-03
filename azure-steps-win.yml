@@ -20,7 +20,8 @@ steps:
     displayName: 'Bootstrap pwsh'
 
   - powershell: |
-      Add-WindowsCapability -Online -Name ServerCore.AppCompatibility~~~~0.0.1.0
+      # Add-WindowsCapability -Online -Name ServerCore.AppCompatibility~~~~0.0.1.0
+      Add-WindowsCapability -Online -Name ServerCore.AppCompatibility
       $true
     condition: ne(variables['ADD_LEGACY_WINDOWS_COMPONENTS'], '')
     displayName: 'Add Legacy Windows Components'
