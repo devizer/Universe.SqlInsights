@@ -52,9 +52,9 @@ jobs:
 
         "SQL Server 2008 Advanced":
           SQL: 'SqlServer 2008 Express Advanced: MSSQLSERVER'
-        "SQL Server 2008 Advanced on Windows Server 2022":
-          SQL: 'SqlServer 2008 Express Advanced: MSSQLSERVER'
-          VMIMAGE: 'windows-2022'
+        # "SQL Server 2008 Advanced on Windows Server 2022":
+        #   SQL: 'SqlServer 2008 Express Advanced: MSSQLSERVER'
+        #   VMIMAGE: 'windows-2022'
  
         "SQL Server 2008 R2":
           SQL: 'SqlServer 2008R2 Express: MSSQLSERVER'
