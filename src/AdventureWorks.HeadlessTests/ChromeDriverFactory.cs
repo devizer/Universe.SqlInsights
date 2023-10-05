@@ -12,23 +12,35 @@ namespace AdventureWorks.HeadlessTests
     {
         private static int Counter = 0;
 
-        private static Lazy<ChromeDriver> _CurrentChromeDriver = new Lazy<ChromeDriver>(Create, LazyThreadSafetyMode.ExecutionAndPublication);
-        public static ChromeDriver CurrentChromeDriver = _CurrentChromeDriver.Value;
+        // private static Lazy<ChromeDriver> _CurrentChromeDriver = new Lazy<ChromeDriver>(Create, LazyThreadSafetyMode.ExecutionAndPublication);
+        // public static ChromeDriver CurrentChromeDriver = _CurrentChromeDriver.Value;
+
+        static readonly object WorkaroundSync = new object();
+
+        static ChromeDriverFactory()
+        {
+            WorkaroundSync = new object();
+        }
+
 
         public static ChromeDriver Create()
         {
-            int? currentMajor = CurrentChromeVersionClient.TryGetMajorVersion();
-            Console.WriteLine($"Downloading chrome driver for the Current Chrome Version '{currentMajor}'");
-            var driverResult = ChromeOrDriverFactory.DownloadAndExtract(currentMajor, ChromeOrDriverType.Driver);
-            if (driverResult != null)
+            lock (WorkaroundSync)
             {
-                string chromeDriverPath = driverResult.ExecutableFullPath;
-                Console.WriteLine($"Have got chrome driver {driverResult.Metadata?.RawVersion} '{chromeDriverPath}'");
-                ChromeDriverService svc = ChromeDriverService.CreateDefaultService(Path.GetDirectoryName(chromeDriverPath), Path.GetFileName(chromeDriverPath));
-                return new ChromeDriver(svc);
-            }
+                int? currentMajor = CurrentChromeVersionClient.TryGetMajorVersion();
+                Console.WriteLine($"Downloading chrome driver for the Current Chrome Version '{currentMajor}'");
+                var driverResult = ChromeOrDriverFactory.DownloadAndExtract(currentMajor, ChromeOrDriverType.Driver);
+                if (driverResult != null)
+                {
+                    string chromeDriverPath = driverResult.ExecutableFullPath;
+                    Console.WriteLine($"Have got chrome driver {driverResult.Metadata?.RawVersion} '{chromeDriverPath}'");
+                    ChromeDriverService svc =
+                        ChromeDriverService.CreateDefaultService(Path.GetDirectoryName(chromeDriverPath), Path.GetFileName(chromeDriverPath));
+                    return new ChromeDriver(svc);
+                }
 
-            return new ChromeDriver();
+                return new ChromeDriver();
+            }
         }
 
         public static ChromeDriver Create_Prev()
