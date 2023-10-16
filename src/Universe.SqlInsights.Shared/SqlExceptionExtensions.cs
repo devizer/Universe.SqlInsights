@@ -85,7 +85,12 @@ namespace Universe.SqlInsights.Shared
             {
                 if (ret.Length > 0) ret.Append(" → ");
                 SqlExceptionInfo sqlEx = IsSqlException(exception);
-                ret.Append($"❰{exception.GetType().Name}{(sqlEx == null ? "" : " " + sqlEx.Number)}❱ {exception.Message}");
+                var specificDetails = (sqlEx == null ? null : " " + sqlEx.Number);
+                int? httpErrorStatus = HttpExceptionExtensions.TryGetHttpExceptionStatus(ex);
+                if (specificDetails == null && httpErrorStatus.HasValue)
+                    specificDetails = " " + httpErrorStatus.Value;
+
+                ret.Append($"❰{exception.GetType().Name}{specificDetails}❱ {exception.Message}");
             }
 
             return ret.ToString();
