@@ -19,10 +19,25 @@ $csb = new-object System.Data.SqlClient.SqlConnectionStringBuilder $DB
 $server=$csb.DataSource
 $dbName=$csb.InitialCatalog
 
-$archSuffix="x64";
-if ($ENV:PROCESSOR_ARCHITECTURE -eq "X86") { $archSuffix="x86" };
-if ($ENV:PROCESSOR_ARCHITECTURE -eq "ARM64") { $archSuffix="arm64" };
-if ($ENV:PROCESSOR_ARCHITECTURE -eq "ARM") { $archSuffix="arm" };
+# x86 (0), MIPS (1), Alpha (2), PowerPC (3), ARM (5), ia64 (6) Itanium-based systems, x64 (9), ARM64 (12)
+function Get-CPU-Architecture-Suffix() {
+    # on multiple sockets x64
+    $a=(Get-WmiObject Win32_Processor).Architecture
+    if ($a.Count) { $a=$a[0] };
+    if ($a -eq 0)  { return "x86" };
+    if ($a -eq 5)  { return "arm" };
+    if ($a -eq 9)  { return "x64" };
+    if ($a -eq 12) { return "arm64" };
+    return "x64";
+}
+
+try { $archSuffix = Get-CPU-Architecture-Suffix } catch {}
+if (-not $archSuffix) {
+  $archSuffix="x64";
+  if ($ENV:PROCESSOR_ARCHITECTURE -eq "X86") { $archSuffix="x86" };
+  if ($ENV:PROCESSOR_ARCHITECTURE -eq "ARM64") { $archSuffix="arm64" };
+  if ($ENV:PROCESSOR_ARCHITECTURE -eq "ARM") { $archSuffix="arm" };
+}
 $file="sqlinsights-dashboard-win-$archSuffix.zip"
 $url="https://github.com/devizer/Universe.SqlInsights/releases/latest/download/$file"
 
