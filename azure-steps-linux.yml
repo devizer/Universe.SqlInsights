@@ -118,7 +118,7 @@ steps:
       # /usr/src/app/do-my-sql-commands.sh & /opt/mssql/bin/sqlservr
       docker exec -t sqlserver cat /var/opt/mssql/mssql.conf
       Say "/opt/mssql/bin/sqlservr"
-      docker exec -t sqlserver file /opt/mssql/bin/sqlservr
+      docker exec -t sqlserver file /opt/mssql/bin/sqlservr || true
 
     condition: ne(variables['SQL_IMAGE_TAG'], '')
     displayName: 'SQL Server $(SQL_IMAGE_TAG)'
