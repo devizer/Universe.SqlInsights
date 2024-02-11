@@ -162,6 +162,7 @@ steps:
        (new-object System.Net.WebClient).DownloadFile('https://raw.githubusercontent.com/devizer/glist/master/bin/SQL-Express/Sql-Setup-Bootstrap.ps1', "$Work\Sql-Setup-Bootstrap.ps1")
        pushd $Work; . .\Sql-Setup-Bootstrap.ps1; popd
 
+       $ENV:TEMP="$($ENV:SYSTEMDRIVE)\TEMP"; New-Item "$($ENV:TEMP)" -Type Directory -Force -EA SilentlyContinue | Out-Null
        Say "Target Sql Server Version <$(SQL)>"
        Show-SqlServers
 
