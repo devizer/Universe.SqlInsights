@@ -50,6 +50,10 @@ jobs:
       maxParallel: 7
       matrix:
 
+        "SQL Server 2016":
+          SQL: 'SqlServer 2016 Express: MSSQLSERVER'
+          TEST_ADVENTURE_WORKS: true
+
         "SQL Server 2008 Advanced":
           SQL: 'SqlServer 2008 Express Advanced: MSSQLSERVER'
         # "SQL Server 2008 Advanced on Windows Server 2022":
@@ -96,9 +100,6 @@ jobs:
           SQL: 'SqlServer 2012 Express: MSSQLSERVER'
         "SQL Server 2014":
           SQL: 'SqlServer 2014 Express: MSSQLSERVER'
-          TEST_ADVENTURE_WORKS: true
-        "SQL Server 2016":
-          SQL: 'SqlServer 2016 Express: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
         "SQL Server 2017 Dev":
           SQL: 'SqlServer 2017 Developer: MSSQLSERVER'
