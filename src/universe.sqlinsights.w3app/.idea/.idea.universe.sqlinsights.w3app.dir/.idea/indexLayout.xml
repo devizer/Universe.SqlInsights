@@ -2,7 +2,22 @@
 <project version="4">
   <component name="UserContentModel">
     <attachedFolders />
-    <explicitIncludes />
+    <explicitIncludes>
+      <Path>.env</Path>
+      <Path>.eslintrc.json.muted</Path>
+      <Path>.gitignore</Path>
+      <Path>README.md</Path>
+      <Path>gulpfile.js</Path>
+      <Path>icons</Path>
+      <Path>package.json</Path>
+      <Path>public</Path>
+      <Path>readme.txt</Path>
+      <Path>run-prod.cmd</Path>
+      <Path>src</Path>
+      <Path>webpack.config.js</Path>
+      <Path>yarn-install.cmd</Path>
+      <Path>yarn.lock</Path>
+    </explicitIncludes>
     <explicitExcludes />
   </component>
 </project>
