@@ -211,7 +211,7 @@ export default class ActionGroupsList extends ReactComponentWithPerformance {
                                 Header: "",
                                 columns: [
                                     {
-                                        Header: "Http Endpoints & Background Tasks",
+                                        Header: "Service Endpoints & Background Tasks",
                                         accessor: "KeyString",
                                         minWidth: 540,
                                         Cell: cellKeyPath,
