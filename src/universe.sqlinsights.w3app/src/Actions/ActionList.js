@@ -227,7 +227,6 @@ export default class ActionList extends ReactComponentWithPerformance {
                             <td className="sql-io center-aligned">
                                 {statement.Counters.Reads.toLocaleString()}<small>&nbsp;/&nbsp;</small>{statement.Counters.Writes.toLocaleString()}
                                 {statement.Counters?.RowCounts > 0 && <>
-                                    {/*<div style={{width:24,height:1,padding:0,margin:0,borderBottom:"1px solid #888"}}>&nbsp;</div><br/>*/}
                                     <hr className="hr-rows-separator" />
                                     {statement.Counters?.RowCounts}
                                     <small style={{paddingLeft:4}}>
