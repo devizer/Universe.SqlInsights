@@ -219,7 +219,7 @@ steps:
 
   - publish: $(SYSTEM.ARTIFACTSDIRECTORY)
     displayName: 'Publish Artifacts'
-    condition: succeededOrFailed()
+    # condition: succeededOrFailed()
     artifact: '$(Agent.JobName)'
 
 
