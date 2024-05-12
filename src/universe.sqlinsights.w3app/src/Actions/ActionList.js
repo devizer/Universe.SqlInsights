@@ -214,8 +214,8 @@ export default class ActionList extends ReactComponentWithPerformance {
                             Code • {statements.length} statement{statements.length > 1 ? "s" : ""}
                             <IconButton onClick={onCopy(row.original)}><CopyIcon style={{width:20,height:20,marginLeft:2,marginRight:2,paddingTop:2, opacity:0.9}}/></IconButton>
                         </th>
-                        <th className="sql-cpu">CPU</th>
-                        <th className="sql-io">I/O</th>
+                        <th className="sql-cpu">CPU, ms</th>
+                        <th className="sql-io">I/O, pages</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -223,8 +223,19 @@ export default class ActionList extends ReactComponentWithPerformance {
                         <tr key={index} className={statement.SqlErrorCode ? "damn" : ""}>
                             <td className="sql-error">{statement.SqlErrorCode}</td>
                             <td className="sql-code"><SqlCode codeString={statement.Sql} /></td>
-                            <td className="sql-cpu right-aligned">{statement.Counters.CPU.toLocaleString()}<small>&nbsp;of&nbsp;</small>{statement.Counters.Duration.toLocaleString()}</td>
-                            <td className="sql-io right-aligned">{statement.Counters.Reads.toLocaleString()}<small>&nbsp;/&nbsp;</small>{statement.Counters.Writes.toLocaleString()}</td>
+                            <td className="sql-cpu center-aligned">{statement.Counters.CPU.toLocaleString()}<small>&nbsp;of&nbsp;</small>{statement.Counters.Duration.toLocaleString()}</td>
+                            <td className="sql-io center-aligned">
+                                {statement.Counters.Reads.toLocaleString()}<small>&nbsp;/&nbsp;</small>{statement.Counters.Writes.toLocaleString()}
+                                {statement.Counters?.RowCounts > 0 && <>
+                                    {/*<div style={{width:24,height:1,padding:0,margin:0,borderBottom:"1px solid #888"}}>&nbsp;</div><br/>*/}
+                                    <hr className="hr-rows-separator" />
+                                    {statement.Counters?.RowCounts}
+                                    <small style={{paddingLeft:4}}>
+                                        {statement.Counters?.RowCounts > 1 ? "rows" : "row"}
+                                    </small>
+                                </>
+                                }
+                            </td>
                         </tr>
                     )}
                     </tbody>

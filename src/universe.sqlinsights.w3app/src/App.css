@@ -92,6 +92,7 @@ table.SqlStatements .sql-cpu { width: 120px; max-width: 120px; min-width: 120px 
 table.SqlStatements .sql-io { width: 120px; max-width: 120px; min-width: 120px }
 /*table.SqlStatements td.sql-error { border-right: 1px solid #BBB }*/
 table.SqlStatements td { padding-left: 5px; padding-right: 5px; border: 1px solid #CCC }
+table.SqlStatements hr.hr-rows-separator { width: 60px; border: none; height: 1px; color: #CCC !important; background-color: #CCC !important; }
 
 .sql-code pre { white-space: pre-wrap !important; overflow-wrap: break-word !important; background-color: transparent !important; padding-top: 0px !important; padding-bottom: 0px !important; overflow-x: hidden !important; }
 .sql-code code { white-space: pre-wrap !important; overflow-wrap: break-word !important; }
