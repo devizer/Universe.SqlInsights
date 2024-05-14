@@ -310,6 +310,13 @@ export default class ActionGroupsList extends ReactComponentWithPerformance {
                                         Cell: cellNumber(x => x.SqlCounters.Writes),
                                         width: defaultMetricColumnWidth,
                                     },
+                                    {
+                                        Header: "Rows",
+                                        accessor: "SqlCounters.RowCounts",
+                                        className: 'right-aligned',
+                                        Cell: cellNumber(x => x.SqlCounters.RowCounts),
+                                        width: defaultMetricColumnWidth,
+                                    },
                                 ]
                             }
                         ]
