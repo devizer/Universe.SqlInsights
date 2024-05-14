@@ -355,5 +355,5 @@ steps:
 
   - publish: $(SYSTEM.ARTIFACTSDIRECTORY)
     displayName: 'Publish Artifact'
-    condition: succeededOrFailed()
+    # condition: succeededOrFailed()
     artifact: 'Artifacts $(Agent.JobName)'
