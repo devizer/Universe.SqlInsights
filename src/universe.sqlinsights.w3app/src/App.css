@@ -79,6 +79,10 @@ div[role='tabpanel'] > div {
   padding: 4px
 }
 
+div.ActionDetailsHeader h3 {
+  font-weight: normal;
+}
+
 table.SqlStatements {
   border-collapse: collapse;
   border: 1px solid #CCC;
@@ -96,3 +100,4 @@ table.SqlStatements hr.hr-rows-separator { width: 60px; border: none; height: 1p
 
 .sql-code pre { white-space: pre-wrap !important; overflow-wrap: break-word !important; background-color: transparent !important; padding-top: 0px !important; padding-bottom: 0px !important; overflow-x: hidden !important; }
 .sql-code code { white-space: pre-wrap !important; overflow-wrap: break-word !important; }
+

@@ -145,7 +145,7 @@ export default class ActionGroupsList extends ReactComponentWithPerformance {
             }
         }
         
-        const defaultMetricColumnWidth = 90;
+        const defaultMetricColumnWidth = 86;
         let noDataText = isLoaded ? "no actions triggered" : "waiting for cells";
         if (!sessionsStore.getSelectedSession()) noDataText = "select a session";
         

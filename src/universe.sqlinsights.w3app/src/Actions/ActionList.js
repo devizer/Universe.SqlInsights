@@ -265,9 +265,12 @@ export default class ActionList extends ReactComponentWithPerformance {
 
         return (
             <React.Fragment>
-                {this.props.keyPath && <h3 style={{textAlign: "center"}}>
-                    Latest Actions for "<ActionKeyPathUi path={this.props.keyPath} />": <u>{actions && isLoaded ? actions.length : "null" }</u>
-                </h3>}
+                {this.props.keyPath && <div className="ActionDetailsHeader"><h3 style={{textAlign: "center"}}>
+                    Latest Actions for “<b><ActionKeyPathUi path={this.props.keyPath} /></b>”
+                    {(!isLoaded) && ", loading"}
+                    {(actions && isLoaded && actions.length === 1) && ", 1 action"}
+                    {(actions && isLoaded && actions.length > 1) && `, ${actions.length} actions`}
+                </h3></div>}
                 {isLoaded && <ReactTable
                     data={actions}
                     showPagination={false}
@@ -336,7 +339,7 @@ export default class ActionList extends ReactComponentWithPerformance {
 
                 <Snackbar open={this.state.openedCopyConfirmation} autoHideDuration={3000} onClose={handleCloseCopyConfirmation}>
                     <Alert onClose={handleCloseCopyConfirmation} severity="success">
-                        <span >The SQL code copied to clipboard!</span>
+                        <span>The SQL code copied to clipboard!</span>
                     </Alert>
                 </Snackbar>
 
