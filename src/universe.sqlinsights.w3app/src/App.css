@@ -79,7 +79,7 @@ div[role='tabpanel'] > div {
   padding: 4px
 }
 
-div.ActionDetailsHeader h3 {
+h3.ActionDetailsHeader {
   font-weight: normal;
 }
 
