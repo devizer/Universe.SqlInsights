@@ -21,5 +21,5 @@ RUN set -eu; export SQLINSIGHTS_VERSION; \
 CMD set -eu; \
   test -s /opt/sqlinsights-dashboard/VERSION && echo "SqlInsights Dashboard $(cat /opt/sqlinsights-dashboard/VERSION) is starting ..."; \
   cd /opt/sqlinsights-dashboard; \
-  if [ -n "${LOCAL_LOGS_FOLDER:-}" ]]; then LocalLogsFolder__Unix="${LOCAL_LOGS_FOLDER:-}"; export LocalLogsFolder__Unix; else LocalLogsFolder__Enable=False; export LocalLogsFolder__Enable; fi; \
+  if [ -n "${LOCAL_LOGS_FOLDER:-}" ]; then LocalLogsFolder__Unix="${LOCAL_LOGS_FOLDER:-}"; export LocalLogsFolder__Unix; else LocalLogsFolder__Enable=False; export LocalLogsFolder__Enable; fi; \
   ASPNETCORE_URLS="${ASPNETCORE_URLS:-http://0.0.0.0:80}" ./Universe.SqlInsights.W3Api
