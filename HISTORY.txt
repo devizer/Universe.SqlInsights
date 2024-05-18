@@ -1,3 +1,5 @@
+2.6
+  Added Rows column for summmary and details
 2.5
   Fix ARMv8 64-bit Linux support for dashboard. Armv7 32 bit is also supported.
   Fixed crash in case of Dashboard running Linux and SQL Server running Windows, and vise versa.
