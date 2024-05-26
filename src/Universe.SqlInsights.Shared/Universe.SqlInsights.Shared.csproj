@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net461' Or '$(TargetFramework)' == 'netstandard2.0' ">
-        <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.0" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.5" />
     </ItemGroup>
 
     <ItemGroup>
