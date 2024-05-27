@@ -7,7 +7,8 @@ namespace Universe.SqlInsights.W3Api.Controllers
     {
         private static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings
         {
-            NullValueHandling = NullValueHandling.Ignore
+            NullValueHandling = NullValueHandling.Ignore,
+            MaxDepth = 128,
         };
 
         public static ActionResult ToJsonResult(this object obj)

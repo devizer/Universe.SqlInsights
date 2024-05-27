@@ -14,6 +14,7 @@
         {
             Formatting = Formatting.None,
             ContractResolver = TheContractResolver,
+            MaxDepth = 128,
         };
 
         public static T Deserialize<T>(string jsonString)
