@@ -5,7 +5,7 @@ git clone "$BUILD_REPOSITORY_URI" /tmp/src-copy
 pushd /tmp/src-copy
 revision="$(set TZ=GMT; git log -n 999999 --date=raw --pretty=format:"%cd" | wc -l)"
 popd
-version="2.6.${revision}"
+version="2.7.${revision}"
 export SQLINSIGHTS_VERSION="v${version}"
 export SQLINSIGHTS_VERSION_SHORT="$version"
 

@@ -1,4 +1,5 @@
 ﻿import * as Helper from "../Helper"
+import { DynamicDownloading } from '../DynamicDownloading'
 import React, { Component } from 'react';
 import dataSourceStore from "../stores/DataSourceStore";
 import {ActionKeyPathUi} from "../Shared/ActionKeyPathUi";
@@ -9,6 +10,7 @@ import moment from 'moment';
 
 import IconButton from '@material-ui/core/IconButton';
 import { ReactComponent as CopyIcon } from './CopyIcon.svg';
+import { ReactComponent as DownloadIcon } from './Download.svg';
 
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -180,6 +182,23 @@ export default class ActionList extends ReactComponentWithPerformance {
             if (today.getTime() === atDay.getTime()) return mom.format("LTS"); else return mom.format("LTS, ll"); 
         };
         
+        const onDownload = actionDetails => e => {
+            const newLine = "\r\n";
+            const countersToString = counters => {
+                const copy = {...counters};
+                copy.Requests = undefined;
+                return copy;
+            };
+            Helper.toConsole("onDownload argument (action object)", actionDetails);
+            const keyPath = ActionKeyPathUi({path:actionDetails.Key.Path})
+            const sqlStatements = actionDetails.SqlStatements;
+            let text = `/* Action: ${keyPath} */${newLine}`;
+            text = text + sqlStatements.map(s => `${newLine}--- ${JSON.stringify(countersToString(s.Counters))} ---${newLine}${s.Sql}`).join(newLine) + newLine;
+            // copy(text, {format: "text/plain"});
+            DynamicDownloading(text, 'text/plain', `${keyPath}.sql`);
+            // this.setState({openedCopyConfirmation:true});
+        };
+        
         const onCopy = actionDetails => e => {
             const newLine = "\r\n";
             const countersToString = counters => {
@@ -212,7 +231,10 @@ export default class ActionList extends ReactComponentWithPerformance {
                         <th className="sql-error center-aligned">Error</th>
                         <th className="sql-code">
                             Code • {statements.length} statement{statements.length > 1 ? "s" : ""}
-                            <IconButton onClick={onCopy(row.original)}><CopyIcon style={{width:20,height:20,marginLeft:2,marginRight:2,paddingTop:2, opacity:0.9}}/></IconButton>
+                            &nbsp;&nbsp;
+                            <IconButton onClick={onCopy(row.original)}><CopyIcon style={{width:20,height:20,marginLeft:2,marginRight:2,paddingTop:2, opacity:0.9}}/></IconButton> 
+                            &nbsp;
+                            <IconButton onClick={onDownload(row.original)} style={{marginLeft:-12}}><DownloadIcon style={{width:20,height:20,marginLeft:2,marginRight:2,paddingTop:-1,marginTop:0, opacity:0.9}}/></IconButton>
                         </th>
                         <th className="sql-cpu">CPU, ms</th>
                         <th className="sql-io">I/O, pages</th>
