@@ -189,7 +189,7 @@ export default class ActionList extends ReactComponentWithPerformance {
                 copy.Requests = undefined;
                 return copy;
             };
-            Helper.toConsole("onDownload argument (action object)", actionDetails);
+            console.log("ActionList.onDownload argument (action object)", actionDetails);
             const keyPath = ActionKeyPathUi({path:actionDetails.Key.Path})
             const sqlStatements = actionDetails.SqlStatements;
             let text = `/* Action: ${keyPath} */${newLine}`;
@@ -213,7 +213,7 @@ export default class ActionList extends ReactComponentWithPerformance {
             text = text + sqlStatements.map(s => `${newLine}--- ${JSON.stringify(countersToString(s.Counters))} ---${newLine}${s.Sql}`).join(newLine) + newLine;
             copy(text, {format: "text/plain"});
             this.setState({openedCopyConfirmation:true});
-        }
+        };
         
         // SQL Column
         const cellSql = row => {
