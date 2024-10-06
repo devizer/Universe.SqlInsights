@@ -113,6 +113,8 @@ export default class ActionGroupsList extends ReactComponentWithPerformance {
         };
         const cellNumber = accessor => row => (<span>{formatNumber(getCellValue(row.original, accessor))}</span>);
         const cellTotalErrors = row => formatNumber(row.original.RequestErrors);
+        const cellCount = row => formatNumber(row.original.Count);
+        
         
 
         const selectedRowHandler = (state, rowInfo, column) => {
@@ -226,6 +228,7 @@ export default class ActionGroupsList extends ReactComponentWithPerformance {
                                         accessor: "Count",
                                         className: 'right-aligned',
                                         width: defaultMetricColumnWidth,
+                                        Cell: cellCount
                                     },
                                     {
                                         Header: "Errors",

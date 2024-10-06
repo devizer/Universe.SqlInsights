@@ -194,9 +194,7 @@ export default class ActionList extends ReactComponentWithPerformance {
             const sqlStatements = actionDetails.SqlStatements;
             let text = `/* Action: ${keyPath} */${newLine}`;
             text = text + sqlStatements.map(s => `${newLine}--- ${JSON.stringify(countersToString(s.Counters))} ---${newLine}${s.Sql}`).join(newLine) + newLine;
-            // copy(text, {format: "text/plain"});
             DynamicDownloading(text, 'text/plain', `${keyPath}.sql`);
-            // this.setState({openedCopyConfirmation:true});
         };
         
         const onCopy = actionDetails => e => {
@@ -206,7 +204,7 @@ export default class ActionList extends ReactComponentWithPerformance {
                 copy.Requests = undefined;
                 return copy;
             };
-            Helper.toConsole("onCopy argument (action object)", actionDetails);
+            console.log("ActionList.onCopy argument (action object)", actionDetails);
             const keyPath = ActionKeyPathUi({path:actionDetails.Key.Path})
             const sqlStatements = actionDetails.SqlStatements;
             let text = `/* Action: ${keyPath} */${newLine}`;
