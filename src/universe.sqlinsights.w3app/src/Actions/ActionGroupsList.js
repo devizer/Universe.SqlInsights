@@ -176,7 +176,7 @@ export default class ActionGroupsList extends ReactComponentWithPerformance {
             
         return (
             <React.Fragment>
-                <RadioGroup row aria-label="kind" name="kind" value={this.state.kind} onChange={handleChangeSummaryKind} className='center-aligned'>
+                <RadioGroup row aria-label="kind" name="kind" value={this.state.kind} onChange={handleChangeSummaryKind} className='center-aligned padding-top'>
                     <div style={{textAlign: 'center', width: '100%'}}>
                         <FormControlLabel control={<null />} label="Live update:" style={{marginRight:6}} />
                         <LiveUpdateSwitch autoUpdateSummary={autoUpdateSummary} handleAutoUpdateSummary={handleAutoUpdateSummary} />
@@ -213,7 +213,7 @@ export default class ActionGroupsList extends ReactComponentWithPerformance {
                                 Header: "",
                                 columns: [
                                     {
-                                        Header: "Service Endpoints & Background Tasks",
+                                        Header: "Service Endpoints, Background Tasks, and Queue Messages",
                                         accessor: "KeyString",
                                         minWidth: 540,
                                         Cell: cellKeyPath,

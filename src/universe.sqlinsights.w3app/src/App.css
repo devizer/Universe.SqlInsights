@@ -45,7 +45,12 @@ html {
 .rt-tr .rt-th {
   padding-top: 1rem !important;
   padding-bottom: 1rem !important;
-  font-size: 16px
+  font-size: 16px;
+}
+
+.rt-th {
+  font-weight: bold;
+  color: #444;
 }
 
 .rt-tr-group:last-child .rt-tr {
@@ -67,12 +72,20 @@ html {
   text-overflow: fade !important;;
 }
 
+.padding-top {
+  padding-top: 16px;
+}
+
 .right-aligned {
   text-align: right;
 }
 
 .center-aligned {
   text-align: center !important;
+}
+
+.hidden {
+  display: none !important;
 }
 
 div[role='tabpanel'] > div {

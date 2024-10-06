@@ -285,7 +285,7 @@ export default class ActionList extends ReactComponentWithPerformance {
 
         return (
             <React.Fragment>
-                {this.props.keyPath && <h3 className="ActionDetailsHeader center-aligned">
+                {this.props.keyPath && <h3 className="ActionDetailsHeader center-aligned padding-top">
                     Latest Actions for “<b><ActionKeyPathUi path={this.props.keyPath} /></b>”
                     {(!isLoaded) && ", loading"}
                     {(actions && isLoaded && actions.length === 1) && ", 1 action"}
