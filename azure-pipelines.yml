@@ -124,7 +124,7 @@ jobs:
     dependsOn:
       - Build_W3_App
     strategy:
-      maxParallel: 1
+      maxParallel: 2
       matrix:
 
         "SQL Server 2022 on Ubuntu with RAM Disk":
