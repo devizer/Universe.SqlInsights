@@ -230,6 +230,7 @@ steps:
     displayName: '.NET Install (bash)'
 
   - pwsh: './install-dotnet-core.ps1'
+    retryCountOnTaskFailure: 3
     condition: succeededOrFailed()
     displayName: '.NET Install (ps1)'
 
