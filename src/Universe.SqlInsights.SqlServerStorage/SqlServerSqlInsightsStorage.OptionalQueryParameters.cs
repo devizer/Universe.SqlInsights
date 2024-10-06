@@ -54,7 +54,7 @@ namespace Universe.SqlInsights.SqlServerStorage
             };
         }
 
-        private OptionalParametersInfo BuildOptionalParameters(StringsStorage strings, string optionalApp = null, string optionalHost = null)
+        private OptionalParametersInfo BuildOptionalParameters_Kill_It_for_Single_Only_App_or_Host(StringsStorage strings, string optionalApp = null, string optionalHost = null)
         {
             StringBuilder sqlWhere = new StringBuilder();
             var sqlParams = new DynamicParameters();

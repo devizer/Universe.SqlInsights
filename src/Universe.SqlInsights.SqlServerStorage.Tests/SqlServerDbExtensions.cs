@@ -19,12 +19,13 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                     string sql = $@"CREATE DATABASE [{db}]";
                     if (!string.IsNullOrEmpty(dbDataDir))
                     {
+                        CreateDirectory(dbDataDir);
                         string datFile = Path.Combine(dbDataDir, $"{db}.mdf"); 
                         string logFile = Path.Combine(dbDataDir, $"{db}.ldf");
                         Directory.CreateDirectory(dbDataDir);
                         sql += $@"
-ON (NAME = [{db}_dat], FILENAME = '{datFile}', SIZE = {initialDataSize}MB, FILEGROWTH = 8MB) 
-LOG ON (NAME = [{db}_log], FILENAME = '{logFile}', SIZE = {initialLogSize}MB, FILEGROWTH = 8MB ); 
+ON (NAME = [{db}_dat], FILENAME = '{datFile}', SIZE = {initialDataSize}MB, FILEGROWTH = 64MB) 
+LOG ON (NAME = [{db}_log], FILENAME = '{logFile}', SIZE = {initialLogSize}MB, FILEGROWTH = 64MB ); 
 ";
                     }
  
@@ -32,6 +33,12 @@ LOG ON (NAME = [{db}_log], FILENAME = '{logFile}', SIZE = {initialLogSize}MB, FI
                     con.Execute($"Alter Database [{db}] Set Recovery Simple;");
                 }
             }
+        }
+
+        private static void CreateDirectory(string dbDataDir)
+        {
+            try { Directory.CreateDirectory(dbDataDir);}
+            catch { }
         }
     }
 }

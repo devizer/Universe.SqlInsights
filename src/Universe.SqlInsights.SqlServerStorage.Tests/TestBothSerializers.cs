@@ -7,7 +7,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
 {
     public class TestBothSerializers : NUnitTestsBase
     {
-                [Test]
+        [Test]
         public void TestSystemJsonOfActionDetails()
         {
             Assert.AreEqual("System", DbJsonConvert.Flawor);
