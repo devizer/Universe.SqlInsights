@@ -9,14 +9,14 @@ variables:
 jobs:
 
   - job: Build_W3_App
-    displayName: 'W3App'
+    displayName: 'Build W3App Shared Artifact'
     pool:
       vmImage: "ubuntu-20.04"
     steps:
 
       - bash: |
          script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
-         for v in 5.0 6.0 7.0 8.0-preview 8.0-preview-windowsservercore-ltsc2022; do
+         for v in 5.0 6.0 7.0 8.0; do
            Say "ASP.NET $v"
            try-and-retry try-and-retry docker manifest inspect mcr.microsoft.com/dotnet/aspnet:$v
          done 
@@ -47,7 +47,7 @@ jobs:
     dependsOn:
       - Build_W3_App
     strategy:
-      maxParallel: 7
+      maxParallel: 9
       matrix:
 
         "SQL Server 2016":
@@ -124,7 +124,7 @@ jobs:
     dependsOn:
       - Build_W3_App
     strategy:
-      maxParallel: 3
+      maxParallel: 1
       matrix:
 
         "SQL Server 2022 on Ubuntu with RAM Disk":
