@@ -266,6 +266,7 @@ steps:
 
   - bash: |
       set -eu; set -o pipefail;
+      export SQLINSIGHTS_DATA_DIR=D:\\SQL-Data
       export TEST_CPU_NAME="$(Get-CpuName --name-only)"
       export TEST_CONFIGURATION="DISK";
       if [[ -n "${DB_DATA_DIR:-}" ]]; then
