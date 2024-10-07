@@ -274,7 +274,8 @@ steps:
 
   - script: |
       call 0a-Net-Restore-All.cmd
-    condition: eq(variables['Agent.OS'], 'Windows_NT')
+    # condition: eq(variables['Agent.OS'], 'Windows_NT')
+    condition: ${{ false }}
     displayName: 'dotnet restore'
 
   - powershell: |
@@ -292,14 +293,14 @@ steps:
         export TEST_CONFIGURATION="RAM-Disk"
         Say "SQLINSIGHTS_DATA_DIR is $SQLINSIGHTS_DATA_DIR"
       fi
-      cd src/Universe.SqlInsights.SqlServerStorage.Tests
+      cd $AGENT_TEMPDIRECTORY/Goods/w3api.tests
       export TEST_UNDER_COVERAGE=True
-      dotnet test --collect:"XPlat Code Coverage" --logger trx -f $W3API_NET
+      dotnet test --collect:"XPlat Code Coverage" --logger trx Universe.SqlInsights.SqlServerStorage.Tests.dll
 
       Say "Benchmark Seed"
       rm -f $SYSTEM_ARTIFACTSDIRECTORY/AddAction.log
       export TEST_UNDER_COVERAGE=False
-      dotnet test -c Release -f $W3API_NET --filter "Name~Test1_Seed"
+      dotnet test --filter "Name~Test1_Seed" Universe.SqlInsights.SqlServerStorage.Tests.dll
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     displayName: 'TEST STORAGE +BENCHMARK'
 
@@ -318,8 +319,8 @@ steps:
       echo Starting W3Api
       export SQLINSIGHTS_REPORT_FOLDER="C:\\Temp\\SqlInsights-W3Api-Internal-Logs"
       export SQLINSIGHTS_REPORT_FULLNAME="${SQLINSIGHTS_REPORT_FOLDER}\\Report.Txt"
-      pushd src/Universe.SqlInsights.W3Api;
-      (dotnet run | tee "$SYSTEM_ARTIFACTSDIRECTORY/w3api (acceptance test).log") &
+      pushd $AGENT_TEMPDIRECTORY/Goods/w3api;
+      (dotnet run Universe.SqlInsights.W3Api.dll | tee "$SYSTEM_ARTIFACTSDIRECTORY/w3api (acceptance test).log") &
       popd
       sleep 60
       
