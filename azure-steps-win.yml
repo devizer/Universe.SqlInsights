@@ -18,7 +18,6 @@ steps:
      displayName: 'Show Goods: w3api, w3api.tests, jam.tests'
 
 
-  AGENT_TEMPDIRECTORY
   - pwsh: |
       . scripts\Measure-Action.ps1
       # Measure-Action "List Package Providers" {Get-PackageProvider -ListAvailable}
