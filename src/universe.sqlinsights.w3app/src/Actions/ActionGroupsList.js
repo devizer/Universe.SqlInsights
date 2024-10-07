@@ -137,10 +137,13 @@ export default class ActionGroupsList extends ReactComponentWithPerformance {
                             this.props.onActionSelected(selectedRow);
                     },
                     style: {
+/*
                         background: isSelected ? '#4f9a94' : 'white',
                         color: isSelected ? 'white' : 'black',
                         cursor: "pointer",
-                    }
+*/
+                    },
+                    className: isSelected ? "SelectedActionKeyRow SelectedTableRow" : "UnSelectedActionKeyRow UnSelectedTableRow"
                 }
             } else {
                 return {}
@@ -206,7 +209,7 @@ export default class ActionGroupsList extends ReactComponentWithPerformance {
                     pageSize={pageSize}
                     noDataText={noDataText}
                     getNoDataProps={() => noDataProps}
-                    className="-striped -highlight"
+                    className="ActionKeysRT -striped -highlight"
                     columns={
                         [
                             {

@@ -3,6 +3,23 @@ html {
   overflow-y: scroll !important;;
 }
 
+.padding-top {
+  padding-top: 16px;
+}
+
+.right-aligned {
+  text-align: right;
+}
+
+.center-aligned {
+  text-align: center !important;
+}
+
+.hidden {
+  display: none !important;
+}
+
+
 .App {
   text-align: center;
 }
@@ -53,17 +70,58 @@ html {
   color: #444;
 }
 
+.ReactTable .rt-table {
+  border: 1px solid rgba(0, 0, 0, 0.5);
+}
 .rt-tr-group:last-child .rt-tr {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.8);
+  /*border-bottom: 1px solid rgba(0, 0, 0, 0.8);*/
+}
+
+.ReactTable .rt-thead.-headerGroups .rt-th:not(:last-child) {
+  border-right: 1px solid rgba(0, 0, 0, 0.5) !important;
 }
 
 .ReactTable .rt-thead.-header {
-  box-shadow: 0 1px 0px 0 rgba(0, 0, 0, 0.8) !important;
+  box-shadow: 0 0px rgba(0, 0, 0, 0.4) !important;
+  /*border-top: 1px solid rgba(0, 0, 0, 0.5) !important;*/
+  /*border-bottom: 1px solid rgba(0, 0, 0, 0.5) !important;*/
+}
+.ReactTable .rt-thead.-header .rt-th:not(:first-child) {
+  border-top: 1px solid rgba(0, 0, 0, 0.5) !important;
+}
+.ReactTable .rt-thead.-header .rt-th:first-child {
+  border-top: 0px solid rgba(0, 0, 0, 0.0) !important;
+}
+.ReactTable .rt-thead.-header .rt-th {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5) !important;
+}
+
+.SelectedTableRow {
+  /*font-size: 17px !important;*/
+  background: #4f9a94 !important;
+  color: white !important;
+  cursor: pointer;
+}
+
+.UnSelectedTableRow {
+  /*font-size: 17px !important;*/
+  background: white !important;
+  color: black !important;
+  cursor: pointer;
+}
+
+/* Sessions, ActionKeys, ActionDetails */
+.ReactTable.ActionKeysRT .rt-thead.-header .rt-th:nth-child(1), 
+.ReactTable.ActionKeysRT .rt-thead.-header .rt-th:nth-child(7)/*,
+.ReactTable.ActionKeysRT .rt-tbody .rt-td:nth-child(1),
+.ReactTable.ActionKeysRT .rt-tbody .rt-td:nth-child(7)*/
+{
+  border-right: 1px solid rgba(0, 0, 0, 0.5) !important;
 }
 
 .ReactTable .rt-thead {
-  background-color: #F2F2F2;
-  color: #111;
+  background-color: #F2F2F2 !important;
+  color: #111 !important;;
 }
 
 .ReactTable .multiline-cell {
@@ -72,21 +130,6 @@ html {
   text-overflow: fade !important;;
 }
 
-.padding-top {
-  padding-top: 16px;
-}
-
-.right-aligned {
-  text-align: right;
-}
-
-.center-aligned {
-  text-align: center !important;
-}
-
-.hidden {
-  display: none !important;
-}
 
 div[role='tabpanel'] > div {
   padding: 4px

@@ -339,7 +339,7 @@ export default class SessionsTable extends Component {
                     pageSize={pageSize}
                     noDataText={isLoaded ? "no any sessions" : "waiting for cells"}
                     getNoDataProps={() => noDataProps}
-                    className="-striped -highlight"
+                    className="SessionsRT -striped -highlight"
                     columns={
                         [
                             {

@@ -299,7 +299,7 @@ export default class ActionList extends ReactComponentWithPerformance {
                     pageSize={pageSize}
                     noDataText={isLoaded ? "no actions triggered" : "waiting for cells"}
                     getNoDataProps={() => noDataProps}
-                    className="-striped -highlight"
+                    className="ActionDetailsRT -striped -highlight"
                     columns={[
                         {
                             Header: "App",
