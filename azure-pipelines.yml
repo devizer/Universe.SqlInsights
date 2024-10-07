@@ -59,12 +59,11 @@ jobs:
           popd
 
         retryCountOnTaskFailure: 1
-        displayName: 'Build w3api and tests'
+        displayName: 'Build w3api, w3api.tests, and jam.tests'
   
       - publish: '$(SYSTEM.ARTIFACTSDIRECTORY)'
         retryCountOnTaskFailure: 3
-        displayName: 'Publish w3api and tests'
-        # condition: succeededOrFailed()
+        displayName: 'Publish w3api, w3api.tests, and jam.tests'
         artifact: 'Goods'
 
   - job: IfWindows
