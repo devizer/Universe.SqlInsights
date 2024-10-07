@@ -56,13 +56,13 @@ export default class AboutPanel extends Component {
         return <div className="padding-top center-aligned" style={{width: "100%"}}>
             <br/>    
             <div style={{display: "inline-block", width: 800, maxWidth: 800, minWidth: 800, padding: 24, border: "1px solid gray", textAlign: "center", boxShadow: "-1px -1px 7px 0px #989997, 1px 1px 2px 0px #CECECE" }}>
-                <h3>SQL Server Sixth Sense<br/><small style={{fontWeight: "normal"}}>Your sixth sense in developent, testing, and maintenance</small></h3>
+                <h3>SQL Server Sixth Sense Dashboard<br/><small style={{fontWeight: "normal"}}>Your sixth sense in developent, testing, and maintenance</small></h3>
                 <div className="left-aligned padding-top">
-                    <p>Dashboard API Url: &nbsp; {API_URL}</p>
-                    <p>Dashboard API Version: &nbsp; {about.AppVersion}</p>
-                    <p>Dashboard UI Version: &nbsp; {AppVersion.Version}</p>
-                    <p>Dashboard Storage Server: &nbsp; {about.DbServer}</p>
-                    <p>Dashboard Storage Database: &nbsp; {about.DbCatalog}</p>
+                    <p>API Url: &nbsp; {API_URL}</p>
+                    <p>API Version: &nbsp; {about.AppVersion}</p>
+                    <p>UI Version: &nbsp; {AppVersion.Version}</p>
+                    <p>Storage Server: &nbsp; {about.DbServer}</p>
+                    <p>Storage Database: &nbsp; {about.DbCatalog}</p>
                 </div>
             </div>
         </div>;
