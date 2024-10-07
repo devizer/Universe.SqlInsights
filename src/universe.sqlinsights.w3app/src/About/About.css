@@ -1,0 +1,27 @@
+﻿.aboutRow {
+    padding: 5px 0 0 0;
+    /*
+    text-overflow: ellipsis;
+    overflow: hidden;
+    */
+    white-space: nowrap;
+}
+.aboutCell {
+    display: inline-block;
+}
+.aboutRow:not(:last-child) {
+    border-bottom: 1px solid #BBB;
+}
+.aboutCell0 {
+    width: 180px;
+    min-width: 180px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.aboutCell1 {
+    min-width: 360px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}

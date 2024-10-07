@@ -1,4 +1,5 @@
-﻿import * as Helper from "../Helper"
+﻿import './About.css';
+import * as Helper from "../Helper"
 import React, { Component } from 'react';
 import {API_URL} from '../BuildTimeConfiguration';
 import AppVersion from "../AppVersion.json"
@@ -6,7 +7,7 @@ import url from 'url';
 import PropTypes from "prop-types";
 import ReactComponentWithPerformance from "../Shared/ReactComponentWithPerformance";
 import {ActionKeyPathUi} from "../Shared/ActionKeyPathUi";
-import {Paper} from "@material-ui/core";
+import {Container, Paper} from "@material-ui/core";
 
 export default class AboutPanel extends Component {
     static displayName = AboutPanel.name;
@@ -53,19 +54,45 @@ export default class AboutPanel extends Component {
         const apiPort = apiUrl.port;
 */
         const about = this.state.about ?? {};
-        return <div className="padding-top center-aligned" style={{width: "100%"}}>
-            <br/>    
-            <div style={{display: "inline-block", width: 800, maxWidth: 800, minWidth: 800, padding: 24, border: "1px solid gray", textAlign: "center", boxShadow: "-1px -1px 7px 0px #989997, 1px 1px 2px 0px #CECECE" }}>
-                <h3>SQL Server Sixth Sense Dashboard<br/><small style={{fontWeight: "normal"}}>Your sixth sense in developent, testing, and maintenance</small></h3>
-                <div className="left-aligned padding-top">
-                    <p>API Url: &nbsp; {API_URL}</p>
-                    <p>API Version: &nbsp; {about.AppVersion}</p>
-                    <p>UI Version: &nbsp; {AppVersion.Version}</p>
-                    <p>Storage Server: &nbsp; {about.DbServer}</p>
-                    <p>Storage Database: &nbsp; {about.DbCatalog}</p>
-                </div>
+        const rows = [
+            {Id: 'API Url', Value: API_URL},
+            {Id: 'API Version', Value: about.AppVersion},
+            {Id: 'UI Version', Value: AppVersion.Version},
+            {Id: 'Storage Server', Value: about.DbServer},
+            {Id: 'Storage Database', Value: about.DbServer},
+        ];
+        const cells = [
+            ['API Url', API_URL],
+            ['API Version', about.AppVersion],
+            ['UI Version', AppVersion.Version],
+            ['Storage Server', about.DbServer],
+            ['Storage Database',about.DbCatalog],        
+        ];
+        return <> 
+        <Container maxWidth="md" style={{boxShadow: "-1px -1px 7px 0px #989997, 1px 1px 2px 0px #CECECE", padding: "10px 20px", marginTop:24}}>
+            <h3 className="center-aligned">
+                SQL Server Sixth Sense Dashboard<br/>
+                <small style={{fontWeight: "normal"}}>Your sixth sense in developent, testing, and maintenance</small>
+            </h3>
+            <br/>
+            <div className="aboutTable">
+            {cells.map((row, rowIndex) => (<div className="aboutRow">{row.map((item, colIndex) => <span className={`aboutCell aboutCell${colIndex}`}>{item}</span>)}</div>))}
             </div>
-        </div>;
+            <br/>
+                
+                
+                
+{/*
+            <p>API Url: &nbsp; {API_URL}</p>
+            <p>API Version: &nbsp; {about.AppVersion}</p>
+            <p>UI Version: &nbsp; {AppVersion.Version}</p>
+            <p>Storage Server: &nbsp; {about.DbServer}</p>
+            <p>Storage Database: &nbsp; {about.DbCatalog}</p>
+*/}
+        </Container> 
+        
+        
+        </>;
     }
 
 }
