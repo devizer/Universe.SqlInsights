@@ -1,5 +1,4 @@
 import 'babel-polyfill';
-import logo from './logo.svg';
 import './App.css';
 import NavTabs from "./Shared/NavTabs";
 import dataSourceListener from "./stores/DataSourceListener";

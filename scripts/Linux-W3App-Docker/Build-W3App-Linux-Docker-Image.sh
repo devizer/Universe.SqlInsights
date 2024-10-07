@@ -11,6 +11,10 @@ export NODE_VER=v14.19.1 SKIP_NPM_UPGRADE=True
 time (script=https://raw.githubusercontent.com/devizer/glist/master/install-dotnet-and-nodejs.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash -s node)
 dir="$(pwd)"
 pushd ../../src/universe.sqlinsights.w3app
+Say "Patch src/AppVersion.json"
+echo OLD; cat src/AppVersion.json
+echo NEW
+echo '{ "Version": "'$SQLINSIGHTS_VERSION_SHORT'" }' | tee src/AppVersion.json
 time yarn install
 time yarn build
 cp -f -a build "$dir"

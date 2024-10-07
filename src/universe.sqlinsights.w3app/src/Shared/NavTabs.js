@@ -9,6 +9,7 @@ import Box from '@material-ui/core/Box';
 
 import ActionsTab from "../Actions/ActionsTab";
 import * as DocumentVisibilityStore from "../stores/DocumentVisibilityStore"
+import AboutPanel from "../About/AboutPanel";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -93,7 +94,7 @@ export default function SimpleTabs() {
                 Item Two
             </TabPanel>
             <TabPanel value={value} index={2}>
-                Item Three
+                <AboutPanel />
             </TabPanel>
         </div>
     );

@@ -11,8 +11,12 @@ html {
   text-align: right;
 }
 
+.left-aligned {
+  text-align: left;
+}
+
 .center-aligned {
-  text-align: center !important;
+  text-align: center;
 }
 
 .hidden {

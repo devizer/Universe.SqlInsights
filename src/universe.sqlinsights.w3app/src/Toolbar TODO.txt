@@ -10,7 +10,7 @@ Summary Host Filter (Any app)
 Summary Sql Server Filter (Not Implemented)
 ___________________________
 
-Summary Avarage
+Summary Average
 
 Summary Apps
 Summary Hosts
