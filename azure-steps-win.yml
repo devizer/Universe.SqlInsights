@@ -3,6 +3,22 @@
 
 steps:
 
+  - powershell: |
+      iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
+      Say "CPU: $(Get-Cpu-Name). $((Get-Memory-Info).Description)"
+      Measure-Action "Uninstall LocalDB *" { Uninstall-LocalDB-List "*" }
+    retryCountOnTaskFailure: 3
+    displayName: 'Bootstrap pwsh'
+
+  - bash: |
+      set -eu; set -o pipefail;
+      script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
+      Say --Reset-Stopwatch
+      Say "CPU: $(Get-CpuName)"
+    condition: succeededOrFailed()
+    retryCountOnTaskFailure: 3
+    displayName: 'Bootstrap bash'
+
   - task: DownloadPipelineArtifact@2
     condition: succeededOrFailed()
     displayName: 'Goods: download (w3api, w3api.tests, jam.tests)'
@@ -19,32 +35,16 @@ steps:
     displayName: 'Show Goods: w3api, w3api.tests, jam.tests'
 
 
-  - pwsh: |
-      . scripts\Measure-Action.ps1
-      # Measure-Action "List Package Providers" {Get-PackageProvider -ListAvailable}
-      # Get-PackageProvider -ListAvailable
-      # Measure-Action "Install Nuget Package Provider" {Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force}
-      # Measure-Action "Install PowerShellGet" {Install-Module PowerShellGet -AllowClobber -Force}
-      Measure-Action "Install the Platform-Info module" {Install-Module Platform-Info -Force}
-
-      Write-Host "Latest Version of Platform-Info: '$((Find-Module Platform-Info -EA SilentlyContinue).Version)'"
-      Write-Host "Installed Version of Platform-Info: '$((Get-InstalledModule Platform-Info -EA SilentlyContinue).Version)'"
-
-      Write-Host "CPU: $(Get-Cpu-Name)"
-      Write-Host "Platform: $(Get-Os-Platform)"
-      Write-Host "Memory $((Get-Memory-Info).Description)"
-    displayName: 'Bootstrap pwsh'
-
   - powershell: |
       $ErrorActionPreference="Continue"
       scripts\Enumerate-NanoServer-Tags.ps1
       $true
-    condition: eq(variables['Agent.JobName'], 'If SQL Server 2008')
+    condition: eq(variables['SYSTEM.JOBDISPLAYNAME'], 'If SQL Server 2016')
     displayName: 'Enumerate NanoServer Tags'
 
   - bash: |
      script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
-     for v in 5.0 6.0 7.0 8.0-preview 8.0-preview-windowsservercore-ltsc2022; do
+     for v in 5.0 6.0 7.0 8.0; do
        Say "ASP.NET $v"
        echo mcr.microsoft.com/dotnet/aspnet:$v >> "$SYSTEM_ARTIFACTSDIRECTORY/ASP.NET Docker Images.txt"
        try-and-retry docker manifest inspect mcr.microsoft.com/dotnet/aspnet:$v |& tee -a "$SYSTEM_ARTIFACTSDIRECTORY/ASP.NET docker images.txt"
@@ -58,6 +58,7 @@ steps:
      done 
 
      true
+    condition: eq(variables['SYSTEM.JOBDISPLAYNAME'], 'If SQL Server 2016')
     displayName: "Docker ispect images"
 
   - powershell: |
@@ -90,20 +91,6 @@ steps:
     condition: ne(variables['UNINSTALL_TRASH'], '')
     displayName: 'UNINSTALL TRASH'
 
-  - bash: |
-      set -eu; set -o pipefail;
-      script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
-      Say --Reset-Stopwatch
-      Say "CPU: $(Get-CpuName)"
-      # git clone https://github.com/devizer/Universe.SqlServerJam ~/jam
-      # cd ~/jam/src/Universe.SqlServerJam.Tests
-      # ls -la
-      # dotnet test -c Release -f $W3API_NET
-      cd $AGENT_TEMPDIRECTORY/Goods/jam.tests
-      dotnet test Universe.SqlServerJam.Tests.dll
-      Say "Success Complete"
-    condition: succeededOrFailed()
-    displayName: 'Test JAM'
 
   - bash: |
       powershell -f scripts/Create-Windows-Ram-Disk.ps1 || true
@@ -202,6 +189,14 @@ steps:
     condition: succeededOrFailed()
     displayName: 'Prepare SQL Server'
 
+  - bash: |
+      set -eu; set -o pipefail;
+      cd $AGENT_TEMPDIRECTORY/Goods/jam.tests
+      dotnet test Universe.SqlServerJam.Tests.dll
+      Say "Success Complete"
+    condition: succeededOrFailed()
+    displayName: 'Test JAM (SQL)'
+
   - powershell: |
       Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 7
       $true
@@ -227,7 +222,7 @@ steps:
         sqlcmd -S %%a -h-1 -s"," -E -W -w 10000 -Q "SELECT Name, Description FROM fn_helpcollations() order by 1"
         echo.
        )
-       true
+       REM true
     displayName: 'Show SQL Info'
   
   - task: PublishBuildArtifacts@1
@@ -246,7 +241,7 @@ steps:
     condition: False
     displayName: '.NET Install (bash)'
 
-  - pwsh: './install-dotnet-core.ps1'
+  - powershell: './install-dotnet-core.ps1'
     retryCountOnTaskFailure: 3
     condition: succeededOrFailed()
     displayName: '.NET Install (ps1)'
@@ -348,17 +343,6 @@ steps:
     condition: eq(variables['TEST_W3API'], 'true')
     timeoutInMinutes: 10
     displayName: 'RUN W3API (optional)'
-
-
-  - bash: |
-      set -eu; set -o pipefail;
-      # cd ~/jam/src/Universe.SqlServerJam.Tests
-      # dotnet test -c Release -f $W3API_NET
-      cd $AGENT_TEMPDIRECTORY/Goods/jam.tests
-      dotnet test Universe.SqlServerJam.Tests.dll
-      Say "Success Complete"
-    condition: succeededOrFailed()
-    displayName: 'Test JAM Again'
 
 
   - task: PublishTestResults@2
