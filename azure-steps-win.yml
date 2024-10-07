@@ -17,7 +17,7 @@ steps:
        ls -la
        cd Goods
        ls -la
-     displayName: 'Show Goods: w3api, w3api.tests, jam.tests'
+    displayName: 'Show Goods: w3api, w3api.tests, jam.tests'
 
 
   - pwsh: |
