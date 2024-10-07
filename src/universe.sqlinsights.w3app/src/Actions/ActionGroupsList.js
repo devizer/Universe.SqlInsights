@@ -136,13 +136,11 @@ export default class ActionGroupsList extends ReactComponentWithPerformance {
                         if (this.props.onActionSelected)
                             this.props.onActionSelected(selectedRow);
                     },
-                    style: {
-/*
+                    /*style: {
                         background: isSelected ? '#4f9a94' : 'white',
                         color: isSelected ? 'white' : 'black',
                         cursor: "pointer",
-*/
-                    },
+                    },*/
                     className: isSelected ? "SelectedActionKeyRow SelectedTableRow" : "UnSelectedActionKeyRow UnSelectedTableRow"
                 }
             } else {
