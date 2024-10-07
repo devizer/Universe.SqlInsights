@@ -320,7 +320,7 @@ steps:
       export SQLINSIGHTS_REPORT_FOLDER="C:\\Temp\\SqlInsights-W3Api-Internal-Logs"
       export SQLINSIGHTS_REPORT_FULLNAME="${SQLINSIGHTS_REPORT_FOLDER}\\Report.Txt"
       pushd $AGENT_TEMPDIRECTORY/Goods/w3api;
-      (dotnet run Universe.SqlInsights.W3Api.dll | tee "$SYSTEM_ARTIFACTSDIRECTORY/w3api (acceptance test).log") &
+      (dotnet Universe.SqlInsights.W3Api.dll | tee "$SYSTEM_ARTIFACTSDIRECTORY/w3api (acceptance test).log") &
       popd
       sleep 60
       
