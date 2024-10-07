@@ -112,11 +112,14 @@ html {
 
 /* Sessions, ActionKeys, ActionDetails */
 .ReactTable.ActionKeysRT .rt-thead.-header .rt-th:nth-child(1), 
-.ReactTable.ActionKeysRT .rt-thead.-header .rt-th:nth-child(7)/*,
-.ReactTable.ActionKeysRT .rt-tbody .rt-td:nth-child(1),
-.ReactTable.ActionKeysRT .rt-tbody .rt-td:nth-child(7)*/
+.ReactTable.ActionKeysRT .rt-thead.-header .rt-th:nth-child(7)
 {
   border-right: 1px solid rgba(0, 0, 0, 0.5) !important;
+}
+.ReactTable.ActionKeysRT .rt-tbody .rt-td:nth-child(1),
+.ReactTable.ActionKeysRT .rt-tbody .rt-td:nth-child(7)
+{
+  border-right: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
 
 .ReactTable .rt-thead {

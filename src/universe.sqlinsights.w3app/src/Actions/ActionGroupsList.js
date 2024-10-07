@@ -24,7 +24,7 @@ import {LiveUpdateSwitch} from "./LiveUpdateSwitch";
 import FilterDialog from "./FilterDialog";
 import ReactComponentWithPerformance from "../Shared/ReactComponentWithPerformance";
 
-const noDataProps = {style:{color:"gray", marginTop:30, border: "1px solid grey"}};
+const noDataProps = {style:{color:"gray", marginTop:30, border: "1px solid grey", backgroundColor: "#FFF"}};
 let renderCount = 0;
 
 export default class ActionGroupsList extends ReactComponentWithPerformance {

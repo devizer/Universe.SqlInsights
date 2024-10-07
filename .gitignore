@@ -8,6 +8,7 @@
 *.sln.docstates
 .vs
 .eslintcache
+*-Prev
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
