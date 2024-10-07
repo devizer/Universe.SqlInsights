@@ -9,7 +9,7 @@ variables:
 jobs:
 
   - job: Build_W3_App
-    displayName: 'Build W3App Shared Artifact'
+    displayName: 'Build W3App Shared Artifact, JAM Tests and Tests'
     pool:
       vmImage: "ubuntu-20.04"
     steps:
@@ -36,11 +36,37 @@ jobs:
 
       - publish: $(Build.SourcesDirectory)/src/universe.sqlinsights.w3app/build
         retryCountOnTaskFailure: 3
-        displayName: 'Publish Artifact'
-        condition: succeededOrFailed()
+        displayName: 'Publish w3app'
+        # condition: succeededOrFailed()
         artifact: 'w3app'
     
+      - bash: |
+          configuration=Release
+          Say "Build fx-dependent W3API"
+          pushd src/Universe.SqlInsights.W3Api
+          time try-and-retry dotnet publish -c $configuration -o $SYSTEM_ARTIFACTSDIRECTORY/w3api -f net6.0
+          popd
+
+          Say "Build fx-dependent [SqlServerStorage].Tests"
+          pushd src/Universe.SqlInsights.SqlServerStorage.Tests
+          time try-and-retry dotnet publish -c $configuration -o $SYSTEM_ARTIFACTSDIRECTORY/w3api.tests -f net6.0
+          popd
+
+          Say "Build fx-dependent [SqlServerJam].Tests"
+          git clone https://github.com/devizer/Universe.SqlServerJam ~/jam
+          pushd ~/jam/src/Universe.SqlServerJam.Tests
+          time try-and-retry dotnet publish -c $configuration -o $SYSTEM_ARTIFACTSDIRECTORY/jam.tests -f net6.0
+          popd
+
+        retryCountOnTaskFailure: 1
+        displayName: 'Build w3api and tests'
   
+      - publish: '$(SYSTEM.ARTIFACTSDIRECTORY)'
+        retryCountOnTaskFailure: 3
+        displayName: 'Publish w3api and tests'
+        # condition: succeededOrFailed()
+        artifact: 'Goods'
+
   - job: IfWindows
     displayName: If
     # condition: eq('Never','')

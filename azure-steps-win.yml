@@ -3,6 +3,22 @@
 
 steps:
 
+  - task: DownloadPipelineArtifact@2
+    condition: succeededOrFailed()
+    displayName: 'Goods: download (w3api, w3api.tests, jam.tests)'
+    inputs:
+      artifactName: Goods
+      path: $(AGENT.TEMPDIRECTORY)\Goods
+      patterns: 
+        "**"
+   
+  - script: |
+       pushd "$(AGENT.TEMPDIRECTORY)\Goods"
+       dir
+     displayName: 'Show Goods: w3api, w3api.tests, jam.tests'
+
+
+  AGENT_TEMPDIRECTORY
   - pwsh: |
       . scripts\Measure-Action.ps1
       # Measure-Action "List Package Providers" {Get-PackageProvider -ListAvailable}
