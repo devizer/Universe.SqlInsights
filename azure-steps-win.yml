@@ -14,7 +14,6 @@ steps:
    
   - bash: |
        cd "$AGENT_TEMPDIRECTORY"
-       ls -la
        cd Goods
        ls -la
     displayName: 'Show Goods: w3api, w3api.tests, jam.tests'
@@ -96,12 +95,14 @@ steps:
       script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
       Say --Reset-Stopwatch
       Say "CPU: $(Get-CpuName)"
-      git clone https://github.com/devizer/Universe.SqlServerJam ~/jam
-      cd ~/jam/src/Universe.SqlServerJam.Tests
-
-      ls -la
-      dotnet test -c Release -f $W3API_NET
-      Say Done
+      # git clone https://github.com/devizer/Universe.SqlServerJam ~/jam
+      # cd ~/jam/src/Universe.SqlServerJam.Tests
+      # ls -la
+      # dotnet test -c Release -f $W3API_NET
+      cd $AGENT_TEMPDIRECTORY/Goods/jam.tests
+      ls -lah
+      dotnet test Universe.SqlServerJam.Tests.dll
+      Say "Success Complete"
     condition: succeededOrFailed()
     displayName: 'Test JAM'
 
