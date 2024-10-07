@@ -319,6 +319,7 @@ steps:
       echo Starting W3Api
       export SQLINSIGHTS_REPORT_FOLDER="C:\\Temp\\SqlInsights-W3Api-Internal-Logs"
       export SQLINSIGHTS_REPORT_FULLNAME="${SQLINSIGHTS_REPORT_FOLDER}\\Report.Txt"
+      export ASPNETCORE_URLS=http://localhost:50420
       pushd $AGENT_TEMPDIRECTORY/Goods/w3api;
       (dotnet Universe.SqlInsights.W3Api.dll | tee "$SYSTEM_ARTIFACTSDIRECTORY/w3api (acceptance test).log") &
       popd
