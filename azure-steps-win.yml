@@ -12,9 +12,11 @@ steps:
       patterns: 
         "**"
    
-  - script: |
-       pushd "$(AGENT.TEMPDIRECTORY)\Goods"
-       dir
+  - bash: |
+       cd "$AGENT_TEMPDIRECTORY)"
+       ls -la
+       cd Goods
+       ls -la
      displayName: 'Show Goods: w3api, w3api.tests, jam.tests'
 
 
