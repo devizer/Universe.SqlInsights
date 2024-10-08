@@ -26,7 +26,7 @@ class SessionsListener {
                 })
                 .then(sessions => {
                     if (sessions != null) {
-                        sessions.map((session, index) => calculateSessionFields(session));
+                        sessions?.map((session, index) => calculateSessionFields(session));
                     }
                     else {
                         console.error("!!!! SKIPPED calculateSessionFields");

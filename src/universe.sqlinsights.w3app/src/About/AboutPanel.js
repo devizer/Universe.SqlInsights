@@ -19,7 +19,7 @@ export default class AboutPanel extends ReactComponentWithPerformance {
         this.fetchAboutResponse = this.fetchAboutResponse.bind(this);
         
         this.state = {
-            about: {}
+            about: {AppVersion: "...", DbServer: "...", DbCatalog: "..."}
         };
     }
 
