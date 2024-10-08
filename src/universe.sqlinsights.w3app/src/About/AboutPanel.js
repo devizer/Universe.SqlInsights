@@ -19,7 +19,7 @@ export default class AboutPanel extends ReactComponentWithPerformance {
         this.fetchAboutResponse = this.fetchAboutResponse.bind(this);
         
         this.state = {
-            about: {AppVersion: "...", DbServer: "...", DbCatalog: "..."}
+            about: {ApiVersion: "...", DbServer: "...", DbCatalog: "..."}
         };
     }
 
@@ -63,7 +63,7 @@ export default class AboutPanel extends ReactComponentWithPerformance {
         ];
         const cells = [
             ['API Url', API_URL],
-            ['API Version', about.AppVersion],
+            ['API Version', about.ApiVersion],
             ['UI Version', AppVersion.Version],
             ['Storage Server', about.DbServer],
             ['Storage Database',about.DbCatalog],        
@@ -84,7 +84,7 @@ export default class AboutPanel extends ReactComponentWithPerformance {
                 
 {/*
             <p>API Url: &nbsp; {API_URL}</p>
-            <p>API Version: &nbsp; {about.AppVersion}</p>
+            <p>API Version: &nbsp; {about.ApiVersion}</p>
             <p>UI Version: &nbsp; {AppVersion.Version}</p>
             <p>Storage Server: &nbsp; {about.DbServer}</p>
             <p>Storage Database: &nbsp; {about.DbCatalog}</p>

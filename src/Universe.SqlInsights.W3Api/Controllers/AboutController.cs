@@ -24,7 +24,7 @@ namespace Universe.SqlInsights.W3Api.Controllers
             SqlConnectionStringBuilder b = new SqlConnectionStringBuilder(DbOptions.ConnectionString);
             var ret = new AboutResponse()
             {
-                AppVersion = version?.ToString(),
+                ApiVersion = version?.ToString(),
                 DbCatalog = b.InitialCatalog,
                 DbServer = b.DataSource
             };
@@ -35,7 +35,7 @@ namespace Universe.SqlInsights.W3Api.Controllers
 
     public class AboutResponse
     {
-        public string AppVersion { get; set; }
+        public string ApiVersion { get; set; }
         public string DbServer { get; set; }
         public string DbCatalog { get; set; }
 
