@@ -100,7 +100,7 @@ Values(
             {
                 foreach (var sql in sqlList)
                 {
-                    await con.ExecuteAsync(sql, new {IdSession = idSession});
+                    await con.ExecuteAsync(sql, new {IdSession = idSession}, commandTimeout: 180);
                 }
             }
         }
