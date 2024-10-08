@@ -62,7 +62,8 @@ let refAll;
 
 DocumentVisibilityStore.on(isVisible => {
     if (refAll && refAll.current) {
-        console.log("refAll", refAll);
+        // TODO: blur on lost visibility
+        // console.log("refAll", refAll);
         // refAll.current.style.opacity = isVisible ? 1 : 0.5;
     }
 });

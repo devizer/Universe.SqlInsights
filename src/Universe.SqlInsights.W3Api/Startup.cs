@@ -113,6 +113,13 @@ namespace Universe.SqlInsights.W3Api
         {
             app.ValidateSqlInsightsServices();
 
+            app.Use(middleware: async delegate (HttpContext context, Func<Task> next)
+            {
+                context.Response.Headers.Remove("Server");
+                context.Response.Headers.Add("Server", "devizer/s4dashboard");
+                await next.Invoke();
+            });
+
             app.UseSqlInsights(); // BEFORE Exception Handler
             if (env.IsDevelopment())
             {

@@ -9,7 +9,7 @@ import ReactComponentWithPerformance from "../Shared/ReactComponentWithPerforman
 import {ActionKeyPathUi} from "../Shared/ActionKeyPathUi";
 import {Container, Paper} from "@material-ui/core";
 
-export default class AboutPanel extends Component {
+export default class AboutPanel extends ReactComponentWithPerformance {
     static displayName = AboutPanel.name;
     internalName = () => "AboutPanel";
 
