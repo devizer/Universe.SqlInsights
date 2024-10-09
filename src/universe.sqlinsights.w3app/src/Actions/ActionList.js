@@ -182,34 +182,36 @@ export default class ActionList extends ReactComponentWithPerformance {
             if (today.getTime() === atDay.getTime()) return mom.format("LTS"); else return mom.format("LTS, ll"); 
         };
         
-        const onDownload = actionDetails => e => {
+        const formatActionDetails = actionDetails => {
             const newLine = "\r\n";
             const countersToString = counters => {
                 const copy = {...counters};
                 copy.Requests = undefined;
                 return copy;
             };
-            console.log("ActionList.onDownload argument (action object)", actionDetails);
             const keyPath = ActionKeyPathUi({path:actionDetails.Key.Path})
             const sqlStatements = actionDetails.SqlStatements;
-            let text = `/* Action: ${keyPath} */${newLine}`;
+            let text = `` +
+                `/*  Action: ${keyPath}${newLine}` +
+                `    Application: ${actionDetails.AppName}${newLine}` +
+                `    Host: ${actionDetails.HostId}${newLine}` +
+                `    At: ${new Date(actionDetails.At)} */${newLine}`;
+
             text = text + sqlStatements.map(s => `${newLine}--- ${JSON.stringify(countersToString(s.Counters))} ---${newLine}${s.Sql}`).join(newLine) + newLine;
-            DynamicDownloading(text, 'text/plain', `${keyPath}.sql`);
+            return text;
+        };
+        
+        const onDownload = actionDetails => e => {
+            console.log("ActionList.onDownload argument (action object)", actionDetails);
+            const actionDetailsFormatted = formatActionDetails(actionDetails);
+            const keyPath = ActionKeyPathUi({path:actionDetails.Key.Path})
+            DynamicDownloading(actionDetailsFormatted, 'text/plain', `${keyPath}.sql`);
         };
         
         const onCopy = actionDetails => e => {
-            const newLine = "\r\n";
-            const countersToString = counters => {
-                const copy = {...counters};
-                copy.Requests = undefined;
-                return copy;
-            };
             console.log("ActionList.onCopy argument (action object)", actionDetails);
-            const keyPath = ActionKeyPathUi({path:actionDetails.Key.Path})
-            const sqlStatements = actionDetails.SqlStatements;
-            let text = `/* Action: ${keyPath} */${newLine}`;
-            text = text + sqlStatements.map(s => `${newLine}--- ${JSON.stringify(countersToString(s.Counters))} ---${newLine}${s.Sql}`).join(newLine) + newLine;
-            copy(text, {format: "text/plain"});
+            const actionDetailsFormatted = formatActionDetails(actionDetails);
+            copy(actionDetailsFormatted, {format: "text/plain"});
             this.setState({openedCopyConfirmation:true});
         };
         
