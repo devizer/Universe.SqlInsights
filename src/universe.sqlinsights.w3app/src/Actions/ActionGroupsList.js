@@ -185,8 +185,8 @@ export default class ActionGroupsList extends ReactComponentWithPerformance {
                         <FormControlLabel control={<null />} label="" style={{paddingLeft: 28, paddingRight: 28}} />
                         
                         <FormControlLabel control={<null />} label="Display:" style={{marginRight2:-4}} />
-                        <FormControlLabel value="average" control={<Radio />} label="Average" />
-                        <FormControlLabel value="total" control={<Radio />} label="Total" />
+                        <FormControlLabel value="average" control={<Radio color="default" />} label="Average" />
+                        <FormControlLabel value="total" control={<Radio color="default" />} label="Total" />
                         
                         <FormControlLabel control={<null />} label="" style={{paddingLeft: 28, paddingRight: 28}} />
 
