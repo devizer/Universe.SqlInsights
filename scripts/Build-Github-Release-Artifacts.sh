@@ -24,7 +24,7 @@ popd
 prefix="sqlinsights-dashboard"
 
 Say "BUILD FX DEPENDENT $SQLINSIGHTS_VERSION"
-dotnet publish -f $W3API_NET -o bin/fxdepend -v:q -p:Version=$SQLINSIGHTS_VERSION_SHORT -c Release
+try-and-retry dotnet publish -f $W3API_NET -o bin/fxdepend -v:q -p:Version=$SQLINSIGHTS_VERSION_SHORT -c Release
 mkdir -p bin/fxdepend/wwwroot; 
 cp -r -a "$BUILD_REPOSITORY_LOCALPATH/src/universe.sqlinsights.w3app/build"/. bin/fxdepend/wwwroot
 # SQL_INSIGHTS_W3API_URL_PLACEHOLDER --> /api/v1/SqlInsights
@@ -46,7 +46,7 @@ fi
 for r in $rids; do
   n=$((n+1))
   Say "#${n}: BUILD SELF-CONTAINED [$r] $SQLINSIGHTS_VERSION"
-  dotnet publish --self-contained -r $r -f $W3API_NET -o bin/plain/$r -v:q -p:Version=$SQLINSIGHTS_VERSION_SHORT -c Release
+  try-and-retry dotnet publish --self-contained -r $r -f $W3API_NET -o bin/plain/$r -v:q -p:Version=$SQLINSIGHTS_VERSION_SHORT -c Release
   mkdir -p bin/plain/$r/wwwroot; cp -r -a "$BUILD_REPOSITORY_LOCALPATH/src/universe.sqlinsights.w3app/build"/. bin/plain/$r/wwwroot
   pushd bin/plain/$r
     sed -i 's/SQL_INSIGHTS_W3API_URL_PLACEHOLDER/\/api\/v1\/SqlInsights/g' wwwroot/index.html
