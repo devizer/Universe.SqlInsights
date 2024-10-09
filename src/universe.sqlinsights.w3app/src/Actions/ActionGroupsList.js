@@ -243,7 +243,7 @@ export default class ActionGroupsList extends ReactComponentWithPerformance {
                                         accessor: "AppDuration",
                                         className: 'right-aligned',
                                         Cell: cellNumber(x => x.AppDuration),
-                                        width: defaultMetricColumnWidth,
+                                        width: defaultMetricColumnWidth + 5,
                                     },
                                     {
                                         Header: "CPU",
@@ -291,7 +291,7 @@ export default class ActionGroupsList extends ReactComponentWithPerformance {
                                         accessor: "SqlCounters.Duration",
                                         className: 'right-aligned',
                                         Cell: cellNumber(x => x.SqlCounters.Duration),
-                                        width: defaultMetricColumnWidth,
+                                        width: defaultMetricColumnWidth + 5,
                                     },
                                     {
                                         Header: "CPU",

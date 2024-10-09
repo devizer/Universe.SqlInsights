@@ -23,7 +23,7 @@ if (document && document.visibilityState && typeof document.onvisibilitychange !
     console.log("SUBSRIBING to [visibilitychange]");
     document.addEventListener("visibilitychange", () => {
         const isHidden = Helper.isDocumentHidden();
-        console.log(`VISIBLILITY: ${!isHidden}, ${document.visibilityState}`);
+        console.log(`DOCUMENT VISIBLILITY TRIGGERED: visible=${!isHidden}, visibility=${document.visibilityState}`);
         notifyAll(!isHidden);
     }, false);
 }
