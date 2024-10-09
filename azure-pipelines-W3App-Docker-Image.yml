@@ -80,7 +80,7 @@ jobs:
          pushd scripts/Linux-W3API-Docker
          source Build-W3API-Linux-Docker-Image.sh
          popd
-        condition: succeededOrFailed()
+        # condition: succeededOrFailed()
         displayName: "W3API: SELF-CONTAINED Docker Images"
 
       - bash: |
@@ -92,7 +92,7 @@ jobs:
          pushd scripts/Linux-W3API-Docker-FXDependent
          source Build-W3API-Linux-Docker-Image.sh
          popd
-        condition: succeededOrFailed()
+        # condition: succeededOrFailed()
         displayName: "W3API: FXDependent Docker Images"
 
       - publish: $(Build.SourcesDirectory)/src/universe.sqlinsights.w3app/build
