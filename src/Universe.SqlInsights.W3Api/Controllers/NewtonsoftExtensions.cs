@@ -11,12 +11,13 @@ namespace Universe.SqlInsights.W3Api.Controllers
             MaxDepth = 128,
         };
 
-        public static ActionResult ToJsonResult(this object obj)
+        public static ActionResult ToJsonResult(this object obj, int httpStatusCode = 200)
         {
             return new ContentResult()
             {
                 Content = obj == null ? "null" : JsonConvert.SerializeObject(obj, SerializerSettings),
                 ContentType = "application/json",
+                StatusCode = httpStatusCode
             };
         }
     }

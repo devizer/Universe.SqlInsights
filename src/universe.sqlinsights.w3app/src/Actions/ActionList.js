@@ -17,22 +17,62 @@ import MuiAlert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/core/styles'
 import copy from 'copy-to-clipboard';
 
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import PropTypes from "prop-types";
 import sessionsStore from "../stores/SessionsStore"
 import settingsStore from "../stores/SettingsStore";
 import ReactComponentWithPerformance from "../Shared/ReactComponentWithPerformance";
 
-let renderCount = 0;
+// 1
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { foundation as theColorScheme } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+/*
+// 2
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { materialLight as theColorScheme} from 'react-syntax-highlighter/dist/esm/styles/prism';
+// 3
+import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
+import sql from 'react-syntax-highlighter/dist/esm/languages/hljs/sql';
+import { foundation as theColorScheme } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+SyntaxHighlighter.registerLanguage('sql', sql);
+*/
+
 const SqlCode = ({codeString}) => {
+    codeString = codeString.replace(/\r/g, ""); // .replace(/\n/g, "\n");
     return (
-        <SyntaxHighlighter language="sql" style={docco} wrapLines={true} wrapLongLines={true} /*CodeTag={"span"} PreTag={"span"}*/>
-            {codeString}
-        </SyntaxHighlighter>
+        <SyntaxHighlighter language="sql" style={theColorScheme} wrapLines={true} wrapLongLines={true} /*CodeTag={"span"} PreTag={"span"}*/>{codeString}</SyntaxHighlighter>
     );
 };
+
+
+const tempSql = `/*  Action: ASP.NET Core → SqlInsights → Summary → [POST]
+    Application: SqlInsights Dashboard
+    Host: DELL-WIN
+    At: Wed Oct 09 2024 17:23:58 GMT+0300 (Eastern European Summer Time) */
+
+--- {"Duration":0,"CPU":0,"Reads":7,"Writes":0,"RowCounts":81} ---
+exec sp_executesql N'
+Select
+    KeyPath,
+    [Count],
+    ErrorsCount,
+    AppDuration,
+    AppKernelUsage,
+    AppUserUsage,
+    SqlDuration,
+    SqlCPU,
+    SqlReads,
+    SqlWrites,
+    SqlRowCounts,
+    SqlRequests,
+    SqlErrors
+From 
+    SqlInsightsKeyPathSummary 
+Where 
+    IdSession = @IdSession',N'@IdSession bigint',@IdSession=0`;
+
 // import * as DataSourceActions from "../stores/DataSourceActions";
+let renderCount = 0;
+
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -223,6 +263,7 @@ export default class ActionList extends ReactComponentWithPerformance {
             let isTrimmed = statements.length > maxVisibleStatementsCount - 1;
             const visibleStatements = isTrimmed ? statements.slice(0, maxVisibleStatementsCount - 1) : statements;
             
+            
             return (
                 <>
                 <table className="SqlStatements" style={{width:'100%'}}>
@@ -287,6 +328,7 @@ export default class ActionList extends ReactComponentWithPerformance {
 
         return (
             <React.Fragment>
+                {/*<SqlCode codeString={tempSql} />*/}
                 {this.props.keyPath && <h3 className="ActionDetailsHeader center-aligned padding-top">
                     Latest Actions for “<b><ActionKeyPathUi path={this.props.keyPath} /></b>”
                     {(!isLoaded) && ", loading"}

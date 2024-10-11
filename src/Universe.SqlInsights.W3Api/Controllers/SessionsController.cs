@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Universe.SqlInsights.Shared;
 
 namespace Universe.SqlInsights.W3Api.Controllers
@@ -10,14 +12,15 @@ namespace Universe.SqlInsights.W3Api.Controllers
     [Route("api/" + ApiVer.V1 + "/SqlInsights/Sessions/[action]")]
     public partial class SessionsController : ControllerBase
     {
-        
+
+        private ILogger<SessionsController> _Logger;
         private readonly ISqlInsightsStorage _Storage;
 
-        public SessionsController(ISqlInsightsStorage storage)
+        public SessionsController(ILogger<SessionsController> logger, ISqlInsightsStorage storage)
         {
+            _Logger = logger;
             _Storage = storage;
         }
-
 
         [HttpPost]
         public async Task<ActionResult<IEnumerable<SqlInsightsSession>>> Sessions()
@@ -61,8 +64,24 @@ namespace Universe.SqlInsights.W3Api.Controllers
         [HttpPost]
         public async Task<ActionResult> DeleteSession(IdSessionParameters args)
         {
-            await _Storage.DeleteSession(args.IdSession);
-            return "OK".ToJsonResult();
+            await _Storage.FinishSession(args.IdSession);
+
+            // as foreground to prevent abort on shutdown
+            var thread = new Thread(async () =>
+            {
+                // async void needs try/catch
+                try
+                {
+                    await _Storage.DeleteSession(args.IdSession);
+                }
+                catch (Exception ex)
+                {
+                    _Logger.LogError($"Delete Session {args.IdSession} failed. {ex.GetExceptionDigest()}");
+                }
+            }) { IsBackground = false };
+            thread.Start();
+
+            return "Accepted".ToJsonResult(httpStatusCode: 202);
         }
 
         [HttpPost]
