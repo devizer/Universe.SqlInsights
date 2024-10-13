@@ -9,6 +9,7 @@ import "react-table/react-table.css";
 import Switch from '@material-ui/core/Switch';
 
 import ListAltIcon from '@material-ui/icons/ListAlt';
+import FilterListIcon from '@material-ui/icons/FilterList';
 import IconButton from '@material-ui/core/IconButton';
 
 import dataSourceStore from "../stores/DataSourceStore";
@@ -23,6 +24,9 @@ import {Icon} from "@material-ui/core";
 import {LiveUpdateSwitch} from "./LiveUpdateSwitch";
 import FilterDialog from "./FilterDialog";
 import ReactComponentWithPerformance from "../Shared/ReactComponentWithPerformance";
+
+import { ReactComponent as FilterSvgIcon } from './Filter.svg';
+const IconFilter = (size= 20,color='#000') => (<FilterSvgIcon style={{width: size,height:size,fill:color,strokeWidth:'1px',stroke:color }} />);
 
 const noDataProps = {style:{color:"gray", marginTop:30, border: "1px solid grey", backgroundColor: "#FFF"}};
 let renderCount = 0;
@@ -192,7 +196,9 @@ export default class ActionGroupsList extends ReactComponentWithPerformance {
 
                         <FormControlLabel control={<null />} label={`Filter: ${getFilterLabel()}`} style={{marginRight:-4}} />
                         <IconButton color="default" aria-label="filter by app or host" component="span" onClick={handleOpenFilterDialog}>
-                            <ListAltIcon />
+                            <FilterListIcon style={{color:'#111'}}/>
+                            {/*<ListAltIcon />*/}
+                            {/*{IconFilter()}*/} {/*too thin :(*/}
                         </IconButton>                        
                     </div>
                 </RadioGroup>
