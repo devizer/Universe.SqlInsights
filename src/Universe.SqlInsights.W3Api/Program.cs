@@ -49,17 +49,27 @@ namespace Universe.SqlInsights.W3Api
                     {
                         var outputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] \"{SourceContext}\"{NewLine}{Message}{NewLine}{Exception}";
 
+                        var logFolderFullName = GetLogFileFolder();
+                        CreateDirectoryIfNotExists(logFolderFullName);
+
+                        LogsGarbageCollector logsGarbageCollector = new LogsGarbageCollector(logFolderFullName);
+                        logsGarbageCollector.Setup();
+
                         var logFileFullName = GetLogFileFullName();
                         Console.WriteLine($"[Startup Configuration] Local Log File Name: '{logFileFullName}'");
                         config.WriteTo.File(
                             logFileFullName,
                             outputTemplate: outputTemplate,
-                            fileSizeLimitBytes: 250 * 1024 * 1024,
+                            fileSizeLimitBytes: 128 * 1024 * 1024,
+                            // fileSizeLimitBytes: 128 * 1024,
                             rollOnFileSizeLimit: true,
-                            retainedFileCountLimit: 2,
+                            retainedFileCountLimit: 5,
                             flushToDiskInterval: TimeSpan.FromSeconds(1),
                             encoding: new UTF8Encoding(true),
-                            shared: true
+                            shared: true,
+                            buffered: false
+                            // rollingInterval: RollingInterval.Hour
+                            // retainedFileTimeLimit: 
                         );
                         config.WriteTo.Console(LogEventLevel.Information, outputTemplate: outputTemplate);
                     });
@@ -74,6 +84,17 @@ namespace Universe.SqlInsights.W3Api
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
 
             return builder;
+        }
+
+        private static void CreateDirectoryIfNotExists(string dirName)
+        {
+            try
+            {
+                Directory.CreateDirectory(dirName);
+            }
+            catch
+            {
+            }
         }
 
         static string GetListenOnUrls()
