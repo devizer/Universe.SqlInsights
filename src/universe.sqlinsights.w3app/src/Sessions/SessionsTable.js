@@ -34,6 +34,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Typography from '@material-ui/core/Typography';
 import * as SessionIcons from './SvgIcons/Icons';
 import sessionsListener from "../stores/SessionsListener";
+import ThemeStore from "../stores/ThemeStore";
 // import {IconRename} from './SvgIcons/Icons';
 
 const MenuIcon = (size=10,color='#333') => (<MenuIconSvg style={{width: size,height:size,fill:color,strokeWidth:'1px',stroke:color }} />);
@@ -94,8 +95,9 @@ export default class SessionsTable extends Component {
 
     componentWillUnmount() {
         sessionsStore.off('storeUpdated', this.updateSessions);
+        DocumentVisibilityStore.off(this.handleVisibility);
     }
-    
+
     updateSessions(arg) {
         // console.log(`%c updateSessions `, 'color: darkred', arg.IdSession)
         let sessions = sessionsStore.getSessions();
@@ -417,4 +419,5 @@ export default class SessionsTable extends Component {
             </React.Fragment>
         )
     }
+
 }

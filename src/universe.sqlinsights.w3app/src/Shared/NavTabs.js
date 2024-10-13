@@ -81,7 +81,7 @@ export default function SimpleTabs() {
     return (
         
         <div className={classes.root} ref={refAll}>
-            <AppBar position="static" className="XXXXX">
+            <AppBar position="static" className="AppBar">
                 <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
                     <Tab label="Endpoints & Tasks" {...a11yProps(0)} />
                     <Tab label="Errors" {...a11yProps(1)} className="hidden" />
