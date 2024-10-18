@@ -26,7 +26,7 @@ jobs:
            echo "Creating RAM Disk for '$ramPath'"
            mkdir -p "$ramPath"
            sudo mount -t tmpfs -o size=5000M tmpfs "$ramPath"
-           sudo chown -R $whoami "$ramPath"
+           sudo chown -R "$(whoami)" "$ramPath"
          done
          df -h -T
 
