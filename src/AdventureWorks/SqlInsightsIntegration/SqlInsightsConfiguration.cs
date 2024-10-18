@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Universe;
 using Universe.SqlInsights.AspNetLegacy;
 using Universe.SqlInsights.Shared;
 
@@ -18,8 +19,8 @@ namespace AdventureWorks.SqlInsightsIntegration
         public bool Enabled { get; } = true;
         public bool MeasureSqlMetrics { get; } = true;
         public decimal AutoFlushDelay { get; } = 1000;
-        public string ReportFullFileName { get; } = "C:\\Temp\\AdventureWorks-Dev-Report.txt";
-        public string SqlTracesDirectory { get; } = "C:\\Temp\\AdventureWorks-Traces";
+        public string ReportFullFileName { get; } = SystemDriveAccess.WindowsSystemDrive + "Temp\\AdventureWorks-Dev-Report.txt";
+        public string SqlTracesDirectory { get; } = SystemDriveAccess.WindowsSystemDrive + "Temp\\AdventureWorks-Traces";
         public string ConnectionString { get; } = ConfigurationManager.ConnectionStrings["AdventureWorks"].ToString();
         public string HistoryConnectionString => "server=(local);Initial Catalog=SqlInsights Local Warehouse; Integrated Security=SSPI";
         public string SqlClientAppNameFormat => $"{this.AppName}-{{0}}";

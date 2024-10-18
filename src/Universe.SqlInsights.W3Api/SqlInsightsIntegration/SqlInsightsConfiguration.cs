@@ -33,7 +33,7 @@ namespace Universe.SqlInsights.W3Api.SqlInsightsIntegration
 
         private Lazy<string> _ReportFullFileName;
         public string ReportFullFileName => _ReportFullFileName.Value;
-        public string SqlTracesDirectory => _IsServerHostOnWindows.Value ? "C:\\Temp\\SqlInsights-Traces" : "/tmp/SqlInsights-Traces";
+        public string SqlTracesDirectory => _IsServerHostOnWindows.Value ? (SystemDriveAccess.WindowsSystemDrive + "Temp\\SqlInsights-Traces") : "/tmp/SqlInsights-Traces";
 
         private Lazy<bool> _IsServerHostOnWindows;
 
@@ -59,7 +59,7 @@ namespace Universe.SqlInsights.W3Api.SqlInsightsIntegration
             var ret = Environment.GetEnvironmentVariable("SQLINSIGHTS_REPORT_FULLNAME");
             if (!string.IsNullOrEmpty(ret)) return ret;
             if (CrossInfo.ThePlatform == CrossInfo.Platform.Windows)
-                return "C:\\Temp\\SqlInsights-W3Api\\Report.txt";
+                return SystemDriveAccess.WindowsSystemDrive + "Temp\\SqlInsights-W3Api\\Report.txt";
             else
                 return "/tmp/SqlInsights-W3Api/Report.txt";
         }

@@ -156,8 +156,7 @@ namespace Universe.SqlInsights.W3Api
                 // Only for development
                 if (WindowsServiceHelpers.IsWindowsService())
                 {
-                    var systemDrive = Environment.GetEnvironmentVariable("SystemDrive") ?? "C:\\";
-                    return Path.Combine(systemDrive, "Temp", "SqlInsights Dashboard Logs");
+                    return Path.Combine(SystemDriveAccess.WindowsSystemDrive, "Temp", "SqlInsights Dashboard Logs");
                 }
 
                 // TODO: It is only for development

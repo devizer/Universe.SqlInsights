@@ -212,6 +212,7 @@
     <Compile Include="WebPages\HealthCheck.aspx.designer.cs">
       <DependentUpon>HealthCheck.aspx</DependentUpon>
     </Compile>
+    <Compile Include="..\Shared-Files\SystemDriveAccess.cs " />
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\SalesOrder.cs" />
     <Compile Include="Models\SalesOrderDetails.cs" />
