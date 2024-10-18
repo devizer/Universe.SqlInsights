@@ -106,7 +106,7 @@ jobs:
 
       - bash: Show-System-Stat
         condition: succeededOrFailed()
-        artifact: 'Stat'
+        displayName: 'Show-System-Stat'
 
       - publish: $(Build.SourcesDirectory)/src/universe.sqlinsights.w3app/build
         displayName: 'Publish w3app Artifact'

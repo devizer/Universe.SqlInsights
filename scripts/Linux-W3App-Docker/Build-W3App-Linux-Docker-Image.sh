@@ -20,6 +20,7 @@ time try-and-retry yarn install
 time try-and-retry yarn build
 cp -f -a build "$dir"
 popd
+if [[ "${TF_BUILD:-}" == True ]]; then echo CLEAN UP YARN CACHE; rm -rf "$HOME/.cache/yarn"/*; fi
 
 Say "BUILD [config-w3app.sh]"
 export INDEX_HTML=../../src/universe.sqlinsights.w3app/build/index.html
