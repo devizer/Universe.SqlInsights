@@ -21,6 +21,15 @@ jobs:
          set -eu; set -o pipefail
          script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
          Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
+         
+         for ramPath in "$HOME/.cache/yarn" "$HOME/.nuget/packages" "$HOME/.local/share/NuGet"; do
+           echo "Creating RAM Disk for '$ramPath'"
+           mkdir -p "$ramPath"
+           sudo mount -t tmpfs -o size=5000M tmpfs "$ramPath"
+           sudo chown -R $whoami "$ramPath"
+         done
+         df -h -T
+
          sudo apt-get update -y -qq
 
          source scripts/Calc-Current-Version.sh
@@ -94,6 +103,10 @@ jobs:
          popd
         # condition: succeededOrFailed()
         displayName: "W3API: FXDependent Docker Images"
+
+      - bash: Show-System-Stat
+        condition: succeededOrFailed()
+        artifact: 'Stat'
 
       - publish: $(Build.SourcesDirectory)/src/universe.sqlinsights.w3app/build
         displayName: 'Publish w3app Artifact'

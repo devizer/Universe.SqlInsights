@@ -1,4 +1,4 @@
-import 'babel-polyfill';
+// import 'babel-polyfill';
 import './App.css';
 import NavTabs from "./Shared/NavTabs";
 import dataSourceListener from "./stores/DataSourceListener";
