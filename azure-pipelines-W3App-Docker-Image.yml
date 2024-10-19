@@ -22,7 +22,8 @@ jobs:
          script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
          Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
          
-         for ramPath in "$HOME/.cache/yarn" "$HOME/.nuget/packages" "$HOME/.local/share/NuGet"; do
+         # not enough memory for RAM DISK on "$HOME/.nuget/packages" "$HOME/.local/share/NuGet"
+         for ramPath in "$HOME/.cache/yarn"; do
            echo "Creating RAM Disk for '$ramPath'"
            mkdir -p "$ramPath"
            sudo mount -t tmpfs -o size=5000M tmpfs "$ramPath"
