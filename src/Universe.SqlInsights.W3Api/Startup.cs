@@ -115,7 +115,9 @@ namespace Universe.SqlInsights.W3Api
 
             app.Use(middleware: async delegate (HttpContext context, Func<Task> next)
             {
-                context.Response.Headers.Remove("Server");
+                if (context.Response.Headers.ContainsKey("Server"))
+                    context.Response.Headers.Remove("Server");
+
                 context.Response.Headers.Add("Server", "devizer/s4dashboard");
                 await next.Invoke();
             });

@@ -17,7 +17,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/core/styles'
 import copy from 'copy-to-clipboard';
 import PropTypes from "prop-types";
-import * as DocumentVisibilityStore from "../stores/DocumentVisibilityStore";
+import * as DocumentVisibilityStore from "../Shared/DocumentVisibilityStore";
 import {SelectedSessionUpdated} from "../stores/SessionsActions";
 
 import { Dialog } from '@material-ui/core';

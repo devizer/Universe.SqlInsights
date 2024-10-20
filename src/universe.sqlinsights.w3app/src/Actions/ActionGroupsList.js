@@ -17,7 +17,7 @@ import * as DataSourceActions from "../stores/DataSourceActions"
 import * as SettingsActions from "../stores/SettingsActions"
 import {ActionKeyPathUi} from "../Shared/ActionKeyPathUi";
 import ActionList from "./ActionList";
-import * as DocumentVisibilityStore from "../stores/DocumentVisibilityStore";
+import * as DocumentVisibilityStore from "../Shared/DocumentVisibilityStore";
 import sessionsStore from "../stores/SessionsStore";
 import settingsStore from "../stores/SettingsStore";
 import {Icon} from "@material-ui/core";
@@ -26,6 +26,7 @@ import FilterDialog from "./FilterDialog";
 import ReactComponentWithPerformance from "../Shared/ReactComponentWithPerformance";
 
 import { ReactComponent as FilterSvgIcon } from './Filter.svg';
+import NoWrap from "../Shared/NoWrap";
 const IconFilter = (size= 20,color='#000') => (<FilterSvgIcon style={{width: size,height:size,fill:color,strokeWidth:'1px',stroke:color }} />);
 
 const noDataProps = {style:{color:"gray", marginTop:30, border: "1px solid grey", backgroundColor: "#FFF"}};
@@ -178,28 +179,36 @@ export default class ActionGroupsList extends ReactComponentWithPerformance {
             const hostFilterText = hostFilters.length === 0 ? "any host" : hostFilters.length === 1 ? "1 host" : `${hostFilters.length} hosts`;
             return `${appFilterText}, ${hostFilterText}`;
         }
+        
+        const toolbarItemStyle = {padding: "0 20px 0 20px"};
             
         return (
             <React.Fragment>
                 <RadioGroup row aria-label="kind" name="kind" value={this.state.kind} onChange={handleChangeSummaryKind} className='center-aligned padding-top'>
                     <div style={{textAlign: 'center', width: '100%'}}>
+                        <NoWrap style={toolbarItemStyle}>
                         <FormControlLabel control={<null />} label="Live update:" style={{marginRight:6}} />
                         <LiveUpdateSwitch autoUpdateSummary={autoUpdateSummary} handleAutoUpdateSummary={handleAutoUpdateSummary} />
+                        </NoWrap>
                         
-                        <FormControlLabel control={<null />} label="" style={{paddingLeft: 28, paddingRight: 28}} />
+                        {/*<FormControlLabel control={<null />} label="" style={{paddingLeft: 28, paddingRight: 28}} />*/}
                         
-                        <FormControlLabel control={<null />} label="Display:" style={{marginRight2:-4}} />
-                        <FormControlLabel value="average" control={<Radio color="default" />} label="Average" />
-                        <FormControlLabel value="total" control={<Radio color="default" />} label="Total" />
+                        <NoWrap style={toolbarItemStyle}>
+                            <FormControlLabel control={<null />} label="Display:" style={{marginRight2:-4 }} />
+                            <FormControlLabel value="average" control={<Radio color="default" />} label="Average" />
+                            <FormControlLabel value="total" control={<Radio color="default" />} label="Total" />
+                        </NoWrap>
                         
-                        <FormControlLabel control={<null />} label="" style={{paddingLeft: 28, paddingRight: 28}} />
+                        {/*<FormControlLabel control={<null />} label="" style={{paddingLeft: 28, paddingRight: 28}} />*/}
 
+                        <NoWrap style={toolbarItemStyle}>
                         <FormControlLabel control={<null />} label={`Filter: ${getFilterLabel()}`} style={{marginRight:-4}} />
                         <IconButton color="default" aria-label="filter by app or host" component="span" onClick={handleOpenFilterDialog}>
                             <FilterListIcon style={{color:'#111'}}/>
                             {/*<ListAltIcon />*/}
                             {/*{IconFilter()}*/} {/*too thin :(*/}
-                        </IconButton>                        
+                        </IconButton>
+                        </NoWrap>
                     </div>
                 </RadioGroup>
                 <ReactTable

@@ -8,7 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
 import ActionsTab from "../Actions/ActionsTab";
-import * as DocumentVisibilityStore from "../stores/DocumentVisibilityStore"
+import * as DocumentVisibilityStore from "../Shared/DocumentVisibilityStore"
 import AboutPanel from "../About/AboutPanel";
 
 function TabPanel(props) {
