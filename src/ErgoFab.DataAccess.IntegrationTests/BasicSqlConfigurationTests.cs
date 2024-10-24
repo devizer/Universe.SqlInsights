@@ -8,11 +8,11 @@ namespace ErgoFab.DataAccess.IntegrationTests;
 public class BasicSqlConfigurationTests
 {
     private readonly ISqlServerTestsConfiguration TestsConfiguration = SqlServerTestsConfiguration.Instance;
-    private readonly SqlServerTestsManager SqlTestsManager;
+    private readonly SqlServerTestDbManager _sqlTestDbManager;
 
     public BasicSqlConfigurationTests()
     {
-        SqlTestsManager = new SqlServerTestsManager(TestsConfiguration);
+        _sqlTestDbManager = new SqlServerTestDbManager(TestsConfiguration);
     }
 
 
@@ -21,10 +21,10 @@ public class BasicSqlConfigurationTests
     [TestCase("Next")]
     public async Task TestMasterConnection(string kind)
     {
-        var version = SqlTestsManager.CreateMasterConnection().Manage().MediumServerVersion;
+        var version = _sqlTestDbManager.CreateMasterConnection().Manage().MediumServerVersion;
         Console.WriteLine($"SQL Server Version: {version}");
 
-        var dbList = await SqlTestsManager.GetDatabaseNames();
+        var dbList = await _sqlTestDbManager.GetDatabaseNames();
         Console.WriteLine($"Total DB Count: {dbList.Length}");
     }
 
@@ -33,7 +33,7 @@ public class BasicSqlConfigurationTests
     [TestCase("Next")]
     public async Task TryNextTestDatabaseName(string kind)
     {
-        var nextTestDbName = await SqlTestsManager.GetNextTestDatabaseName();
+        var nextTestDbName = await _sqlTestDbManager.GetNextTestDatabaseName();
         Console.WriteLine($"Next test database name is {nextTestDbName}");
     }
 
@@ -42,18 +42,18 @@ public class BasicSqlConfigurationTests
     [TestCase("Next")]
     public async Task TestCreateDb(string kind)
     {
-        var testDbName = await SqlTestsManager.GetNextTestDatabaseName();
+        var testDbName = await _sqlTestDbManager.GetNextTestDatabaseName();
         Console.WriteLine($"Test DB Name: {testDbName}");
-        await SqlTestsManager.CreateEmptyDatabase(testDbName);
-        var dbList = await SqlTestsManager.GetDatabaseNames();
+        await _sqlTestDbManager.CreateEmptyDatabase(testDbName);
+        var dbList = await _sqlTestDbManager.GetDatabaseNames();
         bool isContains = dbList.Contains(testDbName);
-        await SqlTestsManager.CreateMasterConnection().ExecuteAsync($"Drop Database [{testDbName}]"); ;
+        await _sqlTestDbManager.CreateMasterConnection().ExecuteAsync($"Drop Database [{testDbName}]"); ;
 
         // Assert 1
         Assert.True(isContains);
 
         // Assert 2
-        var dbListAfter = await SqlTestsManager.GetDatabaseNames();
+        var dbListAfter = await _sqlTestDbManager.GetDatabaseNames();
         Assert.False(dbListAfter.Contains(testDbName));
     }
 }

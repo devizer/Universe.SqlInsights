@@ -9,7 +9,8 @@ public static class IDbConnectionStringExtensions
     {
         DbContextOptionsBuilder<ErgoFabDbContext> dbContextOptionsBuilder = new DbContextOptionsBuilder<ErgoFabDbContext>();
         dbContextOptionsBuilder.UseSqlServer(dbConnectionString.ConnectionString, b => b.UseCompatibilityLevel(120));
-
         return new ErgoFabDbContext(dbContextOptionsBuilder.Options);
     }
+
+
 }

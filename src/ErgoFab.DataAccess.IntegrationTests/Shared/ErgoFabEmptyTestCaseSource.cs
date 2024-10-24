@@ -8,7 +8,7 @@ public class ErgoFabEmptyTestCaseSource : TestCaseSourceAttribute
     {
         foreach (var kind in new[] { "First", "Next" })
         {
-            SqlServerTestsManager man = new SqlServerTestsManager(SqlServerTestsConfiguration.Instance);
+            SqlServerTestDbManager man = new SqlServerTestDbManager(SqlServerTestsConfiguration.Instance);
             var testDbName = man.GetNextTestDatabaseName().Result;
             var cs = man.BuildConnectionString(testDbName);
 

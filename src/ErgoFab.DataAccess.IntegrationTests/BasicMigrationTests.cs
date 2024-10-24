@@ -8,11 +8,11 @@ namespace ErgoFab.DataAccess.IntegrationTests;
 public class BasicMigrationTests
 {
     private readonly ISqlServerTestsConfiguration TestsConfiguration = SqlServerTestsConfiguration.Instance;
-    private readonly SqlServerTestsManager SqlTestsManager;
+    private readonly SqlServerTestDbManager _sqlTestDbManager;
 
     public BasicMigrationTests()
     {
-        SqlTestsManager = new SqlServerTestsManager(TestsConfiguration);
+        _sqlTestDbManager = new SqlServerTestDbManager(TestsConfiguration);
     }
 
     [Test]
@@ -20,11 +20,11 @@ public class BasicMigrationTests
     [TestCase("Next")]
     public async Task TestMigration(string kind)
     {
-        var testDbName = await SqlTestsManager.GetNextTestDatabaseName();
-        await SqlTestsManager.CreateEmptyDatabase(testDbName);
+        var testDbName = await _sqlTestDbManager.GetNextTestDatabaseName();
+        await _sqlTestDbManager.CreateEmptyDatabase(testDbName);
         
         DbContextOptionsBuilder<ErgoFabDbContext> dbContextOptionsBuilder = new DbContextOptionsBuilder<ErgoFabDbContext>();
-        var connectionString = SqlTestsManager.BuildConnectionString(testDbName, pooling: false);
+        var connectionString = _sqlTestDbManager.BuildConnectionString(testDbName, pooling: false);
         DbConnectionString dbconnectionString = new DbConnectionString(connectionString, "TestMigration()");
         dbContextOptionsBuilder.UseSqlServer(connectionString);
         Console.WriteLine($"Test DB Connection String: {connectionString}");
@@ -44,6 +44,6 @@ public class BasicMigrationTests
         }
 
         // TODO: Wrap into finally{}
-        await SqlTestsManager.DropDatabase(testDbName);
+        await _sqlTestDbManager.DropDatabase(testDbName);
     }
 }

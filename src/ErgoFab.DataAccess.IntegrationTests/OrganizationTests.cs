@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data.SqlClient;
 using ErgoFab.DataAccess.IntegrationTests.Library;
 using ErgoFab.DataAccess.IntegrationTests.Shared;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +9,7 @@ namespace ErgoFab.DataAccess.IntegrationTests
     {
         [Test]
         [ErgoFabEmptyTestCaseSource]
-        public void OrganizationTest(ErgoFabTestCase testCase)
+        public async Task OrganizationTest(ErgoFabTestCase testCase)
         {
             Console.WriteLine(testCase.ConnectionOptions.ConnectionString);
             var ergoFabDbContext = testCase.ConnectionOptions.CreateErgoFabDbContext();

@@ -1,16 +1,18 @@
 ﻿using System.Data.Common;
 using System.Data.SqlClient;
+using System.Text;
 using Dapper;
 using ErgoFab.DataAccess.IntegrationTests.Shared;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Universe.SqlServerJam;
 
 namespace ErgoFab.DataAccess.IntegrationTests.Library
 {
-    public class SqlServerTestsManager
+    public class SqlServerTestDbManager
     {
         private readonly ISqlServerTestsConfiguration SqlTestsConfiguration;
 
-        public SqlServerTestsManager(ISqlServerTestsConfiguration sqlTestsConfiguration)
+        public SqlServerTestDbManager(ISqlServerTestsConfiguration sqlTestsConfiguration)
         {
             SqlTestsConfiguration = sqlTestsConfiguration;
         }
@@ -34,6 +36,12 @@ namespace ErgoFab.DataAccess.IntegrationTests.Library
         }
 
         static string EscapeSqlString(string arg) => $"'{arg.Replace("'", "''")}'";
+
+        public async Task CreateEmptyDatabase(IDbConnectionString dbConnectionString)
+        {
+            var dbName = new SqlConnectionStringBuilder(dbConnectionString.ConnectionString).InitialCatalog;
+            await CreateEmptyDatabase(dbName);
+        }
 
         public async Task CreateEmptyDatabase(string name)
         {
@@ -100,18 +108,32 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
             var bakName = Path.Combine(this.SqlTestsConfiguration.BackupFolder, $"{cacheKey}.bak");
 
             // WITH NOFORMAT, INIT,  NAME = N'Ergo Fab-Full Database Backup', SKIP, NOREWIND, NOUNLOAD, COMPRESSION, STATS = 10
-            string sql = $"BACKUP DATABASE [{dbName}] TO DISK = N{EscapeSqlString(bakName)} WITH {withCompression}, NOFORMAT, INIT, NAME = N'For Cache'";
+            string sql = $"BACKUP DATABASE [{dbName}] TO DISK = N{EscapeSqlString(bakName)} WITH {withCompression} NOFORMAT, INIT, NAME = N'For Cache'";
+            TryAndForget.Execute(() => Directory.CreateDirectory(this.SqlTestsConfiguration.BackupFolder));
             await masterConnection.ExecuteAsync(sql, commandTimeout: 180);
-            // masterConnection.Manage()
+            var backupDescription = masterConnection.Manage().GetBackupDescription(bakName);
             return new DatabaseBackupInfo()
             {
                 BackupName = bakName,
+                BackupFiles = backupDescription.FileList.ToArray(),
             };
         }
 
-        public async Task RestoreBackup(DatabaseBackupInfo databaseBackupInfo, string testDbName)
+        public async Task RestoreBackup(DatabaseBackupInfo databaseBackupInfo, string dbName)
         {
-            throw new NotImplementedException();
+            var sql = new StringBuilder($"Restore Database [{dbName}] From Disk = N'{databaseBackupInfo.BackupName}' With ");
+            foreach (var f in databaseBackupInfo.BackupFiles)
+            {
+                var folder = f.StrictType == BackFileType.Log ? this.SqlTestsConfiguration.DatabaseLogFolder : this.SqlTestsConfiguration.DatabaseDataFolder;
+                var physicalPath = Path.Combine(folder, $"{dbName}.{f.StrictType}");
+                string sqlMove = $" MOVE N{EscapeSqlString(f.LogicalName)} TO N{EscapeSqlString(physicalPath)},";
+                sql.Append(sqlMove);
+            }
+
+            sql.Append(" Replace");
+
+            var masterConnection = CreateMasterConnection();
+            await masterConnection.ExecuteAsync(sql.ToString(), commandTimeout: 180);
         }
     }
 }

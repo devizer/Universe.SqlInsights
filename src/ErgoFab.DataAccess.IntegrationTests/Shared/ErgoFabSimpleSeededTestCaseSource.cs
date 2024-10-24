@@ -6,7 +6,7 @@ public class ErgoFabSimpleSeededTestCaseSource : TestCaseSourceAttribute
 {
     public static IEnumerable<ErgoFabTestCase> GetTests()
     {
-        SqlServerTestsManager man = new SqlServerTestsManager(SqlServerTestsConfiguration.Instance);
+        SqlServerTestDbManager man = new SqlServerTestDbManager(SqlServerTestsConfiguration.Instance);
         var testDbName = man.GetNextTestDatabaseName().Result;
         var cs = man.BuildConnectionString(testDbName);
         foreach (var kind in new[] { "First", "Next" })
