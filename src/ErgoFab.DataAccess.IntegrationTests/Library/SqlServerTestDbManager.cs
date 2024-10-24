@@ -122,10 +122,12 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
         public async Task RestoreBackup(DatabaseBackupInfo databaseBackupInfo, string dbName)
         {
             var sql = new StringBuilder($"Restore Database [{dbName}] From Disk = N'{databaseBackupInfo.BackupName}' With ");
+            var index = 0;
             foreach (var f in databaseBackupInfo.BackupFiles)
             {
+                index++;
                 var folder = f.StrictType == BackFileType.Log ? this.SqlTestsConfiguration.DatabaseLogFolder : this.SqlTestsConfiguration.DatabaseDataFolder;
-                var physicalPath = Path.Combine(folder, $"{dbName}.{f.StrictType}");
+                var physicalPath = Path.Combine(folder, $"{dbName}.{index}.{f.StrictType}");
                 string sqlMove = $" MOVE N{EscapeSqlString(f.LogicalName)} TO N{EscapeSqlString(physicalPath)},";
                 sql.Append(sqlMove);
             }
