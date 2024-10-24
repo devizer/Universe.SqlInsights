@@ -11,7 +11,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
     public class SandboxTestLab : NUnitTestsBase
     {
         [Test]
-        [Category("Skip")]
+        [Category("Skip"), Explicit]
         public void TestThrowException()
         {
             throw new ApplicationException("Exception on purpose");
