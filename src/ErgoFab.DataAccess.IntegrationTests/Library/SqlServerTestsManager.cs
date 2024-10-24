@@ -102,6 +102,7 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
             // WITH NOFORMAT, INIT,  NAME = N'Ergo Fab-Full Database Backup', SKIP, NOREWIND, NOUNLOAD, COMPRESSION, STATS = 10
             string sql = $"BACKUP DATABASE [{dbName}] TO DISK = N{EscapeSqlString(bakName)} WITH {withCompression}, NOFORMAT, INIT, NAME = N'For Cache'";
             await masterConnection.ExecuteAsync(sql, commandTimeout: 180);
+            // masterConnection.Manage()
             return new DatabaseBackupInfo()
             {
                 BackupName = bakName,
