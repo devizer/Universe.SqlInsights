@@ -43,6 +43,7 @@ public class BasicSqlConfigurationTests
     public async Task TestCreateDb(string kind)
     {
         var testDbName = await SqlTestsManager.GetNextTestDatabaseName();
+        Console.WriteLine($"Test DB Name: {testDbName}");
         await SqlTestsManager.CreateEmptyDatabase(testDbName);
         var dbList = await SqlTestsManager.GetDatabaseNames();
         bool isContains = dbList.Contains(testDbName);

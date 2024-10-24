@@ -6,11 +6,12 @@ public class ErgoFabEmptyTestCaseSource : TestCaseSourceAttribute
 {
     public static IEnumerable<ErgoFabTestCase> GetTestCases()
     {
-        SqlServerTestsManager man = new SqlServerTestsManager(SqlServerTestsConfiguration.Instance);
-        var testDbName = man.GetNextTestDatabaseName().Result;
-        var cs = man.BuildConnectionString(testDbName);
         foreach (var kind in new[] { "First", "Next" })
         {
+            SqlServerTestsManager man = new SqlServerTestsManager(SqlServerTestsConfiguration.Instance);
+            var testDbName = man.GetNextTestDatabaseName().Result;
+            var cs = man.BuildConnectionString(testDbName);
+
             yield return new ErgoFabTestCase()
             {
                 ConnectionOptions = new DbConnectionString(cs, "Empty DB"),

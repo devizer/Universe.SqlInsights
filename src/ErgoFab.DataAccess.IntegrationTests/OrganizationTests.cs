@@ -15,6 +15,7 @@ namespace ErgoFab.DataAccess.IntegrationTests
         [ErgoFabEmptyTestCaseSource]
         public void OrganizationTest(ErgoFabTestCase testCase)
         {
+            Console.WriteLine(testCase.ConnectionOptions.ConnectionString);
             var ergoFabDbContext = testCase.ConnectionOptions.CreateErgoFabDbContext();
             // Database is Missing
 

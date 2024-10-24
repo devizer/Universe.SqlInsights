@@ -15,16 +15,20 @@ namespace ErgoFab.DataAccess.IntegrationTests.Library
             SqlTestsConfiguration = sqlTestsConfiguration;
         }
 
+        private static int TestCounter = 0;
         public async Task<string> GetNextTestDatabaseName()
         {
             string dbPrefix = $"{SqlTestsConfiguration.DbName} Test {DateTime.Now.ToString("yyyy-MM-dd")}";
             var allNames = await GetDatabaseNames();
             var setNames = allNames.ToHashSet();
-            for (int i = 1; i < 10000; i++)
+            var startFrom = Interlocked.Increment(ref TestCounter);
+            for (int i = startFrom; i < 10000; i++)
             {
                 string ret = $"{dbPrefix} {i:0000}";
                 if (!setNames.Contains(ret)) return ret;
             }
+
+            return $"{dbPrefix} {Guid.NewGuid():N}";
 
             throw new Exception("No Free database names");
         }
