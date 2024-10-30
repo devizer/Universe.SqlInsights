@@ -42,6 +42,12 @@ jobs:
     
       - bash: |
           configuration=Release
+          
+          Say "Build fx-dependent [ErgoFab.DataAccess.IntegrationTests]"
+          pushd src/ErgoFab.DataAccess.IntegrationTests
+          time try-and-retry dotnet publish -c $configuration -o $SYSTEM_ARTIFACTSDIRECTORY/ergofab.tests -f net6.0
+          popd
+
           Say "Build fx-dependent W3API"
           pushd src/Universe.SqlInsights.W3Api
           time try-and-retry dotnet publish -c $configuration -o $SYSTEM_ARTIFACTSDIRECTORY/w3api -f net6.0
