@@ -3,7 +3,6 @@ using System.Data.SqlClient;
 using System.Text;
 using Dapper;
 using ErgoFab.DataAccess.IntegrationTests.Shared;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Universe.SqlServerJam;
 
 namespace ErgoFab.DataAccess.IntegrationTests.Library

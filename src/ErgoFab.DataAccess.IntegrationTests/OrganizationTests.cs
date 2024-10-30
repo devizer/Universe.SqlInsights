@@ -2,9 +2,11 @@
 using ErgoFab.DataAccess.IntegrationTests.Library;
 using ErgoFab.DataAccess.IntegrationTests.Shared;
 using Microsoft.EntityFrameworkCore;
+using Universe.NUnitPipeline;
 
 namespace ErgoFab.DataAccess.IntegrationTests
 {
+    [NUnitPipelineAction]
     public class OrganizationTests
     {
         [Test]

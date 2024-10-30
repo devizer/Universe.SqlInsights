@@ -1,10 +1,12 @@
 using Dapper;
 using ErgoFab.DataAccess.IntegrationTests.Library;
 using ErgoFab.DataAccess.IntegrationTests.Shared;
+using Universe.NUnitPipeline;
 using Universe.SqlServerJam;
 
 namespace ErgoFab.DataAccess.IntegrationTests;
 
+[NUnitPipelineAction]
 public class BasicSqlConfigurationTests
 {
     private readonly ISqlServerTestsConfiguration TestsConfiguration = SqlServerTestsConfiguration.Instance;
