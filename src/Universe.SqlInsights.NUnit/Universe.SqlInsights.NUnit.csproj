@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <!--<ImplicitUsings>enable</ImplicitUsings>-->
+    <!--<Nullable>enable</Nullable>-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Universe.NUnitPipeline" Version="3.14.0.170" />
+    <PackageReference Include="Universe.SqlServerJam" Version="1.0.583" />
+  </ItemGroup>
+
+</Project>

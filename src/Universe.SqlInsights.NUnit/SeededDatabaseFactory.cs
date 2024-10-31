@@ -1,5 +1,6 @@
-﻿using System.Collections.Concurrent;
-using ErgoFab.DataAccess.IntegrationTests.Shared;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
 namespace ErgoFab.DataAccess.IntegrationTests.Library
 {
@@ -7,8 +8,7 @@ namespace ErgoFab.DataAccess.IntegrationTests.Library
     {
         public readonly ISqlServerTestsConfiguration SqlServerTestsConfiguration;
 
-        private static readonly ConcurrentDictionary<string, DatabaseBackupInfo> Cache = new();
-
+        private static readonly ConcurrentDictionary<string, DatabaseBackupInfo> Cache = new ConcurrentDictionary<string, DatabaseBackupInfo>();
 
         public SeededDatabaseFactory(ISqlServerTestsConfiguration sqlServerTestsConfiguration)
         {
@@ -16,17 +16,16 @@ namespace ErgoFab.DataAccess.IntegrationTests.Library
         }
 
 
-        // TODO 2: Bind to OrganizationTests
-        public async Task<IDbConnectionString> BuildDatabase(string cacheKey, string newDbName, string title, Action<IDbConnectionString> actionMigrate, Action<IDbConnectionString> actionSeed)
+        // 1. cacheKey is bound to actionMigrate+actionSeed
+        // 2. Used by tests only. Thus gets DbConnectionString instead of IDbConnectionString
+        public async Task<DbConnectionString> BuildDatabase(string cacheKey, string title, string newDbName, Action<IDbConnectionString> actionMigrate, Action<IDbConnectionString> actionSeed)
         {
+            
             SqlServerTestDbManager sqlServerTestDbManager = new SqlServerTestDbManager(SqlServerTestsConfiguration);
-            // string testDbName = await sqlServerTestDbManager.GetNextTestDatabaseName();
             string testDbName = newDbName;
-
             DbConnectionString dbConnectionString = new DbConnectionString(testDbName, title);
 
-            ;
-            if (Cache.TryGetValue(cacheKey, out DatabaseBackupInfo databaseBackupInfo))
+            if (Cache.TryGetValue(cacheKey, out var databaseBackupInfo))
             {
                 await sqlServerTestDbManager.RestoreBackup(databaseBackupInfo, testDbName);
                 return dbConnectionString;

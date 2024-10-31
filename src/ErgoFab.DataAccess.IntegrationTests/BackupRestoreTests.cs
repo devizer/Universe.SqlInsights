@@ -11,11 +11,11 @@ namespace ErgoFab.DataAccess.IntegrationTests;
 public class BackupRestoreTests
 {
     [Test]
-    [ErgoFabEmptyTestCaseSource]
+    [ErgoFabEmptyDbTestCaseSource]
     public async Task OrganizationTest(ErgoFabTestCase testCase)
     {
         Console.WriteLine(testCase.ConnectionOptions.ConnectionString);
-        var ergoFabDbContext = testCase.ConnectionOptions.CreateErgoFabDbContext();
+        var ergoFabDbContext = testCase.CreateErgoFabDbContext();
 
         SqlServerTestDbManager man = new SqlServerTestDbManager(SqlServerTestsConfiguration.Instance);
         await man.CreateEmptyDatabase(testCase.ConnectionOptions);
@@ -39,7 +39,7 @@ public class BackupRestoreTests
             Assert.IsTrue(File.Exists(backup.BackupName), $"Missing Backup file {backup.BackupName}");
             TryAndForget.Execute(() => File.Delete(backup.BackupName));
 
-            var newCs = new DbConnectionString(man.BuildConnectionString(dbRestoredName), "Restored");
+            DbConnectionString newCs = new DbConnectionString(man.BuildConnectionString(dbRestoredName), "Restored");
             var newDbContext = newCs.CreateErgoFabDbContext();
             var newOrg = newDbContext.Organization.FirstOrDefault(x => x.Title == "Azure Dev-Ops");
             Assert.IsNotNull(newOrg, "Missing 'Azure Dev-Ops' organization on restored DB");

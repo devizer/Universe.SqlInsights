@@ -1,0 +1,1 @@
+﻿Does not depend of EF or Logic

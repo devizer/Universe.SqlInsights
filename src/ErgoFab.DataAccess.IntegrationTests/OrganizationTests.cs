@@ -1,6 +1,7 @@
 ﻿using System.Data.SqlClient;
 using ErgoFab.DataAccess.IntegrationTests.Library;
 using ErgoFab.DataAccess.IntegrationTests.Shared;
+using ErgoFab.Model;
 using Microsoft.EntityFrameworkCore;
 using Universe.NUnitPipeline;
 
@@ -10,16 +11,16 @@ namespace ErgoFab.DataAccess.IntegrationTests
     public class OrganizationTests
     {
         [Test]
-        [ErgoFabEmptyTestCaseSource]
-        public async Task OrganizationTest(ErgoFabTestCase testCase)
+        [ErgoFabEmptyDbTestCaseSource]
+        public async Task AncientOrganizationTest(ErgoFabTestCase testCase)
         {
             Console.WriteLine(testCase.ConnectionOptions.ConnectionString);
-            var ergoFabDbContext = testCase.ConnectionOptions.CreateErgoFabDbContext();
-            // Database is Missing
+            ErgoFabDbContext ergoFabDbContext = testCase.ConnectionOptions.CreateErgoFabDbContext();
 
             try
             {
-                ergoFabDbContext.Database.Migrate();
+                await ergoFabDbContext.Database.MigrateAsync();
+                await SimpleSeeder.Seed(testCase.ConnectionOptions);
             }
             finally
             {

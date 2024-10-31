@@ -11,6 +11,6 @@ public class DbConnectionString : IDbConnectionString
         ConnectionString = connectionString;
         Title = title;
     }
-
+    // Parameter value for Test Explorer
     public override string ToString() => Title;
 }
