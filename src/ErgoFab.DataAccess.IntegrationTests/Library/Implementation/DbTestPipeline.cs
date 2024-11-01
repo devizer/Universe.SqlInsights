@@ -26,14 +26,21 @@ namespace Library.Implementation
                 {
                     SqlServerTestDbManager man = new SqlServerTestDbManager(SqlServerTestsConfiguration.Instance);
                     var testDbName = man.GetNextTestDatabaseName().Result;
+
                     TempDebug.WriteLine($"[DbTestPipeline.OnStart] Test='{test.Name}' Creating Database {testDbName}");
                     man.CreateEmptyDatabase(testDbName).Wait();
                     var connectionString = man.BuildConnectionString(testDbName, pooling: true);
+                    // Finalizing Test DB (TestDbConnectionString)
                     testDbConnectionString.ConnectionString = connectionString;
+
                     TempDebug.WriteLine($"[DbTestPipeline.OnStart] Test='{test.Name}' Migrating and seeding database {testDbName}");
                     testDbConnectionString.ManagedBy.MigrateAndSeed(testDbConnectionString);
                     TempDebug.WriteLine($"[DbTestPipeline.OnStart] Test='{test.Name}' Completed database {testDbName}");
                     TestCleaner.OnDispose($"Drop DB '{testDbName}' for Test {test.Name}", () => man.DropDatabase(testDbName).Wait(), TestDisposeOptions.Global);
+
+                    TempDebug.WriteLine($"[DbTestPipeline.OnStart] Test='{test.Name}' Connection String is \"{connectionString}\"");
+
+
                 }
 
             }

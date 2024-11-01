@@ -25,13 +25,13 @@ public class TestDbConnectionString : IDbConnectionString
 
     
     // Connection string is assigned by pipeline
-    public static TestDbConnectionString CreatePostponed(IDatabaseDefinition dbDefenition)
+    public static TestDbConnectionString CreatePostponed(IDatabaseDefinition dbDefinition)
     {
         return new TestDbConnectionString()
         {
             Postponed = true,
-            ManagedBy = dbDefenition,
-            Title = dbDefenition.Title,
+            ManagedBy = dbDefinition,
+            Title = dbDefinition.Title,
             ConnectionString = null
         };
     }

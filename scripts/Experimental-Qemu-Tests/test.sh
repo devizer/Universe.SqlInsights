@@ -25,5 +25,3 @@ image=devizervlad/crossplatform-pipeline:x64-debian-12
 try-and-retry try-and-retry try-and-retry try-and-retry docker pull $image
 docker rm $container
 docker run --privileged -p 22022:22022 -p 40080:40080 -e VM_MEM=640M -e VM_FORWARD_PORTS="hostfwd=tcp::40080-:40080" -e ASPNETCORE_URLS="http://*:40080" -e VM_VARIABLES='VM_FORWARD_PORTS;ASPNETCORE_URLS;ConnectionStrings__SqlInsights' -e ConnectionStrings__SqlInsights="Data Source=$sqlServer; Initial Catalog=SqlInsights Local Warehouse; User ID=sa; password=\`1qazxsw2;TrustServerCertificate=True" -e QEMU_TCG_ACCELERATOR=tcg -v /transient-builds/s4app:/job --name $container --hostname $container --device /dev/fuse --cap-add SYS_ADMIN --security-opt apparmor:unconfined -it $image bash -e -c "./Universe.SqlInsights.W3Api"
- 
-

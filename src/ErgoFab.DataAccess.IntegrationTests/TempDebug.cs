@@ -11,7 +11,7 @@ internal partial class TempDebug
     {
         var debugLogFolder = Environment.GetEnvironmentVariable("TESTS_DEBUG_FOLDER");
         if (string.IsNullOrEmpty(debugLogFolder)) return;
-        var debugLogFile = Path.Combine(debugLogFolder, _Assembly.Value + " " + DateTime.Now.ToString("yyyy-MM-dd HH꞉mm꞉ss") + ".log");
+        var debugLogFile = Path.Combine(debugLogFolder, _Assembly.Value + " " + StartAt.ToString("yyyy-MM-dd HH꞉mm꞉ss") + ".log");
         TryAndForget.Execute(() => Directory.CreateDirectory(Path.GetDirectoryName(debugLogFile)));
 
         try

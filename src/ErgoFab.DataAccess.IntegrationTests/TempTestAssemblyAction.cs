@@ -2,6 +2,7 @@
 
 public class TempTestAssemblyAction : Attribute, ITestAction
 {
+    public ActionTargets Targets => ActionTargets.Suite | ActionTargets.Test;
     public void BeforeTest(ITest test)
     {
     }
@@ -15,5 +16,4 @@ public class TempTestAssemblyAction : Attribute, ITestAction
         }
     }
 
-    public ActionTargets Targets => ActionTargets.Suite | ActionTargets.Test;
 }
