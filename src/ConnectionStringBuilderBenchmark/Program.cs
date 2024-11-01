@@ -15,6 +15,17 @@ namespace ConnectionStringBuilderBenchmark
     {
         private static readonly string TheConnectionString = "Data Source=(local);Database=SqlServerSqlInsightsStorage_Tests; Integrated Security=SSPI";
 
+        [Benchmark()]
+        public void Loop10000()
+        {
+            string prefix = "prefix";
+            for (int i = 0; i < 10000; i++)
+            {
+                string ret = $"{prefix} {i:0000}";
+            }
+        }
+
+        /*
         [Benchmark] // 2 microseconds
         public int SystemBenchmark()
         {
@@ -32,6 +43,7 @@ namespace ConnectionStringBuilderBenchmark
             var db = b.InitialCatalog;
             return server.Length + db.Length;
         }
+    */
     }
 }
 

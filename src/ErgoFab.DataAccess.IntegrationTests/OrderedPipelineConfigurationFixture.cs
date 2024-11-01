@@ -2,8 +2,7 @@
 using Universe.NUnitPipeline;
 
 [assembly: NUnitPipelineAction]
-
-namespace ErgoFab.DataAccess.IntegrationTests;
+[assembly: TempTestAssemblyAction]
 
 // One time setup fixture per each test project
 [SetUpFixture]
@@ -15,3 +14,4 @@ public class OrderedPipelineConfigurationFixture
         OrderedPipelineConfiguration.Configure();
     }
 }
+

@@ -47,7 +47,11 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
 
         public async Task DropDatabase(string name)
         {
-            await this.CreateMasterConnection().ExecuteAsync($"Drop Database [{name}]");
+            var sql = $"if exists (Select 1 From sys.databases where name={EscapeSqlString(name)}) Drop Database [{name}]";
+            using (var masterConnection = this.CreateMasterConnection())
+            {
+                await masterConnection.ExecuteAsync(sql);
+            }
         }
 
         public string BuildConnectionString(string dbName, bool pooling = true)

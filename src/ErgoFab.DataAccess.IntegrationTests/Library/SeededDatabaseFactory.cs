@@ -23,23 +23,23 @@ namespace ErgoFab.DataAccess.IntegrationTests.Library
             // string testDbName = await sqlServerTestDbManager.GetNextTestDatabaseName();
             string testDbName = newDbName;
 
-            DbConnectionString dbConnectionString = new DbConnectionString(testDbName, title);
+            TestDbConnectionString testDbConnectionString = new TestDbConnectionString(testDbName, title);
 
             ;
             if (Cache.TryGetValue(cacheKey, out DatabaseBackupInfo databaseBackupInfo))
             {
                 await sqlServerTestDbManager.RestoreBackup(databaseBackupInfo, testDbName);
-                return dbConnectionString;
+                return testDbConnectionString;
             }
 
             await sqlServerTestDbManager.CreateEmptyDatabase(testDbName);
-            actionMigrate(dbConnectionString);
+            actionMigrate(testDbConnectionString);
 
-            actionSeed(dbConnectionString);
+            actionSeed(testDbConnectionString);
 
             databaseBackupInfo = await sqlServerTestDbManager.CreateBackup(cacheKey, testDbName);
             Cache[cacheKey] = databaseBackupInfo;
-            return dbConnectionString;
+            return testDbConnectionString;
         }
     }
 }

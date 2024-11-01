@@ -10,7 +10,7 @@ namespace ErgoFab.DataAccess.IntegrationTests.Shared
 {
     internal class SimpleSeeder
     {
-        public static async Task Seed(IDbConnectionString dbConnectionString)
+        public static async Task Seed(IDbConnectionString dbConnectionString, int organizationsCount = 1)
         {
             ErgoFabDbContext db = dbConnectionString.CreateErgoFabDbContext();
 

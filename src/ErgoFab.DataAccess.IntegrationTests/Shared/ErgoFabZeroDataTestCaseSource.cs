@@ -1,6 +1,7 @@
 ﻿using ErgoFab.DataAccess.IntegrationTests.Library;
 using ErgoFab.Model;
 using Microsoft.EntityFrameworkCore;
+using Universe.NUnitPipeline;
 
 namespace ErgoFab.DataAccess.IntegrationTests.Shared;
 
@@ -12,12 +13,14 @@ public class ErgoFabZeroDataTestCaseSource : TestCaseSourceAttribute
         {
             SqlServerTestDbManager man = new SqlServerTestDbManager(SqlServerTestsConfiguration.Instance);
             var testDbName = man.GetNextTestDatabaseName().Result;
+            TestCleaner.OnDispose($"Drop DB '{testDbName}'", () => man.DropDatabase(testDbName).Wait(), TestDisposeOptions.AsyncGlobal);
+
             string connectionString = man.BuildConnectionString(testDbName);
 
             // Ensure Data and Log files are created on specified folder
             man.CreateEmptyDatabase(testDbName).Wait();
 
-            var connectionOptions = new DbConnectionString(connectionString, "Empty DB with Migrations");
+            var connectionOptions = new TestDbConnectionString(connectionString, "Empty DB with Migrations");
             using (ErgoFabDbContext ergoFabDbContext = connectionOptions.CreateErgoFabDbContext())
             {
                 ergoFabDbContext.Database.Migrate();

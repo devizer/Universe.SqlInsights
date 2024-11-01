@@ -4,6 +4,7 @@ namespace ErgoFab.DataAccess.IntegrationTests.Shared
 {
     public class ErgoFabTestCase
     {
+        // TODO: See BuildDatabase comments
         public IDbConnectionString ConnectionOptions { get; set; }
         public string Kind { get; set; }
 

@@ -1,0 +1,5 @@
+
+assembly library1 with library1.testaction1attribute 
+assembly tests1 with [assembly:library1.testaction1]
+
+in this case testaction1attribute.AfterTest(ITest test) is not invoked for TestType=="Assembly"?

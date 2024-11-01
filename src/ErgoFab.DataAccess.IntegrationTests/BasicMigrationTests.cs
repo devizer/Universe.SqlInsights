@@ -27,7 +27,7 @@ public class BasicMigrationTests
         
         DbContextOptionsBuilder<ErgoFabDbContext> dbContextOptionsBuilder = new DbContextOptionsBuilder<ErgoFabDbContext>();
         var connectionString = _sqlTestDbManager.BuildConnectionString(testDbName, pooling: false);
-        DbConnectionString dbconnectionString = new DbConnectionString(connectionString, "TestMigration()");
+        TestDbConnectionString dbconnectionString = new TestDbConnectionString(connectionString, "TestMigration()");
         dbContextOptionsBuilder.UseSqlServer(connectionString);
         Console.WriteLine($"Test DB Connection String: {connectionString}");
 
@@ -40,7 +40,7 @@ public class BasicMigrationTests
 
         {
             ErgoFabDbContext dbContext = new ErgoFabDbContext(dbContextOptionsBuilder.Options);
-            await SimpleSeeder.Seed(dbconnectionString);
+            await SimpleSeeder.Seed(dbconnectionString, 1);
             var anOrganization = dbContext.Organization.FirstOrDefault();
             Assert.NotNull(anOrganization);
         }
