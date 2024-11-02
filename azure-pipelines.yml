@@ -45,7 +45,7 @@ jobs:
           
           Say "Build fx-dependent [ErgoFab.DataAccess.IntegrationTests]"
           pushd src/ErgoFab.DataAccess.IntegrationTests
-          time try-and-retry dotnet publish -c $configuration -o $SYSTEM_ARTIFACTSDIRECTORY/ergofab.tests -f net6.0
+          time try-and-retry dotnet publish -c $configuration -o $SYSTEM_ARTIFACTSDIRECTORY/ergofab.tests -f net8.0
           popd
 
           Say "Build fx-dependent W3API"
