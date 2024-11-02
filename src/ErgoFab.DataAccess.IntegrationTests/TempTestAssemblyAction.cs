@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework.Interfaces;
+using Universe.NUnitPipeline;
 
 public class TempTestAssemblyAction : Attribute, ITestAction
 {
@@ -9,7 +10,7 @@ public class TempTestAssemblyAction : Attribute, ITestAction
 
     public void AfterTest(ITest test)
     {
-        TempDebug.WriteLine($"[TempTestAssemblyAction.AfterTest] Invoked TestType='{test.TestType}' Name='{test.Name}'");
+        PipelineLog.LogTrace($"[TempTestAssemblyAction.AfterTest] Invoked TestType='{test.TestType}' Name='{test.Name}'");
         if (test.TestType == "Assembly")
         {
             var letsDebug = "ok";

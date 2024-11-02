@@ -8,17 +8,21 @@ public class OrderedPipelineConfiguration
 {
     public static void Configure()
     {
-        TempDebug.WriteLine("OrderedPipelineConfiguration.Configure()");
-        NUnitPipelineChain.InternalReportFile = Path.Combine("TestsOutput", $"ErgoFab.DataAccess.IntegrationTests");
+        PipelineLog.LogTrace("OrderedPipelineConfiguration.Configure()");
 
-        NUnitPipelineChain.OnStart = new List<NUnitPipelineChainAction>()
+        var reportConfiguration = NUnitPipelineConfiguration.GetService<NUnitReportConfiguration>();
+        reportConfiguration.InternalReportFile = Path.Combine("TestsOutput", $"ErgoFab.DataAccess.IntegrationTests");
+
+        var chain = NUnitPipelineConfiguration.GetService<NUnitPipelineChain>();
+
+        chain.OnStart = new List<NUnitPipelineChainAction>()
         {
             new() { Title = CpuUsageInterceptor.Title, Action = CpuUsageInterceptor.OnStart },
             new() { Title = CpuUsageVizInterceptor.Title, Action = CpuUsageVizInterceptor.OnStart },
             new() { Title = DbTestPipeline.Title, Action = DbTestPipeline.OnStart }
         };
 
-        NUnitPipelineChain.OnEnd = new List<NUnitPipelineChainAction>()
+        chain.OnEnd = new List<NUnitPipelineChainAction>()
         {
             new() { Title = CpuUsageInterceptor.Title, Action = CpuUsageInterceptor.OnFinish },
             new() { Title = CpuUsageVizInterceptor.Title, Action = CpuUsageVizInterceptor.OnFinish },
@@ -32,7 +36,7 @@ public class OrderedPipelineConfiguration
 
     static void MyGlobalFinish(NUnitStage stage, ITest test)
     {
-        TempDebug.WriteLine($"[OrderedPipelineConfiguration.MyGlobalFinish] Finish Type='{test.TestType}' for Test='{test.Name}' on NUnitPipeline");
+        PipelineLog.LogTrace($"[OrderedPipelineConfiguration.MyGlobalFinish] Finish Type='{test.TestType}' for Test='{test.Name}' on NUnitPipeline");
     }
 
 }
