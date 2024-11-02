@@ -14,6 +14,7 @@
         string DatabaseLogFolder { get; }
         string Provider { get; } // Microsoft | System
 
+        // Removed to DI
         string GetNextTestDatabaseName(SqlServerTestDbManager testManager);
     }
 }

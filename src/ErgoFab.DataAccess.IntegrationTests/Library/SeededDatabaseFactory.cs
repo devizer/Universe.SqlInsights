@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using ErgoFab.DataAccess.IntegrationTests.Shared;
+using Universe.NUnitPipeline;
 
 namespace ErgoFab.DataAccess.IntegrationTests.Library
 {
@@ -17,28 +18,38 @@ namespace ErgoFab.DataAccess.IntegrationTests.Library
 
 
         // TODO 2: Bind to OrganizationTests
-        public async Task<IDbConnectionString> BuildDatabase(string cacheKey, string newDbName, string title, Action<IDbConnectionString> actionMigrate, Action<IDbConnectionString> actionSeed)
+        public async Task<IDbConnectionString> BuildDatabase(string cacheKey, string newDbName, string title, Action<IDbConnectionString> actionMigrateAndSeed)
         {
+            // new DB Name already asigned
             SqlServerTestDbManager sqlServerTestDbManager = new SqlServerTestDbManager(SqlServerTestsConfiguration);
-            // string testDbName = await sqlServerTestDbManager.GetNextTestDatabaseName();
             string testDbName = newDbName;
 
-            TestDbConnectionString testDbConnectionString = new TestDbConnectionString(testDbName, title);
+            var connectionString = sqlServerTestDbManager.BuildConnectionString(testDbName);
+            TestDbConnectionString testDbConnectionString = new TestDbConnectionString(connectionString, title);
 
-            ;
-            if (Cache.TryGetValue(cacheKey, out DatabaseBackupInfo databaseBackupInfo))
+            DatabaseBackupInfo databaseBackupInfo;
+            if (cacheKey != null)
             {
-                await sqlServerTestDbManager.RestoreBackup(databaseBackupInfo, testDbName);
-                return testDbConnectionString;
+                if (Cache.TryGetValue(cacheKey, out databaseBackupInfo))
+                {
+                    PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Restoring DB '{testDbName}' from Backup '{databaseBackupInfo.BackupName}'");
+                    await sqlServerTestDbManager.RestoreBackup(databaseBackupInfo, testDbName);
+                    return testDbConnectionString;
+                }
             }
 
+            PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Creating new test DB '{testDbName}'");
             await sqlServerTestDbManager.CreateEmptyDatabase(testDbName);
-            actionMigrate(testDbConnectionString);
+            PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Populating DB '{testDbName}' by Migrate and Seed");
+            actionMigrateAndSeed(testDbConnectionString);
 
-            actionSeed(testDbConnectionString);
+            if (cacheKey != null)
+            {
+                databaseBackupInfo = await sqlServerTestDbManager.CreateBackup(cacheKey, testDbName);
+                // TODO: Dispose the Backup
+                Cache[cacheKey] = databaseBackupInfo;
+            }
 
-            databaseBackupInfo = await sqlServerTestDbManager.CreateBackup(cacheKey, testDbName);
-            Cache[cacheKey] = databaseBackupInfo;
             return testDbConnectionString;
         }
     }

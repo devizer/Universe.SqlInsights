@@ -6,9 +6,10 @@ using Universe.SqlServerJam;
 
 namespace ErgoFab.DataAccess.IntegrationTests.Library
 {
+    // TODO: Move to DI
     public class SqlServerTestDbManager
     {
-        public readonly ISqlServerTestsConfiguration SqlTestsConfiguration;
+        public virtual ISqlServerTestsConfiguration SqlTestsConfiguration { get;  }
 
         public SqlServerTestDbManager(ISqlServerTestsConfiguration sqlTestsConfiguration)
         {
@@ -17,7 +18,7 @@ namespace ErgoFab.DataAccess.IntegrationTests.Library
 
         static string EscapeSqlString(string arg) => $"'{arg.Replace("'", "''")}'";
 
-        public async Task CreateEmptyDatabase(IDbConnectionString dbConnectionString)
+        public virtual async Task CreateEmptyDatabase(IDbConnectionString dbConnectionString)
         {
             var databases = await GetDatabaseNames();
             var dbName = new SqlConnectionStringBuilder(dbConnectionString.ConnectionString).InitialCatalog;
@@ -25,7 +26,7 @@ namespace ErgoFab.DataAccess.IntegrationTests.Library
             await CreateEmptyDatabase(dbName);
         }
 
-        public async Task CreateEmptyDatabase(string name)
+        public virtual async Task CreateEmptyDatabase(string name)
         {
             var mdf = Path.Combine(this.SqlTestsConfiguration.DatabaseDataFolder, $"{name}.mdf");
             var ldf = Path.Combine(this.SqlTestsConfiguration.DatabaseLogFolder, $"{name}.ldf");
@@ -45,7 +46,7 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
             await masterConnection.ExecuteAsync(sql2);
         }
 
-        public async Task DropDatabase(string name)
+        public virtual async Task DropDatabase(string name)
         {
             var sql = $"if exists (Select 1 From sys.databases where name={EscapeSqlString(name)}) Drop Database [{name}]";
             using (var masterConnection = this.CreateMasterConnection())
@@ -54,7 +55,7 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
             }
         }
 
-        public string BuildConnectionString(string dbName, bool pooling = true)
+        public virtual string BuildConnectionString(string dbName, bool pooling = true)
         {
             var b = CreateDbProviderFactory().CreateConnectionStringBuilder();
             b.ConnectionString = this.SqlTestsConfiguration.MasterConnectionString;
@@ -63,14 +64,14 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
             return b.ConnectionString;
         }
 
-        public async Task<string[]> GetDatabaseNames()
+        public virtual async Task<string[]> GetDatabaseNames()
         {
             var dbConnection = CreateMasterConnection();
             var ret = await dbConnection.QueryAsync<string>("Select name from sys.databases");
             return ret.ToArray();
         }
 
-        public DbConnection CreateMasterConnection(bool pooling = true)
+        public virtual DbConnection CreateMasterConnection(bool pooling = true)
         {
             SqlConnectionStringBuilder b = new SqlConnectionStringBuilder(SqlTestsConfiguration.MasterConnectionString);
             b.Pooling = pooling;
@@ -81,7 +82,7 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
             return dbConnection;
         }
 
-        public DbProviderFactory CreateDbProviderFactory()
+        public virtual DbProviderFactory CreateDbProviderFactory()
         {
             if (SqlTestsConfiguration.Provider == "Microsoft")
                 throw new NotImplementedException("TODO: Add reference and return corresponding DbProviderFactory");
@@ -91,7 +92,7 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
             throw new InvalidOperationException($"Unknown DB Provider '{SqlTestsConfiguration.Provider}'. Supported are Microsoft|System");
         }
 
-        public async Task<DatabaseBackupInfo> CreateBackup(string cacheKey, string dbName)
+        public virtual async Task<DatabaseBackupInfo> CreateBackup(string cacheKey, string dbName)
         {
             var masterConnection = CreateMasterConnection();
             var withCompression = masterConnection.Manage().IsCompressedBackupSupported ? "COMPRESSION, " : "";
@@ -110,7 +111,7 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
             };
         }
 
-        public async Task RestoreBackup(DatabaseBackupInfo databaseBackupInfo, string dbName)
+        public virtual async Task RestoreBackup(DatabaseBackupInfo databaseBackupInfo, string dbName)
         {
             var sql = new StringBuilder($"Restore Database [{dbName}] From Disk = N'{databaseBackupInfo.BackupName}' With ");
             var index = 0;

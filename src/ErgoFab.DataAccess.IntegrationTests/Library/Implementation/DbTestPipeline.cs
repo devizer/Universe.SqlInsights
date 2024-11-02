@@ -24,15 +24,35 @@ namespace Library.Implementation
                 TestDbConnectionString? testDbConnectionString = found.FirstOrDefault();
                 if (testDbConnectionString != null)
                 {
+                    // Move to DI
+                    // SqlServerTestsConfiguration.Instance: <ISqlServerTestsConfiguration>
+                    // GetNextTestDatabaseName: ITestDatabaseNameProvider
                     SqlServerTestDbManager man = new SqlServerTestDbManager(SqlServerTestsConfiguration.Instance);
-                    var testDbName = man.GetNextTestDatabaseName().Result;
+                    var testDbName = man.GetNextTestDatabaseName().GetSafeResult();
 
-                    PipelineLog.LogTrace($"[DbTestPipeline.OnStart] Test='{test.Name}' Creating Database {testDbName}");
-                    man.CreateEmptyDatabase(testDbName).Wait();
+                    // Intro. Create New DB. Inject Connection String
+                    PipelineLog.LogTrace($"[DbTestPipeline.OnStart] Test='{test.Name}' Creating Database '{testDbName}'");
+                    // SeededEfDatabaseFactory is repsonsible for creating DB
+                    // man.CreateEmptyDatabase(testDbName).SafeWait();
                     var connectionString = man.BuildConnectionString(testDbName, pooling: true);
                     // Finalizing Test DB (TestDbConnectionString)
                     testDbConnectionString.ConnectionString = connectionString;
+                    PipelineLog.LogTrace($"[DbTestPipeline.OnStart] Test='{test.Name}' Database {testDbName}. Created. Connection String is '{connectionString}' Applying Migration and Seed '{testDbConnectionString.ManagedBy.Title}'");
 
+
+                    SeededEfDatabaseFactory seedEfFactory = new SeededEfDatabaseFactory(SqlServerTestsConfiguration.Instance);
+                    IDbConnectionString dbcs =
+                        seedEfFactory.BuildEfDatabase(
+                            testDbConnectionString.ManagedBy.CacheKey,
+                            testDbName,
+                            testDbConnectionString.ManagedBy.Title,
+                            cs => cs.CreateErgoFabDbContext(),
+                            testDbConnectionString.ManagedBy.MigrateAndSeed
+                        ).GetSafeResult();
+
+                    return;
+
+                    // This work without backup cache
                     PipelineLog.LogTrace($"[DbTestPipeline.OnStart] Test='{test.Name}' Migrating and seeding database {testDbName}");
                     testDbConnectionString.ManagedBy.MigrateAndSeed(testDbConnectionString);
                     PipelineLog.LogTrace($"[DbTestPipeline.OnStart] Test='{test.Name}' Completed database {testDbName}");
