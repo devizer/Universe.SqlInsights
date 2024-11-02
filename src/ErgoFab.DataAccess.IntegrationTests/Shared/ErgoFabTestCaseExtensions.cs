@@ -21,7 +21,7 @@ public static class ErgoFabTestCaseExtensions
             throw new InvalidOperationException("dbConnectionString?.ConnectionString is null or empty. DB Test Pipeline is misconfigured");
 
         DbContextOptionsBuilder<ErgoFabDbContext> dbContextOptionsBuilder = new DbContextOptionsBuilder<ErgoFabDbContext>();
-        dbContextOptionsBuilder.UseSqlServer(dbConnectionString.ConnectionString, b => b.UseCompatibilityLevel(120));
+        dbContextOptionsBuilder.UseSqlServer(dbConnectionString.ConnectionString, b => b.UseCompatibilityLevel(160));
         return new ErgoFabDbContext(dbContextOptionsBuilder.Options);
     }
 

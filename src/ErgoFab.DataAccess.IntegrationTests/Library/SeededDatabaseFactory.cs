@@ -47,6 +47,7 @@ namespace ErgoFab.DataAccess.IntegrationTests.Library
             {
                 databaseBackupInfo = await sqlServerTestDbManager.CreateBackup(cacheKey, testDbName);
                 // TODO: Dispose the Backup
+                TestCleaner.OnDispose($"Drop Backup {databaseBackupInfo.BackupName}", () => File.Delete(databaseBackupInfo.BackupName), TestDisposeOptions.AsyncGlobal);
                 Cache[cacheKey] = databaseBackupInfo;
             }
 

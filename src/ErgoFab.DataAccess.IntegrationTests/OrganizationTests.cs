@@ -19,17 +19,9 @@ namespace ErgoFab.DataAccess.IntegrationTests
         {
             Console.WriteLine(testCase.ConnectionOptions.ConnectionString);
             // Assert.Fail("ON PURPOSE");
-            ErgoFabDbContext ergoFabDbContext = testCase.CreateErgoFabDbContext();
+            using ErgoFabDbContext ergoFabDbContext = testCase.CreateErgoFabDbContext();
 
-            try
-            {
-                await ergoFabDbContext.Database.MigrateAsync();
-                await SimpleSeeder.Seed(testCase.ConnectionOptions);
-            }
-            finally
-            {
-                ergoFabDbContext.Database.EnsureDeleted();
-            }
+            // Console.WriteLine($"Organizations Count = [{ergoFabDbContext.Organization.Count()}]");
         }
     }
 }
