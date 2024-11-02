@@ -52,7 +52,7 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
             var sql2 = @$"If Exists (Select 1 From sys.databases where name={EscapeSqlString(name)}) Drop Database [{name}];";
             using (var masterConnection = this.CreateMasterConnection(true))
             {
-                // await masterConnection.ExecuteAsync(sql1);
+                await masterConnection.ExecuteAsync(sql1);
                 await masterConnection.ExecuteAsync(sql2);
             }
         }

@@ -50,7 +50,9 @@ namespace Library.Implementation
                             testDbConnectionString.ManagedBy.MigrateAndSeed
                         ).GetSafeResult();
 
-                    TestCleaner.OnDispose($"Drop DB '{testDbName}'", man.DropDatabase(testDbName).SafeWait, TestDisposeOptions.AsyncTestCase);
+
+                    var whenDeleteDb = TestDisposeOptions.Global;
+                    TestCleaner.OnDispose($"Drop DB '{testDbName}'", man.DropDatabase(testDbName).SafeWait, whenDeleteDb);
 
                     return;
 
