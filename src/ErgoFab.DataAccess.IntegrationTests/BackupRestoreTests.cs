@@ -20,44 +20,39 @@ public class BackupRestoreTests
 
         SqlServerTestDbManager man = new SqlServerTestDbManager(SqlServerTestsConfiguration.Instance);
         await man.CreateEmptyDatabase(testCase.ConnectionOptions);
-        
+
         var ergoFabDbContext = testCase.CreateErgoFabDbContext();
 
-        try
-        {
-            ergoFabDbContext.Database.Migrate();
+        ergoFabDbContext.Database.Migrate();
 
-            ergoFabDbContext.Organization.Add(new Organization() { Title = "Azure Dev-Ops" });
-            ergoFabDbContext.SaveChanges();
+        ergoFabDbContext.Organization.Add(new Organization() { Title = "Azure Dev-Ops" });
+        ergoFabDbContext.SaveChanges();
 
-            var csb = man.CreateDbProviderFactory().CreateConnectionStringBuilder();
-            csb.ConnectionString = testCase.ConnectionOptions.ConnectionString;
-            // var dbName = new System.Data.SqlClient.SqlConnectionStringBuilder(testCase.ConnectionOptions.ConnectionString).InitialCatalog;
-            var dbName = man.GetDatabaseName(testCase.ConnectionOptions.ConnectionString);
+        var csb = man.CreateDbProviderFactory().CreateConnectionStringBuilder();
+        csb.ConnectionString = testCase.ConnectionOptions.ConnectionString;
+        // var dbName = new System.Data.SqlClient.SqlConnectionStringBuilder(testCase.ConnectionOptions.ConnectionString).InitialCatalog;
+        var dbName = man.GetDatabaseName(testCase.ConnectionOptions.ConnectionString);
 
-            var backup = await man.CreateBackup($"ErgoFab-777-{Guid.NewGuid():N}", dbName);
+        // 1. Create Explicit Backup
+        var backup = await man.CreateBackup($"ErgoFab-777-{Guid.NewGuid():N}", dbName);
+        TestCleaner.OnDispose($"Drop Explicit Backup {backup.BackupName}", () => File.Delete(backup.BackupName));
 
-            var dbRestoredName = $"ErgoFab-777-Restored-{Guid.NewGuid():N}";
-            await man.RestoreBackup(backup, dbRestoredName);
+        var dbRestoredName = $"ErgoFab Restored Explicitly {Guid.NewGuid():N}";
+        TestCleaner.OnDispose($"Drop Restored DB {dbRestoredName}", () => man.DropDatabase(dbRestoredName).SafeWait());
 
-            var isDbExists = (await man.GetDatabaseNames()).Contains(dbRestoredName);
-            Assert.True(isDbExists, $"Missing Restored DB {dbRestoredName}");
-            
-            Assert.IsTrue(File.Exists(backup.BackupName), $"Missing Backup file {backup.BackupName}");
-            TryAndForget.Execute(() => File.Delete(backup.BackupName));
+        // 2. Restore Backup
+        await man.RestoreBackup(backup, dbRestoredName);
 
-            TestDbConnectionString newCs = new TestDbConnectionString(man.BuildConnectionString(dbRestoredName), "Restored");
-            var newDbContext = newCs.CreateErgoFabDbContext();
-            var newOrg = newDbContext.Organization.FirstOrDefault(x => x.Title == "Azure Dev-Ops");
-            Assert.IsNotNull(newOrg, "Missing 'Azure Dev-Ops' organization on restored DB");
+        var isDbExists = (await man.GetDatabaseNames()).Contains(dbRestoredName);
+        Assert.True(isDbExists, $"Missing Restored DB {dbRestoredName}");
 
-            // newDbContext.Database.EnsureDeleted();
-            AgileDbKiller.Kill(newCs.ConnectionString);
-        }
-        finally
-        {
-            // await ergoFabDbContext.Database.EnsureDeletedAsync();
-            AgileDbKiller.Kill(testCase.ConnectionOptions.ConnectionString);
-        }
+        // TODO: Assert is Only for local SQL Server
+        Assert.IsTrue(File.Exists(backup.BackupName), $"Missing Backup file {backup.BackupName}");
+
+        // 3. Query newly restored DB
+        TestDbConnectionString newCs = new TestDbConnectionString(man.BuildConnectionString(dbRestoredName), "Restored");
+        var newDbContext = newCs.CreateErgoFabDbContext();
+        var newOrg = newDbContext.Organization.FirstOrDefault(x => x.Title == "Azure Dev-Ops");
+        Assert.IsNotNull(newOrg, "Missing 'Azure Dev-Ops' organization on restored DB");
     }
 }

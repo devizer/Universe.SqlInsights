@@ -68,6 +68,7 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
             b.ConnectionString = this.SqlTestsConfiguration.MasterConnectionString;
             b["Initial Catalog"] = dbName;
             b["Pooling"] = pooling.ToString();
+            b["Application Name"] = SqlTestsConfiguration.DbName + " Test";
             return b.ConnectionString;
         }
 

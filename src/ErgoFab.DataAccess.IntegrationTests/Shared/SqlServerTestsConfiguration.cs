@@ -25,7 +25,7 @@ public class SqlServerTestsConfiguration : ISqlServerTestsConfiguration
         var raw = Environment.GetEnvironmentVariable("ERGOFAB_TESTS_MASTER_CONNECTIONSTRING");
         return
             string.IsNullOrEmpty(raw)
-                ? "Data Source=(local);User ID=sa;Password=`1qazxsw2;Pooling=true;Timeout=30;Encrypt=False;"
+                ? "Data Source=(local);Integrated Security = SSPI;Pooling=true;Timeout=30;Encrypt=False;"
                 : raw;
 
     }
@@ -41,7 +41,7 @@ public class SqlServerTestsConfiguration : ISqlServerTestsConfiguration
 
     static string GetDbDataSubFolder(params string[] path)
     {
-        var ret =new StringBuilder(GetDbDataFolderRoot());
+        var ret = new StringBuilder(GetDbDataFolderRoot());
         foreach (var s in path)
             ret.Append(Path.DirectorySeparatorChar).Append(s);
 

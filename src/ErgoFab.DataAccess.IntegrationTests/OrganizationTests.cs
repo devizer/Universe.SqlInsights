@@ -14,10 +14,17 @@ namespace ErgoFab.DataAccess.IntegrationTests
     [TempTestAssemblyAction]
     public class OrganizationTests
     {
+        [Test]
+        [ErgoFabTestCaseSource(7777)]
+        public async Task OrganizationAnotherTest(ErgoFabTestCase testCase)
+        {
+            Assert.AreEqual(7777, await testCase.CreateErgoFabDbContext().Organization.AsNoTracking().CountAsync());
+        }
+
 
         [Test]
-        [ErgoFabTestCaseSource(7)]
-        public async Task AncientOrganizationTest(ErgoFabTestCase testCase)
+        [ErgoFabTestCaseSource(7777)]
+        public async Task OrganizationTest(ErgoFabTestCase testCase)
         {
             Console.WriteLine(testCase.ConnectionOptions.ConnectionString);
 
@@ -27,23 +34,19 @@ namespace ErgoFab.DataAccess.IntegrationTests
             Console.WriteLine($"{Environment.NewLine}SQL Server Version: {sqlServerMediumVersion}{Environment.NewLine + sqlServerVersion}");
             
             // Assert.Fail("ON PURPOSE");
-            using ErgoFabDbContext ergoFabDbContext = testCase.CreateErgoFabDbContext();
+            await using ErgoFabDbContext ergoFabDbContext = testCase.CreateErgoFabDbContext();
 
-            var conDbContext = ergoFabDbContext.Database.GetDbConnection();
-            try
-            {
-                var mediumVersion2 = conDbContext.Manage().MediumServerVersion;
-                Console.WriteLine($"MEDIUM VERSION 2: {mediumVersion2}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(@$"{Environment.NewLine}ERROR! Second Query via DBContext Connection Failed. {conDbContext.GetType()}{Environment.NewLine}{ex}");
-                throw;
-            }
+            await using var conDbContext = ergoFabDbContext.Database.GetDbConnection();
 
+            Console.WriteLine($"Organizations Count = [{ergoFabDbContext.Organization.Count()}]");
 
+            var orgNames = await ergoFabDbContext.Organization
+                .AsNoTracking()
+                .OrderBy(x => x.Title)
+                .Select(x => x.Title)
+                .ToArrayAsync();
 
-            // Console.WriteLine($"Organizations Count = [{ergoFabDbContext.Organization.Count()}]");
+            Console.WriteLine($"ORGANIZATIONS:{Environment.NewLine}{string.Join(Environment.NewLine, orgNames)}");
         }
     }
 }

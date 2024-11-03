@@ -37,7 +37,7 @@ FROM: {cs}
     }
 
     [Test]
-    public void Test2()
+    public void CompareMicrosoftAndSystem()
     {
         System.Data.SqlClient.SqlConnectionStringBuilder bs = new System.Data.SqlClient.SqlConnectionStringBuilder("Server=(local);Database=DB123");
         Microsoft.Data.SqlClient.SqlConnectionStringBuilder bm = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder("Server=(local);Database=DB123");

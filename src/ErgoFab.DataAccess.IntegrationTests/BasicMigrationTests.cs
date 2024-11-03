@@ -18,34 +18,35 @@ public class BasicMigrationTests
     }
 
     [Test]
-    [TestCase("First")]
-    [TestCase("Next")]
-    public async Task TestMigration(string kind)
+    [TestCase("First", 7777)]
+    [TestCase("Next", 7777)]
+    public async Task TestMigration(string kind, [BeautyParameter] int organizations)
     {
         var testDbName = await _sqlTestDbManager.GetNextTestDatabaseName();
         await _sqlTestDbManager.CreateEmptyDatabase(testDbName);
-        
-        DbContextOptionsBuilder<ErgoFabDbContext> dbContextOptionsBuilder = new DbContextOptionsBuilder<ErgoFabDbContext>();
         var connectionString = _sqlTestDbManager.BuildConnectionString(testDbName, pooling: false);
-        TestDbConnectionString dbconnectionString = new TestDbConnectionString(connectionString, "TestMigration()");
-        dbContextOptionsBuilder.UseSqlServer(connectionString);
+        TestCleaner.OnDispose(
+            $"Drop DB '{testDbName}'",
+            () => _sqlTestDbManager.DropDatabase(testDbName).SafeWait()
+        );
+
+        TestDbConnectionString cs = new TestDbConnectionString(connectionString, "Test Migrations");
         Console.WriteLine($"Test DB Connection String: {connectionString}");
 
         {
-            ErgoFabDbContext dbContext = new ErgoFabDbContext(dbContextOptionsBuilder.Options);
+
+            await using var dbContext = cs.CreateErgoFabDbContext();
             dbContext.Database.Migrate();
             var missing = dbContext.Organization.FirstOrDefault();
             Assert.IsNull(missing);
         }
 
         {
-            ErgoFabDbContext dbContext = new ErgoFabDbContext(dbContextOptionsBuilder.Options);
-            await SimpleSeeder.Seed(dbconnectionString, 1);
+            await using var dbContext = cs.CreateErgoFabDbContext();
+            await SimpleSeeder.Seed(cs, organizations);
             var anOrganization = dbContext.Organization.FirstOrDefault();
             Assert.NotNull(anOrganization);
         }
 
-        // TODO: Wrap into finally{}
-        await _sqlTestDbManager.DropDatabase(testDbName);
     }
 }

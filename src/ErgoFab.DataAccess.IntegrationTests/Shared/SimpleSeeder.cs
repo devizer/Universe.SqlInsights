@@ -14,18 +14,23 @@ namespace ErgoFab.DataAccess.IntegrationTests.Shared
         {
             ErgoFabDbContext db = dbConnectionString.CreateErgoFabDbContext();
 
-            var org = new Organization()
+            for (int i = 0; i < organizationsCount; i++)
             {
-                Title = "MI-7",
-                Country = new Country()
+                var title = (char)((i / 26) + 48 + 6) + ((char)((i%26)+65)).ToString();
+                var org = new Organization()
                 {
-                    EnglishName = "Great Britain",
-                    LocalName = "Great Britain",
-                    Flag = UTF8Encoding.UTF8.GetBytes("Great Britain"),
-                },
-            };
+                    Title = $"MI-{title}",
+                    Country = new Country()
+                    {
+                        EnglishName = "Great Britain",
+                        LocalName = "Great Britain",
+                        Flag = UTF8Encoding.UTF8.GetBytes("Great Britain"),
+                    },
+                };
 
-            db.Organization.Add(org);
+                db.Organization.Add(org);
+            }
+
             await db.SaveChangesAsync();
         }
     }

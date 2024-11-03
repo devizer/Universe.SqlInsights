@@ -2,7 +2,7 @@
 using System.Reflection;
 using ErgoFab.DataAccess.IntegrationTests.Library;
 
-internal partial class TempDebug
+internal class TempDebug
 {
     static readonly DateTime StartAt = DateTime.Now;
     private static Lazy<string> _Assembly = new Lazy<string>(() => { return Path.GetFileName(Assembly.GetExecutingAssembly().Location); });

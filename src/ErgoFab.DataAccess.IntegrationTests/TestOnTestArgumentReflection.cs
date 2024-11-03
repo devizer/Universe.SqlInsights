@@ -5,9 +5,12 @@ using Library.Implementation;
 using Shared.TestDatabaseDefinitions;
 using Universe.NUnitPipeline;
 
+namespace ErgoFab.DataAccess.IntegrationTests;
+
+
 [NUnitPipelineAction]
 [TestFixture]
-internal class TestOnTestArgumentReflection
+public class TestOnTestArgumentReflection
 {
     [TestCase(1)]
     [TestCase(2f)]
@@ -60,7 +63,7 @@ internal class TestOnTestArgumentReflection
         var next2 = new { Db = (object)asIs };
         ExpectFound(next2, 1, 1);
 
-        var next = new { Db = asIs };
+        var next = new { Db123 = asIs };
         ExpectFound(next, 1, 1);
 
     }
