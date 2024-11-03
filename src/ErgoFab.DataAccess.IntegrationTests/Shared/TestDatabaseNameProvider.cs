@@ -12,8 +12,9 @@ namespace ErgoFab.DataAccess.IntegrationTests.Shared
         private static volatile int TestCounter = 0;
         public static async Task<string> GetNextTestDatabaseName(this SqlServerTestDbManager testManager)
         {
+            var counter = Interlocked.Increment(ref TestCounter);
             string dbPrefix = $"{testManager.SqlTestsConfiguration.DbName} Test {DateTime.Now.ToString("yyyy-MM-dd")}";
-            return $"{dbPrefix} {Guid.NewGuid():N}";
+            return $"{dbPrefix} {counter:00000} {Guid.NewGuid():N}";
             var allNames = await testManager.GetDatabaseNames();
             var setNames = allNames.ToHashSet();
             var startFrom = Interlocked.Increment(ref TestCounter);

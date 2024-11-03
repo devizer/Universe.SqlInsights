@@ -12,13 +12,13 @@ public class ErgoFabZeroDataTestCaseSource : TestCaseSourceAttribute
         foreach (var kind in new[] { "First", "Next" })
         {
             SqlServerTestDbManager man = new SqlServerTestDbManager(SqlServerTestsConfiguration.Instance);
-            var testDbName = man.GetNextTestDatabaseName().Result;
-            TestCleaner.OnDispose($"Drop DB '{testDbName}'", () => man.DropDatabase(testDbName).Wait(), TestDisposeOptions.AsyncGlobal);
+            var testDbName = man.GetNextTestDatabaseName().GetSafeResult();
+            TestCleaner.OnDispose($"Drop DB '{testDbName}'", () => man.DropDatabase(testDbName).SafeWait(), TestDisposeOptions.AsyncGlobal);
 
             string connectionString = man.BuildConnectionString(testDbName);
 
             // Ensure Data and Log files are created on specified folder
-            man.CreateEmptyDatabase(testDbName).Wait();
+            man.CreateEmptyDatabase(testDbName).SafeWait();
 
             var connectionOptions = new TestDbConnectionString(connectionString, "Empty DB with Migrations");
             using (ErgoFabDbContext ergoFabDbContext = connectionOptions.CreateErgoFabDbContext())

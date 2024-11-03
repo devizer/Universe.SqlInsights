@@ -25,7 +25,6 @@ namespace ErgoFab.DataAccess.IntegrationTests
             var sqlServerVersion = connection.QueryFirst<string>("Select @@Version");
             var sqlServerMediumVersion = connection.Manage().MediumServerVersion;
             Console.WriteLine($"{Environment.NewLine}SQL Server Version: {sqlServerMediumVersion}{Environment.NewLine + sqlServerVersion}");
-
             
             // Assert.Fail("ON PURPOSE");
             using ErgoFabDbContext ergoFabDbContext = testCase.CreateErgoFabDbContext();

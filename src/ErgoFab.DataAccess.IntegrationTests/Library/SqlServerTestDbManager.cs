@@ -48,6 +48,11 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
 
         public virtual async Task DropDatabase(string name)
         {
+            var cs = BuildConnectionString(name, false);
+            AgileDbKiller.Kill(cs, false, 1);
+        }
+        public virtual async Task DropDatabase_Ugly(string name)
+        {
             var sql1 = @$"If Exists (Select 1 From sys.databases where name={EscapeSqlString(name)}) And (SERVERPROPERTY('EngineEdition') <> 5) ALTER DATABASE [{name}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;";
             var sql2 = @$"If Exists (Select 1 From sys.databases where name={EscapeSqlString(name)}) Drop Database [{name}];";
             using (var masterConnection = this.CreateMasterConnection(true))

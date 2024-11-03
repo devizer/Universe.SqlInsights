@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Diagnostics;
 using ErgoFab.DataAccess.IntegrationTests.Shared;
 using Universe.NUnitPipeline;
 
@@ -32,8 +33,11 @@ namespace ErgoFab.DataAccess.IntegrationTests.Library
             {
                 if (Cache.TryGetValue(cacheKey, out databaseBackupInfo))
                 {
+                    Stopwatch restoreAt = Stopwatch.StartNew();
                     PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Restoring DB '{testDbName}' from Backup '{databaseBackupInfo.BackupName}'");
                     await sqlServerTestDbManager.RestoreBackup(databaseBackupInfo, testDbName);
+                    PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] DB '{testDbName}' Successfully Restored in {restoreAt.Elapsed.TotalSeconds:n3} seconds from Backup '{databaseBackupInfo.BackupName}'");
+
                     return testDbConnectionString;
                 }
             }

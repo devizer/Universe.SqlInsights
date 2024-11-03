@@ -5,6 +5,7 @@ using ErgoFab.Model;
 using Microsoft.EntityFrameworkCore;
 using Shared.TestDatabaseDefinitions;
 using Universe.NUnitPipeline;
+using Universe.SqlServerJam;
 
 namespace ErgoFab.DataAccess.IntegrationTests;
 
@@ -50,11 +51,13 @@ public class BackupRestoreTests
             var newOrg = newDbContext.Organization.FirstOrDefault(x => x.Title == "Azure Dev-Ops");
             Assert.IsNotNull(newOrg, "Missing 'Azure Dev-Ops' organization on restored DB");
 
-            newDbContext.Database.EnsureDeleted();
+            // newDbContext.Database.EnsureDeleted();
+            AgileDbKiller.Kill(newCs.ConnectionString);
         }
         finally
         {
-            await ergoFabDbContext.Database.EnsureDeletedAsync();
+            // await ergoFabDbContext.Database.EnsureDeletedAsync();
+            AgileDbKiller.Kill(testCase.ConnectionOptions.ConnectionString);
         }
     }
 }

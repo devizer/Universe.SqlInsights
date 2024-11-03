@@ -19,7 +19,7 @@ public class ErgoFabDatabase : IDatabaseDefinition
     public void MigrateAndSeed(IDbConnectionString connectionOptions)
     {
         using var dbContext = connectionOptions.CreateErgoFabDbContext();
-        dbContext.Database.MigrateAsync().Wait();
-        SimpleSeeder.Seed(connectionOptions, OrganizationsCount).Wait();
+        dbContext.Database.MigrateAsync().SafeWait();
+        SimpleSeeder.Seed(connectionOptions, OrganizationsCount).SafeWait();
     }
 }

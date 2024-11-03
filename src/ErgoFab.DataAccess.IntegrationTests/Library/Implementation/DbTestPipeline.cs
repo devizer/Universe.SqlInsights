@@ -51,7 +51,7 @@ namespace Library.Implementation
 
 
                     var whenDeleteDb = TestDisposeOptions.AsyncGlobal;
-                    TestCleaner.OnDispose($"Drop DB '{testDbName}'", man.DropDatabase(testDbName).SafeWait, whenDeleteDb);
+                    TestCleaner.OnDispose($"Drop DB '{testDbName}'", () => man.DropDatabase(testDbName).SafeWait(), whenDeleteDb);
 
                     return;
 
@@ -59,7 +59,7 @@ namespace Library.Implementation
                     PipelineLog.LogTrace($"[DbTestPipeline.OnStart] Test='{test.Name}' Migrating and seeding database {testDbName}");
                     testDbConnectionString.ManagedBy.MigrateAndSeed(testDbConnectionString);
                     PipelineLog.LogTrace($"[DbTestPipeline.OnStart] Test='{test.Name}' Completed database {testDbName}");
-                    TestCleaner.OnDispose($"Drop DB '{testDbName}' for Test {test.Name}", () => man.DropDatabase(testDbName).Wait(), TestDisposeOptions.Global);
+                    TestCleaner.OnDispose($"Drop DB '{testDbName}' for Test {test.Name}", () => man.DropDatabase(testDbName).SafeWait(), TestDisposeOptions.Global);
 
                     PipelineLog.LogTrace($"[DbTestPipeline.OnStart] Test='{test.Name}' Connection String is \"{connectionString}\"");
 
