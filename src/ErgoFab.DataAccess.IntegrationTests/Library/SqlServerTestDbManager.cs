@@ -21,8 +21,8 @@ namespace ErgoFab.DataAccess.IntegrationTests.Library
         public virtual async Task CreateEmptyDatabase(IDbConnectionString dbConnectionString)
         {
             var databases = await GetDatabaseNames();
-            var dbName = new SqlConnectionStringBuilder(dbConnectionString.ConnectionString).InitialCatalog;
-            if (databases.Contains(dbName)) return;
+            var dbName = this.GetDatabaseName(dbConnectionString.ConnectionString);
+            if (databases.Any(x => x.Equals(dbName, StringComparison.OrdinalIgnoreCase))) return;
             await CreateEmptyDatabase(dbName);
         }
 
@@ -75,19 +75,21 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
 
         public virtual DbConnection CreateMasterConnection(bool pooling = true)
         {
-            SqlConnectionStringBuilder b = new SqlConnectionStringBuilder(SqlTestsConfiguration.MasterConnectionString);
-            b.Pooling = pooling;
-            b.ApplicationName = SqlTestsConfiguration.DbName + " Test";
-
+            var csb = CreateDbProviderFactory().CreateConnectionStringBuilder();
+            csb.ConnectionString = SqlTestsConfiguration.MasterConnectionString;
+            csb["Pooling"] = pooling;
+            csb["Application Name"] = SqlTestsConfiguration.DbName + " Test";
             var dbConnection = CreateDbProviderFactory().CreateConnection();
-            dbConnection.ConnectionString = b.ConnectionString;
+            dbConnection.ConnectionString = csb.ConnectionString;
             return dbConnection;
         }
 
         public virtual DbProviderFactory CreateDbProviderFactory()
         {
             if (SqlTestsConfiguration.Provider == "Microsoft")
-                throw new NotImplementedException("TODO: Add reference and return corresponding DbProviderFactory");
+                // throw new NotImplementedException("TODO: Add reference and return corresponding DbProviderFactory");
+                return Microsoft.Data.SqlClient.SqlClientFactory.Instance;
+
             else if (SqlTestsConfiguration.Provider == "System")
                 return SqlClientFactory.Instance;
 
@@ -131,5 +133,17 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
             var masterConnection = CreateMasterConnection();
             await masterConnection.ExecuteAsync(sql.ToString(), commandTimeout: 180);
         }
+    }
+
+    public static class ConnectionStringExtensions
+    {
+        public static string GetDatabaseName(this SqlServerTestDbManager man, string connectionString)
+        {
+            var b = man.CreateDbProviderFactory().CreateConnectionStringBuilder();
+            b.ConnectionString = connectionString;
+            var dbName = b["Initial Catalog"]?.ToString();
+            return dbName;
+        }
+
     }
 }

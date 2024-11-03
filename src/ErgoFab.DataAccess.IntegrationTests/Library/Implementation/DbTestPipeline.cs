@@ -39,7 +39,6 @@ namespace Library.Implementation
                     testDbConnectionString.ConnectionString = connectionString;
                     PipelineLog.LogTrace($"[DbTestPipeline.OnStart] Test='{test.Name}' Database {testDbName}. Created. Connection String is '{connectionString}' Applying Migration and Seed '{testDbConnectionString.ManagedBy.Title}'");
 
-
                     SeededEfDatabaseFactory seedEfFactory = new SeededEfDatabaseFactory(SqlServerTestsConfiguration.Instance);
                     IDbConnectionString dbcs =
                         seedEfFactory.BuildEfDatabase(
@@ -51,7 +50,7 @@ namespace Library.Implementation
                         ).GetSafeResult();
 
 
-                    var whenDeleteDb = TestDisposeOptions.Global;
+                    var whenDeleteDb = TestDisposeOptions.AsyncGlobal;
                     TestCleaner.OnDispose($"Drop DB '{testDbName}'", man.DropDatabase(testDbName).SafeWait, whenDeleteDb);
 
                     return;

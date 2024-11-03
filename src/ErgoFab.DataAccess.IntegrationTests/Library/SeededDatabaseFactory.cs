@@ -38,7 +38,7 @@ namespace ErgoFab.DataAccess.IntegrationTests.Library
                 }
             }
 
-            PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Creating new test DB '{testDbName}'");
+            PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Creating new test DB '{testDbName}' (Caching key is '{cacheKey}')");
             await sqlServerTestDbManager.CreateEmptyDatabase(testDbName);
             PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Populating DB '{testDbName}' by Migrate and Seed");
             actionMigrateAndSeed(testDbConnectionString);
@@ -46,6 +46,7 @@ namespace ErgoFab.DataAccess.IntegrationTests.Library
             if (cacheKey != null)
             {
                 databaseBackupInfo = await sqlServerTestDbManager.CreateBackup(cacheKey, testDbName);
+                PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Created Backup for test DB '{testDbName}' as '{databaseBackupInfo.BackupName}' (Caching key is '{cacheKey}')");
                 // TODO: Dispose the Backup
                 TestCleaner.OnDispose($"Drop Backup {databaseBackupInfo.BackupName}", () => File.Delete(databaseBackupInfo.BackupName), TestDisposeOptions.AsyncGlobal);
                 Cache[cacheKey] = databaseBackupInfo;

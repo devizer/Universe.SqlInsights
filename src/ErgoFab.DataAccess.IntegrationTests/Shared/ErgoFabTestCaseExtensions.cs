@@ -2,6 +2,8 @@
 using ErgoFab.DataAccess.IntegrationTests.Library;
 using ErgoFab.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
+using Universe.NUnitPipeline;
 
 namespace ErgoFab.DataAccess.IntegrationTests.Shared;
 
@@ -11,6 +13,7 @@ public static class ErgoFabTestCaseExtensions
     {
         return CreateErgoFabDbContext(ergoFabTestCase.ConnectionOptions);
     }
+
     public static DbConnection CreateDbConnection(this ErgoFabTestCase ergoFabTestCase)
     {
         CheckConnectionString(ergoFabTestCase.ConnectionOptions.ConnectionString);
@@ -29,7 +32,13 @@ public static class ErgoFabTestCaseExtensions
         CheckConnectionString(dbConnectionString?.ConnectionString);
 
         DbContextOptionsBuilder<ErgoFabDbContext> dbContextOptionsBuilder = new DbContextOptionsBuilder<ErgoFabDbContext>();
-        dbContextOptionsBuilder.UseSqlServer(dbConnectionString.ConnectionString, b => b.UseCompatibilityLevel(160));
+        PipelineLog.LogTrace($"[CreateErgoFabDbContext()] Using Connection String for ErgoFabDbContext: '{dbConnectionString.ConnectionString}'");
+        dbContextOptionsBuilder.UseSqlServer(dbConnectionString.ConnectionString, b =>
+        {
+            b.UseCompatibilityLevel(120);
+            b.EnableRetryOnFailure(5);
+        });
+
         return new ErgoFabDbContext(dbContextOptionsBuilder.Options);
     }
 

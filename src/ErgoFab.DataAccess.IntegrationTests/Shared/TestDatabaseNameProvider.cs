@@ -13,6 +13,7 @@ namespace ErgoFab.DataAccess.IntegrationTests.Shared
         public static async Task<string> GetNextTestDatabaseName(this SqlServerTestDbManager testManager)
         {
             string dbPrefix = $"{testManager.SqlTestsConfiguration.DbName} Test {DateTime.Now.ToString("yyyy-MM-dd")}";
+            return $"{dbPrefix} {Guid.NewGuid():N}";
             var allNames = await testManager.GetDatabaseNames();
             var setNames = allNames.ToHashSet();
             var startFrom = Interlocked.Increment(ref TestCounter);
@@ -21,7 +22,7 @@ namespace ErgoFab.DataAccess.IntegrationTests.Shared
                 string ret = $"{dbPrefix} {i:0000}";
                 if (!setNames.Contains(ret))
                 {
-                    TestCounter = i;
+                    // TestCounter = i;
                     return ret;
                 }
             }

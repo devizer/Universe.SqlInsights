@@ -16,10 +16,11 @@ public class BackupRestoreTests
     public async Task OrganizationTest(ErgoFabTestCase testCase)
     {
         Console.WriteLine(testCase.ConnectionOptions.ConnectionString);
-        var ergoFabDbContext = testCase.CreateErgoFabDbContext();
 
         SqlServerTestDbManager man = new SqlServerTestDbManager(SqlServerTestsConfiguration.Instance);
         await man.CreateEmptyDatabase(testCase.ConnectionOptions);
+        
+        var ergoFabDbContext = testCase.CreateErgoFabDbContext();
 
         try
         {
@@ -28,7 +29,11 @@ public class BackupRestoreTests
             ergoFabDbContext.Organization.Add(new Organization() { Title = "Azure Dev-Ops" });
             ergoFabDbContext.SaveChanges();
 
-            var dbName = new SqlConnectionStringBuilder(testCase.ConnectionOptions.ConnectionString).InitialCatalog;
+            var csb = man.CreateDbProviderFactory().CreateConnectionStringBuilder();
+            csb.ConnectionString = testCase.ConnectionOptions.ConnectionString;
+            // var dbName = new System.Data.SqlClient.SqlConnectionStringBuilder(testCase.ConnectionOptions.ConnectionString).InitialCatalog;
+            var dbName = man.GetDatabaseName(testCase.ConnectionOptions.ConnectionString);
+
             var backup = await man.CreateBackup($"ErgoFab-777-{Guid.NewGuid():N}", dbName);
 
             var dbRestoredName = $"ErgoFab-777-Restored-{Guid.NewGuid():N}";
