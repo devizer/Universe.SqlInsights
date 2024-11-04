@@ -1,6 +1,4 @@
-﻿using System.Data.SqlClient;
-using Dapper;
-using ErgoFab.DataAccess.IntegrationTests.Library;
+﻿using Dapper;
 using ErgoFab.DataAccess.IntegrationTests.Shared;
 using ErgoFab.Model;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +16,8 @@ namespace ErgoFab.DataAccess.IntegrationTests
         [ErgoFabTestCaseSource(7777)]
         public async Task OrganizationAnotherTest(ErgoFabTestCase testCase)
         {
-            Assert.AreEqual(7777, await testCase.CreateErgoFabDbContext().Organization.AsNoTracking().CountAsync());
+            var organizationsCount = await testCase.CreateErgoFabDbContext().Organization.AsNoTracking().CountAsync();
+            Assert.AreEqual(7777, organizationsCount);
         }
 
 

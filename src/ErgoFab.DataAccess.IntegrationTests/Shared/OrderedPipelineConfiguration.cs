@@ -19,7 +19,7 @@ public class OrderedPipelineConfiguration
         {
             new() { Title = CpuUsageInterceptor.Title, Action = CpuUsageInterceptor.OnStart },
             new() { Title = CpuUsageVizInterceptor.Title, Action = CpuUsageVizInterceptor.OnStart },
-            new() { Title = DbTestPipeline.Title, Action = DbTestPipeline.OnStart }
+            new() { Title = DbTestPipeline.Title, Action = DbTestPipeline.OnStart },
         };
 
         chain.OnEnd = new List<NUnitPipelineChainAction>()

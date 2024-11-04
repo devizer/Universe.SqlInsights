@@ -68,14 +68,28 @@ public class TestOnTestArgumentReflection
 
     }
 
+    [Test]
+    public void TestInnerInnerPostponed()
+    {
+        TestDbConnectionString asIs = TestDbConnectionString.CreatePostponed(EmptyDatabase.Instance);
+
+        var next2 = new { InnerInner = new { Db = (object)asIs }  };
+        ExpectFound(next2, 1, 1);
+
+        var next = new { InnerInner = new { Db = asIs } };
+        ExpectFound(next, 1, 1);
+
+    }
+
+
 
 
     void ExpectFound(object arg, int count, int countPostponed)
     {
         List<TestDbConnectionString> found = TestArgumentReflection.FindTestDbConnectionStrings(arg);
-        if (found.Count != count) Assert.Fail($"Expected Count={count} found TestDbConnectionString instances for [{arg?.GetType()}] = {arg}");
+        if (found.Count != count) Assert.Fail($"Expected Count={count} found TestDbConnectionString instances for [{arg?.GetType()}] = {arg}. But Actual Count is {found.Count}");
         var actualCountPostponed = found.Count(x => x.Postponed);
-        if (actualCountPostponed != countPostponed) Assert.Fail($"Expected CountPostponed={count} found TestDbConnectionString instances for [{arg?.GetType()}] = {arg}");
+        if (actualCountPostponed != countPostponed) Assert.Fail($"Expected CountPostponed={count} found TestDbConnectionString instances for [{arg?.GetType()}] = {arg}. But Actual Count is {found.Count}");
     }
 
     void ExpectNotFound(object arg)

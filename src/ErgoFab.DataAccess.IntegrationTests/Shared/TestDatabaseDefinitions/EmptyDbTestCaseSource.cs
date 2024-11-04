@@ -8,17 +8,19 @@ namespace Shared.TestDatabaseDefinitions;
 // Empty DB
 public class EmptyDbTestCaseSource : TestCaseSourceAttribute
 {
-    public static IEnumerable<ErgoFabTestCase> GetTestCases()
+    public static IEnumerable<TestCaseData> GetTestCases()
     {
         // TestContext.CurrentContext.Test.GetPropertyOrAdd<IDatabaseDefinition>("DatabaseDefinition", test => EmptyDatabase.Instance);
 
         foreach (var kind in new[] { "First", "Next" })
         {
-            yield return new ErgoFabTestCase()
+            var ergoFabTestCase = new ErgoFabTestCase()
             {
                 ConnectionOptions = TestDbConnectionString.CreatePostponed(EmptyDatabase.Instance),
                 Kind = kind,
             };
+            TestCaseData tcd = new TestCaseData(ergoFabTestCase).SetName($"My {ergoFabTestCase}");
+            yield return tcd;
         }
     }
 

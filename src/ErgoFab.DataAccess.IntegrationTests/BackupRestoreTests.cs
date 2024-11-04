@@ -1,11 +1,9 @@
-﻿using System.Data.SqlClient;
-using ErgoFab.DataAccess.IntegrationTests.Library;
+﻿using ErgoFab.DataAccess.IntegrationTests.Library;
 using ErgoFab.DataAccess.IntegrationTests.Shared;
 using ErgoFab.Model;
 using Microsoft.EntityFrameworkCore;
 using Shared.TestDatabaseDefinitions;
 using Universe.NUnitPipeline;
-using Universe.SqlServerJam;
 
 namespace ErgoFab.DataAccess.IntegrationTests;
 

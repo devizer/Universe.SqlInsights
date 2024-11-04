@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -54,8 +55,11 @@ namespace Library.Implementation
                 if (property.GetIndexParameters().Length > 0) continue;
                 var propertyType = property.PropertyType;
                 if (propertyType.IsValueType) continue;
-                if (!propertyType.IsAssignableFrom(typeof(TestDbConnectionString))) continue;
+                // Next Check is for first level property only
+                // if (!propertyType.IsAssignableFrom(typeof(TestDbConnectionString))) continue;
+                if (typeof(IEnumerable).IsAssignableFrom(propertyType)) continue;
                 var subInstance = property.GetValue(argInstance);
+                if (subInstance is IEnumerable) continue;
                 if (subInstance is TestDbConnectionString found)
                 {
                     results.Add(found);
