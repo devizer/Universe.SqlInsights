@@ -103,6 +103,7 @@ steps:
       try-and-retry docker pull mcr.microsoft.com/mssql/server:"${SQL_IMAGE_TAG}"
       echo RUN IN BACKGROUND
       sudo mkdir -p "/ErgoFab-Tests/Integration Tests/Data"
+      sudo chmod 777 -R /ErgoFab-Tests
       docker run --pull never --name sqlserver --privileged $v -v /ErgoFab-Tests:/ErgoFab-Tests -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@assw0rd!" -p 1433:1433 -d mcr.microsoft.com/mssql/server:"${SQL_IMAGE_TAG}"
 
       set +e
