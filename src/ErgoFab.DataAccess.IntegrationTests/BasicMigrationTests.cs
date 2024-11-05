@@ -18,8 +18,8 @@ public class BasicMigrationTests
     }
 
     [Test]
-    [TestCase("First", 7777)]
-    [TestCase("Next", 7777)]
+    [TestCase("First", 1)]
+    [TestCase("Next", 333)]
     public async Task TestMigration(string kind, [BeautyParameter] int organizations)
     {
         ITestDatabaseNameProvider testDatabaseNameProvider = NUnitPipelineConfiguration.GetService<ITestDatabaseNameProvider>();
