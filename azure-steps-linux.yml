@@ -141,7 +141,9 @@ steps:
       export ERGOFAB_TESTS_MASTER_CONNECTIONSTRING="TrustServerCertificate=True;Data Source=localhost,1433;User ID=sa;Password=p@assw0rd!;Encrypt=False;"
       cd src/ErgoFab.DataAccess.IntegrationTests
       dotnet test 
-      cp -av TestsOutput $SYSTEM_ARTIFACTSDIRECTORY
+      Say "Files"
+      ls -la
+      cp -av TestsOutput $SYSTEM_ARTIFACTSDIRECTORY || true
       Say "Success Complete"
     condition: ne(variables.SKIP_ERGOFAB_TESTS,'True')
     displayName: 'Test ErgoFab (SQL)'
