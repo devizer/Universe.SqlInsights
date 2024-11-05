@@ -196,7 +196,7 @@ steps:
       dotnet test ErgoFab.DataAccess.IntegrationTests.dll
       cp -av TestsOutput $SYSTEM_ARTIFACTSDIRECTORY
       Say "Success Complete"
-    condition: succeededOrFailed()
+    condition: ne(variables.SKIP_ERGOFAB_TESTS,'True')
     displayName: 'Test ErgoFab (SQL)'
 
   - bash: |

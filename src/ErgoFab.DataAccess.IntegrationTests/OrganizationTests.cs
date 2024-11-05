@@ -45,7 +45,8 @@ namespace ErgoFab.DataAccess.IntegrationTests
                 .Select(x => x.Title)
                 .ToArrayAsync();
 
-            Console.WriteLine($"ORGANIZATIONS:{Environment.NewLine}{string.Join(Environment.NewLine, orgNames)}");
+
+            Console.WriteLine($"ORGANIZATIONS:{Environment.NewLine}{string.Join(Environment.NewLine, orgNames).Take(44)}");
         }
     }
 }

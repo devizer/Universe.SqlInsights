@@ -5,6 +5,7 @@ variables:
   VMIMAGE: 'windows-2019'
   DEFAULT_RAM_DISK_SIZE: "2600"
   W3API_NET: net6.0
+  SKIP_ERGOFAB_TESTS=False
 
 jobs:
 
@@ -100,6 +101,7 @@ jobs:
           SQL: 'SqlServer 2005 Express: MSSQLSERVER'
           RAM_DISK: "R"
           RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
+          SKIP_ERGOFAB_TESTS: "True"
         
         # VMIMAGE: 'windows-2016' does not exist
         
