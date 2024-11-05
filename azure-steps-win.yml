@@ -193,7 +193,7 @@ steps:
       set -eu; set -o pipefail;
       cd $AGENT_TEMPDIRECTORY/Goods/ergofab.tests
       export ERGOFAB_TESTS_DATA_FOLDER="D:\\ErgFab-Tests"
-      dotnet test Universe.SqlServerJam.Tests.dll
+      dotnet test ErgoFab.DataAccess.IntegrationTests.dll
       cp -av TestsOutput $SYSTEM_ARTIFACTSDIRECTORY
       Say "Success Complete"
     condition: succeededOrFailed()
