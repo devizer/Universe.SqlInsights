@@ -9,7 +9,7 @@ public class OrderedPipelineConfiguration
 {
     public static void Configure()
     {
-        PipelineLog.LogTrace("OrderedPipelineConfiguration.Configure()");
+        PipelineLog.LogTrace($"[{typeof(OrderedPipelineConfiguration)}]::Configure()");
 
         var reportConfiguration = NUnitPipelineConfiguration.GetService<NUnitReportConfiguration>();
         reportConfiguration.InternalReportFile = Path.Combine("TestsOutput", $"ErgoFab.DataAccess.IntegrationTests");

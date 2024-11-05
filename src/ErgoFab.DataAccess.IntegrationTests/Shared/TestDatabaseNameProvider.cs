@@ -13,10 +13,13 @@ namespace ErgoFab.DataAccess.IntegrationTests.Shared
         private static volatile int TestCounter = 0;
         public async Task<string> GetNextTestDatabaseName()
         {
-            SqlServerTestDbManager testManager = NUnitPipelineConfiguration.GetService<SqlServerTestDbManager>();
+            // TODO: Move it to Universe.SqlInsights.NUnit project
+            ISqlServerTestsConfiguration sqlTestsConfiguration = NUnitPipelineConfiguration.GetService<ISqlServerTestsConfiguration>();
             var counter = Interlocked.Increment(ref TestCounter);
-            string dbPrefix = $"{testManager.SqlTestsConfiguration.DbName} Test {DateTime.Now.ToString("yyyy-MM-dd")}";
+            string dbPrefix = $"{sqlTestsConfiguration.DbName} Test {DateTime.Now.ToString("yyyy-MM-dd")}";
             return $"{dbPrefix} {counter:00000} {Guid.NewGuid():N}";
+            
+            SqlServerTestDbManager testManager = NUnitPipelineConfiguration.GetService<SqlServerTestDbManager>();
             var allNames = await testManager.GetDatabaseNames();
             var setNames = allNames.ToHashSet();
             var startFrom = Interlocked.Increment(ref TestCounter);
