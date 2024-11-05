@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace ErgoFab.DataAccess.IntegrationTests.Library
+namespace Universe.SqlInsights.NUnit
 {
     public interface ITestDatabaseNameProvider
     {

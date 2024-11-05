@@ -1,7 +1,7 @@
 using Dapper;
-using ErgoFab.DataAccess.IntegrationTests.Library;
 using ErgoFab.DataAccess.IntegrationTests.Shared;
 using Universe.NUnitPipeline;
+using Universe.SqlInsights.NUnit;
 using Universe.SqlServerJam;
 
 namespace ErgoFab.DataAccess.IntegrationTests;
@@ -35,7 +35,9 @@ public class BasicSqlConfigurationTests
     [TestCase("Next")]
     public async Task TryNextTestDatabaseName(string kind)
     {
-        var nextTestDbName = await _sqlTestDbManager.GetNextTestDatabaseName();
+        var testDatabaseNameProvider = NUnitPipelineConfiguration.GetService<ITestDatabaseNameProvider>();
+
+        var nextTestDbName = await testDatabaseNameProvider.GetNextTestDatabaseName();
         Console.WriteLine($"Next test database name is {nextTestDbName}");
     }
 
@@ -44,7 +46,8 @@ public class BasicSqlConfigurationTests
     [TestCase("Next")]
     public async Task TestCreateDb(string kind)
     {
-        var testDbName = await _sqlTestDbManager.GetNextTestDatabaseName();
+        var testDatabaseNameProvider = NUnitPipelineConfiguration.GetService<ITestDatabaseNameProvider>();
+        string testDbName = await testDatabaseNameProvider.GetNextTestDatabaseName();
         Console.WriteLine($"Test DB Name: {testDbName}");
         await _sqlTestDbManager.CreateEmptyDatabase(testDbName);
         var dbList = await _sqlTestDbManager.GetDatabaseNames();

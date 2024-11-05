@@ -1,8 +1,6 @@
-﻿using ErgoFab.DataAccess.IntegrationTests.Library;
-using Universe.NUnitPipeline;
-using Universe.SqlInsights.NUnit;
+﻿using Universe.NUnitPipeline;
 
-namespace Library;
+namespace Universe.SqlInsights.NUnit;
 
 public class DbTestConfiguration
 {

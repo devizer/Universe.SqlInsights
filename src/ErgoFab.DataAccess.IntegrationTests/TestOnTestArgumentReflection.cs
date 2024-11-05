@@ -1,9 +1,8 @@
 ﻿using System.Runtime.InteropServices;
-using ErgoFab.DataAccess.IntegrationTests.Library;
 using ErgoFab.DataAccess.IntegrationTests.Shared;
-using Library.Implementation;
 using Shared.TestDatabaseDefinitions;
 using Universe.NUnitPipeline;
+using Universe.SqlInsights.NUnit;
 
 namespace ErgoFab.DataAccess.IntegrationTests;
 

@@ -2,17 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ErgoFab.DataAccess.IntegrationTests.Library;
-using Universe.SqlInsights.NUnit;
 
-namespace Library.Implementation
+namespace Universe.SqlInsights.NUnit
 {
     // public for testing only
     public static class TestArgumentReflection
     {
-        public static List<TestDbConnectionString> FindTestDbConnectionStrings(object?[]? arg)
+        public static List<TestDbConnectionString> FindTestDbConnectionStrings(object[] arg)
         {
             List<TestDbConnectionString> ret = new List<TestDbConnectionString>();
             if (arg == null) return ret;
@@ -24,7 +20,7 @@ namespace Library.Implementation
 
             return ret;
         }
-        public static List<TestDbConnectionString> FindTestDbConnectionStrings(object? arg)
+        public static List<TestDbConnectionString> FindTestDbConnectionStrings(object arg)
         {
             List<TestDbConnectionString> ret = new List<TestDbConnectionString>();
             if (arg is TestDbConnectionString found1)
@@ -68,7 +64,7 @@ namespace Library.Implementation
 
                 if (subInstance != null)
                 {
-                    EnumProperties(subInstance.GetType(), subInstance, depth+1, results);
+                    EnumProperties(subInstance.GetType(), subInstance, depth + 1, results);
                 }
             }
         }

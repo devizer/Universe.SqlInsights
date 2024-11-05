@@ -1,5 +1,6 @@
 ﻿namespace ErgoFab.DataAccess.IntegrationTests.Shared
 {
+    /*
     public static class TaskExtensions
     {
         public static T GetSafeResult<T>(this Task<T> task)
@@ -12,4 +13,5 @@
             task.ConfigureAwait(continueOnCapturedContext: false).GetAwaiter().GetResult();
         }
     }
+*/
 }

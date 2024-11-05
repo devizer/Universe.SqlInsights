@@ -27,6 +27,7 @@
 	<ItemGroup>
     <ProjectReference Include="..\ErgoFab.DataAccess\ErgoFab.DataAccess.csproj" />
     <ProjectReference Include="..\ErgoFab.Model\ErgoFab.Model.csproj" />
+    <ProjectReference Include="..\Universe.SqlInsights.NUnit\Universe.SqlInsights.NUnit.csproj" />
   </ItemGroup>
 
   <ItemGroup>

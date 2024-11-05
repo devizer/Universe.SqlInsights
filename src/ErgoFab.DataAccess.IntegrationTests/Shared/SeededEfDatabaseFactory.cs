@@ -1,5 +1,5 @@
-﻿using ErgoFab.DataAccess.IntegrationTests.Library;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Universe.SqlInsights.NUnit;
 
 namespace ErgoFab.DataAccess.IntegrationTests.Shared;
 
@@ -24,7 +24,7 @@ public class SeededEfDatabaseFactory : SeededDatabaseFactory
             }
         }
 
-        return await BuildDatabase(cacheKey, newDbName, title, MigrateAndSeed);
+        return await base.BuildDatabase(cacheKey, newDbName, title, MigrateAndSeed);
     }
 
 }

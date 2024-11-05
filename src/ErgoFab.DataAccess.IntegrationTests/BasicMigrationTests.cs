@@ -1,8 +1,8 @@
-using ErgoFab.DataAccess.IntegrationTests.Library;
 using ErgoFab.DataAccess.IntegrationTests.Shared;
 using ErgoFab.Model;
 using Microsoft.EntityFrameworkCore;
 using Universe.NUnitPipeline;
+using Universe.SqlInsights.NUnit;
 
 namespace ErgoFab.DataAccess.IntegrationTests;
 
@@ -22,7 +22,8 @@ public class BasicMigrationTests
     [TestCase("Next", 7777)]
     public async Task TestMigration(string kind, [BeautyParameter] int organizations)
     {
-        var testDbName = await _sqlTestDbManager.GetNextTestDatabaseName();
+        ITestDatabaseNameProvider testDatabaseNameProvider = NUnitPipelineConfiguration.GetService<ITestDatabaseNameProvider>();
+        var testDbName = await testDatabaseNameProvider.GetNextTestDatabaseName();
         await _sqlTestDbManager.CreateEmptyDatabase(testDbName);
         var connectionString = _sqlTestDbManager.BuildConnectionString(testDbName, pooling: false);
         TestCleaner.OnDispose(
@@ -43,7 +44,7 @@ public class BasicMigrationTests
 
         {
             await using var dbContext = cs.CreateErgoFabDbContext();
-            await SimpleSeeder.Seed(cs, organizations);
+            await ErgoFabDbSeeder.Seed(cs, organizations);
             var anOrganization = dbContext.Organization.FirstOrDefault();
             Assert.NotNull(anOrganization);
         }

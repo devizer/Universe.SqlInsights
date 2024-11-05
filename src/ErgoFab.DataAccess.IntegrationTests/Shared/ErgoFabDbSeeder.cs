@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ErgoFab.DataAccess.IntegrationTests.Library;
 using ErgoFab.Model;
+using Universe.SqlInsights.NUnit;
 
 namespace ErgoFab.DataAccess.IntegrationTests.Shared
 {
-    internal class SimpleSeeder
+    internal class ErgoFabDbSeeder
     {
         public static async Task Seed(IDbConnectionString dbConnectionString, int organizationsCount = 1)
         {

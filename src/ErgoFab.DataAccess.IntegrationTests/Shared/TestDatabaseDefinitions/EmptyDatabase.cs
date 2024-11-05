@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ErgoFab.DataAccess.IntegrationTests.Library;
-using Library;
+using Universe.SqlInsights.NUnit;
 
 namespace Shared.TestDatabaseDefinitions
 {

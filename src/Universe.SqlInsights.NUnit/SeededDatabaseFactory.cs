@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using ErgoFab.DataAccess.IntegrationTests.Library;
 using Universe.NUnitPipeline;
 
 namespace Universe.SqlInsights.NUnit

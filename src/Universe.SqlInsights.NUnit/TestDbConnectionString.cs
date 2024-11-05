@@ -1,7 +1,4 @@
-﻿using ErgoFab.DataAccess.IntegrationTests.Library;
-using Library;
-
-namespace Universe.SqlInsights.NUnit
+﻿namespace Universe.SqlInsights.NUnit
 {
     public class TestDbConnectionString : IDbConnectionString
     {

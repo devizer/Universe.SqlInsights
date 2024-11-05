@@ -1,7 +1,7 @@
-﻿using ErgoFab.DataAccess.IntegrationTests.Library;
-using ErgoFab.Model;
+﻿using ErgoFab.Model;
 using Microsoft.EntityFrameworkCore;
 using Universe.NUnitPipeline;
+using Universe.SqlInsights.NUnit;
 
 namespace ErgoFab.DataAccess.IntegrationTests.Shared;
 
@@ -12,7 +12,8 @@ public class ErgoFabZeroDataTestCaseSource : TestCaseSourceAttribute
         foreach (var kind in new[] { "First", "Next" })
         {
             SqlServerTestDbManager man = new SqlServerTestDbManager(SqlServerTestsConfiguration.Instance);
-            var testDbName = man.GetNextTestDatabaseName().GetSafeResult();
+            var testDatabaseNameProvider = NUnitPipelineConfiguration.GetService<ITestDatabaseNameProvider>();
+            var testDbName = testDatabaseNameProvider.GetNextTestDatabaseName().GetSafeResult();
             TestCleaner.OnDispose($"Drop DB '{testDbName}'", () => man.DropDatabase(testDbName).SafeWait(), TestDisposeOptions.AsyncGlobal);
 
             string connectionString = man.BuildConnectionString(testDbName);

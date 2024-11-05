@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ErgoFab.DataAccess.IntegrationTests.Library;
+using Universe.NUnitPipeline;
+using Universe.SqlInsights.NUnit;
 
 namespace ErgoFab.DataAccess.IntegrationTests.Shared
 {
-    public static class TestDatabaseNameProvider
+    public class TestDatabaseNameProvider : ITestDatabaseNameProvider
     {
         private static volatile int TestCounter = 0;
-        public static async Task<string> GetNextTestDatabaseName(this SqlServerTestDbManager testManager)
+        public async Task<string> GetNextTestDatabaseName()
         {
+            SqlServerTestDbManager testManager = NUnitPipelineConfiguration.GetService<SqlServerTestDbManager>();
             var counter = Interlocked.Increment(ref TestCounter);
             string dbPrefix = $"{testManager.SqlTestsConfiguration.DbName} Test {DateTime.Now.ToString("yyyy-MM-dd")}";
             return $"{dbPrefix} {counter:00000} {Guid.NewGuid():N}";

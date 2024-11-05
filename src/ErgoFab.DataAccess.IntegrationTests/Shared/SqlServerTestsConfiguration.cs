@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using ErgoFab.DataAccess.IntegrationTests.Library;
+using Universe.SqlInsights.NUnit;
 
 namespace ErgoFab.DataAccess.IntegrationTests.Shared;
 

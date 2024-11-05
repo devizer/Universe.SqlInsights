@@ -1,6 +1,7 @@
-﻿using Library.Implementation;
+﻿using ErgoFab.DataAccess.IntegrationTests.Shared;
 using NUnit.Framework.Interfaces;
 using Universe.NUnitPipeline;
+using Universe.SqlInsights.NUnit;
 
 
 // Single shared configuration for all the test assemblies
@@ -12,6 +13,11 @@ public class OrderedPipelineConfiguration
 
         var reportConfiguration = NUnitPipelineConfiguration.GetService<NUnitReportConfiguration>();
         reportConfiguration.InternalReportFile = Path.Combine("TestsOutput", $"ErgoFab.DataAccess.IntegrationTests");
+
+        NUnitPipelineConfiguration.Register<ITestDatabaseNameProvider>(() => new TestDatabaseNameProvider());
+        NUnitPipelineConfiguration.Register<SqlServerTestDbManager>(() => new SqlServerTestDbManager(SqlServerTestsConfiguration.Instance));
+        NUnitPipelineConfiguration.Register<ISqlServerTestsConfiguration>(() => SqlServerTestsConfiguration.Instance);
+        
 
         var chain = NUnitPipelineConfiguration.GetService<NUnitPipelineChain>();
 

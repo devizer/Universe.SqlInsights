@@ -1,6 +1,6 @@
 ﻿using Universe.SqlServerJam;
 
-namespace ErgoFab.DataAccess.IntegrationTests.Library;
+namespace Universe.SqlInsights.NUnit;
 
 // TODO: Move it to Jam
 public class DatabaseBackupInfo

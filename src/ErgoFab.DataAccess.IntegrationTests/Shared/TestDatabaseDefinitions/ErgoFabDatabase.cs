@@ -1,7 +1,6 @@
-﻿using ErgoFab.DataAccess.IntegrationTests.Library;
-using ErgoFab.DataAccess.IntegrationTests.Shared;
-using Library;
+﻿using ErgoFab.DataAccess.IntegrationTests.Shared;
 using Microsoft.EntityFrameworkCore;
+using Universe.SqlInsights.NUnit;
 
 namespace Shared.TestDatabaseDefinitions;
 
@@ -20,6 +19,6 @@ public class ErgoFabDatabase : IDatabaseDefinition
     {
         using var dbContext = connectionOptions.CreateErgoFabDbContext();
         dbContext.Database.MigrateAsync().SafeWait();
-        SimpleSeeder.Seed(connectionOptions, OrganizationsCount).SafeWait();
+        ErgoFabDbSeeder.Seed(connectionOptions, OrganizationsCount).SafeWait();
     }
 }
