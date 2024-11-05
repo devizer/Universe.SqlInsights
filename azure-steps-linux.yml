@@ -134,6 +134,17 @@ steps:
 
   - bash: |
       set -eu; set -o pipefail;
+      export ERGOFAB_TESTS_DATA_FOLDER="/ErgFab-Tests"
+      export ERGOFAB_TESTS_MASTER_CONNECTIONSTRING="TrustServerCertificate=True;Data Source=localhost,1433;User ID=sa;Password=p@assw0rd!;Encrypt=False;"
+      cd src/ErgoFab.DataAccess.IntegrationTests
+      dotnet test 
+      cp -av TestsOutput $SYSTEM_ARTIFACTSDIRECTORY
+      Say "Success Complete"
+    condition: ne(variables.SKIP_ERGOFAB_TESTS,'True')
+    displayName: 'Test ErgoFab (SQL)'
+
+  - bash: |
+      set -eu; set -o pipefail;
       cd src/Universe.SqlInsights.SqlServerStorage.Tests
       dotnet restore || dotnet restore --disable-parallel
     condition: succeededOrFailed()
