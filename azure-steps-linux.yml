@@ -140,8 +140,10 @@ steps:
       export ERGOFAB_TESTS_DATA_FOLDER="/ErgoFab-Tests"
       export ERGOFAB_TESTS_MASTER_CONNECTIONSTRING="TrustServerCertificate=True;Data Source=localhost,1433;User ID=sa;Password=p@assw0rd!;Encrypt=False;"
       cd src/ErgoFab.DataAccess.IntegrationTests
-      dotnet test 
-      Say "Files"
+      dotnet test -c Release
+      Say "Files 1"
+      ls -la
+      cd bin/Release/net8.0
       ls -la
       cp -av TestsOutput $SYSTEM_ARTIFACTSDIRECTORY || true
       Say "Success Complete"
