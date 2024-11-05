@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
+using ErgoFab.DataAccess.IntegrationTests.Library;
+using Universe.NUnitPipeline;
 
-namespace ErgoFab.DataAccess.IntegrationTests.Library
+namespace Universe.SqlInsights.NUnit
 {
     public class SeededDatabaseFactory
     {
         public readonly ISqlServerTestsConfiguration SqlServerTestsConfiguration;
 
-        private static readonly ConcurrentDictionary<string, DatabaseBackupInfo> Cache = new ConcurrentDictionary<string, DatabaseBackupInfo>();
+        private static readonly ConcurrentDictionary<string, DatabaseBackupInfo> Cache = new();
+
 
         public SeededDatabaseFactory(ISqlServerTestsConfiguration sqlServerTestsConfiguration)
         {
@@ -16,29 +21,45 @@ namespace ErgoFab.DataAccess.IntegrationTests.Library
         }
 
 
-        // 1. cacheKey is bound to actionMigrate+actionSeed
-        // 2. Used by tests only. Thus gets DbConnectionString instead of IDbConnectionString
-        public async Task<DbConnectionString> BuildDatabase(string cacheKey, string title, string newDbName, Action<IDbConnectionString> actionMigrate, Action<IDbConnectionString> actionSeed)
+        // TODO 2: Bind to OrganizationTests
+        public async Task<IDbConnectionString> BuildDatabase(string cacheKey, string newDbName, string title, Action<IDbConnectionString> actionMigrateAndSeed)
         {
-            
+            // new DB Name already asigned
             SqlServerTestDbManager sqlServerTestDbManager = new SqlServerTestDbManager(SqlServerTestsConfiguration);
             string testDbName = newDbName;
-            DbConnectionString dbConnectionString = new DbConnectionString(testDbName, title);
 
-            if (Cache.TryGetValue(cacheKey, out var databaseBackupInfo))
+            var connectionString = sqlServerTestDbManager.BuildConnectionString(testDbName);
+            TestDbConnectionString testDbConnectionString = new TestDbConnectionString(connectionString, title);
+
+            DatabaseBackupInfo databaseBackupInfo;
+            if (cacheKey != null)
             {
-                await sqlServerTestDbManager.RestoreBackup(databaseBackupInfo, testDbName);
-                return dbConnectionString;
+                if (Cache.TryGetValue(cacheKey, out databaseBackupInfo))
+                {
+                    Stopwatch restoreAt = Stopwatch.StartNew();
+                    PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Restoring DB '{testDbName}' from Backup '{databaseBackupInfo.BackupName}'");
+                    await sqlServerTestDbManager.RestoreBackup(databaseBackupInfo, testDbName);
+                    PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] DB '{testDbName}' Successfully Restored in {restoreAt.Elapsed.TotalSeconds:n3} seconds from Backup '{databaseBackupInfo.BackupName}'");
+
+                    return testDbConnectionString;
+                }
             }
 
+            PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Creating new test DB '{testDbName}' (Caching key is '{cacheKey}')");
             await sqlServerTestDbManager.CreateEmptyDatabase(testDbName);
-            actionMigrate(dbConnectionString);
+            PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Populating DB '{testDbName}' by Migrate and Seed");
+            actionMigrateAndSeed(testDbConnectionString);
 
-            actionSeed(dbConnectionString);
+            if (cacheKey != null)
+            {
+                databaseBackupInfo = await sqlServerTestDbManager.CreateBackup(cacheKey, testDbName);
+                PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Created Backup for test DB '{testDbName}' as '{databaseBackupInfo.BackupName}' (Caching key is '{cacheKey}')");
+                // TODO: Dispose the Backup
+                TestCleaner.OnDispose($"Drop Backup {databaseBackupInfo.BackupName}", () => File.Delete(databaseBackupInfo.BackupName), TestDisposeOptions.AsyncGlobal);
+                Cache[cacheKey] = databaseBackupInfo;
+            }
 
-            databaseBackupInfo = await sqlServerTestDbManager.CreateBackup(cacheKey, testDbName);
-            Cache[cacheKey] = databaseBackupInfo;
-            return dbConnectionString;
+            return testDbConnectionString;
         }
     }
 }

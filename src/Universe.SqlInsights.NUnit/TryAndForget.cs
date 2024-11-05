@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ErgoFab.DataAccess.IntegrationTests.Library
+namespace Universe.SqlInsights.NUnit
 {
     internal static class TryAndForget
     {

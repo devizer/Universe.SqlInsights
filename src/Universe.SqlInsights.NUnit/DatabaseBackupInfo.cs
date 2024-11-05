@@ -1,11 +1,10 @@
 ﻿using Universe.SqlServerJam;
 
-namespace ErgoFab.DataAccess.IntegrationTests.Library
-{
+namespace ErgoFab.DataAccess.IntegrationTests.Library;
 
-    public class DatabaseBackupInfo
-    {
-        public string BackupName { get; set; }
-        public BackupFileDescription[] BackupFiles { get; set; }
-    }
+// TODO: Move it to Jam
+public class DatabaseBackupInfo
+{
+    public string BackupName { get; set; }
+    public BackupFileDescription[] BackupFiles { get; set; }
 }

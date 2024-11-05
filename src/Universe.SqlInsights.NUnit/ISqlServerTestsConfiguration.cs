@@ -1,10 +1,8 @@
-﻿namespace ErgoFab.DataAccess.IntegrationTests.Library
+﻿namespace Universe.SqlInsights.NUnit
 {
-
     public interface ISqlServerTestsConfiguration
     {
         string DbName { get; }
-
         string MasterConnectionString { get; }
         // For local server folders might be configured.
 
@@ -12,9 +10,8 @@
         string BackupFolder { get; }
         string DatabaseDataFolder { get; }
         string DatabaseLogFolder { get; }
-        string Provider { get; } // Microsoft | System
+        string Provider { get;  } // Microsoft | System
+        // Task<string> GetNextTestDatabaseName(SqlServerTestDbManager testManager);
 
-        // Removed to DI
-        string GetNextTestDatabaseName(SqlServerTestDbManager testManager);
     }
 }

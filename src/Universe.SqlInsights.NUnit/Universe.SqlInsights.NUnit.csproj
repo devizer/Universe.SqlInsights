@@ -1,15 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net48</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <!--<ImplicitUsings>enable</ImplicitUsings>-->
     <!--<Nullable>enable</Nullable>-->
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Universe.NUnitPipeline" Version="3.14.0.170" />
-    <PackageReference Include="Universe.SqlServerJam" Version="1.0.583" />
+		<PackageReference Include="NUnit" Version="3.14.0" />
+		<PackageReference Include="Universe.NUnitPipeline" Version="3.14.0.203" />
+		<PackageReference Include="Universe.SqlServerJam" Version="1.0.583" />
+		<PackageReference Include="Dapper" Version="2.1.35" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.5" />
   </ItemGroup>
 
 </Project>
