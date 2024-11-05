@@ -102,7 +102,8 @@ steps:
       echo PULL
       try-and-retry docker pull mcr.microsoft.com/mssql/server:"${SQL_IMAGE_TAG}"
       echo RUN IN BACKGROUND
-      docker run --pull never --name sqlserver --privileged $v -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@assw0rd!" -p 1433:1433 -d mcr.microsoft.com/mssql/server:"${SQL_IMAGE_TAG}"
+      sudo mkdir -p "/ErgoFab-Tests/Integration Tests/Data"
+      docker run --pull never --name sqlserver --privileged $v -v /ErgoFab-Tests:/ErgoFab-Tests -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@assw0rd!" -p 1433:1433 -d mcr.microsoft.com/mssql/server:"${SQL_IMAGE_TAG}"
 
       set +e
       Say "SQLCMD version:"
@@ -134,7 +135,7 @@ steps:
 
   - bash: |
       set -eu; set -o pipefail;
-      export ERGOFAB_TESTS_DATA_FOLDER="/ErgFab-Tests"
+      export ERGOFAB_TESTS_DATA_FOLDER="/ErgoFab-Tests"
       export ERGOFAB_TESTS_MASTER_CONNECTIONSTRING="TrustServerCertificate=True;Data Source=localhost,1433;User ID=sa;Password=p@assw0rd!;Encrypt=False;"
       cd src/ErgoFab.DataAccess.IntegrationTests
       dotnet test 
