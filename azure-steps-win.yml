@@ -139,7 +139,7 @@ steps:
       echo "Seconds since the Epoch: $(date +%s)"
 
       true
-    displayName: 'Show'
+    displayName: 'Show Commands'
 
   - powershell: |
        $ErrorActionPreference = "SilentlyContinue"
@@ -188,6 +188,16 @@ steps:
        # cp "$($Env:Temp)\SQL-Setup.Logs" Setup.Logs -Force
     condition: succeededOrFailed()
     displayName: 'Prepare SQL Server'
+
+  - bash: |
+      set -eu; set -o pipefail;
+      cd $AGENT_TEMPDIRECTORY/Goods/ergofab.tests
+      export ERGOFAB_TESTS_DATA_FOLDER="D:\\ErgFab-Tests"
+      dotnet test Universe.SqlServerJam.Tests.dll
+      cp -av TestsOutput $SYSTEM_ARTIFACTSDIRECTORY
+      Say "Success Complete"
+    condition: succeededOrFailed()
+    displayName: 'Test ErgoFab (SQL)'
 
   - bash: |
       set -eu; set -o pipefail;
