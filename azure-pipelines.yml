@@ -5,7 +5,7 @@ variables:
   VMIMAGE: 'windows-2019'
   DEFAULT_RAM_DISK_SIZE: "2600"
   W3API_NET: net6.0
-  SKIP_ERGOFAB_TESTS=False
+  SKIP_ERGOFAB_TESTS: 'False'
 
 jobs:
 
