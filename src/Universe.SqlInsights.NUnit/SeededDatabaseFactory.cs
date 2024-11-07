@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Universe.NUnitPipeline;
+using Universe.SqlServerJam;
 
 namespace Universe.SqlInsights.NUnit
 {
@@ -11,7 +12,7 @@ namespace Universe.SqlInsights.NUnit
     {
         public readonly ISqlServerTestsConfiguration SqlServerTestsConfiguration;
 
-        private static readonly ConcurrentDictionary<string, DatabaseBackupInfo> Cache = new();
+        private static readonly ConcurrentDictionary<string, SqlBackupDescription> Cache = new();
 
 
         public SeededDatabaseFactory(ISqlServerTestsConfiguration sqlServerTestsConfiguration)
@@ -30,15 +31,15 @@ namespace Universe.SqlInsights.NUnit
             var connectionString = sqlServerTestDbManager.BuildConnectionString(testDbName);
             TestDbConnectionString testDbConnectionString = new TestDbConnectionString(connectionString, title);
 
-            DatabaseBackupInfo databaseBackupInfo;
+            SqlBackupDescription databaseBackupInfo;
             if (cacheKey != null)
             {
                 if (Cache.TryGetValue(cacheKey, out databaseBackupInfo))
                 {
                     Stopwatch restoreAt = Stopwatch.StartNew();
-                    PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Restoring DB '{testDbName}' from Backup '{databaseBackupInfo.BackupName}'");
+                    PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Restoring DB '{testDbName}' from Backup '{databaseBackupInfo.BackupPoint}'");
                     await sqlServerTestDbManager.RestoreBackup(databaseBackupInfo, testDbName);
-                    PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] DB '{testDbName}' Successfully Restored in {restoreAt.Elapsed.TotalSeconds:n3} seconds from Backup '{databaseBackupInfo.BackupName}'");
+                    PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] DB '{testDbName}' Successfully Restored in {restoreAt.Elapsed.TotalSeconds:n3} seconds from Backup '{databaseBackupInfo.BackupPoint}'");
 
                     return testDbConnectionString;
                 }
@@ -52,9 +53,9 @@ namespace Universe.SqlInsights.NUnit
             if (cacheKey != null)
             {
                 databaseBackupInfo = await sqlServerTestDbManager.CreateBackup(cacheKey, testDbName);
-                PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Created Backup for test DB '{testDbName}' as '{databaseBackupInfo.BackupName}' (Caching key is '{cacheKey}')");
+                PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Created Backup for test DB '{testDbName}' as '{databaseBackupInfo.BackupPoint}' (Caching key is '{cacheKey}')");
                 // TODO: Dispose the Backup
-                TestCleaner.OnDispose($"Drop Backup {databaseBackupInfo.BackupName}", () => File.Delete(databaseBackupInfo.BackupName), TestDisposeOptions.AsyncGlobal);
+                TestCleaner.OnDispose($"Drop Backup {databaseBackupInfo.BackupPoint}", () => File.Delete(databaseBackupInfo.BackupPoint), TestDisposeOptions.AsyncGlobal);
                 Cache[cacheKey] = databaseBackupInfo;
             }
 

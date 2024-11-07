@@ -106,7 +106,7 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
             throw new InvalidOperationException($"Unknown DB Provider '{SqlTestsConfiguration.Provider}'. Supported are Microsoft|System");
         }
 
-        public virtual async Task<DatabaseBackupInfo> CreateBackup(string cacheKey, string dbName)
+        public virtual async Task<SqlBackupDescription> CreateBackup(string cacheKey, string dbName)
         {
             var masterConnection = CreateMasterConnection();
             var withCompression = masterConnection.Manage().IsCompressedBackupSupported ? "COMPRESSION, " : "";
@@ -117,19 +117,15 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
             string sql = $"BACKUP DATABASE [{dbName}] TO DISK = N{EscapeSqlString(bakName)} WITH {withCompression} NOFORMAT, INIT, NAME = N'For Tests Temporary Cache'";
             TryAndForget.Execute(() => Directory.CreateDirectory(this.SqlTestsConfiguration.BackupFolder));
             await masterConnection.ExecuteAsync(sql, commandTimeout: 180);
-            var backupDescription = masterConnection.Manage().GetBackupDescription(bakName);
-            return new DatabaseBackupInfo()
-            {
-                BackupName = bakName,
-                BackupFiles = backupDescription.FileList.ToArray(),
-            };
+            SqlBackupDescription backupDescription = masterConnection.Manage().GetBackupDescription(bakName);
+            return backupDescription;
         }
 
-        public virtual async Task RestoreBackup(DatabaseBackupInfo databaseBackupInfo, string dbName)
+        public virtual async Task RestoreBackup(SqlBackupDescription databaseBackupInfo, string dbName)
         {
-            var sql = new StringBuilder($"Restore Database [{dbName}] From Disk = N'{databaseBackupInfo.BackupName}' With ");
+            var sql = new StringBuilder($"Restore Database [{dbName}] From Disk = N'{databaseBackupInfo.BackupPoint}' With ");
             var index = 0;
-            foreach (var f in databaseBackupInfo.BackupFiles)
+            foreach (var f in databaseBackupInfo.FileList)
             {
                 index++;
                 var folder = f.StrictType == BackFileType.Log ? this.SqlTestsConfiguration.DatabaseLogFolder : this.SqlTestsConfiguration.DatabaseDataFolder;
@@ -143,17 +139,5 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
             var masterConnection = CreateMasterConnection();
             await masterConnection.ExecuteAsync(sql.ToString(), commandTimeout: 180);
         }
-    }
-
-    public static class ConnectionStringExtensions
-    {
-        public static string GetDatabaseName(this SqlServerTestDbManager man, string connectionString)
-        {
-            var b = man.CreateDbProviderFactory().CreateConnectionStringBuilder();
-            b.ConnectionString = connectionString;
-            var dbName = b["Initial Catalog"]?.ToString();
-            return dbName;
-        }
-
     }
 }

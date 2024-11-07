@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Shared.TestDatabaseDefinitions;
 using Universe.NUnitPipeline;
 using Universe.SqlInsights.NUnit;
+using Universe.SqlServerJam;
 
 namespace ErgoFab.DataAccess.IntegrationTests;
 
@@ -32,8 +33,8 @@ public class BackupRestoreTests
         var dbName = man.GetDatabaseName(testCase.ConnectionOptions.ConnectionString);
 
         // 1. Create Explicit Backup
-        var backup = await man.CreateBackup($"ErgoFab-777-{Guid.NewGuid():N}", dbName);
-        TestCleaner.OnDispose($"Drop Explicit Backup {backup.BackupName}", () => File.Delete(backup.BackupName));
+        SqlBackupDescription? backup = await man.CreateBackup($"ErgoFab-777-{Guid.NewGuid():N}", dbName);
+        TestCleaner.OnDispose($"Drop Explicit Backup {backup.BackupPoint}", () => File.Delete(backup.BackupPoint));
 
         var dbRestoredName = $"ErgoFab Restored Explicitly {Guid.NewGuid():N}";
         TestCleaner.OnDispose($"Drop Restored DB {dbRestoredName}", () => man.DropDatabase(dbRestoredName).SafeWait());
@@ -45,7 +46,7 @@ public class BackupRestoreTests
         Assert.True(isDbExists, $"Missing Restored DB {dbRestoredName}");
 
         // TODO: Assert is Only for local SQL Server
-        Assert.IsTrue(File.Exists(backup.BackupName), $"Missing Backup file {backup.BackupName}");
+        Assert.IsTrue(File.Exists(backup.BackupPoint), $"Missing Backup file {backup.BackupPoint}");
 
         // 3. Query newly restored DB
         TestDbConnectionString newCs = new TestDbConnectionString(man.BuildConnectionString(dbRestoredName), "Restored");
