@@ -15,30 +15,5 @@ namespace ErgoFab.Model
 
     }
 
-    /*
-    public class OrderDetail
-    {
-        public Guid ObjectID { get; set; }
-        public DateTime Created { get; set; }
-        public string Comments { get; set; }
-
-        [ForeignKey("Order")]
-        public Guid OrderID { get; set; }
-        public Order Order { get; set; }
-
-    }
-
-    public class Order
-    {
-        public Guid ObjectID { get; set; }
-
-        public Order PrevOrder { get; set; }
-        [ForeignKey("PrevOrder")]
-        public Guid? PrevOrderId { get; set; }
-
-        [InverseProperty("Order")]
-        public List<OrderDetail> OrderDetails { get; set; }
-    }
-    */
 
 }

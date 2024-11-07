@@ -12,14 +12,14 @@ namespace ErgoFab.Model
 
         public Employee Director { get; set; }
 
-        [InverseProperty("Organization")]
+        [InverseProperty(nameof(Department.Organization))]
         public virtual ICollection<Department> Departments { get; set; }
 
 
         [InverseProperty(nameof(Employee.Organization))]
         public virtual ICollection<Employee> Employees { get; set; }
 
-        [InverseProperty("ParentOrganization")]
+        [InverseProperty(nameof(RegionalDivision.ParentOrganization))]
         public virtual ICollection<RegionalDivision> SubDivisions { get; set; }
 
 
