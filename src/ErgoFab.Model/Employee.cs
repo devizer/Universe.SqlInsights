@@ -9,27 +9,27 @@ namespace ErgoFab.Model
         [Key]
         public int EmpId { get; set; }
 
-        [ForeignKey("Organization")]
+        [ForeignKey(nameof(Organization))]
         [Required]
         public int OrganizationId { get; set; }
 
         public virtual Organization Organization { get; set; }
 
         [Required]
-        [MaxLength(20)]
+        [MaxLength(300)]
         public string Name { get; set; }
 
         [Required]
-        [MaxLength(20)]
+        [MaxLength(400)]
         public string SurName { get; set; }
 
 
-        [ForeignKey("Department")]
+        [ForeignKey(nameof(Department))]
         [Required]
         public int DepartmentId { get; set; }
         public Department Department { get; set; }
 
-        [ForeignKey("Country")]
+        [ForeignKey(nameof(Country))]
         public short? CountryId { get; set; }
         public Country Country { get; set; }
 

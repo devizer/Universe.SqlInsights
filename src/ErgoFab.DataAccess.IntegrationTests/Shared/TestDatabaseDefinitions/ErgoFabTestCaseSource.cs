@@ -7,6 +7,10 @@ namespace Shared.TestDatabaseDefinitions;
 // DB With migrations and 0...organizationsCount Organizations
 public class ErgoFabTestCaseSource : TestCaseSourceAttribute
 {
+    public ErgoFabTestCaseSource() : this(42)
+    {
+    }
+
     public ErgoFabTestCaseSource(int organizationsCount) : base(typeof(ErgoFabTestCaseSource), nameof(GetTestCases), new object[] { organizationsCount })
     {
     }

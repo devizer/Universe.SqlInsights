@@ -5,7 +5,7 @@ namespace ErgoFab.Model;
 [Table("RegionalDivision")]
 public class RegionalDivision : Organization
 {
-    [ForeignKey("ParentOrganization")]
+    [ForeignKey(nameof(ParentOrganization))]
     public int IdParent { get; set; }
 
     public Organization ParentOrganization { get; set; }

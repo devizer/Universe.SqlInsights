@@ -15,6 +15,7 @@ namespace ErgoFab.Model
 
     }
 
+    /*
     public class OrderDetail
     {
         public Guid ObjectID { get; set; }
@@ -38,5 +39,6 @@ namespace ErgoFab.Model
         [InverseProperty("Order")]
         public List<OrderDetail> OrderDetails { get; set; }
     }
+    */
 
 }

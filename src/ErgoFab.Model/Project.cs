@@ -10,7 +10,7 @@ namespace ErgoFab.Model
 
         public string ProjectName { get; set; }
 
-        [ForeignKey("Customer")]
+        [ForeignKey(nameof(Customer))]
         public int IdCustomer { get; set; }
 
         public virtual Customer Customer { get; set; }

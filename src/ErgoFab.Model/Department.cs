@@ -7,23 +7,23 @@ namespace ErgoFab.Model
     {
         public int Id { get; set; }
 
-        [ForeignKey("Organization")]
+        [ForeignKey(nameof(Organization))]
 
         public int OrganizationId { get; set; }
 
         public virtual Organization Organization { get; set; }
 
-        [ForeignKey("Head")]
+        [ForeignKey(nameof(Head))]
         public int? HeadId { get; set; }
 
         public virtual Employee Head { get; set; }
 
-        [ForeignKey("Parent")]
+        [ForeignKey(nameof(Parent))]
         public int? ParentId { get; set; }
 
         public virtual Department Parent { get; set; }
 
-        [InverseProperty("Department")]
+        [InverseProperty(nameof(Employee.Department))]
         public virtual ICollection<Employee> Employees { get; set; }
 
         [Required]

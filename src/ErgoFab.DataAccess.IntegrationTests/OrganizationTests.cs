@@ -2,6 +2,8 @@
 using ErgoFab.DataAccess.IntegrationTests.Shared;
 using ErgoFab.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Shared.TestDatabaseDefinitions;
 using Universe.NUnitPipeline;
 using Universe.SqlServerJam;

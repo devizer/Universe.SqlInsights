@@ -5,7 +5,7 @@
 namespace ErgoFab.Model.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -87,11 +87,10 @@ namespace ErgoFab.Model.Migrations
                     EmpId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrganizationId = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    SurName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    SurName = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
                     DepartmentId = table.Column<int>(type: "int", nullable: false),
-                    CountryId = table.Column<short>(type: "smallint", nullable: true),
-                    OrganizationId1 = table.Column<int>(type: "int", nullable: true)
+                    CountryId = table.Column<short>(type: "smallint", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -167,8 +166,7 @@ namespace ErgoFab.Model.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
                     IdParent = table.Column<int>(type: "int", nullable: false),
-                    RegionDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OrganizationId = table.Column<int>(type: "int", nullable: true)
+                    RegionDescription = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -185,11 +183,6 @@ namespace ErgoFab.Model.Migrations
                         principalTable: "Organization",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_RegionalDivision_Organization_OrganizationId",
-                        column: x => x.OrganizationId,
-                        principalTable: "Organization",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -223,11 +216,6 @@ namespace ErgoFab.Model.Migrations
                 column: "OrganizationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Employee_OrganizationId1",
-                table: "Employee",
-                column: "OrganizationId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Occupation_EmployeeId",
                 table: "Occupation",
                 column: "EmployeeId");
@@ -257,11 +245,6 @@ namespace ErgoFab.Model.Migrations
                 table: "RegionalDivision",
                 column: "IdParent");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_RegionalDivision_OrganizationId",
-                table: "RegionalDivision",
-                column: "OrganizationId");
-
             migrationBuilder.AddForeignKey(
                 name: "FK_Department_Employee_HeadId",
                 table: "Department",
@@ -284,13 +267,6 @@ namespace ErgoFab.Model.Migrations
                 principalTable: "Organization",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Employee_Organization_OrganizationId1",
-                table: "Employee",
-                column: "OrganizationId1",
-                principalTable: "Organization",
-                principalColumn: "Id");
         }
 
         /// <inheritdoc />

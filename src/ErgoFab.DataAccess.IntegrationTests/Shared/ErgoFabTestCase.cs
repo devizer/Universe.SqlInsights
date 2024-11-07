@@ -1,4 +1,5 @@
-﻿using Universe.SqlInsights.NUnit;
+﻿using System.DirectoryServices.ActiveDirectory;
+using Universe.SqlInsights.NUnit;
 
 namespace ErgoFab.DataAccess.IntegrationTests.Shared
 {

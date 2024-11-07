@@ -20,6 +20,8 @@ namespace ErgoFab.Model
                 .Options;
         }
 
+
+
         /*
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -48,6 +50,17 @@ namespace ErgoFab.Model
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Organization>()
+                .HasMany(e => e.Employees)
+                .WithOne(e => e.Organization)
+                .HasForeignKey(e => e.OrganizationId)
+                .HasPrincipalKey(e => e.Id);
+
+            modelBuilder.Entity<Organization>()
+                .HasMany(e => e.SubDivisions)
+                .WithOne(e => e.ParentOrganization)
+                .HasForeignKey(e => e.IdParent)
+                .HasPrincipalKey(e => e.Id);
         }
 
         public DbSet<Employee> Employee { get; set; }

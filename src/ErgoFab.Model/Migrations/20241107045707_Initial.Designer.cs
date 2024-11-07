@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ErgoFab.Model.Migrations
 {
     [DbContext(typeof(ErgoFabDbContext))]
-    [Migration("20241024081404_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241107045707_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -120,19 +120,16 @@ namespace ErgoFab.Model.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<int>("OrganizationId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OrganizationId1")
-                        .HasColumnType("int");
-
                     b.Property<string>("SurName")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
 
                     b.HasKey("EmpId");
 
@@ -141,8 +138,6 @@ namespace ErgoFab.Model.Migrations
                     b.HasIndex("DepartmentId");
 
                     b.HasIndex("OrganizationId");
-
-                    b.HasIndex("OrganizationId1");
 
                     b.ToTable("Employee");
                 });
@@ -232,16 +227,11 @@ namespace ErgoFab.Model.Migrations
                     b.Property<int>("IdParent")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OrganizationId")
-                        .HasColumnType("int");
-
                     b.Property<string>("RegionDescription")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasIndex("IdParent");
-
-                    b.HasIndex("OrganizationId");
 
                     b.ToTable("RegionalDivision");
                 });
@@ -282,14 +272,10 @@ namespace ErgoFab.Model.Migrations
                         .IsRequired();
 
                     b.HasOne("ErgoFab.Model.Organization", "Organization")
-                        .WithMany()
+                        .WithMany("Employees")
                         .HasForeignKey("OrganizationId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("ErgoFab.Model.Organization", null)
-                        .WithMany("Employees")
-                        .HasForeignKey("OrganizationId1");
 
                     b.Navigation("Country");
 
@@ -352,14 +338,10 @@ namespace ErgoFab.Model.Migrations
                         .IsRequired();
 
                     b.HasOne("ErgoFab.Model.Organization", "ParentOrganization")
-                        .WithMany()
+                        .WithMany("SubDivisions")
                         .HasForeignKey("IdParent")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("ErgoFab.Model.Organization", null)
-                        .WithMany("SubDivisions")
-                        .HasForeignKey("OrganizationId");
 
                     b.Navigation("ParentOrganization");
                 });

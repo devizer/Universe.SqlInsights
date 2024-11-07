@@ -8,12 +8,12 @@ namespace ErgoFab.Model
         [Key]
         public int Id { get; set; }
 
-        [ForeignKey("Employee")]
+        [ForeignKey(nameof(Employee))]
         public int EmployeeId { get; set; }
 
         public virtual Employee Employee { get; set; }
 
-        [ForeignKey("Project")]
+        [ForeignKey(nameof(Project))]
         public int ProjectId { get; set; }
 
         public virtual Project Project { get; set; }
