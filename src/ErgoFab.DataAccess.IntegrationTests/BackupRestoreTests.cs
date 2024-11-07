@@ -36,7 +36,7 @@ public class BackupRestoreTests
         SqlBackupDescription? backup = await man.CreateBackup($"ErgoFab-777-{Guid.NewGuid():N}", dbName);
         TestCleaner.OnDispose($"Drop Explicit Backup {backup.BackupPoint}", () => File.Delete(backup.BackupPoint));
 
-        var dbRestoredName = $"ErgoFab Restored Explicitly {Guid.NewGuid():N}";
+        var dbRestoredName = $"Ergo Fab Test Restored Explicitly {Guid.NewGuid():N}";
         TestCleaner.OnDispose($"Drop Restored DB {dbRestoredName}", () => man.DropDatabase(dbRestoredName).SafeWait());
 
         // 2. Restore Backup

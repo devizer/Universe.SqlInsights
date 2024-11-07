@@ -53,7 +53,14 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
         public virtual async Task DropDatabase(string name)
         {
             var cs = BuildConnectionString(name, false);
-            AgileDbKiller.Kill(cs, false, 1);
+            try
+            {
+                AgileDbKiller.Kill(cs, false, 1);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Unable to Disconnect and Delete DB '{name}'. Connection string is below{Environment.NewLine}{cs}", ex);
+            }
         }
         public virtual async Task DropDatabase_Ugly(string name)
         {
