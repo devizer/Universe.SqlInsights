@@ -37,6 +37,13 @@ public static class EfModelExtensions
             Func<IProperty, string> twoColumns= x => string.Format("{0,-" + max1stColumnLength + "} → \"{1}\"", FormatClrType(x.ClrType), x.Name);
             var maxTwoColumnsLength = Math.Max(properties.Select(x => twoColumns(x).Length).Max(), 1);
 
+            /*
+            IProperty p = null;
+            var firstPrincipal = p.GetPrincipals().FirstOrDefault();
+            firstPrincipal.
+            */
+
+
             var humanProperties = entityType
                 .GetProperties()
                 .Select(x => string.Format("  {0,-" + maxTwoColumnsLength + "} {1}", twoColumns(x), "| " + x));
