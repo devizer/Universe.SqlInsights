@@ -1,18 +1,23 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	  <Language>latest</Language>
   </PropertyGroup>
+
+  <Import Project="..\Shared-Files\Microsoft.EntityFrameworkCore.SqlServer.proj" />
+  <Import Project="..\Shared-Files\Microsoft.EntityFrameworkCore.Design.proj" />
 
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
+	  <!--
+	    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
+	      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	      <PrivateAssets>all</PrivateAssets>
+	    </PackageReference>
+	    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />-->
   </ItemGroup>
 
 </Project>

@@ -243,7 +243,9 @@ namespace ErgoFab.Model.Migrations
 
                     b.ToTable("Organization");
 
+#if NET7_0_OR_GREATER
                     b.UseTptMappingStrategy();
+#endif
                 });
 
             modelBuilder.Entity("ErgoFab.Model.Project", b =>

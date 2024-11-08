@@ -51,6 +51,7 @@ namespace Universe.SqlInsights.NUnit
 
 
                     var whenDeleteDb = TestDisposeOptions.AsyncGlobal;
+                    
                     TestCleaner.OnDispose($"Drop DB '{testDbName}'", () => man.DropDatabase(testDbName).SafeWait(), whenDeleteDb);
 
                     return;

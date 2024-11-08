@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
@@ -20,8 +20,10 @@
 		<PackageReference Include="Universe.SqlServerJam" Version="1.0.586" />
 
 		<PackageReference Include="Dapper" Version="2.1.35" />
+		<!--
 		<PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
 		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.5" />
+		-->
 	</ItemGroup>
 
 	<ItemGroup>

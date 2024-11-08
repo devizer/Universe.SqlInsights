@@ -47,6 +47,13 @@ namespace ErgoFab.DataAccess.IntegrationTests
                 .Select(x => x.Title)
                 .ToArrayAsync();
 
+            // Test for missing
+            var missingOrg = ergoFabDbContext.Organization.FirstOrDefault(x => x.Title == Guid.NewGuid().ToString());
+            
+            using var db2 = testCase.CreateErgoFabDbContext();
+            var existingOrg = db2.Organization.FirstOrDefault(x => x.Title == orgNames.First());
+
+
 
             Console.WriteLine($"ORGANIZATIONS:{Environment.NewLine}{string.Join(Environment.NewLine, orgNames).Take(44)}");
         }

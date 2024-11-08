@@ -20,12 +20,13 @@ public class BackupRestoreTests
         SqlServerTestDbManager man = new SqlServerTestDbManager(SqlServerTestsConfiguration.Instance);
         await man.CreateEmptyDatabase(testCase.ConnectionOptions);
 
-        var ergoFabDbContext = testCase.CreateErgoFabDbContext();
-
-        ergoFabDbContext.Database.Migrate();
-
-        ergoFabDbContext.Organization.Add(new Organization() { Title = "Azure Dev-Ops" });
-        ergoFabDbContext.SaveChanges();
+        // Add Org before backup
+        await using (var ergoFabDbContext = testCase.CreateErgoFabDbContext())
+        {
+            await ergoFabDbContext.Database.MigrateAsync();
+            ergoFabDbContext.Organization.Add(new Organization() { Title = "Azure Dev-Ops" });
+            await ergoFabDbContext.SaveChangesAsync();
+        }
 
         var csb = man.CreateDbProviderFactory().CreateConnectionStringBuilder();
         csb.ConnectionString = testCase.ConnectionOptions.ConnectionString;
@@ -50,7 +51,9 @@ public class BackupRestoreTests
 
         // 3. Query newly restored DB
         TestDbConnectionString newCs = new TestDbConnectionString(man.BuildConnectionString(dbRestoredName), "Restored");
-        var newDbContext = newCs.CreateErgoFabDbContext();
+        await using var newDbContext = newCs.CreateErgoFabDbContext();
+        var orgCount = newDbContext.Organization.AsNoTracking().Count();
+        Console.WriteLine($"Organizations Count {orgCount}");
         var newOrg = newDbContext.Organization.FirstOrDefault(x => x.Title == "Azure Dev-Ops");
         Assert.IsNotNull(newOrg, "Missing 'Azure Dev-Ops' organization on restored DB");
     }

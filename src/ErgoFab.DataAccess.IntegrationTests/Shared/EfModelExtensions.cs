@@ -53,25 +53,10 @@ public static class EfModelExtensions
             /*
             TODO: 1. Where FK Index point to?
                   2. Derivatives for entities
-
-            IProperty p = null;
-            var firstPrincipal = p.GetPrincipals().FirstOrDefault();
-            firstPrincipal.
             */
 
-            var navigations = entityType.GetNavigations();
-            foreach (var navigation in navigations)
-            {
-                // navigation.
-            }
-
             var principalOwnerName = entityType.FindOwnership()?.PrincipalEntityType?.Name;
-
-
             var humanForeignKeys = entityType.GetForeignKeys().Select(x => $"  {x}").ToList();
-
-
-
 
             Func<INavigation, string> navigationToString = navigation =>
             {
@@ -87,15 +72,19 @@ public static class EfModelExtensions
                 .Select(x => string.Format("  {0,-" + maxTwoColumnsLength + "} {1}", twoColumns(x), "| " + x))
                 .ToList();
 
+            var skipNav = entityType.GetSkipNavigations().Select(x => $"  {x}").ToList();
+
             ret
                 .AppendLine()
                 .AppendLine()
                 .AppendLine($"• Entity {entityType.FormatEntityTypeParentsChain()}{(principalOwnerName == null ? "": $", owned by '{principalOwnerName}'")}, {entityType}");
+
             if (humanProperties.Count > 0) ret.AppendLine(string.Join(nl, humanProperties));
             if (humanNavigations.Count > 0) ret.AppendLine(string.Join(nl, humanNavigations));
+            if (skipNav.Count > 0) ret.AppendLine(string.Join(nl, skipNav));
             if (humanForeignKeys.Count > 0) ret.AppendLine(string.Join(nl, humanForeignKeys));
 
-            // if (entityType.Name == "ErgoFab.Model.Expert" && Debugger.IsAttached) Debugger.Break();
+            if (entityType.Name == "ErgoFab.Model.Expert" && Debugger.IsAttached) Debugger.Break();
         }
 
         return ret.ToString();
@@ -114,7 +103,6 @@ public static class EfModelExtensions
     {
         return string.Join(separator, entityType.GetEntityTypeParentsChain().Select(x => $"'{x.Name}'"));
     }
-
 
     static string FormatClrType(Type type)
     {

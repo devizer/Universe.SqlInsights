@@ -35,7 +35,9 @@ public static class ErgoFabTestCaseExtensions
         PipelineLog.LogTrace($"[CreateErgoFabDbContext()] Using Connection String for ErgoFabDbContext: '{dbConnectionString.ConnectionString}'");
         dbContextOptionsBuilder.UseSqlServer(dbConnectionString.ConnectionString, b =>
         {
+#if NET8_0_OR_GREATER
             b.UseCompatibilityLevel(120);
+#endif
             b.EnableRetryOnFailure(5);
         });
 

@@ -1,4 +1,6 @@
-﻿using ErgoFab.DataAccess.IntegrationTests.Shared;
+﻿using System.Reflection;
+using System.Runtime.Versioning;
+using ErgoFab.DataAccess.IntegrationTests.Shared;
 using NUnit.Framework.Interfaces;
 using Universe.NUnitPipeline;
 using Universe.SqlInsights.NUnit;
@@ -12,7 +14,8 @@ public class OrderedPipelineConfiguration
         PipelineLog.LogTrace($"[{typeof(OrderedPipelineConfiguration)}]::Configure()");
 
         var reportConfiguration = NUnitPipelineConfiguration.GetService<NUnitReportConfiguration>();
-        reportConfiguration.InternalReportFile = Path.Combine("TestsOutput", $"ErgoFab.DataAccess.IntegrationTests");
+
+        reportConfiguration.InternalReportFile = Path.Combine("TestsOutput", $"ErgoFab.DataAccess.IntegrationTests {GetCurrentNetVersion()}");
 
         NUnitPipelineConfiguration.Register<ITestDatabaseNameProvider>(() => new TestDatabaseNameProvider());
         NUnitPipelineConfiguration.Register<SqlServerTestDbManager>(() => new SqlServerTestDbManager(SqlServerTestsConfiguration.Instance));
@@ -37,6 +40,19 @@ public class OrderedPipelineConfiguration
             new() { Title = CpuUsageTreeReportInterceptor.Title, Action = CpuUsageTreeReportInterceptor.OnFinish },
             new() { Title = "Debugger Global Finish", Action = MyGlobalFinish },
         };
+    }
+
+    private static string GetCurrentNetVersion()
+    {
+        var targetFramework = Assembly.GetExecutingAssembly()
+            .GetCustomAttributes(typeof(TargetFrameworkAttribute))
+            .OfType<TargetFrameworkAttribute>()
+            .FirstOrDefault()
+            ?.FrameworkName;
+
+        var ver = targetFramework?.Split('=')?.Last();
+
+        return ver == null ? "" : $" NET {ver}";
     }
 
 
