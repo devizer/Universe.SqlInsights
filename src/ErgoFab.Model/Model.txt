@@ -1,15 +1,15 @@
-﻿Entity Name                                   |ClrType                       |Base Name                 |Keys
-----------------------------------------------+------------------------------+--------------------------+----------------------------
-ErgoFab.Model.Country                         |ErgoFab.Model.Country         |                          |System.Int16 PK_Country
-ErgoFab.Model.Customer                        |ErgoFab.Model.Customer        |                          |System.Int32 PK_Customer
-ErgoFab.Model.Department                      |ErgoFab.Model.Department      |                          |System.Int32 PK_Department
-ErgoFab.Model.Employee                        |ErgoFab.Model.Employee        |                          |System.Int32 PK_Employee
-ErgoFab.Model.Employee.Enrollment#Duration    |ErgoFab.Model.Duration        |                          |System.Int32 PK_Employee
-ErgoFab.Model.Occupation                      |ErgoFab.Model.Occupation      |                          |System.Int32 PK_Occupation
-ErgoFab.Model.Organization                    |ErgoFab.Model.Organization    |                          |System.Int32 PK_Organization
-ErgoFab.Model.Project                         |ErgoFab.Model.Project         |                          |System.Int32 PK_Project
-ErgoFab.Model.Project.ProjectDuration#Duration|ErgoFab.Model.Duration        |                          |System.Int32 PK_Project
-ErgoFab.Model.RegionalDivision                |ErgoFab.Model.RegionalDivision|ErgoFab.Model.Organization|
+﻿Entity Name                                      |ClrType                       |Base Name                 |Keys
+-------------------------------------------------+------------------------------+--------------------------+----------------------------
+ErgoFab.Model.Country                            |ErgoFab.Model.Country         |                          |System.Int16 PK_Country
+ErgoFab.Model.Customer                           |ErgoFab.Model.Customer        |                          |System.Int32 PK_Customer
+ErgoFab.Model.Department                         |ErgoFab.Model.Department      |                          |System.Int32 PK_Department
+ErgoFab.Model.Employee                           |ErgoFab.Model.Employee        |                          |System.Int32 PK_Employee
+ErgoFab.Model.Employee.TheEnrollment#Duration    |ErgoFab.Model.Duration        |                          |System.Int32 PK_Employee
+ErgoFab.Model.Occupation                         |ErgoFab.Model.Occupation      |                          |System.Int32 PK_Occupation
+ErgoFab.Model.Organization                       |ErgoFab.Model.Organization    |                          |System.Int32 PK_Organization
+ErgoFab.Model.Project                            |ErgoFab.Model.Project         |                          |System.Int32 PK_Project
+ErgoFab.Model.Project.TheProjectDuration#Duration|ErgoFab.Model.Duration        |                          |System.Int32 PK_Project
+ErgoFab.Model.RegionalDivision                   |ErgoFab.Model.RegionalDivision|ErgoFab.Model.Organization|
 
 
 
@@ -20,10 +20,12 @@ ErgoFab.Model.RegionalDivision                |ErgoFab.Model.RegionalDivision|Er
   System.String → "LocalName"   | Property: Country.LocalName (string) Required
 
 
+
 • Entity 'ErgoFab.Model.Customer'
   System.Int32  → "CustomerId" | Property: Customer.CustomerId (int) Required PK AfterSave:Throw ValueGenerated.OnAdd
   System.String → "Name"       | Property: Customer.Name (string) Required MaxLength(20)
   System.String → "Surname"    | Property: Customer.Surname (string) Required MaxLength(20)
+
 
 
 • Entity 'ErgoFab.Model.Department'
@@ -32,6 +34,10 @@ ErgoFab.Model.RegionalDivision                |ErgoFab.Model.RegionalDivision|Er
   System.String → "Name"           | Property: Department.Name (string) Required
   System.Int32  → "OrganizationId" | Property: Department.OrganizationId (int) Required FK Index
   System.Int32? → "ParentId"       | Property: Department.ParentId (int?) FK Index
+  Navigation: Department.Parent (Department) → Principal Department
+  Navigation: Department.TheEmployees (ICollection<Employee>) Collection → Dependent Employee Inverse: TheDepartment
+  Navigation: Department.TheHead (Employee) → Principal Employee
+  Navigation: Department.TheOrganization (Organization) → Principal Organization Inverse: TheDepartments
 
 
 • Entity 'ErgoFab.Model.Employee'
@@ -41,12 +47,17 @@ ErgoFab.Model.RegionalDivision                |ErgoFab.Model.RegionalDivision|Er
   System.String → "Name"           | Property: Employee.Name (string) Required MaxLength(300)
   System.Int32  → "OrganizationId" | Property: Employee.OrganizationId (int) Required FK Index
   System.String → "SurName"        | Property: Employee.SurName (string) Required MaxLength(400)
+  Navigation: Employee.TheCountry (Country) → Principal Country
+  Navigation: Employee.TheDepartment (Department) → Principal Department Inverse: TheEmployees
+  Navigation: Employee.TheEnrollment (Duration) → Dependent Employee.TheEnrollment#Duration
+  Navigation: Employee.TheOrganization (Organization) → Principal Organization Inverse: TheEmployees
 
 
-• Entity 'ErgoFab.Model.Employee.Enrollment#Duration'
-  System.Int32           → "EmployeeEmpId" | Property: Employee.Enrollment#Duration.EmployeeEmpId (no field, int) Shadow Required PK FK AfterSave:Throw
-  System.DateTimeOffset? → "Finish"        | Property: Employee.Enrollment#Duration.Finish (DateTimeOffset?)
-  System.DateTimeOffset  → "Start"         | Property: Employee.Enrollment#Duration.Start (DateTimeOffset) Required
+• Entity 'ErgoFab.Model.Employee.TheEnrollment#Duration', owned by 'ErgoFab.Model.Employee'
+  System.Int32           → "EmployeeEmpId" | Property: Employee.TheEnrollment#Duration.EmployeeEmpId (no field, int) Shadow Required PK FK AfterSave:Throw
+  System.DateTimeOffset? → "Finish"        | Property: Employee.TheEnrollment#Duration.Finish (DateTimeOffset?)
+  System.DateTimeOffset  → "Start"         | Property: Employee.TheEnrollment#Duration.Start (DateTimeOffset) Required
+
 
 
 • Entity 'ErgoFab.Model.Occupation'
@@ -54,6 +65,8 @@ ErgoFab.Model.RegionalDivision                |ErgoFab.Model.RegionalDivision|Er
   System.Int32  → "EmployeeId" | Property: Occupation.EmployeeId (int) Required FK Index
   System.Int32  → "ProjectId"  | Property: Occupation.ProjectId (int) Required FK Index
   System.String → "Role"       | Property: Occupation.Role (string) Required
+  Navigation: Occupation.Employee (Employee) → Principal Employee
+  Navigation: Occupation.TheProject (Project) → Principal Project Inverse: Employees
 
 
 • Entity 'ErgoFab.Model.Organization'
@@ -61,18 +74,27 @@ ErgoFab.Model.RegionalDivision                |ErgoFab.Model.RegionalDivision|Er
   System.Int16? → "CountryId"  | Property: Organization.CountryId (short?) FK Index
   System.Int32? → "DirectorId" | Property: Organization.DirectorId (int?) FK Index
   System.String → "Title"      | Property: Organization.Title (string) Required
+  Navigation: Organization.TheCountry (Country) → Principal Country
+  Navigation: Organization.TheDepartments (ICollection<Department>) Collection → Dependent Department Inverse: TheOrganization
+  Navigation: Organization.TheDirector (Employee) → Principal Employee
+  Navigation: Organization.TheEmployees (ICollection<Employee>) Collection → Dependent Employee Inverse: TheOrganization
+  Navigation: Organization.TheSubDivisions (ICollection<RegionalDivision>) Collection → Dependent RegionalDivision Inverse: ParentOrganization
 
 
 • Entity 'ErgoFab.Model.Project'
   System.Int32  → "Id"          | Property: Project.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd
   System.Int32  → "IdCustomer"  | Property: Project.IdCustomer (int) Required FK Index
   System.String → "ProjectName" | Property: Project.ProjectName (string) Required
+  Navigation: Project.Customer (Customer) → Principal Customer
+  Navigation: Project.Employees (ICollection<Occupation>) Collection → Dependent Occupation Inverse: TheProject
+  Navigation: Project.TheProjectDuration (Duration) → Dependent Project.TheProjectDuration#Duration
 
 
-• Entity 'ErgoFab.Model.Project.ProjectDuration#Duration'
-  System.Int32           → "ProjectId" | Property: Project.ProjectDuration#Duration.ProjectId (no field, int) Shadow Required PK FK AfterSave:Throw
-  System.DateTimeOffset? → "Finish"    | Property: Project.ProjectDuration#Duration.Finish (DateTimeOffset?)
-  System.DateTimeOffset  → "Start"     | Property: Project.ProjectDuration#Duration.Start (DateTimeOffset) Required
+• Entity 'ErgoFab.Model.Project.TheProjectDuration#Duration', owned by 'ErgoFab.Model.Project'
+  System.Int32           → "ProjectId" | Property: Project.TheProjectDuration#Duration.ProjectId (no field, int) Shadow Required PK FK AfterSave:Throw
+  System.DateTimeOffset? → "Finish"    | Property: Project.TheProjectDuration#Duration.Finish (DateTimeOffset?)
+  System.DateTimeOffset  → "Start"     | Property: Project.TheProjectDuration#Duration.Start (DateTimeOffset) Required
+
 
 
 • Entity 'ErgoFab.Model.RegionalDivision' ➛ 'ErgoFab.Model.Organization'
@@ -82,4 +104,10 @@ ErgoFab.Model.RegionalDivision                |ErgoFab.Model.RegionalDivision|Er
   System.String → "Title"             | Property: Organization.Title (string) Required
   System.Int32  → "IdParent"          | Property: RegionalDivision.IdParent (int) Required FK Index
   System.String → "RegionDescription" | Property: RegionalDivision.RegionDescription (string) Required
+  Navigation: Organization.TheCountry (Country) → Principal Country
+  Navigation: Organization.TheDepartments (ICollection<Department>) Collection → Dependent Department Inverse: TheOrganization
+  Navigation: Organization.TheDirector (Employee) → Principal Employee
+  Navigation: Organization.TheEmployees (ICollection<Employee>) Collection → Dependent Employee Inverse: TheOrganization
+  Navigation: Organization.TheSubDivisions (ICollection<RegionalDivision>) Collection → Dependent RegionalDivision Inverse: ParentOrganization
+  Navigation: RegionalDivision.ParentOrganization (Organization) → Principal Organization Inverse: TheSubDivisions
 

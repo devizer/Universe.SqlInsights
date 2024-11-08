@@ -13,7 +13,7 @@ public class ErgoFabDatabase : IDatabaseDefinition
         OrganizationsCount = organizationsCount;
     }
 
-    public string Title => $"Ergo Fab DB {(OrganizationsCount == 0 ? "without Organizations" : OrganizationsCount == 1 ? "with 1 Organization" : $"with {OrganizationsCount} organizations")}";
+    public string Title => $"Ergo Fab DB {(OrganizationsCount == 0 ? "without Organizations" : OrganizationsCount == 1 ? "with 1 TheOrganization" : $"with {OrganizationsCount} organizations")}";
     public string CacheKey => Title;
     public void MigrateAndSeed(IDbConnectionString connectionOptions)
     {

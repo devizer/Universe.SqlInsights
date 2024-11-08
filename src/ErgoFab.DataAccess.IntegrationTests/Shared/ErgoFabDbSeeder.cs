@@ -20,7 +20,7 @@ namespace ErgoFab.DataAccess.IntegrationTests.Shared
                 var org = new Organization()
                 {
                     Title = $"MI-{title}",
-                    Country = new Country()
+                    TheCountry = new Country()
                     {
                         EnglishName = "Great Britain",
                         LocalName = "Great Britain",

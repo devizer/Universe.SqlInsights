@@ -46,12 +46,22 @@ public static class EfModelExtensions
             firstPrincipal.
             */
 
+            var navigations = entityType.GetNavigations();
+            foreach (var navigation in navigations)
+            {
+                // navigation.
+            }
 
-            entityType.IsOwned();
             var principalOwnerName = entityType.FindOwnership()?.PrincipalEntityType?.Name;
 
-
-
+            Func<INavigation, string> navigationToString = navigation =>
+            {
+                var raw = Convert.ToString(navigation);
+                var ret = raw.Replace(" ToDependent ", " → Dependent ");
+                ret = ret.Replace(" ToPrincipal ", " ← Principal ");
+                return ret;
+            };
+            var humanNavigations = entityType.GetNavigations().Select(x => $"  {navigationToString(x)}");
 
             var humanProperties = entityType
                 .GetProperties()
@@ -61,7 +71,9 @@ public static class EfModelExtensions
                 .AppendLine()
                 .AppendLine()
                 .AppendLine($"• Entity {entityType.FormatEntityTypeParentsChain()}{(principalOwnerName == null ? "": $", owned by '{principalOwnerName}'")}")
-                .AppendLine(string.Join(nl, humanProperties));
+                .AppendLine(string.Join(nl, humanProperties))
+                .AppendLine(string.Join(nl, humanNavigations))
+                ;
         }
 
         return ret.ToString();

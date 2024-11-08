@@ -9,11 +9,11 @@ namespace ErgoFab.Model
         [Key]
         public int EmpId { get; set; }
 
-        [ForeignKey(nameof(Organization))]
+        [ForeignKey(nameof(TheOrganization))]
         [Required]
         public int OrganizationId { get; set; }
 
-        public virtual Organization Organization { get; set; }
+        public virtual Organization TheOrganization { get; set; }
 
         [Required]
         [MaxLength(300)]
@@ -23,17 +23,17 @@ namespace ErgoFab.Model
         [MaxLength(400)]
         public string SurName { get; set; }
 
-        public virtual Duration Enrollment { get; set; }
+        public virtual Duration TheEnrollment { get; set; }
 
 
-        [ForeignKey(nameof(Department))]
+        [ForeignKey(nameof(TheDepartment))]
         [Required]
         public int DepartmentId { get; set; }
-        public Department Department { get; set; }
+        public Department TheDepartment { get; set; }
 
-        [ForeignKey(nameof(Country))]
+        [ForeignKey(nameof(TheCountry))]
         public short? CountryId { get; set; }
-        public Country Country { get; set; }
+        public Country TheCountry { get; set; }
 
 
     }

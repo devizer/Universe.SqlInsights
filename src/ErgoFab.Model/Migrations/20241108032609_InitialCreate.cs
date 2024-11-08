@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace ErgoFab.Model.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -26,7 +27,7 @@ namespace ErgoFab.Model.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Customer",
+                name: "TheCustomer",
                 columns: table => new
                 {
                     CustomerId = table.Column<int>(type: "int", nullable: false)
@@ -36,7 +37,7 @@ namespace ErgoFab.Model.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Customer", x => x.CustomerId);
+                    table.PrimaryKey("PK_TheCustomer", x => x.CustomerId);
                 });
 
             migrationBuilder.CreateTable(
@@ -46,15 +47,17 @@ namespace ErgoFab.Model.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProjectName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TheProjectDuration_Start = table.Column<DateTimeOffset>(type: "datetimeoffset(2)", nullable: false),
+                    TheProjectDuration_Finish = table.Column<DateTimeOffset>(type: "datetimeoffset(2)", nullable: true),
                     IdCustomer = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Project", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Project_Customer_IdCustomer",
+                        name: "FK_Project_TheCustomer_IdCustomer",
                         column: x => x.IdCustomer,
-                        principalTable: "Customer",
+                        principalTable: "TheCustomer",
                         principalColumn: "CustomerId",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -89,6 +92,8 @@ namespace ErgoFab.Model.Migrations
                     OrganizationId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     SurName = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
+                    TheEnrollment_Start = table.Column<DateTimeOffset>(type: "datetimeoffset(2)", nullable: false),
+                    TheEnrollment_Finish = table.Column<DateTimeOffset>(type: "datetimeoffset(2)", nullable: true),
                     DepartmentId = table.Column<int>(type: "int", nullable: false),
                     CountryId = table.Column<short>(type: "smallint", nullable: true)
                 },
@@ -290,7 +295,7 @@ namespace ErgoFab.Model.Migrations
                 name: "Project");
 
             migrationBuilder.DropTable(
-                name: "Customer");
+                name: "TheCustomer");
 
             migrationBuilder.DropTable(
                 name: "Employee");

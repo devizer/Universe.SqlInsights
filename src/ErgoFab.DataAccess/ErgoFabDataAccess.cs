@@ -15,10 +15,10 @@ public class ErgoFabDataAccess
     public Organization GetOrganizationWithDepartmentsAndCountryFlag(int idOrganization)
     {
         return Db.Organization.AsNoTracking()
-            .Include("Director")
-            .Include("Country")
-            .Include("Departments")
-            .Include("Departments.Head")
+            .Include("TheDirector")
+            .Include("TheCountry")
+            .Include("TheDepartments")
+            .Include("TheDepartments.TheHead")
             .FirstOrDefault(x => x.Id == idOrganization);
     }
 

@@ -13,10 +13,10 @@ namespace ErgoFab.Model
 
         public virtual Employee Employee { get; set; }
 
-        [ForeignKey(nameof(Project))]
+        [ForeignKey(nameof(TheProject))]
         public int ProjectId { get; set; }
 
-        public virtual Project Project { get; set; }
+        public virtual Project TheProject { get; set; }
 
         public string Role { get; set; }
     }

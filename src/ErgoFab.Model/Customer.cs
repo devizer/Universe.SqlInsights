@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ErgoFab.Model
 {
-    [Table("Customer")]
+    [Table("TheCustomer")]
     public class Customer
     {
         [Key]

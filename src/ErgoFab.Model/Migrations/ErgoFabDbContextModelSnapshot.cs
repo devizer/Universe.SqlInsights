@@ -66,7 +66,7 @@ namespace ErgoFab.Model.Migrations
 
                     b.HasKey("CustomerId");
 
-                    b.ToTable("Customer");
+                    b.ToTable("TheCustomer");
                 });
 
             modelBuilder.Entity("ErgoFab.Model.Department", b =>
@@ -235,12 +235,12 @@ namespace ErgoFab.Model.Migrations
 
             modelBuilder.Entity("ErgoFab.Model.Department", b =>
                 {
-                    b.HasOne("ErgoFab.Model.Employee", "Head")
+                    b.HasOne("ErgoFab.Model.Employee", "TheHead")
                         .WithMany()
                         .HasForeignKey("HeadId");
 
-                    b.HasOne("ErgoFab.Model.Organization", "Organization")
-                        .WithMany("Departments")
+                    b.HasOne("ErgoFab.Model.Organization", "TheOrganization")
+                        .WithMany("TheDepartments")
                         .HasForeignKey("OrganizationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -249,32 +249,32 @@ namespace ErgoFab.Model.Migrations
                         .WithMany()
                         .HasForeignKey("ParentId");
 
-                    b.Navigation("Head");
-
-                    b.Navigation("Organization");
-
                     b.Navigation("Parent");
+
+                    b.Navigation("TheHead");
+
+                    b.Navigation("TheOrganization");
                 });
 
             modelBuilder.Entity("ErgoFab.Model.Employee", b =>
                 {
-                    b.HasOne("ErgoFab.Model.Country", "Country")
+                    b.HasOne("ErgoFab.Model.Country", "TheCountry")
                         .WithMany()
                         .HasForeignKey("CountryId");
 
-                    b.HasOne("ErgoFab.Model.Department", "Department")
-                        .WithMany("Employees")
+                    b.HasOne("ErgoFab.Model.Department", "TheDepartment")
+                        .WithMany("TheEmployees")
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ErgoFab.Model.Organization", "Organization")
-                        .WithMany("Employees")
+                    b.HasOne("ErgoFab.Model.Organization", "TheOrganization")
+                        .WithMany("TheEmployees")
                         .HasForeignKey("OrganizationId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.OwnsOne("ErgoFab.Model.Duration", "Enrollment", b1 =>
+                    b.OwnsOne("ErgoFab.Model.Duration", "TheEnrollment", b1 =>
                         {
                             b1.Property<int>("EmployeeEmpId")
                                 .HasColumnType("int");
@@ -293,14 +293,14 @@ namespace ErgoFab.Model.Migrations
                                 .HasForeignKey("EmployeeEmpId");
                         });
 
-                    b.Navigation("Country");
+                    b.Navigation("TheCountry");
 
-                    b.Navigation("Department");
+                    b.Navigation("TheDepartment");
 
-                    b.Navigation("Enrollment")
+                    b.Navigation("TheEnrollment")
                         .IsRequired();
 
-                    b.Navigation("Organization");
+                    b.Navigation("TheOrganization");
                 });
 
             modelBuilder.Entity("ErgoFab.Model.Occupation", b =>
@@ -311,7 +311,7 @@ namespace ErgoFab.Model.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ErgoFab.Model.Project", "Project")
+                    b.HasOne("ErgoFab.Model.Project", "TheProject")
                         .WithMany("Employees")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -319,33 +319,33 @@ namespace ErgoFab.Model.Migrations
 
                     b.Navigation("Employee");
 
-                    b.Navigation("Project");
+                    b.Navigation("TheProject");
                 });
 
             modelBuilder.Entity("ErgoFab.Model.Organization", b =>
                 {
-                    b.HasOne("ErgoFab.Model.Country", "Country")
+                    b.HasOne("ErgoFab.Model.Country", "TheCountry")
                         .WithMany()
                         .HasForeignKey("CountryId");
 
-                    b.HasOne("ErgoFab.Model.Employee", "Director")
+                    b.HasOne("ErgoFab.Model.Employee", "TheDirector")
                         .WithMany()
                         .HasForeignKey("DirectorId");
 
-                    b.Navigation("Country");
+                    b.Navigation("TheCountry");
 
-                    b.Navigation("Director");
+                    b.Navigation("TheDirector");
                 });
 
             modelBuilder.Entity("ErgoFab.Model.Project", b =>
                 {
-                    b.HasOne("ErgoFab.Model.Customer", "Customer")
+                    b.HasOne("ErgoFab.Model.Customer", "TheCustomer")
                         .WithMany()
                         .HasForeignKey("IdCustomer")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("ErgoFab.Model.Duration", "ProjectDuration", b1 =>
+                    b.OwnsOne("ErgoFab.Model.Duration", "TheProjectDuration", b1 =>
                         {
                             b1.Property<int>("ProjectId")
                                 .HasColumnType("int");
@@ -364,9 +364,9 @@ namespace ErgoFab.Model.Migrations
                                 .HasForeignKey("ProjectId");
                         });
 
-                    b.Navigation("Customer");
+                    b.Navigation("TheCustomer");
 
-                    b.Navigation("ProjectDuration")
+                    b.Navigation("TheProjectDuration")
                         .IsRequired();
                 });
 
@@ -379,7 +379,7 @@ namespace ErgoFab.Model.Migrations
                         .IsRequired();
 
                     b.HasOne("ErgoFab.Model.Organization", "ParentOrganization")
-                        .WithMany("SubDivisions")
+                        .WithMany("TheSubDivisions")
                         .HasForeignKey("IdParent")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -389,16 +389,16 @@ namespace ErgoFab.Model.Migrations
 
             modelBuilder.Entity("ErgoFab.Model.Department", b =>
                 {
-                    b.Navigation("Employees");
+                    b.Navigation("TheEmployees");
                 });
 
             modelBuilder.Entity("ErgoFab.Model.Organization", b =>
                 {
-                    b.Navigation("Departments");
+                    b.Navigation("TheDepartments");
 
-                    b.Navigation("Employees");
+                    b.Navigation("TheEmployees");
 
-                    b.Navigation("SubDivisions");
+                    b.Navigation("TheSubDivisions");
                 });
 
             modelBuilder.Entity("ErgoFab.Model.Project", b =>

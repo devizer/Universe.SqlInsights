@@ -46,18 +46,18 @@ namespace ErgoFab.Model
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Employee>()
-                .HasOne(e => e.Organization)
+                .HasOne(e => e.TheOrganization)
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Organization>()
-                .HasMany(e => e.Employees)
-                .WithOne(e => e.Organization)
+                .HasMany(e => e.TheEmployees)
+                .WithOne(e => e.TheOrganization)
                 .HasForeignKey(e => e.OrganizationId)
                 .HasPrincipalKey(e => e.Id);
 
             modelBuilder.Entity<Organization>()
-                .HasMany(e => e.SubDivisions)
+                .HasMany(e => e.TheSubDivisions)
                 .WithOne(e => e.ParentOrganization)
                 .HasForeignKey(e => e.IdParent)
                 .HasPrincipalKey(e => e.Id);
