@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ErgoFab.Model.Migrations
 {
     [DbContext(typeof(ErgoFabDbContext))]
-    [Migration("20241108032609_InitialCreate")]
+    [Migration("20241108045122_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -142,6 +142,57 @@ namespace ErgoFab.Model.Migrations
                     b.ToTable("Employee");
                 });
 
+            modelBuilder.Entity("ErgoFab.Model.Expert", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Expert");
+                });
+
+            modelBuilder.Entity("ErgoFab.Model.Industry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Industry");
+                });
+
             modelBuilder.Entity("ErgoFab.Model.Occupation", b =>
                 {
                     b.Property<int>("Id")
@@ -218,6 +269,21 @@ namespace ErgoFab.Model.Migrations
                     b.HasIndex("IdCustomer");
 
                     b.ToTable("Project");
+                });
+
+            modelBuilder.Entity("ExpertIndustry", b =>
+                {
+                    b.Property<int>("TheExpertsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TheIndustriesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("TheExpertsId", "TheIndustriesId");
+
+                    b.HasIndex("TheIndustriesId");
+
+                    b.ToTable("ExpertIndustry");
                 });
 
             modelBuilder.Entity("ErgoFab.Model.RegionalDivision", b =>
@@ -370,6 +436,21 @@ namespace ErgoFab.Model.Migrations
                     b.Navigation("TheCustomer");
 
                     b.Navigation("TheProjectDuration")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ExpertIndustry", b =>
+                {
+                    b.HasOne("ErgoFab.Model.Expert", null)
+                        .WithMany()
+                        .HasForeignKey("TheExpertsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ErgoFab.Model.Industry", null)
+                        .WithMany()
+                        .HasForeignKey("TheIndustriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

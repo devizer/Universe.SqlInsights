@@ -2,6 +2,7 @@
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Universe.GenericTreeTable;
 
 namespace ErgoFab.DataAccess.IntegrationTests.Shared;
@@ -10,7 +11,7 @@ public static class EfModelExtensions
 {
     public static string BuildModelDescription(this IModel model)
     {
-        IEnumerable<IEntityType> entityTypes = model.GetEntityTypes();
+        IEnumerable<IEntityType> entityTypes = model.GetEntityTypes().ToList();
         ConsoleTable ct = new ConsoleTable("Entity Name", "ClrType", "Base Name", "Keys");
         foreach (IEntityType entityType in entityTypes)
         {
@@ -30,6 +31,18 @@ public static class EfModelExtensions
         ret.AppendLine(ct.ToString());
 
         string nl = Environment.NewLine;
+        Func<IEntityType, string> entityOrderProperty = entityType =>
+        {
+            var arr = entityType.Name.Split('.');
+            if (entityType.IsOwned() && arr.Length >= 2)
+            {
+                return arr[arr.Length - 2] + "." + arr.Last();
+            }
+
+            return arr.Last();
+        };
+
+        entityTypes = entityTypes.OrderBy(x => entityOrderProperty(x)).ToList();
         foreach (IEntityType entityType in entityTypes)
         {
             IProperty[] properties = entityType.GetProperties().ToArray();
@@ -54,26 +67,35 @@ public static class EfModelExtensions
 
             var principalOwnerName = entityType.FindOwnership()?.PrincipalEntityType?.Name;
 
+
+            var humanForeignKeys = entityType.GetForeignKeys().Select(x => $"  {x}").ToList();
+
+
+
+
             Func<INavigation, string> navigationToString = navigation =>
             {
                 var raw = Convert.ToString(navigation);
-                var ret = raw.Replace(" ToDependent ", " → Dependent ");
-                ret = ret.Replace(" ToPrincipal ", " ← Principal ");
+                var ret = raw.Replace(" ToDependent ", " ← Dependent ");
+                ret = ret.Replace(" ToPrincipal ", " → Principal ");
                 return ret;
             };
-            var humanNavigations = entityType.GetNavigations().Select(x => $"  {navigationToString(x)}");
+            var humanNavigations = entityType.GetNavigations().Select(x => $"  {navigationToString(x)}").ToList();
 
             var humanProperties = entityType
                 .GetProperties()
-                .Select(x => string.Format("  {0,-" + maxTwoColumnsLength + "} {1}", twoColumns(x), "| " + x));
+                .Select(x => string.Format("  {0,-" + maxTwoColumnsLength + "} {1}", twoColumns(x), "| " + x))
+                .ToList();
 
             ret
                 .AppendLine()
                 .AppendLine()
-                .AppendLine($"• Entity {entityType.FormatEntityTypeParentsChain()}{(principalOwnerName == null ? "": $", owned by '{principalOwnerName}'")}")
-                .AppendLine(string.Join(nl, humanProperties))
-                .AppendLine(string.Join(nl, humanNavigations))
-                ;
+                .AppendLine($"• Entity {entityType.FormatEntityTypeParentsChain()}{(principalOwnerName == null ? "": $", owned by '{principalOwnerName}'")}, {entityType}");
+            if (humanProperties.Count > 0) ret.AppendLine(string.Join(nl, humanProperties));
+            if (humanNavigations.Count > 0) ret.AppendLine(string.Join(nl, humanNavigations));
+            if (humanForeignKeys.Count > 0) ret.AppendLine(string.Join(nl, humanForeignKeys));
+
+            // if (entityType.Name == "ErgoFab.Model.Expert" && Debugger.IsAttached) Debugger.Break();
         }
 
         return ret.ToString();

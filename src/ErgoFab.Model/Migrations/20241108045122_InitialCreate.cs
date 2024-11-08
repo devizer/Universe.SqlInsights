@@ -27,6 +27,35 @@ namespace ErgoFab.Model.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Expert",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    Surname = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Expert", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Industry",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Industry", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TheCustomer",
                 columns: table => new
                 {
@@ -38,6 +67,30 @@ namespace ErgoFab.Model.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TheCustomer", x => x.CustomerId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ExpertIndustry",
+                columns: table => new
+                {
+                    TheExpertsId = table.Column<int>(type: "int", nullable: false),
+                    TheIndustriesId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExpertIndustry", x => new { x.TheExpertsId, x.TheIndustriesId });
+                    table.ForeignKey(
+                        name: "FK_ExpertIndustry_Expert_TheExpertsId",
+                        column: x => x.TheExpertsId,
+                        principalTable: "Expert",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ExpertIndustry_Industry_TheIndustriesId",
+                        column: x => x.TheIndustriesId,
+                        principalTable: "Industry",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -221,6 +274,11 @@ namespace ErgoFab.Model.Migrations
                 column: "OrganizationId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ExpertIndustry_TheIndustriesId",
+                table: "ExpertIndustry",
+                column: "TheIndustriesId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Occupation_EmployeeId",
                 table: "Occupation",
                 column: "EmployeeId");
@@ -286,10 +344,19 @@ namespace ErgoFab.Model.Migrations
                 table: "Organization");
 
             migrationBuilder.DropTable(
+                name: "ExpertIndustry");
+
+            migrationBuilder.DropTable(
                 name: "Occupation");
 
             migrationBuilder.DropTable(
                 name: "RegionalDivision");
+
+            migrationBuilder.DropTable(
+                name: "Expert");
+
+            migrationBuilder.DropTable(
+                name: "Industry");
 
             migrationBuilder.DropTable(
                 name: "Project");

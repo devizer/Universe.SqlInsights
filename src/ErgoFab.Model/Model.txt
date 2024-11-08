@@ -1,46 +1,54 @@
-﻿Entity Name                                      |ClrType                       |Base Name                 |Keys
--------------------------------------------------+------------------------------+--------------------------+----------------------------
-ErgoFab.Model.Country                            |ErgoFab.Model.Country         |                          |System.Int16 PK_Country
-ErgoFab.Model.Customer                           |ErgoFab.Model.Customer        |                          |System.Int32 PK_Customer
-ErgoFab.Model.Department                         |ErgoFab.Model.Department      |                          |System.Int32 PK_Department
-ErgoFab.Model.Employee                           |ErgoFab.Model.Employee        |                          |System.Int32 PK_Employee
-ErgoFab.Model.Employee.TheEnrollment#Duration    |ErgoFab.Model.Duration        |                          |System.Int32 PK_Employee
-ErgoFab.Model.Occupation                         |ErgoFab.Model.Occupation      |                          |System.Int32 PK_Occupation
-ErgoFab.Model.Organization                       |ErgoFab.Model.Organization    |                          |System.Int32 PK_Organization
-ErgoFab.Model.Project                            |ErgoFab.Model.Project         |                          |System.Int32 PK_Project
-ErgoFab.Model.Project.TheProjectDuration#Duration|ErgoFab.Model.Duration        |                          |System.Int32 PK_Project
-ErgoFab.Model.RegionalDivision                   |ErgoFab.Model.RegionalDivision|ErgoFab.Model.Organization|
+﻿
+→ 1.1 ErgoFab.DataAccess.IntegrationTests.ModelTests::ShowModel("X for Ergo Fab DB with 42 organizations") is starting
+[Test Cleaner] Postpone asynchronously 'Drop Backup W:\Temp\Integration Tests\Backups\Ergo Fab DB with 42 organizations.bak' for KEY='Global'
+[Test Cleaner] Postpone asynchronously "Drop DB 'Ergo Fab Test 2024-11-08 00001 0a49cb27bdc546c381e225e9ed72f444'" for KEY='Global'
+Entity Name                                      |ClrType                                                             |Base Name                 |Keys
+-------------------------------------------------+--------------------------------------------------------------------+--------------------------+---------------------------------------------------------------------------
+ErgoFab.Model.Country                            |ErgoFab.Model.Country                                               |                          |System.Int16 PK_Country
+ErgoFab.Model.Customer                           |ErgoFab.Model.Customer                                              |                          |System.Int32 PK_TheCustomer
+ErgoFab.Model.Department                         |ErgoFab.Model.Department                                            |                          |System.Int32 PK_Department
+ErgoFab.Model.Employee                           |ErgoFab.Model.Employee                                              |                          |System.Int32 PK_Employee
+ErgoFab.Model.Employee.TheEnrollment#Duration    |ErgoFab.Model.Duration                                              |                          |System.Int32 PK_Employee
+ErgoFab.Model.Expert                             |ErgoFab.Model.Expert                                                |                          |System.Int32 PK_Expert
+ErgoFab.Model.Industry                           |ErgoFab.Model.Industry                                              |                          |System.Int32 PK_Industry
+ErgoFab.Model.Occupation                         |ErgoFab.Model.Occupation                                            |                          |System.Int32 PK_Occupation
+ErgoFab.Model.Organization                       |ErgoFab.Model.Organization                                          |                          |System.Int32 PK_Organization
+ErgoFab.Model.Project                            |ErgoFab.Model.Project                                               |                          |System.Int32 PK_Project
+ErgoFab.Model.Project.TheProjectDuration#Duration|ErgoFab.Model.Duration                                              |                          |System.Int32 PK_Project
+ErgoFab.Model.RegionalDivision                   |ErgoFab.Model.RegionalDivision                                      |ErgoFab.Model.Organization|
+ExpertIndustry                                   |System.Collections.Generic.Dictionary`2[System.String,System.Object]|                          |System.Collections.Generic.IReadOnlyList`1[System.Object] PK_ExpertIndustry
 
 
 
-• Entity 'ErgoFab.Model.Country'
+• Entity 'ErgoFab.Model.Country', EntityType: Country
   System.Int16  → "Id"          | Property: Country.Id (short) Required PK AfterSave:Throw ValueGenerated.OnAdd
   System.String → "EnglishName" | Property: Country.EnglishName (string) Required
   System.Byte[] → "Flag"        | Property: Country.Flag (byte[])
   System.String → "LocalName"   | Property: Country.LocalName (string) Required
 
 
-
-• Entity 'ErgoFab.Model.Customer'
+• Entity 'ErgoFab.Model.Customer', EntityType: Customer
   System.Int32  → "CustomerId" | Property: Customer.CustomerId (int) Required PK AfterSave:Throw ValueGenerated.OnAdd
   System.String → "Name"       | Property: Customer.Name (string) Required MaxLength(20)
   System.String → "Surname"    | Property: Customer.Surname (string) Required MaxLength(20)
 
 
-
-• Entity 'ErgoFab.Model.Department'
+• Entity 'ErgoFab.Model.Department', EntityType: Department
   System.Int32  → "Id"             | Property: Department.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd
   System.Int32? → "HeadId"         | Property: Department.HeadId (int?) FK Index
   System.String → "Name"           | Property: Department.Name (string) Required
   System.Int32  → "OrganizationId" | Property: Department.OrganizationId (int) Required FK Index
   System.Int32? → "ParentId"       | Property: Department.ParentId (int?) FK Index
   Navigation: Department.Parent (Department) → Principal Department
-  Navigation: Department.TheEmployees (ICollection<Employee>) Collection → Dependent Employee Inverse: TheDepartment
+  Navigation: Department.TheEmployees (ICollection<Employee>) Collection ← Dependent Employee Inverse: TheDepartment
   Navigation: Department.TheHead (Employee) → Principal Employee
   Navigation: Department.TheOrganization (Organization) → Principal Organization Inverse: TheDepartments
+  ForeignKey: Department {'HeadId'} -> Employee {'EmpId'} ClientSetNull ToPrincipal: TheHead
+  ForeignKey: Department {'OrganizationId'} -> Organization {'Id'} Required Cascade ToDependent: TheDepartments ToPrincipal: TheOrganization
+  ForeignKey: Department {'ParentId'} -> Department {'Id'} ClientSetNull ToPrincipal: Parent
 
 
-• Entity 'ErgoFab.Model.Employee'
+• Entity 'ErgoFab.Model.Employee', EntityType: Employee
   System.Int32  → "EmpId"          | Property: Employee.EmpId (int) Required PK AfterSave:Throw ValueGenerated.OnAdd
   System.Int16? → "CountryId"      | Property: Employee.CountryId (short?) FK Index
   System.Int32  → "DepartmentId"   | Property: Employee.DepartmentId (int) Required FK Index
@@ -49,55 +57,83 @@ ErgoFab.Model.RegionalDivision                   |ErgoFab.Model.RegionalDivision
   System.String → "SurName"        | Property: Employee.SurName (string) Required MaxLength(400)
   Navigation: Employee.TheCountry (Country) → Principal Country
   Navigation: Employee.TheDepartment (Department) → Principal Department Inverse: TheEmployees
-  Navigation: Employee.TheEnrollment (Duration) → Dependent Employee.TheEnrollment#Duration
+  Navigation: Employee.TheEnrollment (Duration) ← Dependent Employee.TheEnrollment#Duration
   Navigation: Employee.TheOrganization (Organization) → Principal Organization Inverse: TheEmployees
+  ForeignKey: Employee {'CountryId'} -> Country {'Id'} ClientSetNull ToPrincipal: TheCountry
+  ForeignKey: Employee {'DepartmentId'} -> Department {'Id'} Required Cascade ToDependent: TheEmployees ToPrincipal: TheDepartment
+  ForeignKey: Employee {'OrganizationId'} -> Organization {'Id'} Required Restrict ToDependent: TheEmployees ToPrincipal: TheOrganization
 
 
-• Entity 'ErgoFab.Model.Employee.TheEnrollment#Duration', owned by 'ErgoFab.Model.Employee'
+• Entity 'ErgoFab.Model.Employee.TheEnrollment#Duration', owned by 'ErgoFab.Model.Employee', EntityType: Employee.TheEnrollment#Duration CLR Type: Duration Owned
   System.Int32           → "EmployeeEmpId" | Property: Employee.TheEnrollment#Duration.EmployeeEmpId (no field, int) Shadow Required PK FK AfterSave:Throw
   System.DateTimeOffset? → "Finish"        | Property: Employee.TheEnrollment#Duration.Finish (DateTimeOffset?)
   System.DateTimeOffset  → "Start"         | Property: Employee.TheEnrollment#Duration.Start (DateTimeOffset) Required
+  ForeignKey: Employee.TheEnrollment#Duration {'EmployeeEmpId'} -> Employee {'EmpId'} Unique Required RequiredDependent Ownership Cascade ToDependent: TheEnrollment
 
 
+• Entity 'ErgoFab.Model.Expert', EntityType: Expert
+  System.Int32  → "Id"      | Property: Expert.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd
+  System.String → "Name"    | Property: Expert.Name (string) Required MaxLength(300)
+  System.String → "Surname" | Property: Expert.Surname (string) Required MaxLength(400)
+  System.String → "Title"   | Property: Expert.Title (string) Required MaxLength(5)
 
-• Entity 'ErgoFab.Model.Occupation'
+
+• Entity 'ExpertIndustry', EntityType: ExpertIndustry (Dictionary<string, object>) CLR Type: Dictionary<string, object>
+  System.Int32 → "TheExpertsId"    | Property: ExpertIndustry (Dictionary<string, object>).TheExpertsId (no field, int) Indexer Required PK FK AfterSave:Throw
+  System.Int32 → "TheIndustriesId" | Property: ExpertIndustry (Dictionary<string, object>).TheIndustriesId (no field, int) Indexer Required PK FK Index AfterSave:Throw
+  ForeignKey: ExpertIndustry (Dictionary<string, object>) {'TheExpertsId'} -> Expert {'Id'} Required Cascade
+  ForeignKey: ExpertIndustry (Dictionary<string, object>) {'TheIndustriesId'} -> Industry {'Id'} Required Cascade
+
+
+• Entity 'ErgoFab.Model.Industry', EntityType: Industry
+  System.Int32  → "Id"          | Property: Industry.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd
+  System.String → "Description" | Property: Industry.Description (string) Required MaxLength(1024)
+  System.String → "Name"        | Property: Industry.Name (string) Required MaxLength(450)
+
+
+• Entity 'ErgoFab.Model.Occupation', EntityType: Occupation
   System.Int32  → "Id"         | Property: Occupation.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd
   System.Int32  → "EmployeeId" | Property: Occupation.EmployeeId (int) Required FK Index
   System.Int32  → "ProjectId"  | Property: Occupation.ProjectId (int) Required FK Index
   System.String → "Role"       | Property: Occupation.Role (string) Required
   Navigation: Occupation.Employee (Employee) → Principal Employee
   Navigation: Occupation.TheProject (Project) → Principal Project Inverse: Employees
+  ForeignKey: Occupation {'EmployeeId'} -> Employee {'EmpId'} Required Cascade ToPrincipal: Employee
+  ForeignKey: Occupation {'ProjectId'} -> Project {'Id'} Required Cascade ToDependent: Employees ToPrincipal: TheProject
 
 
-• Entity 'ErgoFab.Model.Organization'
+• Entity 'ErgoFab.Model.Organization', EntityType: Organization
   System.Int32  → "Id"         | Property: Organization.Id (int) Required PK FK AfterSave:Throw ValueGenerated.OnAdd
   System.Int16? → "CountryId"  | Property: Organization.CountryId (short?) FK Index
   System.Int32? → "DirectorId" | Property: Organization.DirectorId (int?) FK Index
   System.String → "Title"      | Property: Organization.Title (string) Required
   Navigation: Organization.TheCountry (Country) → Principal Country
-  Navigation: Organization.TheDepartments (ICollection<Department>) Collection → Dependent Department Inverse: TheOrganization
+  Navigation: Organization.TheDepartments (ICollection<Department>) Collection ← Dependent Department Inverse: TheOrganization
   Navigation: Organization.TheDirector (Employee) → Principal Employee
-  Navigation: Organization.TheEmployees (ICollection<Employee>) Collection → Dependent Employee Inverse: TheOrganization
-  Navigation: Organization.TheSubDivisions (ICollection<RegionalDivision>) Collection → Dependent RegionalDivision Inverse: ParentOrganization
+  Navigation: Organization.TheEmployees (ICollection<Employee>) Collection ← Dependent Employee Inverse: TheOrganization
+  Navigation: Organization.TheSubDivisions (ICollection<RegionalDivision>) Collection ← Dependent RegionalDivision Inverse: ParentOrganization
+  ForeignKey: Organization {'CountryId'} -> Country {'Id'} ClientSetNull ToPrincipal: TheCountry
+  ForeignKey: Organization {'DirectorId'} -> Employee {'EmpId'} ClientSetNull ToPrincipal: TheDirector
 
 
-• Entity 'ErgoFab.Model.Project'
+• Entity 'ErgoFab.Model.Project', EntityType: Project
   System.Int32  → "Id"          | Property: Project.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd
   System.Int32  → "IdCustomer"  | Property: Project.IdCustomer (int) Required FK Index
   System.String → "ProjectName" | Property: Project.ProjectName (string) Required
-  Navigation: Project.Customer (Customer) → Principal Customer
-  Navigation: Project.Employees (ICollection<Occupation>) Collection → Dependent Occupation Inverse: TheProject
-  Navigation: Project.TheProjectDuration (Duration) → Dependent Project.TheProjectDuration#Duration
+  Navigation: Project.Employees (ICollection<Occupation>) Collection ← Dependent Occupation Inverse: TheProject
+  Navigation: Project.TheCustomer (Customer) → Principal Customer
+  Navigation: Project.TheProjectDuration (Duration) ← Dependent Project.TheProjectDuration#Duration
+  ForeignKey: Project {'IdCustomer'} -> Customer {'CustomerId'} Required Cascade ToPrincipal: TheCustomer
 
 
-• Entity 'ErgoFab.Model.Project.TheProjectDuration#Duration', owned by 'ErgoFab.Model.Project'
+• Entity 'ErgoFab.Model.Project.TheProjectDuration#Duration', owned by 'ErgoFab.Model.Project', EntityType: Project.TheProjectDuration#Duration CLR Type: Duration Owned
   System.Int32           → "ProjectId" | Property: Project.TheProjectDuration#Duration.ProjectId (no field, int) Shadow Required PK FK AfterSave:Throw
   System.DateTimeOffset? → "Finish"    | Property: Project.TheProjectDuration#Duration.Finish (DateTimeOffset?)
   System.DateTimeOffset  → "Start"     | Property: Project.TheProjectDuration#Duration.Start (DateTimeOffset) Required
+  ForeignKey: Project.TheProjectDuration#Duration {'ProjectId'} -> Project {'Id'} Unique Required RequiredDependent Ownership Cascade ToDependent: TheProjectDuration
 
 
-
-• Entity 'ErgoFab.Model.RegionalDivision' ➛ 'ErgoFab.Model.Organization'
+• Entity 'ErgoFab.Model.RegionalDivision' ➛ 'ErgoFab.Model.Organization', EntityType: RegionalDivision Base: Organization
   System.Int32  → "Id"                | Property: Organization.Id (int) Required PK FK AfterSave:Throw ValueGenerated.OnAdd
   System.Int16? → "CountryId"         | Property: Organization.CountryId (short?) FK Index
   System.Int32? → "DirectorId"        | Property: Organization.DirectorId (int?) FK Index
@@ -105,9 +141,14 @@ ErgoFab.Model.RegionalDivision                   |ErgoFab.Model.RegionalDivision
   System.Int32  → "IdParent"          | Property: RegionalDivision.IdParent (int) Required FK Index
   System.String → "RegionDescription" | Property: RegionalDivision.RegionDescription (string) Required
   Navigation: Organization.TheCountry (Country) → Principal Country
-  Navigation: Organization.TheDepartments (ICollection<Department>) Collection → Dependent Department Inverse: TheOrganization
+  Navigation: Organization.TheDepartments (ICollection<Department>) Collection ← Dependent Department Inverse: TheOrganization
   Navigation: Organization.TheDirector (Employee) → Principal Employee
-  Navigation: Organization.TheEmployees (ICollection<Employee>) Collection → Dependent Employee Inverse: TheOrganization
-  Navigation: Organization.TheSubDivisions (ICollection<RegionalDivision>) Collection → Dependent RegionalDivision Inverse: ParentOrganization
+  Navigation: Organization.TheEmployees (ICollection<Employee>) Collection ← Dependent Employee Inverse: TheOrganization
+  Navigation: Organization.TheSubDivisions (ICollection<RegionalDivision>) Collection ← Dependent RegionalDivision Inverse: ParentOrganization
   Navigation: RegionalDivision.ParentOrganization (Organization) → Principal Organization Inverse: TheSubDivisions
+  ForeignKey: Organization {'CountryId'} -> Country {'Id'} ClientSetNull ToPrincipal: TheCountry
+  ForeignKey: Organization {'DirectorId'} -> Employee {'EmpId'} ClientSetNull ToPrincipal: TheDirector
+  ForeignKey: RegionalDivision {'Id'} -> Organization {'Id'} Unique Required Cascade
+  ForeignKey: RegionalDivision {'IdParent'} -> Organization {'Id'} Required Restrict ToDependent: TheSubDivisions ToPrincipal: ParentOrganization
 
+← 1.1 ErgoFab.DataAccess.IntegrationTests.ModelTests::ShowModel("X for Ergo Fab DB with 42 organizations") >PASSED< in 1,601.9 milliseconds (cpu: 94%, 1,500.000 = 1,468.750 [user] + 31.250 [kernel])

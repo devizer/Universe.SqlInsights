@@ -37,6 +37,11 @@ namespace ErgoFab.Model
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Expert>()
+                .HasMany(e => e.TheIndustries)
+                .WithMany(e => e.TheExperts);
+
+
             modelBuilder.Entity<Country>().Property(e => e.Flag).IsRequired(false);
 
 
@@ -76,6 +81,8 @@ namespace ErgoFab.Model
         public DbSet<Department> Department { get; set; }
 
         public DbSet<Country> Country { get; set; }
+        public DbSet<Expert> Expert { get; set; }
+        public DbSet<Industry> Industry { get; set; }
 
     }
 }
