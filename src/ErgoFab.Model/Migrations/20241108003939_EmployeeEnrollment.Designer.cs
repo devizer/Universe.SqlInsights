@@ -4,6 +4,7 @@ using ErgoFab.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ErgoFab.Model.Migrations
 {
     [DbContext(typeof(ErgoFabDbContext))]
-    partial class ErgoFabDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241108003939_EmployeeEnrollment")]
+    partial class EmployeeEnrollment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -280,10 +283,10 @@ namespace ErgoFab.Model.Migrations
                                 .HasColumnType("int");
 
                             b1.Property<DateTimeOffset?>("Finish")
-                                .HasColumnType("datetimeoffset(2)");
+                                .HasColumnType("datetimeoffset");
 
                             b1.Property<DateTimeOffset>("Start")
-                                .HasColumnType("datetimeoffset(2)");
+                                .HasColumnType("datetimeoffset");
 
                             b1.HasKey("EmployeeEmpId");
 
@@ -351,10 +354,10 @@ namespace ErgoFab.Model.Migrations
                                 .HasColumnType("int");
 
                             b1.Property<DateTimeOffset?>("Finish")
-                                .HasColumnType("datetimeoffset(2)");
+                                .HasColumnType("datetimeoffset");
 
                             b1.Property<DateTimeOffset>("Start")
-                                .HasColumnType("datetimeoffset(2)");
+                                .HasColumnType("datetimeoffset");
 
                             b1.HasKey("ProjectId");
 

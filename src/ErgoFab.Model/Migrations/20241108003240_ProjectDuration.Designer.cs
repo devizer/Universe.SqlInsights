@@ -4,6 +4,7 @@ using ErgoFab.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ErgoFab.Model.Migrations
 {
     [DbContext(typeof(ErgoFabDbContext))]
-    partial class ErgoFabDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241108003240_ProjectDuration")]
+    partial class ProjectDuration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -274,31 +277,9 @@ namespace ErgoFab.Model.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.OwnsOne("ErgoFab.Model.Duration", "Enrollment", b1 =>
-                        {
-                            b1.Property<int>("EmployeeEmpId")
-                                .HasColumnType("int");
-
-                            b1.Property<DateTimeOffset?>("Finish")
-                                .HasColumnType("datetimeoffset(2)");
-
-                            b1.Property<DateTimeOffset>("Start")
-                                .HasColumnType("datetimeoffset(2)");
-
-                            b1.HasKey("EmployeeEmpId");
-
-                            b1.ToTable("Employee");
-
-                            b1.WithOwner()
-                                .HasForeignKey("EmployeeEmpId");
-                        });
-
                     b.Navigation("Country");
 
                     b.Navigation("Department");
-
-                    b.Navigation("Enrollment")
-                        .IsRequired();
 
                     b.Navigation("Organization");
                 });
@@ -351,10 +332,10 @@ namespace ErgoFab.Model.Migrations
                                 .HasColumnType("int");
 
                             b1.Property<DateTimeOffset?>("Finish")
-                                .HasColumnType("datetimeoffset(2)");
+                                .HasColumnType("datetimeoffset");
 
                             b1.Property<DateTimeOffset>("Start")
-                                .HasColumnType("datetimeoffset(2)");
+                                .HasColumnType("datetimeoffset");
 
                             b1.HasKey("ProjectId");
 

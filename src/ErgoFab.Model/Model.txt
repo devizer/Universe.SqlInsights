@@ -1,0 +1,85 @@
+﻿Entity Name                                   |ClrType                       |Base Name                 |Keys
+----------------------------------------------+------------------------------+--------------------------+----------------------------
+ErgoFab.Model.Country                         |ErgoFab.Model.Country         |                          |System.Int16 PK_Country
+ErgoFab.Model.Customer                        |ErgoFab.Model.Customer        |                          |System.Int32 PK_Customer
+ErgoFab.Model.Department                      |ErgoFab.Model.Department      |                          |System.Int32 PK_Department
+ErgoFab.Model.Employee                        |ErgoFab.Model.Employee        |                          |System.Int32 PK_Employee
+ErgoFab.Model.Employee.Enrollment#Duration    |ErgoFab.Model.Duration        |                          |System.Int32 PK_Employee
+ErgoFab.Model.Occupation                      |ErgoFab.Model.Occupation      |                          |System.Int32 PK_Occupation
+ErgoFab.Model.Organization                    |ErgoFab.Model.Organization    |                          |System.Int32 PK_Organization
+ErgoFab.Model.Project                         |ErgoFab.Model.Project         |                          |System.Int32 PK_Project
+ErgoFab.Model.Project.ProjectDuration#Duration|ErgoFab.Model.Duration        |                          |System.Int32 PK_Project
+ErgoFab.Model.RegionalDivision                |ErgoFab.Model.RegionalDivision|ErgoFab.Model.Organization|
+
+
+
+• Entity 'ErgoFab.Model.Country'
+  System.Int16  → "Id"          | Property: Country.Id (short) Required PK AfterSave:Throw ValueGenerated.OnAdd
+  System.String → "EnglishName" | Property: Country.EnglishName (string) Required
+  System.Byte[] → "Flag"        | Property: Country.Flag (byte[])
+  System.String → "LocalName"   | Property: Country.LocalName (string) Required
+
+
+• Entity 'ErgoFab.Model.Customer'
+  System.Int32  → "CustomerId" | Property: Customer.CustomerId (int) Required PK AfterSave:Throw ValueGenerated.OnAdd
+  System.String → "Name"       | Property: Customer.Name (string) Required MaxLength(20)
+  System.String → "Surname"    | Property: Customer.Surname (string) Required MaxLength(20)
+
+
+• Entity 'ErgoFab.Model.Department'
+  System.Int32  → "Id"             | Property: Department.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd
+  System.Int32? → "HeadId"         | Property: Department.HeadId (int?) FK Index
+  System.String → "Name"           | Property: Department.Name (string) Required
+  System.Int32  → "OrganizationId" | Property: Department.OrganizationId (int) Required FK Index
+  System.Int32? → "ParentId"       | Property: Department.ParentId (int?) FK Index
+
+
+• Entity 'ErgoFab.Model.Employee'
+  System.Int32  → "EmpId"          | Property: Employee.EmpId (int) Required PK AfterSave:Throw ValueGenerated.OnAdd
+  System.Int16? → "CountryId"      | Property: Employee.CountryId (short?) FK Index
+  System.Int32  → "DepartmentId"   | Property: Employee.DepartmentId (int) Required FK Index
+  System.String → "Name"           | Property: Employee.Name (string) Required MaxLength(300)
+  System.Int32  → "OrganizationId" | Property: Employee.OrganizationId (int) Required FK Index
+  System.String → "SurName"        | Property: Employee.SurName (string) Required MaxLength(400)
+
+
+• Entity 'ErgoFab.Model.Employee.Enrollment#Duration'
+  System.Int32           → "EmployeeEmpId" | Property: Employee.Enrollment#Duration.EmployeeEmpId (no field, int) Shadow Required PK FK AfterSave:Throw
+  System.DateTimeOffset? → "Finish"        | Property: Employee.Enrollment#Duration.Finish (DateTimeOffset?)
+  System.DateTimeOffset  → "Start"         | Property: Employee.Enrollment#Duration.Start (DateTimeOffset) Required
+
+
+• Entity 'ErgoFab.Model.Occupation'
+  System.Int32  → "Id"         | Property: Occupation.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd
+  System.Int32  → "EmployeeId" | Property: Occupation.EmployeeId (int) Required FK Index
+  System.Int32  → "ProjectId"  | Property: Occupation.ProjectId (int) Required FK Index
+  System.String → "Role"       | Property: Occupation.Role (string) Required
+
+
+• Entity 'ErgoFab.Model.Organization'
+  System.Int32  → "Id"         | Property: Organization.Id (int) Required PK FK AfterSave:Throw ValueGenerated.OnAdd
+  System.Int16? → "CountryId"  | Property: Organization.CountryId (short?) FK Index
+  System.Int32? → "DirectorId" | Property: Organization.DirectorId (int?) FK Index
+  System.String → "Title"      | Property: Organization.Title (string) Required
+
+
+• Entity 'ErgoFab.Model.Project'
+  System.Int32  → "Id"          | Property: Project.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd
+  System.Int32  → "IdCustomer"  | Property: Project.IdCustomer (int) Required FK Index
+  System.String → "ProjectName" | Property: Project.ProjectName (string) Required
+
+
+• Entity 'ErgoFab.Model.Project.ProjectDuration#Duration'
+  System.Int32           → "ProjectId" | Property: Project.ProjectDuration#Duration.ProjectId (no field, int) Shadow Required PK FK AfterSave:Throw
+  System.DateTimeOffset? → "Finish"    | Property: Project.ProjectDuration#Duration.Finish (DateTimeOffset?)
+  System.DateTimeOffset  → "Start"     | Property: Project.ProjectDuration#Duration.Start (DateTimeOffset) Required
+
+
+• Entity 'ErgoFab.Model.RegionalDivision' ➛ 'ErgoFab.Model.Organization'
+  System.Int32  → "Id"                | Property: Organization.Id (int) Required PK FK AfterSave:Throw ValueGenerated.OnAdd
+  System.Int16? → "CountryId"         | Property: Organization.CountryId (short?) FK Index
+  System.Int32? → "DirectorId"        | Property: Organization.DirectorId (int?) FK Index
+  System.String → "Title"             | Property: Organization.Title (string) Required
+  System.Int32  → "IdParent"          | Property: RegionalDivision.IdParent (int) Required FK Index
+  System.String → "RegionDescription" | Property: RegionalDivision.RegionDescription (string) Required
+

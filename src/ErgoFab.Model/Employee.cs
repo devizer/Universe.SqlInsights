@@ -23,6 +23,8 @@ namespace ErgoFab.Model
         [MaxLength(400)]
         public string SurName { get; set; }
 
+        public virtual Duration Enrollment { get; set; }
+
 
         [ForeignKey(nameof(Department))]
         [Required]

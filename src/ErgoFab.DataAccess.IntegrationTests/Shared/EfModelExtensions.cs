@@ -38,10 +38,19 @@ public static class EfModelExtensions
             var maxTwoColumnsLength = Math.Max(properties.Select(x => twoColumns(x).Length).Max(), 1);
 
             /*
+            TODO: 1. Where FK Index point to?
+                  2. Derivatives for entities
+
             IProperty p = null;
             var firstPrincipal = p.GetPrincipals().FirstOrDefault();
             firstPrincipal.
             */
+
+
+            entityType.IsOwned();
+            var principalOwnerName = entityType.FindOwnership()?.PrincipalEntityType?.Name;
+
+
 
 
             var humanProperties = entityType
@@ -51,7 +60,7 @@ public static class EfModelExtensions
             ret
                 .AppendLine()
                 .AppendLine()
-                .AppendLine($"• Entity {entityType.FormatEntityTypeParentsChain()}")
+                .AppendLine($"• Entity {entityType.FormatEntityTypeParentsChain()}{(principalOwnerName == null ? "": $", owned by '{principalOwnerName}'")}")
                 .AppendLine(string.Join(nl, humanProperties));
         }
 

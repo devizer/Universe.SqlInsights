@@ -4,6 +4,7 @@ using ErgoFab.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ErgoFab.Model.Migrations
 {
     [DbContext(typeof(ErgoFabDbContext))]
-    partial class ErgoFabDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241108005025_DurationPrecision2")]
+    partial class DurationPrecision2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

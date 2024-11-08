@@ -9,6 +9,7 @@ namespace ErgoFab.Model
         public int Id { get; set; }
 
         public string ProjectName { get; set; }
+        public virtual Duration ProjectDuration { get; set; }
 
         [ForeignKey(nameof(Customer))]
         public int IdCustomer { get; set; }
@@ -18,4 +19,6 @@ namespace ErgoFab.Model
         public virtual ICollection<Occupation> Employees { get; set; }
 
     }
+
+
 }
