@@ -19,7 +19,7 @@ namespace Universe.SqlInsights.Shared
         bool AnyAliveSession();
 
         // For universe.sqltrace.w3app
-#if NETSTANDARD
+#if NETSTANDARD || NET461
         Task<IEnumerable<ActionSummaryCounters>> GetActionsSummary(long idSession, IEnumerable<string> optionalApps, IEnumerable<string> optionalHosts);
         Task<string> GetActionsSummaryTimestamp(long idSession, IEnumerable<string> optionalApps, IEnumerable<string> optionalHosts);
         Task<IEnumerable<ActionDetailsWithCounters>> GetActionsByKeyPath(long idSession, SqlInsightsActionKeyPath keyPath, int lastN, IEnumerable<string> optionalApps, IEnumerable<string> optionalHosts);

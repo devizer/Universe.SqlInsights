@@ -72,7 +72,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                     var sqlError = ex.FindSqlError();
                     // string err = (sqlError == null ? "" : $"#{sqlError.Number} ") + ex.Message;
                     string err = ex.GetExceptionDigest();
-                    var counter = errors.GetOrAdd(err, key => new CounterHolder());
+                    var counter = errors.GetOrAdd(err, errorKey => new CounterHolder());
                     counter.Total += 1;
                 }
             });

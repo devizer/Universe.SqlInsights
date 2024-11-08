@@ -12,7 +12,7 @@ namespace Universe.SqlInsights.SqlServerStorage
 {
     public partial class SqlServerSqlInsightsStorage 
     {
-#if NETSTANDARD || NET5_0
+#if NETSTANDARD || NET5_0 || NET461
         
         // IEnumerable<string> optionalApps = null, IEnumerable<string> optionalHosts = null
         private OptionalParametersInfo BuildOptionalParameters(

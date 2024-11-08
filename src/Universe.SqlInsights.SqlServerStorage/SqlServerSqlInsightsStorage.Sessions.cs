@@ -53,7 +53,7 @@ Select 1 [Any]";
         }
 
 
-#if NETSTANDARD || NET5_0
+#if NETSTANDARD || NET5_0 || NET461
         
         public async Task<IEnumerable<SqlInsightsSession>> GetSessions()
         {

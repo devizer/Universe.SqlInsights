@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ErgoFab.DataAccess.Integrat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Universe.SqlInsights.NUnit", "Universe.SqlInsights.NUnit\Universe.SqlInsights.NUnit.csproj", "{6859E702-4758-4838-A884-5D369D1CB507}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Universe.SqlInsights.GenericInterceptor", "Universe.SqlInsights.GenericInterceptor\Universe.SqlInsights.GenericInterceptor.csproj", "{1D8F4A4B-2876-4487-A043-173B85BB6E60}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{6859E702-4758-4838-A884-5D369D1CB507}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6859E702-4758-4838-A884-5D369D1CB507}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6859E702-4758-4838-A884-5D369D1CB507}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D8F4A4B-2876-4487-A043-173B85BB6E60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D8F4A4B-2876-4487-A043-173B85BB6E60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D8F4A4B-2876-4487-A043-173B85BB6E60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D8F4A4B-2876-4487-A043-173B85BB6E60}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
