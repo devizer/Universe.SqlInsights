@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data;
-using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -10,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Universe.CpuUsage;
+using Universe.SqlInsights.GenericInterceptor;
 using Universe.SqlInsights.Shared;
 using Universe.SqlTrace;
 
@@ -138,7 +138,7 @@ namespace Universe.SqlInsights.NetCore
 
                     double durationMilliseconds = stopwatch.ElapsedTicks / (double) Stopwatch.Frequency * 1000d;
 
-                    // TODO: Invoke SqlGenericInterceptor.PersistAction(...)
+                    // TODO: Invoke SqlGenericInterceptor.StoreAction(...)
                     ActionDetailsWithCounters actionDetails = new ActionDetailsWithCounters()
                     {
                         AppName = config.AppName,
@@ -190,7 +190,7 @@ namespace Universe.SqlInsights.NetCore
                                 new SqlInsightsActionKeyPath($"[{storage.GetType().Name}]", "AddAction()"),
                                 connectionString =>
                                 {
-                                    // var traceableStorage = storage as ITraceableStorage;
+                                    var traceableStorage = storage as ITraceableStorage;
                                     traceableStorage.ConnectionString = connectionString;
                                     storage?.AddAction(actionDetails);
                                 },

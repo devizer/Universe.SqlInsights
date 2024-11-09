@@ -10,7 +10,7 @@ namespace Universe.SqlInsights.GenericInterceptor
     {
 
 
-        public static void PersistAction(
+        public static ActionDetailsWithCounters StoreAction(
             ISqlInsightsConfiguration configuration,
             ISqlInsightsStorage storage,
             ICrossPlatformLogger crossPlatformLogger,
@@ -106,6 +106,8 @@ namespace Universe.SqlInsights.GenericInterceptor
                 }
 
                 // Console.WriteLine($"⚠ Processed  {aboutRequest}");
+
+                return actionDetails;
             }
             catch (Exception ex)
             {

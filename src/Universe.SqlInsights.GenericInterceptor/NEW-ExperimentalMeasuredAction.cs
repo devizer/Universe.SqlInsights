@@ -65,65 +65,27 @@ namespace Universe.SqlInsights.GenericInterceptor
 
             config.DeleteTraceFile(traceReader.TraceFile);
 
-            ActionDetailsWithCounters actionDetailsWithCounters = new ActionDetailsWithCounters()
-            {
-                Key = keyPath,
-                AppDuration = duration,
-                AppKernelUsage = (cpuUsage?.KernelUsage.TotalSeconds).GetValueOrDefault(),
-                AppUserUsage = (cpuUsage?.UserUsage.TotalSeconds).GetValueOrDefault(),
-                AppName = config.AppName,
-                HostId = config.HostId,
-                At = DateTime.UtcNow,
-                IsOK = exception == null,
-                BriefException = null,
-                BriefSqlError = null,
-                ExceptionAsString = null,
-                SqlStatements = details.Select(x => new ActionDetailsWithCounters.SqlStatement()
-                {
-                    Counters = x.Counters,
-                    SpName = x.SpName,
-                    Sql = x.Sql,
-                    SqlErrorCode = x.SqlErrorCode,
-                    SqlErrorText = x.SqlErrorText,
-                }).ToList()
-            };
+            var actionDetailsWithCounters = SqlGenericInterceptor.StoreAction(
+                config,
+                null,
+                logger,
+                keyPath,
+                duration,
+                cpuUsage.GetValueOrDefault(),
+                exception,
+                details,
+                SqlInsightsReport.Instance
+            );
 
-            SqlExceptionInfo sqlException = exception.FindSqlError();
-            if (sqlException != null)
-            {
-                actionDetailsWithCounters.BriefSqlError = new BriefSqlError()
-                {
-                    Message = sqlException.Message,
-                    SqlErrorCode = sqlException.Number,
-                };
-            }
-
-            if (exception != null)
-            {
-                actionDetailsWithCounters.ExceptionAsString = exception.ToString();
-                actionDetailsWithCounters.BriefException = exception.GetBriefExceptionKey();
-            }
-
-            SqlInsightsReport.Instance.Add(actionDetailsWithCounters);
-
-            StatByAction stat;
-            if (!_First.TryGetValue(keyPath.ToString(), out stat))
-            {
-                stat = _First[keyPath.ToString()] = new StatByAction() { Count = 1, Duration = duration };
-            }
-            else
-            {
-                stat = _Avg.GetOrAdd(keyPath.ToString(), key => new StatByAction());
-                stat.Count++;
-                stat.Duration += duration;
-            }
+            // TODO: Return it from SqlGenericInterceptor.StoreAction(...)
+            var stat = SqlInsightsReport.Instance.GetAverage(keyPath);
 
             StringBuilder log = new StringBuilder();
             log.AppendLine($"Detailed metrics for «{keyPath}»");
             if (actionDetailsWithCounters.BriefException != null)
                 log.AppendLine($"    Fail ...............: {actionDetailsWithCounters.BriefException}");
 
-            log.AppendLine($"    Duration ...........: {duration:n1} milliseconds, average={stat.Duration / stat.Count:n1}, count={stat.Count}");
+            log.AppendLine($"    Duration ...........: {duration:n1} milliseconds, average={stat?.AppDuration / stat?.Count:n1}, count={stat?.Count}");
             log.AppendLine($"    Cpu Usage ..........: [user] {cpuUsage?.UserUsage.TotalMicroSeconds / 1000d:n1} + [kernel] {cpuUsage?.KernelUsage.TotalMicroSeconds / 1000d:n1} milliseconds");
             log.AppendLine($"    Sql Summary ........: {sqlProfilerSummary}");
             int n = 0;

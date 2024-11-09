@@ -40,6 +40,18 @@ namespace Universe.SqlInsights.Shared
                 return Avg.Values.ToList();
         }
 
+        public ActionSummaryCounters GetAverage(SqlInsightsActionKeyPath keyPath)
+        {
+            lock (Sync)
+            {
+                ActionSummaryCounters value;
+                if (Avg.TryGetValue(keyPath, out var ret))
+                    return ret;
+            }
+
+            return null;
+        }
+
         // private bool MeasureSqlMetrics => LegacySqlProfiler.SqlInsightsConfiguration.MeasureSqlMetrics;
         private bool MeasureSqlMetrics { get; } = true;
 

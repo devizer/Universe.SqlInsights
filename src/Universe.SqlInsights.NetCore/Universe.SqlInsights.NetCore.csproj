@@ -1,12 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFrameworks>;netcoreapp1.0;netcoreapp1.1;net5.0</TargetFrameworks>
+        <TargetFrameworks>;netcoreapp1.0;netcoreapp1.1;netcoreapp3.0;netcoreapp3.1;net5.0;net6.0;net8.0</TargetFrameworks>
+        <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
     </PropertyGroup>
 
     <Import Project="..\Shared.props" />
 
     <ItemGroup>
+      <ProjectReference Include="..\Universe.SqlInsights.GenericInterceptor\Universe.SqlInsights.GenericInterceptor.csproj" />
       <ProjectReference Include="..\Universe.SqlInsights.Shared\Universe.SqlInsights.Shared.csproj" />
     </ItemGroup>
 
@@ -19,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="All" />
         <PackageReference Include="Universe.CpuUsage" Version="2.2.497.598" />
         <PackageReference Include="Universe.SqlTrace" Version="1.6.5" />
     </ItemGroup>
