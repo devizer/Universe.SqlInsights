@@ -15,7 +15,10 @@ namespace Universe.SqlInsights.AspNetLegacy
 
     public class LegacySqlProfilerContext
     {
+        // An app should pick it app, inject into DI Container using ISqlInsightsConfiguration.SqlClientAppNameFormat
         public string ActionId { get; set; }
+
+        // An app should assign ActionKeyPath using (by Filter, or by Module)
         public SqlInsightsActionKeyPath ActionKeyPath { get; set; }
 
         [ThreadStatic]

@@ -17,7 +17,7 @@ namespace Universe.SqlInsights.NetCore
         {
             if (severity == LogSeverity.Info)
                 Logger?.LogInformation(message);
-#if !NETCOREAPP1_1 && !NETCOREAPP1_0            
+#if !NETCOREAPP1_1 && !NETCOREAPP1_0
             if (severity == LogSeverity.Warning)
                 Logger?.LogWarning(exception, message);
             if (severity == LogSeverity.Error)

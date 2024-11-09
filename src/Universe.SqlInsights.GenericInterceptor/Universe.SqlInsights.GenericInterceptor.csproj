@@ -1,12 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<Import Project="..\Shared-Files\Net-2x-4x-Support.proj" />
+	<Import Project="..\Shared-Files\Microsoft.Data.SqlClient.proj" />
 
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;net462;net35;net40;net45</TargetFrameworks>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<Nullable>disable</Nullable>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Universe.CpuUsage" Version="2.2.497.598" />
+	</ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Universe.SqlInsights.Shared\Universe.SqlInsights.Shared.csproj" />

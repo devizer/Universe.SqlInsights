@@ -62,14 +62,14 @@ namespace Universe.SqlInsights.NetCore
             {
                 // var aboutRequest = $"{context.Request?.GetDisplayUrl()} {context.Request?.Method}, {context.TraceIdentifier}";
                 // Console.WriteLine($"⚠ Processing {aboutRequest}");
-                var serviceProvider = context.RequestServices;
+                IServiceProvider serviceProvider = context.RequestServices;
                 var idHolder = serviceProvider.GetRequiredService<ActionIdHolder>();
                 var keyPathHolder = serviceProvider.GetRequiredService<KeyPathHolder>();
                 idHolder.Id = Guid.NewGuid();
-                var config = serviceProvider.GetRequiredService<ISqlInsightsConfiguration>();
+                ISqlInsightsConfiguration config = serviceProvider.GetRequiredService<ISqlInsightsConfiguration>();
                 
                 // DEBUG
-                var storage = serviceProvider.GetRequiredService<ISqlInsightsStorage>();
+                ISqlInsightsStorage storage = serviceProvider.GetRequiredService<ISqlInsightsStorage>();
                 var anyAliveSession = storage.AnyAliveSession();
                 if (!anyAliveSession)
                 {
@@ -136,6 +136,9 @@ namespace Universe.SqlInsights.NetCore
 
                     Exception lastError = serviceProvider.GetRequiredService<ExceptionHolder>().Error;
 
+                    double durationMilliseconds = stopwatch.ElapsedTicks / (double) Stopwatch.Frequency * 1000d;
+
+                    // TODO: Invoke SqlGenericInterceptor.PersistAction(...)
                     ActionDetailsWithCounters actionDetails = new ActionDetailsWithCounters()
                     {
                         AppName = config.AppName,
@@ -143,7 +146,7 @@ namespace Universe.SqlInsights.NetCore
                         Key = keyPath,
                         At = DateTime.UtcNow,
                         IsOK = lastError == null,
-                        AppDuration = stopwatch.ElapsedTicks / (double) Stopwatch.Frequency * 1000d,
+                        AppDuration = durationMilliseconds,
                         AppKernelUsage = watcherTotals.KernelUsage.TotalMicroSeconds / 1000L,
                         AppUserUsage = watcherTotals.UserUsage.TotalMicroSeconds / 1000L,
                     };
@@ -187,7 +190,7 @@ namespace Universe.SqlInsights.NetCore
                                 new SqlInsightsActionKeyPath($"[{storage.GetType().Name}]", "AddAction()"),
                                 connectionString =>
                                 {
-                                    var traceableStorage = storage as ITraceableStorage;
+                                    // var traceableStorage = storage as ITraceableStorage;
                                     traceableStorage.ConnectionString = connectionString;
                                     storage?.AddAction(actionDetails);
                                 },

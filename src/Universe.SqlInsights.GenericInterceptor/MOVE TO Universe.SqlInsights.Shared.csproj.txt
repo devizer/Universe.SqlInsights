@@ -1,0 +1,5 @@
+Move them here (TODO):
+
+ ExperimentalMeasuredAction.cs 7K (Universe.SqlInsights.NetCore.csproj)
+ SqlInsightsCoreExtensions.cs 10K (Universe.SqlInsights.NetCore.csproj)
+ SqlInsightsModule 9K (Universe.SqlInsights.AspNetLegacy.csproj)

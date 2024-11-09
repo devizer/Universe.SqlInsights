@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <!-- NET 4.6.1 Supports Microsoft.Data.SqlClient -->
@@ -8,6 +8,7 @@
     <Import Project="..\Shared.props" />
     <Import Project="..\Shared-Files\Net-2x-4x-Support.proj" />
 
+	<!-- Microsoft.Data.SqlClient is only for SqlException.Number -->
     <ItemGroup Condition=" '$(TargetFramework)' == 'net461' Or '$(TargetFramework)' == 'netstandard2.0' ">
         <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.5" />
     </ItemGroup>
