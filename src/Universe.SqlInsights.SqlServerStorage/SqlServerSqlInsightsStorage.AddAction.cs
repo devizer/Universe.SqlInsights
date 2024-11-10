@@ -51,7 +51,17 @@ Values(@KeyPath, @IdSession, @AppName, @HostId, Cast(@@DBTS as BigInt), @Count, 
 ";
 
 
-            var aliveSessions = GetAliveSessions().ToList();
+            
+            List<long> aliveSessions;
+            try
+            {
+                aliveSessions = GetAliveSessions().ToList();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "[Sql Insights] Storage does not respond for GetAliveSessions()");
+                throw;
+            }
 
             if (DebugAddAction)
             {

@@ -138,7 +138,7 @@ namespace Universe.SqlInsights.NetCore
 
                     double durationMilliseconds = stopwatch.ElapsedTicks / (double) Stopwatch.Frequency * 1000d;
 
-                    // TODO: Invoke SqlGenericInterceptor.StoreAction(...)
+                    // Done: Invoke SqlGenericInterceptor.StoreAction(...)
                     var actionDetails2 = SqlGenericInterceptor.StoreAction(
                         config,
                         storage,

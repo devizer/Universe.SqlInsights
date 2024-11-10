@@ -41,7 +41,8 @@ namespace Universe.SqlInsights.W3Api.SqlInsightsIntegration
             Configuration.GetConnectionString("SqlInsights")
             ?? throw new InvalidOperationException("Needs SqlInsights ConnectionString");
 
-        public string HistoryConnectionString => throw new NotSupportedException("HistoryConnectionString is the same as ConnectionString");
+        // public string HistoryConnectionString => throw new NotSupportedException("HistoryConnectionString is the same as ConnectionString");
+        public string HistoryConnectionString => ConnectionString;
         public string SqlClientAppNameFormat => $"{this.AppName}-{{0}}";
         public int MaxTraceFileSizeKb { get; } = 128 * 1024;
         public int LatestInmemoryDetailRows { get; } = 1;

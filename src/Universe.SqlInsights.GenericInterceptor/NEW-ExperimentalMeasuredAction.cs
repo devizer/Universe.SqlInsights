@@ -13,29 +13,65 @@ namespace Universe.SqlInsights.GenericInterceptor
     public static class ExperimentalMeasuredAction
     {
 
-        // TODO: ASYNC
-        public static void Perform(
+        public static void PerformInternalAction(
             ISqlInsightsConfiguration config,
             SqlInsightsActionKeyPath keyPath,
             Action<string> action,
             ICrossPlatformLogger logger
         )
         {
+            Perform(
+                config,
+                config.HistoryConnectionString, 
+                keyPath,
+                action,
+                logger
+            );
+        }
+
+        public static void PerformApplicationAction(
+            ISqlInsightsConfiguration config,
+            SqlInsightsActionKeyPath keyPath,
+            Action<string> action,
+            ICrossPlatformLogger logger
+        )
+        {
+            Perform(
+                config,
+                config.ConnectionString, 
+                keyPath, 
+                action, 
+                logger
+                );
+        }
+
+
+        // TODO: ASYNC
+        public static void Perform(
+            ISqlInsightsConfiguration config,
+            string traceableConnectionString,
+            SqlInsightsActionKeyPath keyPath,
+            Action<string> action,
+            ICrossPlatformLogger logger
+        )
+        {
+            // traceableConnectionString is either Storage's or AdventureWorks' DB
+
             string idAction = Guid.NewGuid().ToString("N");
 
             SqlTraceReader traceReader = new SqlTraceReader();
             traceReader.MaxFileSize = config.MaxTraceFileSizeKb;
             string appName = string.Format(config.SqlClientAppNameFormat, idAction);
 
-            SqlConnectionStringBuilder csb = new SqlConnectionStringBuilder(config.ConnectionString)
+            // For AdventureWorks we should 
+            SqlConnectionStringBuilder csb = new SqlConnectionStringBuilder(traceableConnectionString)
             {
                 ApplicationName = appName
             };
-
             string connectionString = csb.ConnectionString;
 
             TraceRowFilter appFilter = TraceRowFilter.CreateByApplication(appName);
-            traceReader.Start(config.ConnectionString,
+            traceReader.Start(traceableConnectionString /*config.ConnectionString*/ ,
                 config.SqlTracesDirectory,
                 TraceColumns.Application | TraceColumns.Sql,
                 appFilter);

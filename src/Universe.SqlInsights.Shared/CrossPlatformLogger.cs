@@ -25,20 +25,17 @@ namespace Universe.SqlInsights.Shared
         {
             logger?.Log(LogSeverity.Warning, message, error);
         }
+        public static void LogWarning(this ICrossPlatformLogger logger, string message)
+        {
+            logger?.Log(LogSeverity.Warning, message, null);
+        }
         public static void LogError(this ICrossPlatformLogger logger, Exception error, string message)
         {
             logger?.Log(LogSeverity.Error, message, error);
         }
-    }
-
-    public class NullCrossPlatformLogger : ICrossPlatformLogger
-    {
-        public static readonly ICrossPlatformLogger Instance = new NullCrossPlatformLogger();
-
-        public void Log(LogSeverity severity, string message, Exception exception)
+        public static void LogError(this ICrossPlatformLogger logger, string message)
         {
+            logger?.Log(LogSeverity.Error, message, null);
         }
     }
-
-
 }

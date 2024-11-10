@@ -10,7 +10,7 @@
     </Target>
 
     <PropertyGroup>
-        <TargetFrameworks>net35;net40;net45</TargetFrameworks>
+        <TargetFrameworks>net35;net40;net45;net46</TargetFrameworks>
     </PropertyGroup>
 
     <Import Project="..\Shared.props" />
@@ -50,6 +50,7 @@
 
 
     <ItemGroup>
+      <ProjectReference Include="..\Universe.SqlInsights.GenericInterceptor\Universe.SqlInsights.GenericInterceptor.csproj" />
       <ProjectReference Include="..\Universe.SqlInsights.Shared\Universe.SqlInsights.Shared.csproj" />
       <ProjectReference Include="..\Universe.SqlInsights.SqlServerStorage\Universe.SqlInsights.SqlServerStorage.csproj" />
     </ItemGroup>

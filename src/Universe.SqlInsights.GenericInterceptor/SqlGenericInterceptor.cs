@@ -74,7 +74,8 @@ namespace Universe.SqlInsights.GenericInterceptor
                 {
                     if (storage is ITraceableStorage traceableStorage)
                     {
-                        ExperimentalMeasuredAction.Perform(
+                        // for StoreAction we always trace HistoryConnectionString
+                        ExperimentalMeasuredAction.PerformInternalAction(
                             config,
                             new SqlInsightsActionKeyPath($"[{storage.GetType().Name}]", "AddAction()"),
                             connectionString =>
