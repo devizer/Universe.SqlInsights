@@ -139,85 +139,18 @@ namespace Universe.SqlInsights.NetCore
                     double durationMilliseconds = stopwatch.ElapsedTicks / (double) Stopwatch.Frequency * 1000d;
 
                     // TODO: Invoke SqlGenericInterceptor.StoreAction(...)
-                    ActionDetailsWithCounters actionDetails = new ActionDetailsWithCounters()
-                    {
-                        AppName = config.AppName,
-                        HostId = config.HostId,
-                        Key = keyPath,
-                        At = DateTime.UtcNow,
-                        IsOK = lastError == null,
-                        AppDuration = durationMilliseconds,
-                        AppKernelUsage = watcherTotals.KernelUsage.TotalMicroSeconds / 1000L,
-                        AppUserUsage = watcherTotals.UserUsage.TotalMicroSeconds / 1000L,
-                    };
+                    var actionDetails2 = SqlGenericInterceptor.StoreAction(
+                        config,
+                        storage,
+                        logger,
+                        keyPath,
+                        durationMilliseconds,
+                        watcherTotals,
+                        lastError,
+                        details,
+                        SqlInsightsReport.Instance
+                    );
 
-                    actionDetails.SqlStatements.AddRange(details.Select(x =>
-                        new ActionDetailsWithCounters.SqlStatement()
-                        {
-                            Counters = x.Counters,
-                            Sql = x.Sql,
-                            SpName = x.SpName,
-                            SqlErrorCode = x.SqlErrorCode,
-                            SqlErrorText = x.SqlErrorText,
-                        }));
-
-                    // ERROR
-                    SqlExceptionInfo sqlException = lastError.FindSqlError();
-                    if (sqlException != null)
-                    {
-                        actionDetails.BriefSqlError = new BriefSqlError()
-                        {
-                            Message = sqlException.Message,
-                            SqlErrorCode = sqlException.Number,
-                        };
-                    }
-
-                    if (lastError != null)
-                    {
-                        actionDetails.ExceptionAsString = lastError.ToString();
-                        actionDetails.BriefException = lastError.GetBriefExceptionKey();
-                    }
-
-                    SqlInsightsReport inMemoryReport = serviceProvider.GetRequiredService<SqlInsightsReport>();
-                    bool canSummarize = inMemoryReport.Add(actionDetails);
-
-                    if (canSummarize) // not a first call?
-                    {
-                        if (storage is ITraceableStorage traceableStorage)
-                        {
-                            ExperimentalMeasuredAction.Perform(
-                                config,
-                                new SqlInsightsActionKeyPath($"[{storage.GetType().Name}]", "AddAction()"),
-                                connectionString =>
-                                {
-                                    var traceableStorage = storage as ITraceableStorage;
-                                    traceableStorage.ConnectionString = connectionString;
-                                    storage?.AddAction(actionDetails);
-                                },
-                                logger
-                            );
-                        }
-                        else
-                        {
-                            storage?.AddAction(actionDetails);
-                        }
-                    }
-
-                    // TODO: Implement 'isPoolingOn' (cached) and 'dbConnection' (opened?)   
-                    bool isPoolingOn = false;
-                    if (isPoolingOn)
-                    {
-                        IDbConnection dbConnection = null;
-#if !NETCOREAPP1_0 && !NETCOREAPP1_1 
-                        if (dbConnection is Microsoft.Data.SqlClient.SqlConnection msDbConnection)
-                            Microsoft.Data.SqlClient.SqlConnection.ClearPool(msDbConnection);
-                        else
-#endif
-                        if (dbConnection is System.Data.SqlClient.SqlConnection systemDbConnection)
-                            System.Data.SqlClient.SqlConnection.ClearPool(systemDbConnection);
-                    }
-
-                    // Console.WriteLine($"⚠ Processed  {aboutRequest}");
                 }
                 catch (Exception ex)
                 {
