@@ -139,6 +139,7 @@ namespace Universe.SqlInsights.NetCore
                     double durationMilliseconds = stopwatch.ElapsedTicks / (double) Stopwatch.Frequency * 1000d;
 
                     // Done: Invoke SqlGenericInterceptor.StoreAction(...)
+                    var needToTraceAddAction = true;
                     var actionDetails2 = SqlGenericInterceptor.StoreAction(
                         config,
                         storage,
@@ -148,7 +149,8 @@ namespace Universe.SqlInsights.NetCore
                         watcherTotals,
                         lastError,
                         details,
-                        SqlInsightsReport.Instance
+                        SqlInsightsReport.Instance,
+                        needToTraceAddAction
                     );
 
                 }

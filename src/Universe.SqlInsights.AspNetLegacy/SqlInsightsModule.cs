@@ -28,7 +28,7 @@ namespace Universe.SqlInsights.AspNetLegacy
                 var hcs = LegacySqlProfiler.SqlInsightsConfiguration.HistoryConnectionString;
                 if (hcs != null)
                 {
-                    var history = new SqlServerSqlInsightsStorage(SqlClientFactory.Instance, hcs);
+                    var history = new SqlServerSqlInsightsStorage(SqlClientFactory.Instance, hcs) { Logger = ConsoleCrossPlatformLogger.Instance};
                     if (!history.AnyAliveSession()) return;
                 }
 
@@ -140,16 +140,18 @@ namespace Universe.SqlInsights.AspNetLegacy
                         ? new SqlServerSqlInsightsStorage(SqlClientFactory.Instance, historyConnectionString) { Logger = ConsoleCrossPlatformLogger.Instance}
                         : null;
 
-                    ActionDetailsWithCounters actionDetails2 = SqlGenericInterceptor.StoreAction(
+                    var needToTraceAddAction = false;
+                    ActionDetailsWithCounters actionDetails = SqlGenericInterceptor.StoreAction(
                         sqlInsightsConfiguration,
                         storage,
-                        NullCrossPlatformLogger.Instance,
+                        ConsoleCrossPlatformLogger.Instance,
                         LegacySqlProfilerContext.Instance.ActionKeyPath,
                         newLine.AppDuration,
                         new CpuUsage.CpuUsage((long)(newLine.AppUserUsage * 1000), (long)(newLine.AppKernelUsage * 1000)),
                         lastError,
                         details,
-                        SqlInsightsReport.Instance
+                        SqlInsightsReport.Instance,
+                        needToTraceAddAction
                     );
                 }
                 catch (Exception ex)

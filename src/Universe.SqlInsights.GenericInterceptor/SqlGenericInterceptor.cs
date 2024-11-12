@@ -19,7 +19,8 @@ namespace Universe.SqlInsights.GenericInterceptor
             CpuUsage.CpuUsage totalCpuUsage,
             Exception caughtException,
             TraceDetailsReport details,
-            SqlInsightsReport summaryReport
+            SqlInsightsReport summaryReport,
+            bool needToTraceAddAction
         )
         {
             try
@@ -72,11 +73,12 @@ namespace Universe.SqlInsights.GenericInterceptor
 
                 if (canSummarize) // not a first call?
                 {
-                    if (storage is ITraceableStorage traceableStorage)
+                    if (needToTraceAddAction && storage is ITraceableStorage traceableStorage)
                     {
                         // for StoreAction we always trace HistoryConnectionString
                         ExperimentalMeasuredAction.PerformInternalAction(
                             config,
+                            (ISqlInsightsStorage) null, 
                             new SqlInsightsActionKeyPath($"[{storage.GetType().Name}]", "AddAction()"),
                             connectionString =>
                             {

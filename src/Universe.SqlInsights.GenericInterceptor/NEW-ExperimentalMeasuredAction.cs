@@ -5,16 +5,20 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Universe.SqlInsights.Shared;
+using Universe.SqlInsights.SqlServerStorage;
 using Universe.SqlTrace;
 
 namespace Universe.SqlInsights.GenericInterceptor
 {
     public static class ExperimentalMeasuredAction
     {
+        private static long LogCounter;
 
         public static void PerformInternalAction(
             ISqlInsightsConfiguration config,
+            ISqlInsightsStorage storage,
             SqlInsightsActionKeyPath keyPath,
             Action<string> action,
             ICrossPlatformLogger logger
@@ -22,6 +26,7 @@ namespace Universe.SqlInsights.GenericInterceptor
         {
             Perform(
                 config,
+                storage,
                 config.HistoryConnectionString, 
                 keyPath,
                 action,
@@ -31,6 +36,7 @@ namespace Universe.SqlInsights.GenericInterceptor
 
         public static void PerformApplicationAction(
             ISqlInsightsConfiguration config,
+            ISqlInsightsStorage storage,
             SqlInsightsActionKeyPath keyPath,
             Action<string> action,
             ICrossPlatformLogger logger
@@ -38,6 +44,7 @@ namespace Universe.SqlInsights.GenericInterceptor
         {
             Perform(
                 config,
+                storage,
                 config.ConnectionString, 
                 keyPath, 
                 action, 
@@ -47,8 +54,10 @@ namespace Universe.SqlInsights.GenericInterceptor
 
 
         // TODO: ASYNC
+        // TODO: Propagate storage 
         public static void Perform(
             ISqlInsightsConfiguration config,
+            ISqlInsightsStorage storage,
             string traceableConnectionString,
             SqlInsightsActionKeyPath keyPath,
             Action<string> action,
@@ -79,6 +88,8 @@ namespace Universe.SqlInsights.GenericInterceptor
             Stopwatch startAt = Stopwatch.StartNew();
             CpuUsage.CpuUsage? cpuUsageAtStart = CpuUsage.CpuUsage.GetByThread();
 
+            var logCounter = Interlocked.Increment(ref LogCounter);
+            logger.LogInformation($"[ExperimentalMeasuredAction.Perform {logCounter:00000000}] BEFORE \"{keyPath}\" {connectionString}");
             Exception exception = null;
             try
             {
@@ -88,6 +99,7 @@ namespace Universe.SqlInsights.GenericInterceptor
             {
                 exception = ex;
             }
+            logger.LogInformation($"[ExperimentalMeasuredAction.Perform {logCounter:00000000}] AFTER \"{keyPath}\" ({(exception == null ? "OK" : $"{exception.Message}")}) {connectionString}");
 
 
             double duration = startAt.ElapsedTicks * 1000d / Stopwatch.Frequency;
@@ -103,14 +115,15 @@ namespace Universe.SqlInsights.GenericInterceptor
 
             var actionDetailsWithCounters = SqlGenericInterceptor.StoreAction(
                 config,
-                null,
+                storage, 
                 logger,
                 keyPath,
                 duration,
                 cpuUsage.GetValueOrDefault(),
                 exception,
                 details,
-                SqlInsightsReport.Instance
+                SqlInsightsReport.Instance,
+                false
             );
 
             // TODO: Return it from SqlGenericInterceptor.StoreAction(...)
