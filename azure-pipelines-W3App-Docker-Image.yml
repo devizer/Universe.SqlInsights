@@ -37,6 +37,10 @@ jobs:
            sudo chmod -R 1777 "$folder"
            touch "$folder"/.tmp
          done
+         dotnet new webapi -o $HOME/webapi1
+         pushd $HOME/webapi1
+         dotnet publish
+         popd
 
          sudo systemctl stop docker || true;
          sudo systemctl start docker || true;
