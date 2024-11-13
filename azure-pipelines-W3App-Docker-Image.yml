@@ -103,6 +103,7 @@ jobs:
          source Build-W3API-Linux-Docker-Image.sh
          popd
         # condition: succeededOrFailed()
+        retryCountOnTaskFailure: 3
         displayName: "W3API: FXDependent Docker Images"
 
       - bash: Show-System-Stat
