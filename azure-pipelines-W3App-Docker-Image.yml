@@ -29,6 +29,11 @@ jobs:
          export FS=BTRFS-Compressed
          export BTRFS_COMPRESS_MODE=zstd:1
          url=https://raw.githubusercontent.com/devizer/glist/master/Raid0-on-Azure-Pipelines-Linux.sh; (wget -q -nv --no-check-certificate -O - $url 2>/dev/null || curl -ksSL $url) | bash
+         echo "${RESET_FOLDERS_TO_RAID:-}" | awk -FFS=";" 'BEGIN{FS=";"}{for(i=1;i<=NF;i++){print $i}}' | while IFS= read -r folder; do
+           echo "Permission to '$folder' folder"
+           sudo chown -R $(whoami) "$folder"
+         done
+
          sudo systemctl stop docker || true;
          sudo systemctl start docker || true;
          Say "VOLUMES"
