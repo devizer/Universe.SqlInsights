@@ -93,3 +93,5 @@ Say "Create Github Release ${SQLINSIGHTS_VERSION}"
 # "-p" option mean pre-release
 gh release create -t "SqlInsights Dashboard Web API" -n "Ver ${SQLINSIGHTS_VERSION}" "$SQLINSIGHTS_VERSION" "$public"/*
 popd
+Say "Success. Complete."
+df -h -T

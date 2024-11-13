@@ -1,16 +1,10 @@
 taskkill /F /T /IM chromedriver.exe
-If Not Defined VER Set VER=1.2.3.4
-for %%d in (Universe.SqlInsights.AspNetLegacy Universe.SqlInsights.NetCore Universe.SqlInsights.Shared Universe.SqlInsights.SqlServerStorage) DO (
-  echo Clean src\%%d\bin
-  if exist src\%%d\bin rd /q /s src\%%d\bin
-  echo Clean src\%%d\obj
-  if exist src\%%d\obj rd /q /s src\%%d\obj
-)
+If Not Defined VER Set VER=4.3.2.1
 
 pushd src\
 for %%c in (Release Debug) Do (
   echo MSBuild %%c
-  msbuild /t:Restore,Rebuild /v:m /p:Configuration=%%c /p:PackageVersion=%VER% /p:Version=%VER% /p:VersionSuffix=beta Universe.SqlInsights.sln
+  msbuild /t:Build /v:m /p:Configuration=%%c /p:PackageVersion=%VER% /p:Version=%VER% /p:VersionSuffix=beta Universe.SqlInsights.sln
 )
 rem dotnet build /v:m /p:Version=%VER% Universe.SqlInsights.sln
 popd
