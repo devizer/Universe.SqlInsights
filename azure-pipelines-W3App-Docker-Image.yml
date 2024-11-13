@@ -24,7 +24,7 @@ jobs:
          
          export SECOND_DISK_MODE=LOOP
          # $HOME/.nuget/packages;$HOME/.local/share/NuGet;$SYSTEM_ARTIFACTSDIRECTORY
-         export RESET_FOLDERS_TO_RAID="/var/lib/apt;/var/lib/docker;/var/cache/apt;/tmp;/var/tmp;$BUILD_REPOSITORY_LOCALPATH/src/Universe.SqlInsights.W3Api/bin;$HOME/.nuget/packages;$HOME/.local/share/NuGet;$SYSTEM_ARTIFACTSDIRECTORY"
+         export RESET_FOLDERS_TO_RAID="/var/lib/apt;/var/lib/docker;/var/cache/apt;/tmp;/var/tmp;$BUILD_REPOSITORY_LOCALPATH/src/Universe.SqlInsights.W3Api/bin;$HOME/.nuget;$HOME/.local/share/NuGet;$SYSTEM_ARTIFACTSDIRECTORY"
          export LOOP_DIRECT_IO=off
          export MOVE_DOCKER_TO_RAID=""
          export FS=BTRFS-Compressed
