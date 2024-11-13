@@ -25,9 +25,9 @@ jobs:
          export SECOND_DISK_MODE=LOOP
          # $HOME/.nuget/packages;$HOME/.local/share/NuGet;$SYSTEM_ARTIFACTSDIRECTORY
          export RESET_FOLDERS_TO_RAID="/var/lib/apt;/var/lib/docker;/var/cache/apt;/tmp;/var/tmp;$BUILD_REPOSITORY_LOCALPATH/src/Universe.SqlInsights.W3Api/bin;$HOME/.nuget;$HOME/.local/share/NuGet;$SYSTEM_ARTIFACTSDIRECTORY"
-         echo "${RESET_FOLDERS_TO_RAID:-}" | awk -FFS=";" 'BEGIN{FS=";"}{for(i=1;i<=NF;i++){print $i}}' | while IFS= read -r folder; do
+         for folder in /var/lib/docker /var/lib/apt /var/lib/docker /var/cache/apt $HOME/.nuget $HOME/.local/share/NuGet; do
            echo "Clean up '$folder'"
-           rm -rf "$folder" || true
+           sudo rm -rf "$folder"/* || true
          done
          export LOOP_DIRECT_IO=off
          export MOVE_DOCKER_TO_RAID=""
