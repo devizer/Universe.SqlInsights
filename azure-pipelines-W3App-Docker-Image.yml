@@ -23,7 +23,8 @@ jobs:
          Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
          
          export SECOND_DISK_MODE=LOOP
-         export RESET_FOLDERS_TO_RAID="/var/lib/apt;/var/lib/docker;$HOME/.nuget/packages;$HOME/.local/share/NuGet;/var/cache/apt;$SYSTEM_ARTIFACTSDIRECTORY;/tmp;/var/tmp;$BUILD_REPOSITORY_LOCALPATH/src/Universe.SqlInsights.W3Api/bin"
+         # $HOME/.nuget/packages;$HOME/.local/share/NuGet;
+         export RESET_FOLDERS_TO_RAID="/var/lib/apt;/var/lib/docker;/var/cache/apt;$SYSTEM_ARTIFACTSDIRECTORY;/tmp;/var/tmp;$BUILD_REPOSITORY_LOCALPATH/src/Universe.SqlInsights.W3Api/bin"
          export LOOP_DIRECT_IO=off
          export MOVE_DOCKER_TO_RAID=""
          export FS=BTRFS-Compressed
