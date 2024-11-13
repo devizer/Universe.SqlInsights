@@ -67,7 +67,7 @@ Values(@KeyPath, @IdSession, @AppName, @HostId, Cast(@@DBTS as BigInt), @Count, 
             {
                 double msec = DebuggerStopwatch.ElapsedTicks * 1000d / Stopwatch.Frequency;
                 var aliveSessionsInfo = string.Join(",", aliveSessions.Select(x => x.ToString()).ToArray());
-                Console.WriteLine($"{msec,15:n2} {Counter,-4} [AddAction] Alive Sessions >{aliveSessionsInfo}< \"{reqAction.Key}\"");
+                Console.WriteLine($"{Counter,6} [AddAction] Alive Sessions >{aliveSessionsInfo}< \"{reqAction.Key}\" (took {msec:n2} msec)");
             }
 
             if (aliveSessions.Count <= 0) return;
