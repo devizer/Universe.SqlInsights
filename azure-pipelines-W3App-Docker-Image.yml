@@ -25,11 +25,16 @@ jobs:
          export SECOND_DISK_MODE=LOOP
          # $HOME/.nuget/packages;$HOME/.local/share/NuGet;$SYSTEM_ARTIFACTSDIRECTORY
          export RESET_FOLDERS_TO_RAID="/var/lib/apt;/var/lib/docker;/var/cache/apt;/tmp;/var/tmp;$BUILD_REPOSITORY_LOCALPATH/src/Universe.SqlInsights.W3Api/bin;$HOME/.nuget;$HOME/.local/share/NuGet;$SYSTEM_ARTIFACTSDIRECTORY"
+         echo "${RESET_FOLDERS_TO_RAID:-}" | awk -FFS=";" 'BEGIN{FS=";"}{for(i=1;i<=NF;i++){print $i}}' | while IFS= read -r folder; do
+           echo "Clean up '$folder'"
+           rm -rf "$folder" || true
+         done
          export LOOP_DIRECT_IO=off
          export MOVE_DOCKER_TO_RAID=""
          export FS=BTRFS-Compressed
          export BTRFS_COMPRESS_MODE=zstd:1
          url=https://raw.githubusercontent.com/devizer/glist/master/Raid0-on-Azure-Pipelines-Linux.sh; (wget -q -nv --no-check-certificate -O - $url 2>/dev/null || curl -ksSL $url) | bash
+         Say --Reset-Stopwatch
          echo "${RESET_FOLDERS_TO_RAID:-}" | awk -FFS=";" 'BEGIN{FS=";"}{for(i=1;i<=NF;i++){print $i}}' | while IFS= read -r folder; do
            to="$(whoami):$(id -gn)"
            echo "Permission to '$folder' folder for [$to]"
