@@ -35,6 +35,7 @@ jobs:
            echo "Permission to '$folder' folder for [$to]"
            sudo chown -R $to "$folder"
            sudo chmod -R 1777 "$folder"
+           touch "$folder"/.tmp
          done
 
          sudo systemctl stop docker || true;
