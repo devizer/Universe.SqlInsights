@@ -35,7 +35,7 @@ namespace AdventureWorks
             builder
                 .Register(c =>
                 {
-                    var sqlServerSqlInsightsStorage = new SqlServerSqlInsightsStorage(SqlClientFactory.Instance, SqlInsightsConfiguration.Instance.HistoryConnectionString);
+                    var sqlServerSqlInsightsStorage = new SqlServerSqlInsightsStorage(SqlClientFactory.Instance, SqlInsightsConfiguration.Instance.HistoryConnectionString) { Logger = ConsoleCrossPlatformLogger.Instance};
                     sqlServerSqlInsightsStorage.Logger = ConsoleCrossPlatformLogger.Instance;
                     return sqlServerSqlInsightsStorage;
                 })

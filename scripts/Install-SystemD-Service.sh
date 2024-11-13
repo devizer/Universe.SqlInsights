@@ -180,8 +180,8 @@ Environment=ConnectionStrings__SqlInsights='$DB_CONNECTION_STRING_Escaped'
 WantedBy=multi-user.target
 ' | sudo tee /etc/systemd/system/s4dashboard.service >/dev/null
 
-sudo systemctl enable s4dashboard.service
 sudo systemctl daemon-reload || true
+sudo systemctl enable s4dashboard.service
 sudo systemctl start s4dashboard.service
 
 sudo journalctl -fu s4dashboard.service

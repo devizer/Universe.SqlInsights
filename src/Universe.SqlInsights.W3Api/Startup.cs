@@ -76,7 +76,7 @@ namespace Universe.SqlInsights.W3Api
                     throw new InvalidOperationException("Misconfigured DbOptions.ConnectionString");
 
                 var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
-                var logger = loggerFactory.CreateLogger("SqlServerSqlInsightsStorage");
+                var logger = loggerFactory.CreateLogger("SqlServer Insights Storage");
                 ICrossPlatformLogger crossLogger = new NetCoreLogger(logger);
                 return new SqlServerSqlInsightsStorage(dbProviderFactory, dbOptions.ConnectionString)
                 {
