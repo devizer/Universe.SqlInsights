@@ -32,6 +32,7 @@ jobs:
          echo "${RESET_FOLDERS_TO_RAID:-}" | awk -FFS=";" 'BEGIN{FS=";"}{for(i=1;i<=NF;i++){print $i}}' | while IFS= read -r folder; do
            echo "Permission to '$folder' folder"
            sudo chown -R $(whoami) "$folder"
+           sudo chmod -R 1777 "$folder"
          done
 
          sudo systemctl stop docker || true;
