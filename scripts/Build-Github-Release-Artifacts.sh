@@ -46,6 +46,7 @@ fi
 for r in $rids; do
   n=$((n+1))
   Say "#${n}: BUILD SELF-CONTAINED [$r] $SQLINSIGHTS_VERSION"
+  df -h -T
   try-and-retry dotnet publish --self-contained -r $r -f $W3API_NET -o bin/plain/$r -v:q -p:Version=$SQLINSIGHTS_VERSION_SHORT -c Release
   mkdir -p bin/plain/$r/wwwroot; cp -r -a "$BUILD_REPOSITORY_LOCALPATH/src/universe.sqlinsights.w3app/build"/. bin/plain/$r/wwwroot
   pushd bin/plain/$r
