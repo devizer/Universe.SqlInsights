@@ -3,6 +3,7 @@ using ErgoFab.Model;
 using Microsoft.EntityFrameworkCore;
 using Shared.TestDatabaseDefinitions;
 using Universe.NUnitPipeline;
+using Universe.NUnitPipeline.SqlServerDatabaseFactory;
 using Universe.SqlInsights.NUnit;
 using Universe.SqlServerJam;
 

@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using Universe.SqlInsights.NUnit;
+using Universe.NUnitPipeline.SqlServerDatabaseFactory;
 
 namespace ErgoFab.DataAccess.IntegrationTests.Shared;
 

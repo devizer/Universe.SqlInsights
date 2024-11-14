@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Universe.NUnitPipeline;
-using Universe.SqlInsights.NUnit;
+using Universe.NUnitPipeline.SqlServerDatabaseFactory;
 
 namespace ErgoFab.DataAccess.IntegrationTests.Shared
 {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Universe.SqlInsights.NUnit;
+using Universe.NUnitPipeline.SqlServerDatabaseFactory;
 
 namespace Shared.TestDatabaseDefinitions
 {

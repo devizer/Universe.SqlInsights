@@ -2,6 +2,7 @@ using ErgoFab.DataAccess.IntegrationTests.Shared;
 using ErgoFab.Model;
 using Microsoft.EntityFrameworkCore;
 using Universe.NUnitPipeline;
+using Universe.NUnitPipeline.SqlServerDatabaseFactory;
 using Universe.SqlInsights.NUnit;
 
 namespace ErgoFab.DataAccess.IntegrationTests;

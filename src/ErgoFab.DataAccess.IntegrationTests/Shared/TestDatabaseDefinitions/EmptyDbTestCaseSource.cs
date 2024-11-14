@@ -18,7 +18,7 @@ public class EmptyDbTestCaseSource : TestCaseSourceAttribute
                 ConnectionOptions = TestDbConnectionString.CreatePostponed(EmptyDatabase.Instance),
                 Kind = kind,
             };
-            TestCaseData tcd = new TestCaseData(ergoFabTestCase).SetName($"My {ergoFabTestCase}");
+            TestCaseData tcd = new TestCaseData(ergoFabTestCase).SetArgDisplayNames($"My {ergoFabTestCase}");
             yield return tcd;
         }
     }

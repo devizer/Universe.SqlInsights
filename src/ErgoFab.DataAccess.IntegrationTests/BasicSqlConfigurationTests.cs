@@ -1,7 +1,7 @@
 using Dapper;
 using ErgoFab.DataAccess.IntegrationTests.Shared;
 using Universe.NUnitPipeline;
-using Universe.SqlInsights.NUnit;
+using Universe.NUnitPipeline.SqlServerDatabaseFactory;
 using Universe.SqlServerJam;
 
 namespace ErgoFab.DataAccess.IntegrationTests;

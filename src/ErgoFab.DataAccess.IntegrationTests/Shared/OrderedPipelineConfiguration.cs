@@ -3,6 +3,7 @@ using System.Runtime.Versioning;
 using ErgoFab.DataAccess.IntegrationTests.Shared;
 using NUnit.Framework.Interfaces;
 using Universe.NUnitPipeline;
+using Universe.NUnitPipeline.SqlServerDatabaseFactory;
 using Universe.SqlInsights.NUnit;
 
 
