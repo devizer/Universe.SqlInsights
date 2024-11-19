@@ -150,7 +150,8 @@ namespace Universe.SqlInsights.NetCore
                         lastError,
                         details,
                         SqlInsightsReport.Instance,
-                        needToTraceAddAction
+                        needToTraceAddAction,
+                        SqlGenericInterceptor.FirstInvocationBehaviour.Ignore
                     );
 
                 }

@@ -1,7 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="..\Shared-Files\Dapper.proj" />
+  <Import Project="..\Shared-Files\Microsoft.Data.SqlClient.proj" />
+  <Import Project="..\Shared-Files\Net-2x-4x-Support.proj" />
+
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net462;net35;net40;net45</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <!--<ImplicitUsings>enable</ImplicitUsings>-->
@@ -9,27 +13,24 @@
   </PropertyGroup>
 
   <ItemGroup>
-		<PackageReference Include="NUnit" Version="3.14.0" />
+		<!-- PackageReference Include="NUnit" Version="3.14.0" / -->
 		<PackageReference Include="Universe.NUnitPipeline" Version="3.14.0.203" />
 		<PackageReference Include="Universe.SqlServerJam" Version="1.0.586" />
-		<PackageReference Include="Dapper" Version="2.1.35" />
-		<PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
-		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.5" />
+		<!-- PackageReference Include="Dapper" Version="2.1.35" / -->
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.6" Condition=" '$(TargetFramework)' != 'net35' and '$(TargetFramework)' != 'net40' and '$(TargetFramework)' != 'net403' and '$(TargetFramework)' != 'net45' " />
+		<!-- PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.5" / -->
+  
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="Universe.SqlTrace" Version="1.6.5" />
   </ItemGroup>
 
-  <Choose>
-    <When Condition=" '$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard1.3' Or '$(TargetFramework)' == 'netcoreapp1.0' Or '$(TargetFramework)' == 'netcoreapp1.1' Or '$(TargetFramework)' == 'net461' ">
-        <ItemGroup>
-            <!-- Net Standard 1.3, Net Standard 2.0, Net 4.5.1 -->
-            <PackageReference Include="Dapper" Version="1.60.6" />
-        </ItemGroup>
-    </When>
-    <Otherwise>
-        <ItemGroup>
-            <!-- Net35, Net40, Net45 -->
-            <PackageReference Include="Dapper" Version="1.42.0" />
-        </ItemGroup>
-    </Otherwise>
-  </Choose>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Universe.NUnitPipeline.SqlServerDatabaseFactory\Universe.NUnitPipeline.SqlServerDatabaseFactory.csproj" />
+      <ProjectReference Include="..\Universe.SqlInsights.GenericInterceptor\Universe.SqlInsights.GenericInterceptor.csproj" />
+      <ProjectReference Include="..\Universe.SqlInsights.Shared\Universe.SqlInsights.Shared.csproj" />
+      <ProjectReference Include="..\Universe.SqlInsights.SqlServerStorage\Universe.SqlInsights.SqlServerStorage.csproj" />
+    </ItemGroup>
+
 
 </Project>

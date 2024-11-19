@@ -2,7 +2,6 @@
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Universe.GenericTreeTable;
 
 namespace ErgoFab.DataAccess.IntegrationTests.Shared;

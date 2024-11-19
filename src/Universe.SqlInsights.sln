@@ -31,6 +31,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Universe.SqlInsights.Generi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Universe.NUnitPipeline.SqlServerDatabaseFactory", "Universe.NUnitPipeline.SqlServerDatabaseFactory\Universe.NUnitPipeline.SqlServerDatabaseFactory.csproj", "{5139540C-5E6A-4B8F-AA5D-EDE773DCEB56}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Universe.SqlInsights.NUnit", "Universe.SqlInsights.NUnit\Universe.SqlInsights.NUnit.csproj", "{6E05BC8C-C6AB-408F-B3D5-2BF5386A74AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,10 @@ Global
 		{5139540C-5E6A-4B8F-AA5D-EDE773DCEB56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5139540C-5E6A-4B8F-AA5D-EDE773DCEB56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5139540C-5E6A-4B8F-AA5D-EDE773DCEB56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E05BC8C-C6AB-408F-B3D5-2BF5386A74AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E05BC8C-C6AB-408F-B3D5-2BF5386A74AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E05BC8C-C6AB-408F-B3D5-2BF5386A74AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E05BC8C-C6AB-408F-B3D5-2BF5386A74AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

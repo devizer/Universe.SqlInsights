@@ -9,6 +9,12 @@ namespace Universe.SqlInsights.GenericInterceptor
     public class SqlGenericInterceptor
     {
 
+        public enum FirstInvocationBehaviour
+        {
+            Ignore = 0,
+            Store = 1,
+        }
+
 
         public static ActionDetailsWithCounters StoreAction(
             ISqlInsightsConfiguration configuration,
@@ -20,7 +26,8 @@ namespace Universe.SqlInsights.GenericInterceptor
             Exception caughtException,
             TraceDetailsReport details,
             SqlInsightsReport summaryReport,
-            bool needToTraceAddAction
+            bool needToTraceAddAction,
+            FirstInvocationBehaviour firstInvocationBehaviour
         )
         {
             try
@@ -71,7 +78,7 @@ namespace Universe.SqlInsights.GenericInterceptor
                 SqlInsightsReport inMemoryReport = summaryReport;
                 bool canSummarize = inMemoryReport.Add(actionDetails);
 
-                if (canSummarize) // not a first call?
+                if (canSummarize || firstInvocationBehaviour == FirstInvocationBehaviour.Store) // not a first call?
                 {
                     if (needToTraceAddAction && storage is ITraceableStorage traceableStorage)
                     {

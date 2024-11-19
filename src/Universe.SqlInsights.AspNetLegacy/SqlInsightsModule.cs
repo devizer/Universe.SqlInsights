@@ -151,7 +151,8 @@ namespace Universe.SqlInsights.AspNetLegacy
                         lastError,
                         details,
                         SqlInsightsReport.Instance,
-                        needToTraceAddAction
+                        needToTraceAddAction,
+                        SqlGenericInterceptor.FirstInvocationBehaviour.Ignore
                     );
                 }
                 catch (Exception ex)

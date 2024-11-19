@@ -123,7 +123,8 @@ namespace Universe.SqlInsights.GenericInterceptor
                 exception,
                 details,
                 SqlInsightsReport.Instance,
-                false
+                false,
+                SqlGenericInterceptor.FirstInvocationBehaviour.Ignore
             );
 
             // TODO: Return it from SqlGenericInterceptor.StoreAction(...)
