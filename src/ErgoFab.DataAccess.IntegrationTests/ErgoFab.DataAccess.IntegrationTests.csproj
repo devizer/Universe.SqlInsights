@@ -27,6 +27,10 @@
 		-->
 	</ItemGroup>
 
+    <ItemGroup>
+      <Compile Include="..\Shared-Files\SystemDriveAccess.cs" Link="SystemDriveAccess.cs" />
+    </ItemGroup>
+
 	<ItemGroup>
     <ProjectReference Include="..\ErgoFab.DataAccess\ErgoFab.DataAccess.csproj" />
     <ProjectReference Include="..\ErgoFab.Model\ErgoFab.Model.csproj" />
