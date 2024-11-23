@@ -25,7 +25,16 @@ public class ErgoFabSqlInsightsConfiguration : ISqlInsightsConfiguration
     public string ConnectionString => NUnitPipelineConfiguration.GetService<ISqlServerTestsConfiguration>().MasterConnectionString;
 
     // TODO: some shared DB on shared Server
-    public string HistoryConnectionString { get; }
+    public string HistoryConnectionString => GetHistoryConnectionString();
+
+    private string GetHistoryConnectionString()
+    {
+        var ret = Environment.GetEnvironmentVariable("ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING");
+        if (string.IsNullOrEmpty(ret))
+            ret = "Server=(local);Encrypt=False;Initial Catalog=SqlInsights Local Warehouse;Integrated Security=SSPI";
+
+        return ret;
+    }
 
     public int MaxTraceFileSizeKb => 1024 * 1024;
     public string SqlClientAppNameFormat => $"{this.AppName} {{0}}";
