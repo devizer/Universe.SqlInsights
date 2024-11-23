@@ -139,6 +139,8 @@ steps:
       set -eu; set -o pipefail;
       export ERGOFAB_TESTS_DATA_FOLDER="/ErgoFab-Tests"
       export ERGOFAB_TESTS_MASTER_CONNECTIONSTRING="TrustServerCertificate=True;Data Source=localhost,1433;User ID=sa;Password=p@assw0rd!;Encrypt=False;"
+      export ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING="Server=localhost;Encrypt=False;Initial Catalog=SqlInsights Local Warehouse;User ID=sa;Password=p@assw0rd!"
+      export ERGOFAB_TESTS_REPORT_FULLNAME="$SYSTEM_ARTIFACTSDIRECTORY/ErgFab Tests Report.txt"
       cd src/ErgoFab.DataAccess.IntegrationTests
       dotnet test -c Release -f net8.0
       cd bin/Release/net8.0

@@ -194,6 +194,7 @@ steps:
       cd $AGENT_TEMPDIRECTORY/Goods/ergofab.tests
       export ERGOFAB_TESTS_DATA_FOLDER="D:\\ErgFab-Tests"
       export ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING="Server=(local);Encrypt=False;Initial Catalog=SqlInsights Local Warehouse;Integrated Security=SSPI"
+      export ERGOFAB_TESTS_REPORT_FULLNAME="$SYSTEM_ARTIFACTSDIRECTORY\\ErgFab Tests Report.txt"
       dotnet test ErgoFab.DataAccess.IntegrationTests.dll
       cp -av TestsOutput $SYSTEM_ARTIFACTSDIRECTORY
       Say "Success Complete"
