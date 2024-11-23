@@ -1,10 +1,9 @@
 ﻿using System.Data.Common;
 using ErgoFab.Model;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
+using Microsoft.Extensions.Logging;
 using Universe.NUnitPipeline;
 using Universe.NUnitPipeline.SqlServerDatabaseFactory;
-using Universe.SqlInsights.NUnit;
 
 namespace ErgoFab.DataAccess.IntegrationTests.Shared;
 
@@ -24,6 +23,7 @@ public static class ErgoFabTestCaseExtensions
         return connection;
     }
 
+    private static long DbContextCounter = 0;
     public static ErgoFabDbContext CreateErgoFabDbContext(this IDbConnectionString dbConnectionString)
     {
         // TODO:
@@ -42,7 +42,24 @@ public static class ErgoFabTestCaseExtensions
             b.EnableRetryOnFailure(5);
         });
 
-        return new ErgoFabDbContext(dbContextOptionsBuilder.Options);
+        int logRowCounter = 0;
+        long dbContextCounter = Interlocked.Increment(ref DbContextCounter);
+        Action<string> log = s =>
+        {
+            logRowCounter++;
+            Console.WriteLine($"# {dbContextCounter:0}.{logRowCounter:0}{Environment.NewLine}{s}");
+        };
+        Func<EventId, LogLevel, bool> logFilter = (EventId id, LogLevel level) =>
+        {
+            // return true;
+            var events = new[] { "QueryCompilationStarting", "QueryExecutionPlanned", "CommandExecuted" };
+            return events.Any(e => id.Name.Contains(e, StringComparison.OrdinalIgnoreCase));
+        };
+        
+        dbContextOptionsBuilder.LogTo(log, logFilter).EnableDetailedErrors().EnableSensitiveDataLogging();
+
+        var ergoFabDbContext = new ErgoFabDbContext(dbContextOptionsBuilder.Options);
+        return ergoFabDbContext;
     }
 
     static void CheckConnectionString(string connectionString)

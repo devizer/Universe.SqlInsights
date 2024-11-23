@@ -22,6 +22,20 @@ namespace ErgoFab.DataAccess.IntegrationTests
             Assert.AreEqual(7777, organizationsCount);
         }
 
+        [Test]
+        [ErgoFabTestCaseSource(7777)]
+        public async Task Organization3rdTest(ErgoFabTestCase testCase)
+        {
+            using var db = testCase.CreateErgoFabDbContext();
+            var organizations = await db.Organization.AsNoTracking()
+                .Include(o => o.TheDirector)
+                .Include(o => o.TheDepartments)
+                .ToListAsync();
+
+            Assert.AreEqual(7777, organizations.Count);
+        }
+
+
 
         [Test]
         [ErgoFabTestCaseSource(7777)]

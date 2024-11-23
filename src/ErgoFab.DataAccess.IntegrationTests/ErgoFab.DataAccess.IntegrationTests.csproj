@@ -8,6 +8,7 @@
 		<IsPackable>false</IsPackable>
 		<IsTestProject>true</IsTestProject>
 		<RootNamespace></RootNamespace>
+		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -30,10 +31,15 @@
     <ProjectReference Include="..\ErgoFab.DataAccess\ErgoFab.DataAccess.csproj" />
     <ProjectReference Include="..\ErgoFab.Model\ErgoFab.Model.csproj" />
     <ProjectReference Include="..\Universe.NUnitPipeline.SqlServerDatabaseFactory\Universe.NUnitPipeline.SqlServerDatabaseFactory.csproj" />
+    <ProjectReference Include="..\Universe.SqlInsights.NUnit\Universe.SqlInsights.NUnit.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="NUnit.Framework" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="NoTracking\" />
   </ItemGroup>
 
 </Project>

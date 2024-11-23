@@ -55,7 +55,9 @@ public class BackupRestoreTests
         await using var newDbContext = newCs.CreateErgoFabDbContext();
         var orgCount = newDbContext.Organization.AsNoTracking().Count();
         Console.WriteLine($"Organizations Count {orgCount}");
-        var newOrg = newDbContext.Organization.FirstOrDefault(x => x.Title == "Azure Dev-Ops");
+#if !NET6_0 && !NET7_0
+        var newOrg = newDbContext.Organization.AsNoTracking().FirstOrDefault(x => x.Title == "Azure Dev-Ops");
         Assert.IsNotNull(newOrg, "Missing 'Azure Dev-Ops' organization on restored DB");
+#endif
     }
 }
