@@ -52,6 +52,12 @@ public partial class SqlServerTestCapturePipeline
                 TraceColumns.Application | TraceColumns.Sql,
                 appFilter);
 
+            // Patch App Name
+            var connectionStringBuilder = man.CreateDbProviderFactory().CreateConnectionStringBuilder();
+            connectionStringBuilder.ConnectionString = testDbConnectionString.ConnectionString;
+            connectionStringBuilder["Application Name"] = appName;
+            testDbConnectionString.ConnectionString = connectionStringBuilder.ConnectionString;
+
             lock (Sync)
             {
                 if (null == test.GetPropertyOrAdd<TraceTestState>(nameof(TraceTestState), null))
