@@ -26,10 +26,17 @@ public class OrderedPipelineConfiguration
         NUnitPipelineConfiguration.Register<ISqlServerTestsConfiguration>(() => SqlServerTestsConfiguration.Instance);
         
         NUnitPipelineConfiguration.Register<ISqlInsightsConfiguration>(() => new ErgoFabSqlInsightsConfiguration());
-        NUnitPipelineConfiguration.Register<ISqlInsightsStorage>(() => new SqlServerSqlInsightsStorage(
-            NUnitPipelineConfiguration.GetService<SqlServerTestDbManager>().CreateDbProviderFactory(),
-            NUnitPipelineConfiguration.GetService < ISqlInsightsConfiguration >().HistoryConnectionString
-        ));
+        NUnitPipelineConfiguration.Register<ISqlInsightsStorage>(() =>
+        {
+            var ret = new SqlServerSqlInsightsStorage(
+                NUnitPipelineConfiguration.GetService<SqlServerTestDbManager>().CreateDbProviderFactory(),
+                NUnitPipelineConfiguration.GetService<ISqlInsightsConfiguration>().HistoryConnectionString
+            );
+
+            // Migrate
+            ret.AnyAliveSession();
+            return ret;
+        });
         
 
         var chain = NUnitPipelineConfiguration.GetService<NUnitPipelineChain>();
