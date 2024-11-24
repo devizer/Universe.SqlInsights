@@ -1,5 +1,4 @@
-﻿using ErgoFab.DataAccess.IntegrationTests.Shared;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using Universe;
 using Universe.NUnitPipeline;
 using Universe.NUnitPipeline.SqlServerDatabaseFactory;

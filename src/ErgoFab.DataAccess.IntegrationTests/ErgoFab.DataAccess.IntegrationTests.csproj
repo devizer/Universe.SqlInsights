@@ -1,5 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+	<Import Project="..\Shared-Files\Universe.CpuUsage.proj" />
+
 	<PropertyGroup>
 		<TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>

@@ -1,0 +1,6 @@
+<Project>
+    <ItemGroup>
+	  <!-- 2.2.772.888: pre release -->
+	  <PackageReference Include="Universe.CpuUsage" Version="2.2.774.890" />
+    </ItemGroup>
+</Project>

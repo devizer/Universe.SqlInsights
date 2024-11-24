@@ -2,9 +2,12 @@
 using System.Runtime.Versioning;
 using ErgoFab.DataAccess.IntegrationTests.Shared;
 using NUnit.Framework.Interfaces;
+using Tracking;
 using Universe.NUnitPipeline;
 using Universe.NUnitPipeline.SqlServerDatabaseFactory;
 using Universe.SqlInsights.NUnit;
+using Universe.SqlInsights.Shared;
+using Universe.SqlInsights.SqlServerStorage;
 
 
 // Single shared configuration for all the test assemblies
@@ -22,6 +25,12 @@ public class OrderedPipelineConfiguration
         NUnitPipelineConfiguration.Register<SqlServerTestDbManager>(() => new SqlServerTestDbManager(SqlServerTestsConfiguration.Instance));
         NUnitPipelineConfiguration.Register<ISqlServerTestsConfiguration>(() => SqlServerTestsConfiguration.Instance);
         
+        NUnitPipelineConfiguration.Register<ISqlInsightsConfiguration>(() => new ErgoFabSqlInsightsConfiguration());
+        NUnitPipelineConfiguration.Register<ISqlInsightsStorage>(() => new SqlServerSqlInsightsStorage(
+            NUnitPipelineConfiguration.GetService<SqlServerTestDbManager>().CreateDbProviderFactory(),
+            NUnitPipelineConfiguration.GetService < ISqlInsightsConfiguration >().HistoryConnectionString
+        ));
+        
 
         var chain = NUnitPipelineConfiguration.GetService<NUnitPipelineChain>();
 
@@ -30,11 +39,13 @@ public class OrderedPipelineConfiguration
             new() { Title = CpuUsageInterceptor.Title, Action = CpuUsageInterceptor.OnStart },
             new() { Title = CpuUsageVizInterceptor.Title, Action = CpuUsageVizInterceptor.OnStart },
             new() { Title = DbTestPipeline.Title, Action = DbTestPipeline.OnStart },
+            new() { Title = SqlServerTestCapturePipeline.Title, Action = SqlServerTestCapturePipeline.OnStart },
         };
 
         chain.OnEnd = new List<NUnitPipelineChainAction>()
         {
             new() { Title = CpuUsageInterceptor.Title, Action = CpuUsageInterceptor.OnFinish },
+            new() { Title = SqlServerTestCapturePipeline.Title, Action = SqlServerTestCapturePipeline.OnFinish },
             new() { Title = CpuUsageVizInterceptor.Title, Action = CpuUsageVizInterceptor.OnFinish },
             new() { Title = DbTestPipeline.Title, Action = DbTestPipeline.OnFinish },
             new() { Title = DisposeInterceptor.Title, Action = DisposeInterceptor.OnFinish },

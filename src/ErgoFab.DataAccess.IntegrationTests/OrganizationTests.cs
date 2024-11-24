@@ -26,6 +26,7 @@ namespace ErgoFab.DataAccess.IntegrationTests
         [ErgoFabTestCaseSource(7777)]
         public async Task Organization3rdTest(ErgoFabTestCase testCase)
         {
+            Console.WriteLine($"CS: [{testCase.ConnectionOptions.ConnectionString}]");
             using var db = testCase.CreateErgoFabDbContext();
             var organizations = await db.Organization.AsNoTracking()
                 .Include(o => o.TheDirector)
