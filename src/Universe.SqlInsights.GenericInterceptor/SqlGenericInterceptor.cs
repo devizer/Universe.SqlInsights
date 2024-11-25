@@ -76,7 +76,7 @@ namespace Universe.SqlInsights.GenericInterceptor
 
                 
                 SqlInsightsReport inMemoryReport = summaryReport;
-                bool canSummarize = inMemoryReport.Add(actionDetails);
+                bool canSummarize = inMemoryReport.Add(actionDetails, firstInvocationBehaviour == FirstInvocationBehaviour.Store);
 
                 if (canSummarize || firstInvocationBehaviour == FirstInvocationBehaviour.Store) // not a first call?
                 {

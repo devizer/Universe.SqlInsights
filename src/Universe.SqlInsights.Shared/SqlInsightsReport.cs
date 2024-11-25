@@ -136,7 +136,7 @@ namespace Universe.SqlInsights.Shared
         /// <summary>
         /// Returns true if it should be summarized. E.g. not a first call
         /// </summary>
-        public bool Add(ActionDetailsWithCounters req)
+        public bool Add(ActionDetailsWithCounters req, bool needToStoreFirstInvocation = false)
         {
             if (req.Key == null) return false;
 
@@ -155,7 +155,8 @@ FIRST: {First.Count}
                 if (!First.TryGetValue(req.Key, out var first))
                 {
                     First[req.Key] = asSummary;
-                    return false;
+                    if (!needToStoreFirstInvocation)
+                        return false;
                 }
 
                 ActionSummaryCounters sum;
@@ -267,7 +268,7 @@ NEXT: {next}");
                             + $"This report Generated at {DateTime.Now}. App uptime is {Uptime}"
                             + Environment.NewLine + Environment.NewLine +
                             "Warning: " + Environment.NewLine +
-                            "   CPU usage in IIS apps doesn't work properly on desktop windows family");
+                            "   CPU usage for IIS apps doesn't work properly on desktop windows family");
 
                     }
                 }

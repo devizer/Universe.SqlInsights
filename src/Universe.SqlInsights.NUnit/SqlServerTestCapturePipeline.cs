@@ -73,7 +73,7 @@ public partial class SqlServerTestCapturePipeline
                         Finished = false,
                     };
                     var _ = test.GetPropertyOrAdd<TraceTestState>(nameof(TraceTestState), t => traceTestState);
-                    Console.WriteLine("[SqlServerTestCapturePipeline] (1) Trace and (2) Cpu Usage Watcher are started");
+                    PipelineLog.LogTrace("[SqlServerTestCapturePipeline] (1) Trace and (2) Cpu Usage Watcher are started");
                 }
             }
         }
@@ -100,7 +100,7 @@ public partial class SqlServerTestCapturePipeline
         TimeSpan elapsed = traceTestState.Stopwatch.Elapsed;
         traceTestState.CpuUsageAsyncWatcher.Stop();
         traceTestState.Finished = true;
-        Console.WriteLine("[SqlServerTestCapturePipeline:OnFinish] Cpu Usage Watcher is stopped");
+        PipelineLog.LogTrace("[SqlServerTestCapturePipeline:OnFinish] Cpu Usage Watcher is stopped");
 
         // Stop Capturing
         var traceReader = traceTestState.TraceReader;
@@ -108,7 +108,7 @@ public partial class SqlServerTestCapturePipeline
         SqlCounters sqlProfilerSummary = details.Summary;
         traceReader.Stop();
         traceReader.Dispose();
-        Console.WriteLine("[SqlServerTestCapturePipeline:OnFinish] Trace is stopped");
+        PipelineLog.LogTrace("[SqlServerTestCapturePipeline:OnFinish] Trace is stopped");
 
         // Calculate [bool] hasCpuUsage and [CpuUsage] finalCpuUsage
         var asyncTotals = traceTestState.CpuUsageAsyncWatcher.Totals;
