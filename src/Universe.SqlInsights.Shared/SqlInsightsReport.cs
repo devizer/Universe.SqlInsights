@@ -272,8 +272,9 @@ NEXT: {next}");
                     }
                 }
             }
-            catch
+            catch(Exception ex)
             {
+                Console.WriteLine($"Warning! Unable to dump local SqlInsights Report to file {Path.GetFullPath(fileName)}. Misconfigured. {ex.GetExceptionDigest()}");
             }
 
         }

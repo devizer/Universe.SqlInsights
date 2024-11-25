@@ -18,7 +18,6 @@ public class OrderedPipelineConfiguration
         PipelineLog.LogTrace($"[{typeof(OrderedPipelineConfiguration)}]::Configure()");
 
         var reportConfiguration = NUnitPipelineConfiguration.GetService<NUnitReportConfiguration>();
-
         reportConfiguration.InternalReportFile = Path.Combine("TestsOutput", $"ErgoFab.DataAccess.IntegrationTests {GetCurrentNetVersion()}");
 
         NUnitPipelineConfiguration.Register<ITestDatabaseNameProvider>(() => new TestDatabaseNameProvider());

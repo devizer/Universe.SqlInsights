@@ -77,6 +77,10 @@ public partial class SqlServerTestCapturePipeline
                 }
             }
         }
+
+        Stopwatch startAt = Stopwatch.StartNew();
+        var reportFullFileName = NUnitPipelineConfiguration.GetService<ISqlInsightsConfiguration>().ReportFullFileName;
+        SqlInsightsReport.Instance.Flush(reportFullFileName, startAt);
     }
 
     public static void OnFinish(NUnitStage stage, ITest test)
