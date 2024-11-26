@@ -2,7 +2,7 @@
 import { DynamicDownloading } from '../DynamicDownloading'
 import React, { Component } from 'react';
 import dataSourceStore from "../stores/DataSourceStore";
-import {ActionKeyPathUi} from "../Shared/ActionKeyPathUi";
+import {ActionKeyPathUi, ConvertToSafeFileName} from "../Shared/ActionKeyPathUi";
 import ReactTable from "react-table";
 import "react-table/react-table.css";
 import {API_URL} from '../BuildTimeConfiguration';
@@ -244,8 +244,9 @@ export default class ActionList extends ReactComponentWithPerformance {
         const onDownload = actionDetails => e => {
             console.log("ActionList.onDownload argument (action object)", actionDetails);
             const actionDetailsFormatted = formatActionDetails(actionDetails);
-            const keyPath = ActionKeyPathUi({path:actionDetails.Key.Path})
-            DynamicDownloading(actionDetailsFormatted, 'text/plain', `${keyPath}.sql`);
+            const keyPath = ActionKeyPathUi({path:actionDetails.Key.Path});
+            const downloadFileName = ConvertToSafeFileName(keyPath);
+            DynamicDownloading(actionDetailsFormatted, 'text/plain', `${downloadFileName}.sql`);
         };
         
         const onCopy = actionDetails => e => {
