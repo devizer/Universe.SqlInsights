@@ -2,7 +2,8 @@
 import { DynamicDownloading } from '../DynamicDownloading'
 import React, { Component } from 'react';
 import dataSourceStore from "../stores/DataSourceStore";
-import {ActionKeyPathUi, ConvertToSafeFileName} from "../Shared/ActionKeyPathUi";
+import {ActionKeyPathUi} from "../Shared/ActionKeyPathUi";
+import {ConvertToSafeFileName} from "../Shared/ConvertToSafeFileName";
 import ReactTable from "react-table";
 import "react-table/react-table.css";
 import {API_URL} from '../BuildTimeConfiguration';
