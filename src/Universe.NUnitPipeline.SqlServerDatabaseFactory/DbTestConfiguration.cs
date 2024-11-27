@@ -1,7 +1,4 @@
-﻿using Universe.NUnitPipeline;
-using Universe.NUnitPipeline.SqlServerDatabaseFactory;
-
-namespace Universe.SqlInsights.NUnit;
+﻿namespace Universe.NUnitPipeline.SqlServerDatabaseFactory;
 
 public class DbTestConfiguration
 {
@@ -9,5 +6,6 @@ public class DbTestConfiguration
     {
     }
 
+    // TODO: Remove or add all the dependencies
     public static ISqlServerTestsConfiguration SqlServerTestsConfiguration => NUnitPipelineConfiguration.GetService<ISqlServerTestsConfiguration>();
 }

@@ -1,6 +1,5 @@
 ﻿using ErgoFab.DataAccess.IntegrationTests.Shared;
-using Universe.NUnitPipeline;
-using Universe.SqlInsights.NUnit;
+using Universe.NUnitPipeline.SqlServerDatabaseFactory;
 
 namespace Shared.TestDatabaseDefinitions;
 

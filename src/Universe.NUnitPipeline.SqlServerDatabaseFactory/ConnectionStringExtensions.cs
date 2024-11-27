@@ -1,6 +1,4 @@
-﻿using Universe.SqlInsights.NUnit;
-
-namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
+﻿namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
 {
     public static class ConnectionStringExtensions
     {

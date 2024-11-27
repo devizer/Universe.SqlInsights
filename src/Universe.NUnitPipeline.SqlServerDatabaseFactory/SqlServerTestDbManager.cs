@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dapper;
-using Universe.SqlInsights.NUnit;
 using Universe.SqlServerJam;
 
 namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
@@ -21,7 +20,7 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
             SqlTestsConfiguration = sqlTestsConfiguration;
         }
 
-        static string EscapeSqlString(string arg) => $"'{arg.Replace("'", "''")}'";
+        protected static string EscapeSqlString(string arg) => $"'{arg.Replace("'", "''")}'";
 
         public virtual async Task CreateEmptyDatabase(IDbConnectionString dbConnectionString)
         {

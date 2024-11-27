@@ -1,6 +1,4 @@
-﻿using Universe.NUnitPipeline.SqlServerDatabaseFactory;
-
-namespace Universe.SqlInsights.NUnit
+﻿namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
 {
     public class TestDbConnectionString : IDbConnectionString
     {

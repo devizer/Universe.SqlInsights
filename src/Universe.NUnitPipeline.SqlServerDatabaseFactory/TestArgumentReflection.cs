@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Universe.SqlInsights.NUnit;
 
 namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
 {
