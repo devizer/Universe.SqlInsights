@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\Shared-Files\Net-2x-4x-Support.proj" />
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net472</TargetFrameworks>
+		<IsPackable>false</IsPackable>
+		<Language>latest</Language>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+		<PackageReference Include="Universe.NUnitPipeline" Version="3.14.0.203" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Universe.SqlInsights.W3Api.Client\Universe.SqlInsights.W3Api.Client.csproj" />
+	</ItemGroup>
+
+</Project>
