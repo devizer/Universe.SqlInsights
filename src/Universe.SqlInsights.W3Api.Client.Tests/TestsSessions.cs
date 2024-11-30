@@ -47,9 +47,10 @@ namespace Universe.SqlInsights.W3Api.Client.Tests
             try
             {
                 // Create
+                var newSessionName = $"Test Session {kind} {Guid.NewGuid()}";
                 CreateSessionParameters createSessionParameters = new CreateSessionParameters()
                 {
-                    Caption = $"Test Session {kind} {Guid.NewGuid()}",
+                    Caption = newSessionName,
                     MaxDurationMinutes = 13,
                 };
                 sessionid = await client.CreateSessionAsync(createSessionParameters);
@@ -60,6 +61,13 @@ namespace Universe.SqlInsights.W3Api.Client.Tests
                 sessions.PopulateSessionsCalculatedFields();
                 Console.WriteLine(sessions.AsJson());
 
+                var updatedSessionName = $"{newSessionName} Updated";
+                await client.RenameSessionAsync(new RenameSessionParameters() { IdSession = sessionid.Value, Caption = updatedSessionName });
+
+                var updatedSessions = await client.SessionsAsync();
+                updatedSessions.PopulateSessionsCalculatedFields();
+                bool isContains = updatedSessions.Any(x => updatedSessionName.Equals(x.Caption));
+                Assert.IsTrue(isContains, $"Updated Sessions does not contain '{updatedSessionName}'");
             }
             finally
             {
