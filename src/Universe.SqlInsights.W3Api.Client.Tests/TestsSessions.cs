@@ -2,6 +2,7 @@
 using Slices.Dashboard;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -19,8 +20,10 @@ namespace Universe.SqlInsights.W3Api.Client.Tests
         public async Task TestGetList(string kind)
         {
             S5ApiClient client = S5ApiClientFactory.Create();
+            Stopwatch sw = Stopwatch.StartNew();
             ICollection<SqlInsightsSession> sessions = await client.SessionsAsync();
             sessions.PopulateSessionsCalculatedFields();
+            Console.WriteLine($"Get Sessions took {sw.ElapsedMilliseconds} milliseconds");
             Console.WriteLine(sessions.AsJson());
         }
 

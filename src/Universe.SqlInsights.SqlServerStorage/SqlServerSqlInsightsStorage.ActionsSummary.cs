@@ -87,11 +87,10 @@ Where
             using (var con = GetConnection())
             {
                 StringsStorage strings = new StringsStorage(con, null);
-                var optionalParams = BuildOptionalParameters(strings, optionalApps, optionalHosts);
-                var sqlParams = optionalParams.Parameters;
+                OptionalParametersInfo optionalParams = BuildOptionalParameters(strings, optionalApps, optionalHosts);
+                DynamicParameters sqlParams = optionalParams.Parameters;
                 sqlParams.Add("IdSession", idSession);
                 sql.Append(optionalParams.SqlWhere);
-                sqlParams.Add("IdSession", idSession);
                 
                 var query = await con.QueryAsync<long?>(sql.ToString(), sqlParams);
                 long? binaryVersion = query.FirstOrDefault();

@@ -26,7 +26,7 @@ namespace Universe.SqlInsights.SqlServerStorage
             if (optionalApps != null)
             {
                 int appIndex = 0;
-                foreach (var optionalApp in optionalApps)
+                foreach (string optionalApp in optionalApps)
                 {
                     long? idAppName = strings.AcquireString(StringKind.AppName, optionalApp);
                     sqlParams.Add($"App{++appIndex}", idAppName.Value);
@@ -38,7 +38,7 @@ namespace Universe.SqlInsights.SqlServerStorage
             if (optionalHosts != null)
             {
                 int hostIndex = 0;
-                foreach (var optionalHost in optionalHosts)
+                foreach (string optionalHost in optionalHosts)
                 {
                     long? idHost = strings.AcquireString(StringKind.HostId, optionalHost);
                     sqlParams.Add($"Host{++hostIndex}", idHost.Value);
