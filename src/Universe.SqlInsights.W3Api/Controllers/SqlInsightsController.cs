@@ -63,9 +63,10 @@ namespace Universe.SqlInsights.W3Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<IEnumerable<ActionSummaryCounters>>> SummaryTimeStamp(ActionsSummaryParameters args)
+        public async Task<ActionResult<string>> SummaryTimeStamp(ActionsSummaryParameters args)
         {
             string ret = await _Storage.GetActionsSummaryTimestamp(args.IdSession, args.AppsFilter, args.HostsFilter);
+            // What the heck
             return ret.ToJsonResult();
         }
 

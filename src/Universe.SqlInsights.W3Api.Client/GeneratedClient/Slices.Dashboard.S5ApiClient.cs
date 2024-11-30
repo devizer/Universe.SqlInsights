@@ -71,7 +71,7 @@ namespace Slices.Dashboard
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<AboutResponse> IndexAsync()
         {
             return IndexAsync(System.Threading.CancellationToken.None);
@@ -79,7 +79,7 @@ namespace Slices.Dashboard
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<AboutResponse> IndexAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
@@ -125,14 +125,14 @@ namespace Slices.Dashboard
                             var objectResponse_ = await ReadObjectResponseAsync<AboutResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
-                                throw new W3ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
                         }
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new W3ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -150,7 +150,7 @@ namespace Slices.Dashboard
         }
 
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task IsOKAsync()
         {
             return IsOKAsync(System.Threading.CancellationToken.None);
@@ -158,7 +158,7 @@ namespace Slices.Dashboard
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task IsOKAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
@@ -204,7 +204,7 @@ namespace Slices.Dashboard
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new W3ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -222,7 +222,7 @@ namespace Slices.Dashboard
         }
 
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SqlInsightsSession>> SessionsAsync()
         {
             return SessionsAsync(System.Threading.CancellationToken.None);
@@ -230,7 +230,7 @@ namespace Slices.Dashboard
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SqlInsightsSession>> SessionsAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
@@ -276,14 +276,14 @@ namespace Slices.Dashboard
                             var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<SqlInsightsSession>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
-                                throw new W3ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
                         }
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new W3ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -301,7 +301,7 @@ namespace Slices.Dashboard
         }
 
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<long> CreateSessionAsync(CreateSessionParameters body)
         {
             return CreateSessionAsync(body, System.Threading.CancellationToken.None);
@@ -309,7 +309,7 @@ namespace Slices.Dashboard
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<long> CreateSessionAsync(CreateSessionParameters body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
@@ -358,14 +358,14 @@ namespace Slices.Dashboard
                             var objectResponse_ = await ReadObjectResponseAsync<long>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
-                                throw new W3ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
                         }
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new W3ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -383,7 +383,7 @@ namespace Slices.Dashboard
         }
 
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task DeleteSessionAsync(IdSessionParameters body)
         {
             return DeleteSessionAsync(body, System.Threading.CancellationToken.None);
@@ -391,7 +391,7 @@ namespace Slices.Dashboard
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task DeleteSessionAsync(IdSessionParameters body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
@@ -434,14 +434,14 @@ namespace Slices.Dashboard
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ >= 100 && status_ <= 299)
+                        if (status_ == 202)
                         {
                             return;
                         }
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new W3ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -459,7 +459,7 @@ namespace Slices.Dashboard
         }
 
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task FinishSessionAsync(IdSessionParameters body)
         {
             return FinishSessionAsync(body, System.Threading.CancellationToken.None);
@@ -467,7 +467,7 @@ namespace Slices.Dashboard
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task FinishSessionAsync(IdSessionParameters body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
@@ -517,7 +517,7 @@ namespace Slices.Dashboard
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new W3ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -535,7 +535,7 @@ namespace Slices.Dashboard
         }
 
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task ResumeSessionAsync(ResumeSessionParameters body)
         {
             return ResumeSessionAsync(body, System.Threading.CancellationToken.None);
@@ -543,7 +543,7 @@ namespace Slices.Dashboard
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task ResumeSessionAsync(ResumeSessionParameters body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
@@ -593,7 +593,7 @@ namespace Slices.Dashboard
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new W3ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -611,7 +611,7 @@ namespace Slices.Dashboard
         }
 
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task RenameSessionAsync(RenameSessionParameters body)
         {
             return RenameSessionAsync(body, System.Threading.CancellationToken.None);
@@ -619,7 +619,7 @@ namespace Slices.Dashboard
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task RenameSessionAsync(RenameSessionParameters body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
@@ -669,7 +669,7 @@ namespace Slices.Dashboard
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new W3ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -687,7 +687,7 @@ namespace Slices.Dashboard
         }
 
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<string> ActionsTimestampAsync(ActionsParameters body)
         {
             return ActionsTimestampAsync(body, System.Threading.CancellationToken.None);
@@ -695,7 +695,7 @@ namespace Slices.Dashboard
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<string> ActionsTimestampAsync(ActionsParameters body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
@@ -744,14 +744,14 @@ namespace Slices.Dashboard
                             var objectResponse_ = await ReadObjectResponseAsync<string>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
-                                throw new W3ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
                         }
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new W3ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -769,7 +769,7 @@ namespace Slices.Dashboard
         }
 
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ActionDetailsWithCounters>> ActionsByKeyAsync(ActionsParameters body)
         {
             return ActionsByKeyAsync(body, System.Threading.CancellationToken.None);
@@ -777,7 +777,7 @@ namespace Slices.Dashboard
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ActionDetailsWithCounters>> ActionsByKeyAsync(ActionsParameters body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
@@ -826,14 +826,14 @@ namespace Slices.Dashboard
                             var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ActionDetailsWithCounters>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
-                                throw new W3ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
                         }
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new W3ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -851,7 +851,7 @@ namespace Slices.Dashboard
         }
 
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ActionSummaryCounters>> SummaryAsync(ActionsSummaryParameters body)
         {
             return SummaryAsync(body, System.Threading.CancellationToken.None);
@@ -859,7 +859,7 @@ namespace Slices.Dashboard
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ActionSummaryCounters>> SummaryAsync(ActionsSummaryParameters body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
@@ -908,14 +908,14 @@ namespace Slices.Dashboard
                             var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ActionSummaryCounters>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
-                                throw new W3ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
                         }
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new W3ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -933,16 +933,16 @@ namespace Slices.Dashboard
         }
 
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ActionSummaryCounters>> SummaryTimeStampAsync(ActionsSummaryParameters body)
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<string> SummaryTimeStampAsync(ActionsSummaryParameters body)
         {
             return SummaryTimeStampAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ActionSummaryCounters>> SummaryTimeStampAsync(ActionsSummaryParameters body, System.Threading.CancellationToken cancellationToken)
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<string> SummaryTimeStampAsync(ActionsSummaryParameters body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -987,17 +987,17 @@ namespace Slices.Dashboard
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ActionSummaryCounters>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<string>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
-                                throw new W3ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
                         }
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new W3ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -1015,7 +1015,7 @@ namespace Slices.Dashboard
         }
 
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<FiltersResult> PopulateFiltersAsync()
         {
             return PopulateFiltersAsync(System.Threading.CancellationToken.None);
@@ -1023,7 +1023,7 @@ namespace Slices.Dashboard
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
-        /// <exception cref="W3ApiException">A server side error occurred.</exception>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<FiltersResult> PopulateFiltersAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
@@ -1069,14 +1069,14 @@ namespace Slices.Dashboard
                             var objectResponse_ = await ReadObjectResponseAsync<FiltersResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
-                                throw new W3ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
                         }
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new W3ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -1126,7 +1126,7 @@ namespace Slices.Dashboard
                 catch (Newtonsoft.Json.JsonException exception)
                 {
                     var message = "Could not deserialize the response body string as " + typeof(T).FullName + ".";
-                    throw new W3ApiException(message, (int)response.StatusCode, responseText, headers, exception);
+                    throw new ApiException(message, (int)response.StatusCode, responseText, headers, exception);
                 }
             }
             else
@@ -1145,12 +1145,11 @@ namespace Slices.Dashboard
                 catch (Newtonsoft.Json.JsonException exception)
                 {
                     var message = "Could not deserialize the response body stream as " + typeof(T).FullName + ".";
-                    throw new W3ApiException(message, (int)response.StatusCode, string.Empty, headers, exception);
+                    throw new ApiException(message, (int)response.StatusCode, string.Empty, headers, exception);
                 }
             }
         }
 
-        /*
         private string ConvertToString(object value, System.Globalization.CultureInfo cultureInfo)
         {
             if (value == null)
@@ -1166,14 +1165,12 @@ namespace Slices.Dashboard
                     var field = System.Reflection.IntrospectionExtensions.GetTypeInfo(value.GetType()).GetDeclaredField(name);
                     if (field != null)
                     {
-                        /*
                         var attribute = System.Reflection.CustomAttributeExtensions.GetCustomAttribute(field, typeof(System.Runtime.Serialization.EnumMemberAttribute)) 
                             as System.Runtime.Serialization.EnumMemberAttribute;
                         if (attribute != null)
                         {
                             return attribute.Value != null ? attribute.Value : name;
                         }
-                    #1#
                     }
 
                     var converted = System.Convert.ToString(System.Convert.ChangeType(value, System.Enum.GetUnderlyingType(value.GetType()), cultureInfo));
@@ -1206,7 +1203,6 @@ namespace Slices.Dashboard
             var result = System.Convert.ToString(value, cultureInfo);
             return result == null ? "" : result;
         }
-    */
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -1483,7 +1479,7 @@ namespace Slices.Dashboard
 
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class W3ApiException : System.Exception
+    public partial class ApiException : System.Exception
     {
         public int StatusCode { get; private set; }
 
@@ -1491,7 +1487,7 @@ namespace Slices.Dashboard
 
         public System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> Headers { get; private set; }
 
-        public W3ApiException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, System.Exception innerException)
+        public ApiException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, System.Exception innerException)
             : base(message + "\n\nStatus: " + statusCode + "\nResponse: \n" + ((response == null) ? "(null)" : response.Substring(0, response.Length >= 512 ? 512 : response.Length)), innerException)
         {
             StatusCode = statusCode;
@@ -1506,11 +1502,11 @@ namespace Slices.Dashboard
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class W3ApiException<TResult> : W3ApiException
+    public partial class ApiException<TResult> : ApiException
     {
         public TResult Result { get; private set; }
 
-        public W3ApiException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, TResult result, System.Exception innerException)
+        public ApiException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, TResult result, System.Exception innerException)
             : base(message, statusCode, response, headers, innerException)
         {
             Result = result;

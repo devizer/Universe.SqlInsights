@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Universe.SqlInsights.Shared;
@@ -62,6 +63,7 @@ namespace Universe.SqlInsights.W3Api.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
         public async Task<ActionResult> DeleteSession(IdSessionParameters args)
         {
             await _Storage.FinishSession(args.IdSession);
