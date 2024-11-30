@@ -27,7 +27,7 @@ namespace Universe.SqlInsights.W3Api.Client.Tests
         [Test]
         [TestCase("First")]
         [TestCase("Next")]
-        public async Task TestCRUD(string kind)
+        public async Task TestSessionsCRUD(string kind)
         {
             Console.WriteLine($"DateTimeOffset.UtcNow = '{DateTimeOffset.UtcNow.AsJson()}'");
             Console.WriteLine($"DateTimeOffset.Now = '{DateTimeOffset.Now.AsJson()}'");
