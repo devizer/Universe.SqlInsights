@@ -283,8 +283,8 @@ namespace Universe.SqlInsights.W3Api
                 }
             });
 
-            taskPreJit.ConfigureAwait(true);
-            taskPreJit.Wait();
+            taskPreJit.ConfigureAwait(false).GetAwaiter().GetResult();
+            // taskPreJit.Wait();
         }
 
         bool NeedResponseCompression()

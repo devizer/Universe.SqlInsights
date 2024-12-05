@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="..\Shared.props" />
   <Import Project="..\Shared-Files\Dapper.proj" />
   <Import Project="..\Shared-Files\Microsoft.Data.SqlClient.proj" />
   <Import Project="..\Shared-Files\Net-2x-4x-Support.proj" />
@@ -10,6 +11,11 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <!--<ImplicitUsings>enable</ImplicitUsings>-->
     <!--<Nullable>enable</Nullable>-->
+
+  
+        <DebugSymbols>true</DebugSymbols>
+        <EmbedAllSources>true</EmbedAllSources>
+        <DebugType>portable</DebugType>
   </PropertyGroup>
 
   <ItemGroup>

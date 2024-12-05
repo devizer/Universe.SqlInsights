@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Slices.Dashboard;
+using Universe.NUnitPipeline.SqlServerDatabaseFactory;
 
 namespace Universe.SqlInsights.W3Api.Client.Tests
 {
@@ -19,7 +20,7 @@ namespace Universe.SqlInsights.W3Api.Client.Tests
         public static IEnumerable<ActionDetailsTestCase> GetTestCases()
         {
             S5ApiClient client = S5ApiClientFactory.Create();
-            ICollection<SqlInsightsSession> sessions = client.SessionsAsync().Result;
+            ICollection<SqlInsightsSession> sessions = client.SessionsAsync().GetSafeResult();
             
             sessions = sessions.Concat(new[] { new SqlInsightsSession() {IdSession = -42, Caption = "Fake Session"} }).ToList();
 
@@ -32,7 +33,7 @@ namespace Universe.SqlInsights.W3Api.Client.Tests
                     IdSession = session.IdSession,
                 };
 
-                ICollection<ActionSummaryCounters> actionsWithSummary = client.SummaryAsync(request).Result;
+                ICollection<ActionSummaryCounters> actionsWithSummary = client.SummaryAsync(request).GetSafeResult();
                 foreach (var action in actionsWithSummary)
                 {
                     yield return new ActionDetailsTestCase()

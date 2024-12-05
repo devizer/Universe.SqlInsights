@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+    <Import Project="..\Shared.props" />
 	<Import Project="..\Shared-Files\Net-2x-4x-Support.proj" />
 	<Import Project="..\Shared-Files\Microsoft.Data.SqlClient.proj" />
 

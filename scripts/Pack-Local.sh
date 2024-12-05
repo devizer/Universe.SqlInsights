@@ -10,7 +10,7 @@ pushd ../src
 
 for p in Universe.SqlInsights.W3Api.Client Universe.SqlInsights.NUnit Universe.NUnitPipeline.SqlServerDatabaseFactory Universe.SqlInsights.Shared Universe.SqlInsights.GenericInterceptor Universe.SqlInsights.NetCore Universe.SqlInsights.W3Api Universe.SqlInsights.SqlServerStorage; do
   cd $p
-  dotnet pack -c Release -p:PackageVersion=$SQLINSIGHTS_VERSION_SHORT -p:Version=$SQLINSIGHTS_VERSION_SHORT -p:IncludeSymbols=True -p:SymbolPackageFormat=snupkg -p:IncludeSymbols=True
+  dotnet pack -c Release -p:PackageVersion=$SQLINSIGHTS_VERSION_SHORT -p:Version=$SQLINSIGHTS_VERSION_SHORT -p:IncludeSymbols=True -p:SymbolPackageFormat=snupkg
   cd ..
 done
 

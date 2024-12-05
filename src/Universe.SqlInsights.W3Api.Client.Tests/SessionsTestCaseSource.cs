@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Slices.Dashboard;
+using Universe.NUnitPipeline.SqlServerDatabaseFactory;
 
 namespace Universe.SqlInsights.W3Api.Client.Tests
 {
@@ -20,7 +21,7 @@ namespace Universe.SqlInsights.W3Api.Client.Tests
         public static SessionsTestCase[] GetTestCases()
         {
             S5ApiClient client = S5ApiClientFactory.Create();
-            var sessions = client.SessionsAsync().Result;
+            var sessions = client.SessionsAsync().GetSafeResult();
             var ret = sessions.Select(x => new SessionsTestCase() { Session = x });
             return ret.Concat(new List<SessionsTestCase>() { new SessionsTestCase() { Session = null } }).ToArray();
         }

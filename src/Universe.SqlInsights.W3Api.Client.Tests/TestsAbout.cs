@@ -6,6 +6,7 @@ using Slices.Dashboard;
 
 namespace Universe.SqlInsights.W3Api.Client.Tests
 {
+    [TestFixture]
     public class TestsAbout
     {
         [Test]
