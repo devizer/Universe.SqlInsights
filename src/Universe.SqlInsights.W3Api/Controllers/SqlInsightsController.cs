@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Universe.SqlInsights.Shared;
 
 namespace Universe.SqlInsights.W3Api.Controllers
@@ -31,7 +33,8 @@ namespace Universe.SqlInsights.W3Api.Controllers
         public async Task<ActionResult<IEnumerable<ActionDetailsWithCounters>>> ActionsByKey(ActionsParameters args)
         {
             SqlInsightsActionKeyPath keyPath = ParseActionKeyPath(args.Path);
-            IEnumerable<ActionDetailsWithCounters> ret = await _Storage.GetActionsByKeyPath(args.IdSession, keyPath, 100, args.AppsFilter, args.HostsFilter);
+            var topN = Math.Max(1,Math.Min(10000, args.TopN));
+            IEnumerable<ActionDetailsWithCounters> ret = await _Storage.GetActionsByKeyPath(args.IdSession, keyPath, topN, args.AppsFilter, args.HostsFilter, args.IsOK);
             return ret.ToJsonResult();
         }
 
@@ -43,8 +46,22 @@ namespace Universe.SqlInsights.W3Api.Controllers
             // public string HostId { get; set; }
             public string[] AppsFilter { get; set; }
             public string[] HostsFilter { get; set; }
+
+            // null - any, true - only success, false - only fail
+            public bool? IsOK { get; set; } = null;
+            public int TopN { get; set; } = 100;
         }
-        
+
+        public enum ParameterErrorsType
+        {
+            // All the Actions
+            Any,
+            // Only Failed
+            OnlyErrors,
+            // Only Success
+            OnlySuccess,
+        }
+
         public class ActionsSummaryParameters
         {
             public long IdSession { get; set; }
@@ -53,6 +70,7 @@ namespace Universe.SqlInsights.W3Api.Controllers
             public string[] AppsFilter { get; set; }
             public string[] HostsFilter { get; set; }
         }
+
         
 
         [HttpPost]

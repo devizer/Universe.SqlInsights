@@ -32,7 +32,7 @@ namespace Universe.SqlInsights.SqlServerStorage
             }
         }
 
-        public async Task<IEnumerable<ActionDetailsWithCounters>> GetActionsByKeyPath(long idSession, SqlInsightsActionKeyPath keyPath, int lastN = 100, IEnumerable<string> optionalApps = null, IEnumerable<string> optionalHosts = null)
+        public async Task<IEnumerable<ActionDetailsWithCounters>> GetActionsByKeyPath(long idSession, SqlInsightsActionKeyPath keyPath, int lastN = 100, IEnumerable<string> optionalApps = null, IEnumerable<string> optionalHosts = null, bool? isOk = null)
         {
             if (lastN < 1) 
                 throw new ArgumentOutOfRangeException(nameof(lastN));
@@ -43,8 +43,9 @@ namespace Universe.SqlInsights.SqlServerStorage
                 var optionalParams = BuildOptionalParameters(strings, optionalApps, optionalHosts);
                 var sqlParams = optionalParams.Parameters;
                 var sqlWhere = optionalParams.SqlWhere;
-                
-                string sql = $"Select Top (@N) Data From SqlInsightsAction Where KeyPath = @KeyPath And IdSession = @IdSession{sqlWhere} Order By IdAction Desc";
+
+                string sqlWhereIsOk = isOk == null ? "" : isOk == true ? " And IsOK = (1)" : " And IsOK = (0)";
+                string sql = $"Select Top (@N) Data From SqlInsightsAction Where KeyPath = @KeyPath And IdSession = @IdSession{sqlWhereIsOk}{sqlWhere} Order By IdAction Desc";
                 
                 sqlParams.Add("KeyPath", SerializeKeyPath(keyPath));
                 sqlParams.Add("IdSession", idSession);

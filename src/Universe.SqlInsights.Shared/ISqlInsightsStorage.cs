@@ -22,7 +22,7 @@ namespace Universe.SqlInsights.Shared
 #if NETSTANDARD || NET461
         Task<IEnumerable<ActionSummaryCounters>> GetActionsSummary(long idSession, IEnumerable<string> optionalApps, IEnumerable<string> optionalHosts);
         Task<string> GetActionsSummaryTimestamp(long idSession, IEnumerable<string> optionalApps, IEnumerable<string> optionalHosts);
-        Task<IEnumerable<ActionDetailsWithCounters>> GetActionsByKeyPath(long idSession, SqlInsightsActionKeyPath keyPath, int lastN, IEnumerable<string> optionalApps, IEnumerable<string> optionalHosts);
+        Task<IEnumerable<ActionDetailsWithCounters>> GetActionsByKeyPath(long idSession, SqlInsightsActionKeyPath keyPath, int lastN, IEnumerable<string> optionalApps, IEnumerable<string> optionalHosts, bool? isOk);
         Task<string> GetKeyPathTimestampOfDetails(long idSession, SqlInsightsActionKeyPath keyPath, IEnumerable<string> optionalApps, IEnumerable<string> optionalHosts);
 
         Task<IEnumerable<SqlInsightsSession>> GetSessions();
