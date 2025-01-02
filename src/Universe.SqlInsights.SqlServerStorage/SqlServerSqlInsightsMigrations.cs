@@ -241,9 +241,31 @@ Create Table SqlInsightsAction(
     -- Constraint FK_SqlInsightsAction_HostId FOREIGN KEY (HostId) REFERENCES SqlInsightsString(IdString),
 ")} 
 );
+
+/*
+-- 1A: Work great WITHOUT filtering details by IsOK.
 CREATE NONCLUSTERED INDEX [IX_SqlInsightsAction_IdSession_KeyPath_IdAction_Data]
     ON [dbo].[SqlInsightsAction] ([IdSession],[KeyPath])
     INCLUDE ([IdAction],[Data]);
+
+-- 2B: Next Index and 2 stats RECOMMENDED filtering details 
+CREATE NONCLUSTERED INDEX [IX_SqlInsightsAction_KeyPath_IdSession_IsOK_IdAction_Data]
+  ON [dbo].[SqlInsightsAction]
+           ([KeyPath] ASC, [IdSession] ASC, [IsOK] ASC)
+  INCLUDE  
+           ([IdAction],[Data]); -- WITH (SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF) ON [PRIMARY]
+
+CREATE STATISTICS [STAT_SqlInsightsAction_IdSession_KeyPath_IsOK] ON [dbo].[SqlInsightsAction]([IdSession], [KeyPath], [IsOK]); -- WITH AUTO_DROP = OFF
+CREATE STATISTICS [STAT_SqlInsightsAction_IsOK_KeyPath] ON [dbo].[SqlInsightsAction]([IsOK], [KeyPath]); -- WITH AUTO_DROP = OFF
+*/
+
+-- 3C: Final index FOR filtering IsOK, *OR* not filtering IsOK
+CREATE NONCLUSTERED INDEX [IX_SqlInsightsAction_IdSession_KeyPath_IsOK_IdAction_Data]
+  ON [dbo].[SqlInsightsAction]
+           ([IdSession],[KeyPath],[IsOK])
+  INCLUDE
+           ([IdAction],[Data]);
+
 End 
 "
             };

@@ -52,7 +52,7 @@ namespace Universe.SqlInsights.W3Api.Client.Tests
                 AppsFilter = null,
                 HostsFilter = null,
                 IdSession = testCase.SessionId,
-                Path = testCase.KeyPath
+                Path = testCase.KeyPath,
             };
             var details = await client.ActionsByKeyAsync(actionParameters);
 
