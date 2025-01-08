@@ -171,5 +171,9 @@ Say "Creating SqlInsights Dashboard Service"
 # Windows 7 Does not Support 'AutomaticDelayedStart'
 New-Service -Name SqlInsightsDashboard -BinaryPathName $binFullName -DisplayName "SqlInsights Dashboard" -Description "Provides Web Dashboard and Web API for SqlInsights Warehouse Storage. Version v$version" -StartupType Automatic |
             Format-Table -AutoSize | Out-Host
+
+# Restart on Fail
+& sc.exe failure SqlInsightsDashboard reset= 0 actions= restart/1 2>$null | Out-Host
+
 Say "Starting SqlInsights Dashboard Service"
 & net.exe start SqlInsightsDashboard

@@ -118,8 +118,9 @@ namespace Universe.SqlInsights.W3Api
                 if (context.Response.Headers.ContainsKey("Server"))
                     context.Response.Headers.Remove("Server");
 
-                context.Response.Headers.Add("Server", "devizer/s4dashboard");
+                context.Response.Headers.Add("Server", "devizer/s5dashboard");
                 await next.Invoke();
+
             });
 
             app.UseSqlInsights(); // BEFORE Exception Handler

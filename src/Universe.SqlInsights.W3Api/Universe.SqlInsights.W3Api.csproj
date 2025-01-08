@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<Import Project="..\Shared-Files\Universe.CpuUsage.proj" />
+	
 
 	<PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
@@ -8,6 +9,11 @@
         <NoWarn>NETSDK1138</NoWarn>
         <ServerGarbageCollection>false</ServerGarbageCollection>
     </PropertyGroup>
+
+	<ItemGroup>
+		<RuntimeHostConfigurationOption Include="System.Globalization.UseNls" Value="true" />
+		<RuntimeHostConfigurationOption Include="System.Net.DisableIPv6" Value="false" />
+	</ItemGroup>
 
     <ItemGroup>
       <Compile Include="..\Shared-Files\SystemDriveAccess.cs" Link="SystemDriveAccess.cs" />
@@ -17,7 +23,7 @@
         <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-        <PackageReference Include="Dapper" Version="2.0.78" />
+        <PackageReference Include="Dapper" Version="1.60.6" />
         <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
         <!-- Windows Service -->
         <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="6.0.1" />
@@ -27,6 +33,12 @@
       <ProjectReference Include="..\Universe.SqlInsights.NetCore\Universe.SqlInsights.NetCore.csproj" />
       <ProjectReference Include="..\Universe.SqlInsights.Shared\Universe.SqlInsights.Shared.csproj" />
       <ProjectReference Include="..\Universe.SqlInsights.SqlServerStorage\Universe.SqlInsights.SqlServerStorage.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="runtimeconfig.template.json">
+        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>
