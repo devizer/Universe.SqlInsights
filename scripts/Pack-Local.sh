@@ -1,6 +1,7 @@
 revision=$(git log -n 999999 --date=raw --pretty=format:"%cd" | wc -l)
 export SQLINSIGHTS_VERSION_SHORT="2.8.$revision"
 echo "SQLINSIGHTS_VERSION_SHORT = [$SQLINSIGHTS_VERSION_SHORT]"
+# Below is rebuilding nipkg
 # dotnet pack -c Release -p:PackageVersion=$SQLINSIGHTS_VERSION_SHORT -p:Version=$SQLINSIGHTS_VERSION_SHORT -p:IncludeSymbols=True -p:SymbolPackageFormat=snupkg
 
 mkdir -p ../bin
