@@ -3,6 +3,6 @@
 	  <!-- 2.2.776.891 -->
 	  <!-- PREV: 2.2.774.890 -->
 	  <!-- 2.2.497.598 -->
-	  <PackageReference Include="Universe.CpuUsage" Version="2.2.777.892" />
+	  <PackageReference Include="Universe.CpuUsage" Version="2.2.778.893" />
     </ItemGroup>
 </Project>
