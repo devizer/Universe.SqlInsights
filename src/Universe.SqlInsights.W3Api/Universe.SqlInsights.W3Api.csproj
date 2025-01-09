@@ -11,7 +11,7 @@
     </PropertyGroup>
 
 	<ItemGroup>
-		<RuntimeHostConfigurationOption Include="System.Globalization.UseNls" Value="true" />
+		<!--<RuntimeHostConfigurationOption Include="System.Globalization.UseNls" Value="true" />-->
 		<RuntimeHostConfigurationOption Include="System.Net.DisableIPv6" Value="false" />
 	</ItemGroup>
 

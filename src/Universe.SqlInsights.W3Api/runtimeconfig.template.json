@@ -2,7 +2,7 @@
   "configProperties": {
     "System.GC.Concurrent": true,
     "System.GC.Server": true,
-    "System.GC.HeapHardLimit": 214748364800,
+    "System.GC.HeapHardLimit": 2147483648,
     "System.Net.DisableIPv6": false
   }                            
 }
