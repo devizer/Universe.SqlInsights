@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using Dapper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -32,6 +34,9 @@ namespace Universe.SqlInsights.W3Api
                 Console.WriteLine($"Forced ASPNETCORE_URLS: '{listenOnUrls}'");
                 Environment.SetEnvironmentVariable("ASPNETCORE_URLS", listenOnUrls);
             }
+
+            // Fix Dapper Memory Leak
+            SqlMapper.ConnectionStringComparer = SqlConnectionStringComparer.Instance;
             
             // Console.WriteLine($"GetListenOnUrlsFromAppSettings(): {GetListenOnUrlsFromAppSettings()}");
 
@@ -172,5 +177,20 @@ namespace Universe.SqlInsights.W3Api
         }
 
         static bool IsLogFilesEnabled => ConfigurationRoot.GetBooleanValue("LocalLogsFolder:Enable");
+    }
+
+    class SqlConnectionStringComparer : IEqualityComparer<string>
+    {
+        public static IEqualityComparer<string> Instance = new SqlConnectionStringComparer();
+
+        public bool Equals(string x, string y)
+        {
+            return true;
+        }
+
+        public int GetHashCode(string obj)
+        {
+            return 42;
+        }
     }
 }

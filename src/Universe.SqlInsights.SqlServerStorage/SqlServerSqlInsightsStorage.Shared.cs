@@ -37,6 +37,8 @@ namespace Universe.SqlInsights.SqlServerStorage
 
         IDbConnection GetConnection()
         {
+            // FlushDapperMemoryLeaks();
+
             // Migrations here for development only
             // TODO: Multiple Storages per app?
             if (!AreMigrationsChecked)

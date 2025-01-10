@@ -4,5 +4,5 @@
     "System.GC.Server": true,
     "System.GC.HeapHardLimit": 2147483648,
     "System.Net.DisableIPv6": false
-  }                            
+  }
 }
