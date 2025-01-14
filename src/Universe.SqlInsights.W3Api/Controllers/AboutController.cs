@@ -1,4 +1,5 @@
-﻿using System.Data.SqlClient;
+﻿using System;
+using System.Data.SqlClient;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +29,7 @@ namespace Universe.SqlInsights.W3Api.Controllers
                 DbCatalog = b.InitialCatalog,
                 DbServer = b.DataSource
             };
-
+            // throw new Exception("Mute it. DEBUGGER JSON ERROR");
             return ret.ToJsonResult();
         }
     }

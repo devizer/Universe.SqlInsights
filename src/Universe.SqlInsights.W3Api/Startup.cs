@@ -124,16 +124,18 @@ namespace Universe.SqlInsights.W3Api
             });
 
             app.UseSqlInsights(); // BEFORE Exception Handler
-            if (env.IsDevelopment())
+            if (false && env.IsDevelopment())
             {
+                logger.LogInformation("Activating Developer Exception Page");
                 app.UseDeveloperExceptionPage();
             }
             else
             {
-                var appInfo = GetErrorCustomContext();
-                app.UseMiddleware<JsonExceptionHandlerMiddleware>(appInfo);
             }
 
+            logger.LogInformation("Activating Production Exception Response via JsonExceptionHandlerMiddleware");
+            JsonExceptionHandlerMiddlewareCustomContext appInfo = GetErrorCustomContext();
+            app.UseMiddleware<JsonExceptionHandlerMiddleware>(appInfo);
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
