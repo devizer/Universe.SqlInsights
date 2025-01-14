@@ -15,5 +15,7 @@ namespace Shared.TestDatabaseDefinitions
         public void MigrateAndSeed(IDbConnectionString connectionOptions)
         {
         }
+
+        public string SavedDatabaseName => null;
     }
 }

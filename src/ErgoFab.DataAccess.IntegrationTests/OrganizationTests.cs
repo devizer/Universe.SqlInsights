@@ -16,10 +16,20 @@ namespace ErgoFab.DataAccess.IntegrationTests
     {
         [Test]
         [ErgoFabTestCaseSource(7777)]
-        public async Task OrganizationAnotherTest(ErgoFabTestCase testCase)
+        public async Task OrganizationAnotherTest1st(ErgoFabTestCase testCase)
         {
             var organizationsCount = await testCase.CreateErgoFabDbContext().Organization.AsNoTracking().CountAsync();
             Assert.AreEqual(7777, organizationsCount);
+            var organizationsCount2 = await testCase.CreateErgoFabDbContext().Organization.AsNoTracking().CountAsync();
+        }
+
+        [Test]
+        [ErgoFabTestCaseSource(7777)]
+        public async Task OrganizationAnotherTest2nd(ErgoFabTestCase testCase)
+        {
+            var organizationsCount = await testCase.CreateErgoFabDbContext().Organization.AsNoTracking().Select(x => x.Id).CountAsync();
+            Assert.AreEqual(7777, organizationsCount);
+            var organizationsCount2 = await testCase.CreateErgoFabDbContext().Organization.AsNoTracking().Select(x => x.Id).CountAsync();
         }
 
         [Test]

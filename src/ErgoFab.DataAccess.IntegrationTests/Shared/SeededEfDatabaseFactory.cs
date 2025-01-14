@@ -3,7 +3,7 @@ using Universe.NUnitPipeline.SqlServerDatabaseFactory;
 
 namespace ErgoFab.DataAccess.IntegrationTests.Shared;
 
-// TODO: Throw up
+// TODO: REMOVE IT
 public class SeededEfDatabaseFactory : SeededDatabaseFactory
 {
     public SeededEfDatabaseFactory(ISqlServerTestsConfiguration sqlServerTestsConfiguration) : base(sqlServerTestsConfiguration)
@@ -25,7 +25,8 @@ public class SeededEfDatabaseFactory : SeededDatabaseFactory
             }
         }
 
-        return await base.BuildDatabase(cacheKey, newDbName, title, MigrateAndSeed);
+        // TODO: Saved DB Name
+        return await base.BuildDatabase(cacheKey, newDbName, title, null, MigrateAndSeed);
     }
 
 }

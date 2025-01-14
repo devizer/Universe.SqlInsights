@@ -22,4 +22,6 @@ public class ErgoFabDatabase : IDatabaseDefinition
         dbContext.Database.MigrateAsync().SafeWait();
         ErgoFabDbSeeder.Seed(connectionOptions, OrganizationsCount).SafeWait();
     }
+
+    public string SavedDatabaseName => Title;
 }

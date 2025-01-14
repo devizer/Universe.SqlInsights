@@ -10,5 +10,8 @@
         
         // Test DB Is Created. Initial Catalog is properly assigned
         void MigrateAndSeed(IDbConnectionString connectionOptions);
+
+        // Nullable. If not null then infrastructure keep DB with the name
+        string SavedDatabaseName { get; }
     }
 }

@@ -45,6 +45,7 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
                             testDbConnectionString.ManagedBy.CacheKey,
                             testDbName,
                             testDbConnectionString.ManagedBy.Title,
+                            testDbConnectionString.ManagedBy.SavedDatabaseName,
                             testDbConnectionString.ManagedBy.MigrateAndSeed
                         ).GetSafeResult();
 
