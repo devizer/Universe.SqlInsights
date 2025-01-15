@@ -70,7 +70,18 @@ namespace Universe.SqlInsights.NetCore
                 
                 // DEBUG
                 ISqlInsightsStorage storage = serviceProvider.GetRequiredService<ISqlInsightsStorage>();
-                var anyAliveSession = storage.AnyAliveSession();
+                bool anyAliveSession = false;
+                try
+                {
+                    anyAliveSession = storage.AnyAliveSession();
+                }
+                catch (Exception ex)
+                {
+                    var message = $"ISqlInsightsStorage.AnyAliveSession() failed. {ex.GetExceptionDigest()}";
+                    await context.Response.WriteAsync(message);
+                    throw new Exception(message, ex);
+                }
+
                 if (!anyAliveSession)
                 {
                     await next.Invoke();

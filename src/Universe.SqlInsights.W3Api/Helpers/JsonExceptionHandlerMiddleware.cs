@@ -53,9 +53,9 @@ namespace Universe.SqlInsights.W3Api.Helpers
                     StackTrace = error?.ToString(),
                 };
 
-                await context.Response.WriteAsync(JsonConvert.SerializeObject(errorJson));
-                var logger = _loggerFactory.CreateLogger("Http Error");
+                var logger = _loggerFactory.CreateLogger("ASP.NET Core Pipeline Error");
                 logger.LogError(ex, "Http Request {url} failed. {error}", url, ex.GetExceptionDigest());
+                await context.Response.WriteAsync(JsonConvert.SerializeObject(errorJson));
             }
         }
     }
