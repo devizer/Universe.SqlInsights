@@ -78,7 +78,10 @@ namespace Universe.SqlInsights.NetCore
                 catch (Exception ex)
                 {
                     var message = $"ISqlInsightsStorage.AnyAliveSession() failed. {ex.GetExceptionDigest()}";
-                    await context.Response.WriteAsync(message);
+                    // TODO: Revert
+                    // context.Response.StatusCode = 500;
+                    // await context.Response.WriteAsync(message);
+                    // return instead of throw
                     throw new Exception(message, ex);
                 }
 

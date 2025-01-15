@@ -147,7 +147,7 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
                 sql.Append(sqlMove);
             }
 
-            sql.Append(" Replace");
+            sql.Append(" Replace, Recovery");
 
             var masterConnection = CreateMasterConnection();
             masterConnection.Execute(sql.ToString(), commandTimeout: 180);

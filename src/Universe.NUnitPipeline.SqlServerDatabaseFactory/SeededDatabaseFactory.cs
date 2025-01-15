@@ -76,6 +76,8 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
 
         private void WarmUpDbAfterRestore(DbConnection newConnection)
         {
+            // return;
+            
             const string sql = @"Set NoCount On;
 declare @tableName nvarchar(1024)
 declare tableList CURSOR STATIC FOR 
