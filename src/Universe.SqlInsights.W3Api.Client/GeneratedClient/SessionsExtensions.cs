@@ -38,7 +38,8 @@ namespace Universe.SqlInsights.W3Api.Client.GeneratedClient
                     s.CalculatedEnding = s.ExpiringDate;
                 }
 
-                var now = DateTimeOffset.Now.Subtract(TimeZoneInfo.Local.GetUtcOffset(DateTime.Now));
+                DateTimeOffset now = DateTimeOffset.Now.Subtract(TimeZoneInfo.Local.GetUtcOffset(DateTime.Now));
+                // DateTimeOffset now = DateTimeOffset.UtcNow;
                 if (s.CalculatedEnding.HasValue && now >= s.CalculatedEnding.Value)
                     s.CalculatedIsFinished = true;
             }

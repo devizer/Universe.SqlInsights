@@ -29,6 +29,11 @@ namespace Universe.SqlInsights.W3Api.Controllers
             return timestamp.ToJsonResult();
         }
 
+        // TODO: Multiple Keys, Order By Desc:
+        // At (now is hardcoded),
+        // AppDuration,
+        // TotalSqlDuration, TotalSqlReadsDuration, TotalSqlReads,
+        // Change: .AddAction() and .GetActionsByKeyPath() for storage
         [HttpPost]
         public async Task<ActionResult<IEnumerable<ActionDetailsWithCounters>>> ActionsByKey(ActionsParameters args)
         {

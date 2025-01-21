@@ -79,20 +79,20 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
             // return;
             
             const string sql = @"Set NoCount On;
-declare @tableName nvarchar(1024)
-declare tableList CURSOR STATIC FOR 
+Declare tableList CURSOR STATIC FOR
 SELECT '[' + TABLE_SCHEMA + '].[' + TABLE_NAME  + ']' as TableFullName FROM information_schema.tables Where Table_Type = 'BASE TABLE'
 		
-open tableList
-while 1=1 begin
-  fetch next from tableList into @tableName
-  if @@fetch_status<>0 break
-  print 'Table ' + @tableName
-  exec ('Select count(1) From ' + @tableName + ' Where 1=2')
-end
+Declare @tableName nvarchar(1024)
+Open tableList
+While 1=1 Begin
+  Fetch Next From tableList Into @tableName
+  If @@fetch_status<>0 Break
+  Print 'Warn Up Table ' + @tableName
+  Exec ('Select count(1) From ' + @tableName + ' Where 1=2')
+End
 
-close tableList
-deallocate tableList
+Close tableList
+Deallocate tableList
 ";
 
             newConnection.Query<int>(sql);
