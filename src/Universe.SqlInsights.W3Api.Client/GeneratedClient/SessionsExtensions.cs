@@ -25,8 +25,12 @@ namespace Universe.SqlInsights.W3Api.Client.GeneratedClient
     {
         public static void PopulateSessionsCalculatedFields(this IEnumerable<SqlInsightsSession> sessions)
         {
+            var localTimeZone = TimeZoneInfo.Local;
             foreach (SqlInsightsSession s in sessions)
             {
+                s.StartedAt = s.StartedAt.Subtract(localTimeZone.GetUtcOffset(s.StartedAt));
+                if (s.EndedAt.HasValue) s.EndedAt = s.EndedAt.Value.Subtract(localTimeZone.GetUtcOffset(s.StartedAt));
+
                 if (s.MaxDurationMinutes.HasValue)
                     s.ExpiringDate = s.StartedAt + TimeSpan.FromMinutes(s.MaxDurationMinutes.Value);
 
@@ -38,8 +42,8 @@ namespace Universe.SqlInsights.W3Api.Client.GeneratedClient
                     s.CalculatedEnding = s.ExpiringDate;
                 }
 
-                DateTimeOffset now = DateTimeOffset.Now.Subtract(TimeZoneInfo.Local.GetUtcOffset(DateTime.Now));
-                // DateTimeOffset now = DateTimeOffset.UtcNow;
+                // DateTimeOffset now = DateTimeOffset.Now.Subtract(TimeZoneInfo.Local.GetUtcOffset(DateTime.Now));
+                DateTimeOffset now = DateTimeOffset.UtcNow;
                 if (s.CalculatedEnding.HasValue && now >= s.CalculatedEnding.Value)
                     s.CalculatedIsFinished = true;
             }
