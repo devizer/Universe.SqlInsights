@@ -23,14 +23,13 @@ namespace Universe.SqlInsights.W3Api.Client.GeneratedClient
 {
     public static class SessionsExtensions
     {
+        // Done: Moved to desktop client
         public static void PopulateSessionsCalculatedFields(this IEnumerable<SqlInsightsSession> sessions)
         {
             var localTimeZone = TimeZoneInfo.Local;
+            DateTimeOffset now = DateTimeOffset.UtcNow;
             foreach (SqlInsightsSession s in sessions)
             {
-                s.StartedAt = s.StartedAt.Subtract(localTimeZone.GetUtcOffset(s.StartedAt));
-                if (s.EndedAt.HasValue) s.EndedAt = s.EndedAt.Value.Subtract(localTimeZone.GetUtcOffset(s.StartedAt));
-
                 if (s.MaxDurationMinutes.HasValue)
                     s.ExpiringDate = s.StartedAt + TimeSpan.FromMinutes(s.MaxDurationMinutes.Value);
 
@@ -42,10 +41,21 @@ namespace Universe.SqlInsights.W3Api.Client.GeneratedClient
                     s.CalculatedEnding = s.ExpiringDate;
                 }
 
-                // DateTimeOffset now = DateTimeOffset.Now.Subtract(TimeZoneInfo.Local.GetUtcOffset(DateTime.Now));
-                DateTimeOffset now = DateTimeOffset.UtcNow;
-                if (s.CalculatedEnding.HasValue && now >= s.CalculatedEnding.Value)
-                    s.CalculatedIsFinished = true;
+                //// Does Not work at evening. lol
+                //DateTimeOffset now = DateTimeOffset.Now.Subtract(TimeZoneInfo.Local.GetUtcOffset(DateTime.Now));
+                //if (s.CalculatedEnding.HasValue && now >= s.CalculatedEnding.Value)
+                //    s.CalculatedIsFinished = true;
+                if (s.CalculatedEnding.HasValue)
+                {
+                    var nowUtcDateTime = now.UtcDateTime;
+                    var calculatedEndingUtcDateTime = s.CalculatedEnding.Value.UtcDateTime;
+                    var calculatedEndingUtcDateTimeCorrected = calculatedEndingUtcDateTime.Add(localTimeZone.GetUtcOffset(calculatedEndingUtcDateTime));
+
+                    if (nowUtcDateTime >= calculatedEndingUtcDateTimeCorrected)
+                        s.CalculatedIsFinished = true;
+                }
+
+
             }
         }
 
