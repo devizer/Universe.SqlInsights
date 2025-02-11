@@ -70,8 +70,21 @@ function Say { param( [string] $message )
     Write-Host "$message" -ForegroundColor Yellow
 }
 
+function Has-Cmd {
+  param([string] $arg)
+  if ("$arg" -eq "") { return $false; }
+  [bool] (Get-Command "$arg" -ErrorAction SilentlyContinue)
+}
+
+function Select-WMI-Objects([string] $class) {
+  if (Has-Cmd "Get-CIMInstance")     { $ret = Get-CIMInstance $class; } 
+  elseif (Has-Cmd "Get-WmiObject")   { $ret = Get-WmiObject   $class; } 
+  if (-not $ret) { Write-Host "Warning ! Missing neither Get-CIMInstance nor Get-WmiObject" -ForegroundColor DarkRed; }
+  return $ret;
+}
+
 function Get-Ram() {
-    $mem=(Get-CIMInstance Win32_OperatingSystem | Select FreePhysicalMemory,TotalVisibleMemorySize)[0];
+    $mem=(Select-WMI-Objects Win32_OperatingSystem | Select -First 1 | Select FreePhysicalMemory,TotalVisibleMemorySize);
     $total=[int] ($mem.TotalVisibleMemorySize / 1024);
     $free=[int] ($mem.FreePhysicalMemory / 1024);
     $info="Total RAM: $($total.ToString("n0")) MB. Free: $($free.ToString("n0")) MB ($([Math]::Round($free * 100 / $total, 1))%)";
@@ -83,7 +96,8 @@ function Get-Ram() {
 }
 
 function Get-CPU() {
-    return "$((Get-WmiObject Win32_Processor).Name), $([System.Environment]::ProcessorCount) Cores";
+    $cpu="$((Select-WMI-Objects Win32_Processor | Select -First 1).Name)".Trim()
+    return "$cpu, $([System.Environment]::ProcessorCount) Cores";
 }
 
 function Download-File([string] $url, [string]$outfile) {
