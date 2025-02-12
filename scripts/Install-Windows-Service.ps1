@@ -22,8 +22,7 @@ $dbName=$csb.InitialCatalog
 # x86 (0), MIPS (1), Alpha (2), PowerPC (3), ARM (5), ia64 (6) Itanium-based systems, x64 (9), ARM64 (12)
 function Get-CPU-Architecture-Suffix() {
     # on multiple sockets x64
-    $a=(Get-WmiObject Win32_Processor).Architecture
-    if ($a.Count) { $a=$a[0] };
+    $a=(Select-WMI-Objects "Win32_Processor" | Select -First 1).Architecture
     if ($a -eq 0)  { return "x86" };
     if ($a -eq 5)  { return "arm" };
     if ($a -eq 9)  { return "x64" };
@@ -96,7 +95,9 @@ function Get-Ram() {
 }
 
 function Get-CPU() {
-    $cpu="$((Select-WMI-Objects Win32_Processor | Select -First 1).Name)".Trim()
+    $cpu = "$((Select-WMI-Objects Win32_Processor | Select -First 1).Name)".Trim()
+    $cpu = $cpu.Replace("`r", " ").Replace("`n", " ").Replace("`t", " ")
+    while($cpu.IndexOf("  ") -ge 0) { $cpu = $cpu.Replace("  ", " "); }
     return "$cpu, $([System.Environment]::ProcessorCount) Cores";
 }
 
