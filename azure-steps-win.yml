@@ -361,12 +361,18 @@ steps:
       set -eu; set -o pipefail;
       cd $AGENT_TEMPDIRECTORY/Goods/QueryCache.tests
       dotnet test Universe.SqlServerQueryCache.Tests.dll
-      ls -lar *
-      cp -a -v TestResults "${SYSTEM_ARTIFACTSDIRECTORY}"
+      du -h "${SYSTEM_ARTIFACTSDIRECTORY}" || true
+      # cp -a -v TestResults "${SYSTEM_ARTIFACTSDIRECTORY}"
       Say "Success Complete"
     condition: succeededOrFailed()
     displayName: 'Test Query Cache'
 
+  - task: PublishBuildArtifacts@1
+    condition: succeededOrFailed()
+    displayName: 'Publish Query Cache Report'
+    inputs:
+      pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)\\TestResults'
+      artifactName: '$(Agent.JobName) (Query Cache Report)'
 
   - task: PublishTestResults@2
     condition: succeededOrFailed()
