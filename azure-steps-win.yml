@@ -357,6 +357,16 @@ steps:
     displayName: 'RUN W3API (optional)'
 
 
+  - bash: |
+      set -eu; set -o pipefail;
+      cd $AGENT_TEMPDIRECTORY/Goods/QueryCache.tests
+      dotnet test Universe.SqlServerQueryCache.Tests.dll
+      cp -a -v TestResults "${SYSTEM_ARTIFACTSDIRECTORY}"
+      Say "Success Complete"
+    condition: succeededOrFailed()
+    displayName: 'Test Query Cache'
+
+
   - task: PublishTestResults@2
     condition: succeededOrFailed()
     inputs:
