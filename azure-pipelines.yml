@@ -66,8 +66,8 @@ jobs:
           popd
 
           Say "Build fx-dependent [https://github.com/devizer/Universe.SqlServerQueryCache].Tests"
-          git clone https://github.com/devizer/Universe.SqlServerQueryCache ~/jam
-          pushd ~/jam/src/Universe.SqlServerQueryCache/Universe.SqlServerQueryCache.Tests
+          git clone https://github.com/devizer/Universe.SqlServerQueryCache ~/QueryCache
+          pushd ~/QueryCache/Universe.SqlServerQueryCache.Tests
           time try-and-retry dotnet publish -c $configuration -o $SYSTEM_ARTIFACTSDIRECTORY/QueryCache.tests -f net6.0
           popd
 
