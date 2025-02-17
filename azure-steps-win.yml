@@ -361,6 +361,7 @@ steps:
       set -eu; set -o pipefail;
       cd $AGENT_TEMPDIRECTORY/Goods/QueryCache.tests
       dotnet test Universe.SqlServerQueryCache.Tests.dll
+      ls -lar *
       cp -a -v TestResults "${SYSTEM_ARTIFACTSDIRECTORY}"
       Say "Success Complete"
     condition: succeededOrFailed()
