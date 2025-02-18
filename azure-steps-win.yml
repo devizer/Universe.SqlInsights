@@ -248,7 +248,7 @@ steps:
     displayName: 'Publish SQL Setup Logs'
     inputs:
       pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)'
-      artifactName: '$(Agent.JobName) (SQL Setup Logs)'
+      artifactName: 'SQL Setup Logs $(Agent.JobName)'
 
   - bash: |
       dotnet --info
@@ -378,7 +378,7 @@ steps:
     displayName: 'Publish Query Cache Report'
     inputs:
       pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)\\QueryCacheReports'
-      artifactName: '$(Agent.JobName)-$(Build.BUILDNUMBER) (Query Cache Reports)'
+      artifactName: 'Query Cache Reports $(Agent.JobName) $(Build.BUILDNUMBER)'
 
   - task: PublishTestResults@2
     condition: succeededOrFailed()
