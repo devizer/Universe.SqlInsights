@@ -44,7 +44,7 @@ steps:
     displayName: 'Goods: download (w3api, w3api.tests, jam.tests)'
     inputs:
       artifactName: Goods
-      path: $(AGENT.TEMPDIRECTORY)\Goods
+      path: $(AGENT.TEMPDIRECTORY)/Goods
       patterns: 
         "**"
 
