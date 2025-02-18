@@ -54,6 +54,7 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
             masterConnection.Execute(sql2);
         }
 
+        // for **transient** pipeline agents
         protected static bool KeepTempTestDatabases()
         {
             var raw = Environment.GetEnvironmentVariable("NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES");
@@ -64,6 +65,7 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
                     || raw.Equals("On", StringComparison.OrdinalIgnoreCase)
                 );
         }
+
         public virtual async Task DropDatabase(string name)
         {
             if (KeepTempTestDatabases()) return;
