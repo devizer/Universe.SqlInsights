@@ -235,6 +235,26 @@ steps:
     condition: succeededOrFailed()
     displayName: 'SQL /var/.../errorlog'
 
+  - bash: |
+      set -eu; set -o pipefail;
+      export SQLSERVER_WELLKNOWN_In_Docker="TrustServerCertificate=True;Encrypt=False;Data Source=127.0.0.1,1433;User ID=sa;Password=p@assw0rd!"
+      cd $AGENT_TEMPDIRECTORY/Goods/QueryCache.tests
+      dotnet test Universe.SqlServerQueryCache.Tests.dll
+      du -h "${SYSTEM_ARTIFACTSDIRECTORY}" || true
+      # cp -a -v TestResults "${SYSTEM_ARTIFACTSDIRECTORY}"
+      Say "Success Complete"
+    condition: succeededOrFailed()
+    displayName: 'Test Query Cache'
+
+  - task: PublishBuildArtifacts@1
+    condition: succeededOrFailed()
+    displayName: 'Publish Query Cache Report'
+    inputs:
+      pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)/QueryCacheReports'
+      artifactName: 'Query Cache Reports $(Agent.JobName) $(Build.BUILDNUMBER)'
+
+
+
     
 
   - publish: $(SYSTEM.ARTIFACTSDIRECTORY)
