@@ -39,6 +39,15 @@ steps:
       patterns: 
         "**"
 
+  - task: DownloadPipelineArtifact@2
+    condition: succeededOrFailed()
+    displayName: 'Goods: download (w3api, w3api.tests, jam.tests)'
+    inputs:
+      artifactName: Goods
+      path: $(AGENT.TEMPDIRECTORY)\Goods
+      patterns: 
+        "**"
+
   - bash: |
       set -eu; set -o pipefail
       try-and-retry curl -kfSL -o /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
