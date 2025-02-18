@@ -146,6 +146,7 @@ steps:
 
   - bash: |
       set -eu; set -o pipefail;
+      if [[ "${RAM_DISK:-}" == "" ]]; then export NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES=True; fi # for query cache
       export ERGOFAB_TESTS_DATA_FOLDER="/ErgoFab-Tests"
       export ERGOFAB_TESTS_MASTER_CONNECTIONSTRING="TrustServerCertificate=True;Data Source=localhost,1433;User ID=sa;Password=p@assw0rd!;Encrypt=False;"
       export ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING="Server=localhost;Encrypt=False;Initial Catalog=SqlInsights Local Warehouse;User ID=sa;Password=p@assw0rd!"
