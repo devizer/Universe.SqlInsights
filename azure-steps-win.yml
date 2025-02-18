@@ -187,7 +187,13 @@ steps:
        # Say "Copy log SQL-Setup.Logs"
        # cp "$($Env:Temp)\SQL-Setup.Logs" Setup.Logs -Force
     condition: succeededOrFailed()
-    displayName: 'Prepare SQL Server'
+    displayName: '[SQL Server] Setup'
+
+  - powershell: |
+       iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
+       Set-SQLServer-Options -Title "SQL $i" -Instance "(local)" -Options @{ xp_cmdshell = $true; "clr enabled" = $false; "server trigger recursion" = $true; "min server memory (MB)" = 500; "max server memory (MB)" = 16000 }
+    condition: succeededOrFailed()
+    displayName: '[SQL Server] Configure'
 
   - bash: |
       set -eu; set -o pipefail;
