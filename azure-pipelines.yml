@@ -170,17 +170,18 @@ jobs:
       maxParallel: 2
       matrix:
 
-        "SQL Server 2017 on Ubuntu":
+        "SQL Server 2022 on Ubuntu":
           VMIMAGE: 'ubuntu-20.04'
-          SQL_IMAGE_TAG: "2017-latest"
+          SQL_IMAGE_TAG: "2022-latest"
         
         "SQL Server 2019 on Ubuntu":
           VMIMAGE: 'ubuntu-20.04'
           SQL_IMAGE_TAG: "2019-latest"
-        
-        "SQL Server 2022 on Ubuntu":
+
+        "SQL Server 2017 on Ubuntu":
           VMIMAGE: 'ubuntu-20.04'
-          SQL_IMAGE_TAG: "2022-latest"
+          SQL_IMAGE_TAG: "2017-latest"
+        
         
 
         "SQL Server 2022 on Ubuntu with RAM Disk":
