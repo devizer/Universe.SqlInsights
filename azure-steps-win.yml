@@ -197,6 +197,7 @@ steps:
 
   - bash: |
       set -eu; set -o pipefail;
+      if [[ "${RAM_DISK:-}" == "" ]]; then export NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES=True; fi
       cd $AGENT_TEMPDIRECTORY/Goods/ergofab.tests
       export ERGOFAB_TESTS_DATA_FOLDER="D:\\ErgFab-Tests"
       export ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING="Server=(local);Encrypt=False;Initial Catalog=SqlInsights Local Warehouse;Integrated Security=SSPI"
