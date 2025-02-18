@@ -88,6 +88,28 @@ jobs:
       maxParallel: 9
       matrix:
 
+        "SQL Server 2017 Dev":
+          SQL: 'SqlServer 2017 Developer: MSSQLSERVER'
+          TEST_ADVENTURE_WORKS: true
+
+        "SQL Server 2019 Dev":
+          SQL: 'SqlServer 2019 Developer: MSSQLSERVER'
+          TEST_ADVENTURE_WORKS: true
+
+        'SQL Server 2022 Dev on Windows Server 2022':
+          SQL: 'SqlServer 2022 Developer: MSSQLSERVER'
+          TEST_ADVENTURE_WORKS: true
+          VMIMAGE: 'windows-2022'
+          RAM_DISK: "R"
+          RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
+        
+        "SQL Server 2008 R2":
+          SQL: 'SqlServer 2008R2 Express: MSSQLSERVER'
+          MSI_DUMP: true
+        
+        "SQL Server 2008":
+          SQL: 'SqlServer 2008 Express: MSSQLSERVER'
+
         "SQL Server 2016":
           SQL: 'SqlServer 2016 Express: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
@@ -98,11 +120,6 @@ jobs:
         #   SQL: 'SqlServer 2008 Express Advanced: MSSQLSERVER'
         #   VMIMAGE: 'windows-2022'
  
-        "SQL Server 2008 R2":
-          SQL: 'SqlServer 2008R2 Express: MSSQLSERVER'
-          MSI_DUMP: true
-        "SQL Server 2008":
-          SQL: 'SqlServer 2008 Express: MSSQLSERVER'
         "SQL Server 2005":
           SQL: 'SqlServer 2005 Express: MSSQLSERVER'
           RAM_DISK: "R"
@@ -125,23 +142,10 @@ jobs:
         #   VMIMAGE: 'windows-2022'
         #   UNINSTALL_TRASH: True
         
-        'SQL Server 2022 Dev on Windows Server 2022':
-          SQL: 'SqlServer 2022 Developer: MSSQLSERVER'
-          TEST_ADVENTURE_WORKS: true
-          VMIMAGE: 'windows-2022'
-          RAM_DISK: "R"
-          RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
-        "SQL Server 2019 Dev":
-          SQL: 'SqlServer 2019 Developer: MSSQLSERVER'
-          TEST_ADVENTURE_WORKS: true
-        
         "SQL Server 2012":
           SQL: 'SqlServer 2012 Express: MSSQLSERVER'
         "SQL Server 2014":
           SQL: 'SqlServer 2014 Express: MSSQLSERVER'
-          TEST_ADVENTURE_WORKS: true
-        "SQL Server 2017 Dev":
-          SQL: 'SqlServer 2017 Developer: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
         "SQL Server 2017":
           SQL: 'SqlServer 2017 Express: MSSQLSERVER'
