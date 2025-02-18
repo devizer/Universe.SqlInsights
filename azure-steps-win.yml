@@ -377,8 +377,8 @@ steps:
     condition: succeededOrFailed()
     displayName: 'Publish Query Cache Report'
     inputs:
-      pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)\\TestResults'
-      artifactName: '$(Agent.JobName) (Query Cache Report)'
+      pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)\\QueryCacheReports'
+      artifactName: '$(Agent.JobName)-$(Build.BUILDNUMBER) (Query Cache Reports)'
 
   - task: PublishTestResults@2
     condition: succeededOrFailed()
