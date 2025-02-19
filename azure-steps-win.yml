@@ -172,7 +172,14 @@ steps:
          *| tee "$($Env:SYSTEM_ARTIFACTSDIRECTORY)\SQL Setup Log.txt"
 
        $ErrorActionPreference = "Continue"
-       & net.exe start "MSSQLSERVER"
+
+       if ("$ENV:SQL" -match "2005") {
+         Say "Switch SQL Server 2005 to Local System account"
+         & net.exe stop MSSQLSERVER
+         & sc.exe config MSSQLSERVER obj= LocalSystem
+         & net.exe start MSSQLSERVER
+       }
+
        Remove-Item -Recurse -Force "$ENV:SQLSERVERS_MEDIA_FOLDER"
        Remove-Item -Recurse -Force "$ENV:SQLSERVERS_SETUP_FOLDER"
        Say "Successfully Complete"
