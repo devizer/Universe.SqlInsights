@@ -171,10 +171,9 @@ steps:
        Setup-SqlServers "$(SQL)" "Collation=SQL_Latin1_General_CP1_CI_AS" "Startup=Automatic" "InstallTo=D:\SQL" "Password=``1qazxsw2" `
          *| tee "$($Env:SYSTEM_ARTIFACTSDIRECTORY)\SQL Setup Log.txt"
 
-       & net.exe start "MSSQLSERVER"
+       # & net.exe start "MSSQLSERVER"
        Remove-Item -Recurse -Force "$ENV:SQLSERVERS_MEDIA_FOLDER"
        Remove-Item -Recurse -Force "$ENV:SQLSERVERS_SETUP_FOLDER"
-
 
     condition: succeededOrFailed()
     displayName: '[SQL Server] Setup'
