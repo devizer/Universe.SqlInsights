@@ -3,7 +3,7 @@ variables:
   TEST_W3API: true
   # Default image
   VMIMAGE: 'windows-2019'
-  DEFAULT_RAM_DISK_SIZE: "2600"
+  DEFAULT_RAM_DISK_SIZE: "2500"
   W3API_NET: net6.0
   SKIP_ERGOFAB_TESTS: 'False'
 
