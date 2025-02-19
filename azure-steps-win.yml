@@ -168,7 +168,7 @@ steps:
        & setx.exe SQLSERVERS_MEDIA_FOLDER "$ENV:SQLSERVERS_MEDIA_FOLDER"
        & setx.exe SQLSERVERS_SETUP_FOLDER "$ENV:SQLSERVERS_SETUP_FOLDER"
 
-       Setup-SqlServers "$(SQL)" "Collation=SQL_Latin1_General_CP1_CI_AS" "Startup=Automatic" "InstallTo=D:\SQL" "Password=``1qazxsw2" `
+       Setup-SqlServers "$(SQL)" "Features=SQLENGINE" "Collation=SQL_Latin1_General_CP1_CI_AS" "Startup=Automatic" "InstallTo=D:\SQL" "Password=``1qazxsw2" `
          *| tee "$($Env:SYSTEM_ARTIFACTSDIRECTORY)\SQL Setup Log.txt"
 
        $ErrorActionPreference = "Continue"
