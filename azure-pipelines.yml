@@ -136,41 +136,41 @@ jobs:
       maxParallel: 10
       matrix:
 
-        "SQL Server 2017 Dev":
+        "SQL Server 2017 Developer":
           SQL: '2017 Developer: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
 
-        "SQL Server 2019 Dev":
+        "SQL Server 2019 Developer":
           SQL: '2019 Developer: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
 
-        'SQL Server 2022 Dev on Windows Server 2022':
+        'SQL Server 2022 Developer on Windows Server 2022':
           SQL: '2022 Developer: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
           VMIMAGE: 'windows-2022'
 
-        'SQL Server 2022 Dev RAM DISK on Windows Server 2022':
+        'SQL Server 2022 Developer RAM DISK on Windows Server 2022':
           SQL: '2022 Developer: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
           VMIMAGE: 'windows-2022'
           RAM_DISK: "R"
           RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
         
-        "SQL Server 2008 R2":
+        "SQL Server 2008-R2 Core":
           SQL: '2008R2 Core: MSSQLSERVER'
           MSI_DUMP: true
         
-        "SQL Server 2008 R2 Developer":
+        "SQL Server 2008-R2 Developer":
           SQL: '2008R2 Developer Updated: MSSQLSERVER'
           MSI_DUMP: true
         
-        "SQL Server 2008":
+        "SQL Server 2008 Core":
           SQL: '2008 Core: MSSQLSERVER'
 
         "SQL Server 2008 Developer":
           SQL: '2008 Developer Updated: MSSQLSERVER'
 
-        "SQL Server 2016":
+        "SQL Server 2016 Core":
           SQL: '2016 Core: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
 
@@ -184,13 +184,13 @@ jobs:
         #   SQL: 'SqlServer 2008 Express Advanced: MSSQLSERVER'
         #   VMIMAGE: 'windows-2022'
  
-        "SQL Server 2005 RAM DISK":
+        "SQL Server 2005 Core RAM DISK":
           SQL: '2005 Core: MSSQLSERVER'
           RAM_DISK: "R"
           RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
           SKIP_ERGOFAB_TESTS: "True"
         
-        "SQL Server 2005":
+        "SQL Server 2005 Core":
           SQL: '2005 Core: MSSQLSERVER'
           SKIP_ERGOFAB_TESTS: "True"
         
@@ -215,7 +215,17 @@ jobs:
         "SQL Server 2014 Developer":
           SQL: '2014 Developer: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
-        "SQL Server 2017":
+        "SQL Server 2014 Core":
+          SQL: '2014 Core Updated: MSSQLSERVER'
+          TEST_ADVENTURE_WORKS: true
+        
+        "SQL Server 2022 Core":
+          SQL: '2022 Core: MSSQLSERVER'
+          TEST_ADVENTURE_WORKS: true
+        "SQL Server 2019 Core":
+          SQL: '2019 Core: MSSQLSERVER'
+          TEST_ADVENTURE_WORKS: true
+        "SQL Server 2017 Core":
           SQL: '2017 Core: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
 
