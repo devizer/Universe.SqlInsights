@@ -17,6 +17,7 @@ steps:
       Write-Host "CPU: $(Get-Cpu-Name)"
       Write-Host "Platform: $(Get-Os-Platform)"
       Write-Host "Memory $((Get-Memory-Info).Description)"
+    retryCountOnTaskFailure: 3
     displayName: 'Bootstrap pwsh'
 
   - bash: |
@@ -28,6 +29,8 @@ steps:
       node --version || true
       export DOTNET_VERSIONS="6.0 8.0"
       script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash; 
+    condition: succeededOrFailed()
+    retryCountOnTaskFailure: 3
     displayName: 'Bootstrap'
 
   - task: DownloadPipelineArtifact@2
@@ -59,6 +62,7 @@ steps:
         echo "COMMAND '$c': [$(command -v $c)]"
       done
     condition: true
+    retryCountOnTaskFailure: 3
     displayName: 'w3app: install chrome'
 
   - bash: |
@@ -164,6 +168,7 @@ steps:
       cd src/Universe.SqlInsights.SqlServerStorage.Tests
       dotnet restore || dotnet restore --disable-parallel
     condition: succeededOrFailed()
+    retryCountOnTaskFailure: 3
     displayName: 'Restore'
 
   - bash: |
@@ -171,6 +176,7 @@ steps:
       cd src/Universe.SqlInsights.SqlServerStorage.Tests
       dotnet build -c Release --no-restore
     condition: succeededOrFailed()
+    retryCountOnTaskFailure: 3
     displayName: 'Build'
 
   - bash: |
@@ -222,6 +228,7 @@ steps:
       ls -la
       dotnet test -c Release -f $W3API_NET
     condition: succeededOrFailed()
+    retryCountOnTaskFailure: 3
     displayName: 'Test JAM'
 
 
