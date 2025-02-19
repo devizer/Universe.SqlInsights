@@ -85,7 +85,7 @@ jobs:
     dependsOn:
       - Build_W3_App
     strategy:
-      maxParallel: 9
+      maxParallel: 6
       matrix:
 
         "SQL Server 2017 Dev":
@@ -167,7 +167,7 @@ jobs:
     dependsOn:
       - Build_W3_App
     strategy:
-      maxParallel: 2
+      maxParallel: 3
       matrix:
 
         "SQL Server 2022 on Ubuntu":
