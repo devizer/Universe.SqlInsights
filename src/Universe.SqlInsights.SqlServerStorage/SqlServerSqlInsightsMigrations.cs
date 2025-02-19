@@ -55,7 +55,8 @@ namespace Universe.SqlInsights.SqlServerStorage
             }
 
             // Server 2016 (13.x) SP1 (or later), any edition. For SQL Server 2014 (12.x) and SQL Server 2016 (13.x) RTM (pre-SP1) you need Enterprise, Developer, or Evaluation edition.
-            var supportMOT = man.IsMemoryOptimizedTableSupported;
+            // 2014 Developer Does not support nvarchar(max) for MOT
+            var supportMOT = man.IsMemoryOptimizedTableSupported && man.ShortServerVersion.Major >= 13;
             Logs.AppendLine($" * Is Memory Optimized Tables Supported: {supportMOT}{(DisableMemoryOptimizedTables & supportMOT ? ", But Disabled": "")}");
 
             if (DisableMemoryOptimizedTables) supportMOT = false;
