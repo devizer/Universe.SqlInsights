@@ -160,38 +160,28 @@ steps:
 
 
   - powershell: |
-       $Work="$($Env:LocalAppData)"; if ($Work -eq "") { $Work="$($Env:UserProfile)"; }; $Work="$Work\Temp\Sql-Installers"
-       if (-not (Test-Path $Work)) { New-Item -ItemType Directory -Path $Work -EA SilentlyContinue | out-null }
-       Write-Host "Downloading Bootstrap.ps1 to: $Work" -ForegroundColor Cyan
-       (new-object System.Net.WebClient).DownloadFile('https://raw.githubusercontent.com/devizer/glist/master/bin/SQL-Express/Sql-Setup-Bootstrap.ps1', "$Work\Sql-Setup-Bootstrap.ps1")
-       pushd $Work; . .\Sql-Setup-Bootstrap.ps1; popd
+       iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
+       $ENV:PS1_TROUBLE_SHOOT = "On"
+       $ENV:SQLSERVERS_MEDIA_FOLDER = "D:\SQL-SETUP\Media"
+       $ENV:SQLSERVERS_SETUP_FOLDER = "D:\SQL-SETUP\Installer"
+       & setx.exe PS1_TROUBLE_SHOOT On
+       & setx.exe SQLSERVERS_MEDIA_FOLDER "$ENV:SQLSERVERS_MEDIA_FOLDER"
+       & setx.exe SQLSERVERS_SETUP_FOLDER "$ENV:SQLSERVERS_SETUP_FOLDER"
 
-       $ENV:TEMP="$($ENV:SYSTEMDRIVE)\TEMP"; New-Item "$($ENV:TEMP)" -Type Directory -Force -EA SilentlyContinue | Out-Null
-       Say "Target Sql Server Version <$(SQL)>"
-       Show-SqlServers
+       Setup-SqlServers "$(SQL)" "Collation=SQL_Latin1_General_CP1_CI_AS" "Startup=Automatic" "InstallTo=D:\SQL" "Password=``1qazxsw2" `
+         *| tee "$($Env:SYSTEM_ARTIFACTSDIRECTORY)\SQL Setup Log.txt"
 
-       # $ErrorActionPreference = 'SilentlyContinue'
-       # $Env:SQL_SETUP_LOG_FOLDER = "$(System.DefaultWorkingDirectory)/Setup.Logs"
-       $Env:SQL_SETUP_LOG_FOLDER = "$($Env:SYSTEM_ARTIFACTSDIRECTORY)\SQL-Setup.Logs"
-       Say "Creating log directory: '$($Env:SQL_SETUP_LOG_FOLDER)'"
-       New-Item "$($Env:SQL_SETUP_LOG_FOLDER)" -type directory -force -EA SilentlyContinue 
-       New-Item -ItemType Directory -Force -Path "$($Env:SQL_SETUP_LOG_FOLDER)" -ErrorAction Continue 
+       & net.exe start "MSSQLSERVER"
+       Remove-Item -Recurse -Force "$ENV:SQLSERVERS_MEDIA_FOLDER"
+       Remove-Item -Recurse -Force "$ENV:SQLSERVERS_SETUP_FOLDER"
 
-       $todo = Parse-SqlServers "$(SQL)"
-       $todo | % { Install-SqlServer $_ }
 
-       Show-SqlServers
-       Say "ALL THE SQL SERVICES"
-       get-wmiobject win32_service | where {$_.Name.ToLower().IndexOf("sql") -ge 0 -or $_.DisplayName.ToLower().IndexOf("sql") -ge 0 } | sort-object -Property "DisplayName" | ft State, Name, DisplayName, StartMode, StartName
-
-       # Say "Copy log SQL-Setup.Logs"
-       # cp "$($Env:Temp)\SQL-Setup.Logs" Setup.Logs -Force
     condition: succeededOrFailed()
     displayName: '[SQL Server] Setup'
 
   - powershell: |
        iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
-       Set-SQLServer-Options -Title "SQL $i" -Instance "(local)" -Options @{ xp_cmdshell = $true; "clr enabled" = $false; "server trigger recursion" = $true; "min server memory (MB)" = 500; "max server memory (MB)" = 16000 }
+       Set-SQLServer-Options -Title "SQL $i" -Instance "(local)" -Options @{ xp_cmdshell = $true; "clr enabled" = $false; "server trigger recursion" = $true; "min server memory (MB)" = 600; "max server memory (MB)" = 16000 }
     condition: succeededOrFailed()
     displayName: '[SQL Server] Configure'
 
