@@ -88,7 +88,7 @@ While 1=1 Begin
   Fetch Next From tableList Into @tableName
   If @@fetch_status<>0 Break
   Print 'Warn Up Table ' + @tableName
-  Exec ('Select count(1) From ' + @tableName + ' Where 1=2')
+  Exec ('Select Count(1) From ' + @tableName + ' Where 1=2')
 End
 
 Close tableList
