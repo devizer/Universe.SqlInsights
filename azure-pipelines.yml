@@ -79,13 +79,61 @@ jobs:
         displayName: 'Publish w3api, w3api.tests, and jam.tests'
         artifact: 'Goods'
 
+  - job: IfLinux
+    displayName: 'If'
+    dependsOn:
+      - Build_W3_App
+    strategy:
+      maxParallel: 3
+      matrix:
+
+        "SQL Server 2022 on Ubuntu":
+          VMIMAGE: 'ubuntu-20.04'
+          SQL_IMAGE_TAG: "2022-latest"
+        
+        "SQL Server 2019 on Ubuntu":
+          VMIMAGE: 'ubuntu-20.04'
+          SQL_IMAGE_TAG: "2019-latest"
+
+        "SQL Server 2017 on Ubuntu":
+          VMIMAGE: 'ubuntu-20.04'
+          SQL_IMAGE_TAG: "2017-latest"
+        
+        
+
+        "SQL Server 2022 on Ubuntu with RAM Disk":
+          VMIMAGE: 'ubuntu-20.04'
+          RAM_DISK: "/ram-disk"
+          RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
+          SQL_IMAGE_TAG: "2022-latest"
+        
+        "SQL Server 2019 on Ubuntu with RAM Disk":
+          VMIMAGE: 'ubuntu-20.04'
+          RAM_DISK: "/ram-disk"
+          RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
+          SQL_IMAGE_TAG: "2019-latest"
+        
+        "SQL Server 2017 on Ubuntu with RAM Disk":
+          VMIMAGE: 'ubuntu-20.04'
+          RAM_DISK: "/ram-disk"
+          RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
+          SQL_IMAGE_TAG: "2017-latest"
+
+    timeoutInMinutes: 20
+    cancelTimeoutInMinutes: 1
+    pool:
+      vmImage: "$(VMIMAGE)"
+    steps:
+      - template: azure-steps-linux.yml
+  
+
   - job: IfWindows
     displayName: If
     # condition: eq('Never','')
     dependsOn:
       - Build_W3_App
     strategy:
-      maxParallel: 6
+      maxParallel: 10
       matrix:
 
         "SQL Server 2017 Dev":
@@ -171,53 +219,6 @@ jobs:
       - template: azure-steps-win.yml
 
 
-  - job: IfLinux
-    displayName: 'If'
-    dependsOn:
-      - Build_W3_App
-    strategy:
-      maxParallel: 3
-      matrix:
-
-        "SQL Server 2022 on Ubuntu":
-          VMIMAGE: 'ubuntu-20.04'
-          SQL_IMAGE_TAG: "2022-latest"
-        
-        "SQL Server 2019 on Ubuntu":
-          VMIMAGE: 'ubuntu-20.04'
-          SQL_IMAGE_TAG: "2019-latest"
-
-        "SQL Server 2017 on Ubuntu":
-          VMIMAGE: 'ubuntu-20.04'
-          SQL_IMAGE_TAG: "2017-latest"
-        
-        
-
-        "SQL Server 2022 on Ubuntu with RAM Disk":
-          VMIMAGE: 'ubuntu-20.04'
-          RAM_DISK: "/ram-disk"
-          RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
-          SQL_IMAGE_TAG: "2022-latest"
-        
-        "SQL Server 2019 on Ubuntu with RAM Disk":
-          VMIMAGE: 'ubuntu-20.04'
-          RAM_DISK: "/ram-disk"
-          RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
-          SQL_IMAGE_TAG: "2019-latest"
-        
-        "SQL Server 2017 on Ubuntu with RAM Disk":
-          VMIMAGE: 'ubuntu-20.04'
-          RAM_DISK: "/ram-disk"
-          RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
-          SQL_IMAGE_TAG: "2017-latest"
-
-    timeoutInMinutes: 20
-    cancelTimeoutInMinutes: 1
-    pool:
-      vmImage: "$(VMIMAGE)"
-    steps:
-      - template: azure-steps-linux.yml
-  
   - job: 'Combine'
     condition: succeededOrFailed()
     pool:
