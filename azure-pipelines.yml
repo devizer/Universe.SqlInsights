@@ -210,9 +210,9 @@ jobs:
         #   VMIMAGE: 'windows-2022'
         #   UNINSTALL_TRASH: True
         
-        "SQL Server 2012":
+        "SQL Server 2012 Developer":
           SQL: '2012 Developer: MSSQLSERVER'
-        "SQL Server 2014":
+        "SQL Server 2014 Developer":
           SQL: '2014 Developer: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
         "SQL Server 2017":
