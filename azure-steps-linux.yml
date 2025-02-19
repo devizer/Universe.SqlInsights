@@ -205,7 +205,7 @@ steps:
 
       export ConnectionStrings__SqlInsights="TrustServerCertificate=True;Data Source=localhost,1433;User ID=sa;Password=p@assw0rd!;Initial Catalog=SqlInsightsDb42"
 
-      (dotnet run | tee "$SYSTEM_ARTIFACTSDIRECTORY/w3api (acceptance test).log") &
+      (dotnet run -c Release | tee "$SYSTEM_ARTIFACTSDIRECTORY/w3api (acceptance test).log") &
       popd
       sleep 77
       
