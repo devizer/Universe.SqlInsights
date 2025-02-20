@@ -334,7 +334,13 @@ steps:
       export SQLINSIGHTS_REPORT_FULLNAME="${SQLINSIGHTS_REPORT_FOLDER}\\Report.Txt"
       export ASPNETCORE_URLS=http://localhost:50420
       pushd $AGENT_TEMPDIRECTORY/Goods/w3api;
+      if [[ -s ~/w3api.pid ]]; then 
+        pid=$(<~/w3api.pid) 
+        echo KILL W3API Process $pid
+        kill $pid
+      fi
       (dotnet Universe.SqlInsights.W3Api.dll | tee "$SYSTEM_ARTIFACTSDIRECTORY/w3api (acceptance test).log") &
+      echo $! > ~/w3api.pid
       popd
       sleep 60
       
@@ -359,6 +365,7 @@ steps:
       cp -f "${SQLINSIGHTS_REPORT_FULLNAME}" "${SYSTEM_ARTIFACTSDIRECTORY}\\SqlInsights Report.txt"
       true
     condition: eq(variables['TEST_W3API'], 'true')
+    retryCountOnTaskFailure: 3
     timeoutInMinutes: 10
     displayName: 'RUN W3API (optional)'
 
