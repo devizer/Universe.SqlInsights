@@ -37,7 +37,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-      <NoWarn>40059,42024,1998,0162</NoWarn>
+      <NoWarn>40059,42024,1998,0162,0168,0649</NoWarn>
     </PropertyGroup>
 
 

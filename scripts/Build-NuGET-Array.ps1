@@ -99,3 +99,6 @@ foreach($NUnit_Version in $nunit_versions) {
 }
 
 Write-Host "$(Get-Elapsed) Finish" -ForegroundColor Magenta
+$nupkgs = @(Get-ChildItem -Path "$Work_Base" -Filter "*.nupkg" -Recurse)
+Write-Host "Copying $($nupkgs.Length) nupkg-files"
+$nupkgs | Copy-Item -Destination "$Work_Base\"
