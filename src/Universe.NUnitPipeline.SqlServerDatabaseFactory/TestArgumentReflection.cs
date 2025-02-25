@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
 {
@@ -51,7 +52,7 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
             {
                 if (property.GetIndexParameters().Length > 0) continue;
                 var propertyType = property.PropertyType;
-                if (propertyType.IsValueType) continue;
+                if (propertyType.GetTypeInfo().IsValueType) continue;
                 // Next Check is for first level property only
                 // if (!propertyType.IsAssignableFrom(typeof(TestDbConnectionString))) continue;
                 if (typeof(IEnumerable).IsAssignableFrom(propertyType)) continue;

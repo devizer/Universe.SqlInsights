@@ -42,7 +42,7 @@ $Work_Base="W:\Temp\Universe.SqlInsights-NUnit-Packages"
 Remove-Item -Recurse -Force "$Work_Base" -EA SilentlyContinue | Out-Null
 New-Item "$Work_Base" -Force -ItemType Container -EA SilentlyContinue | Out-Null
 & git.exe clone https://github.com:/devizer/Universe.SqlInsights "$Work_Base\base"
-Remove-Item -Recurse -Force "$Work_Base\base\.git" -EA SilentlyContinue | Out-Null
+# Remove-Item -Recurse -Force "$Work_Base\base\.git" -EA SilentlyContinue | Out-Null
 
 
 $buildIndex = 0;
@@ -84,7 +84,7 @@ foreach($project in $projects) {
   Write-Host "TARGET_FRAMEWORKS_TEST: $($TARGET_FRAMEWORKS_TEST)" -ForegroundColor Magenta
 
   pushd src\$project
-  & C:\Apps\Git\usr\bin\sed.exe "-i", "-E", "s|<TargetFrameworks>.*</TargetFrameworks>|<TargetFrameworks>$TARGET_FRAMEWORKS_TEST</TargetFrameworks>|" "$($project).csproj"
+  & C:\Apps\Git\usr\bin\sed.exe "-i", "-E", "s|<TargetFrameworks>.*</TargetFrameworks>|<TargetFrameworks>$TARGET_FRAMEWORKS_LIB</TargetFrameworks>|" "$($project).csproj"
   & dotnet remove package Universe.NUnitPipeline
   & dotnet add package Universe.NUnitPipeline -v "$nunit_Version.$revision"
   & { dotnet "build", "-c", "Release", "-p:PackageVersion=$This_Version", "-p:Version=$This_Version" } *| tee "..\..\..\$nunit_Version-build.log"
