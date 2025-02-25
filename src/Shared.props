@@ -36,4 +36,9 @@
         <NoWarn>NETSDK1138;NU5048</NoWarn>
     </PropertyGroup>
 
+    <PropertyGroup>
+      <NoWarn>40059,42024,1998,0162</NoWarn>
+    </PropertyGroup>
+
+
 </Project>
