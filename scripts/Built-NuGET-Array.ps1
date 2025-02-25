@@ -19,7 +19,7 @@ $nunit_versions = @(
 "4.2.2"
 )
 
-$nunit_versions = @("3.13.2", "4.2.2");
+# $nunit_versions = @("3.13.2", "4.2.2");
 $projects = @("Universe.NUnitPipeline.SqlServerDatabaseFactory", "Universe.SqlInsights.NUnit");
 
 function Get-Commit-Count() {
@@ -38,16 +38,20 @@ function Get-Elapsed {
 $Commit_Count = Get-Commit-Count
 write-host "Commit Count: $Commit_Count"
 
-$work="W:\Temp\Universe.SqlInsights-NUnit-Packages"
-Remove-Item -Recurse -Force $work -EA SilentlyContinue | Out-Null
-New-Item "$work" -Force -ItemType COntainer -EA SilentlyContinue | Out-Null
-& git.exe clone https://github.com:/devizer/Universe.SqlInsights "$work"
-pushd "$work"
+$Work_Base="W:\Temp\Universe.SqlInsights-NUnit-Packages"
+Remove-Item -Recurse -Force "$Work_Base" -EA SilentlyContinue | Out-Null
+New-Item "$Work_Base" -Force -ItemType Container -EA SilentlyContinue | Out-Null
+& git.exe clone https://github.com:/devizer/Universe.SqlInsights "$Work_Base\base"
+Remove-Item -Recurse -Force "$Work_Base\base\.git" -EA SilentlyContinue | Out-Null
 
 
 $buildIndex = 0;
 $buildCount = $projects.Length * $nunit_versions.Count
 foreach($NUnit_Version in $nunit_versions) {
+  $work="$Work_Base\$NUnit_Version"
+  New-Item "$work" -Force -ItemType Container -EA SilentlyContinue | Out-Null
+  Copy-Item "$Work_Base\base" -Filter *.* -Destination "$work" -Recurse | out-null
+  pushd "$work\base"
 foreach($project in $projects) {
   $buildIndex++;
   Write-Host "$(Get-Elapsed) $BuildIndex of $($buildCount): $nunit_Version $project" -ForegroundColor Magenta
@@ -83,7 +87,7 @@ foreach($project in $projects) {
   & C:\Apps\Git\usr\bin\sed.exe "-i", "-E", "s|<TargetFrameworks>.*</TargetFrameworks>|<TargetFrameworks>$TARGET_FRAMEWORKS_TEST</TargetFrameworks>|" "$($project).csproj"
   & dotnet remove package Universe.NUnitPipeline
   & dotnet add package Universe.NUnitPipeline -v "$nunit_Version.$revision"
-  & dotnet "build", "-c", "Release", "-p:PackageVersion=$This_Version", "-p:Version=$This_Version"
+  & { dotnet "build", "-c", "Release", "-p:PackageVersion=$This_Version", "-p:Version=$This_Version" } *| tee "..\..\..\$nunit_Version-build.log"
   popd
   Write-Host ""
-}}
+} popd }

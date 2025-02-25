@@ -16,11 +16,11 @@
 -->
   <Choose><When Condition=" '$(VERSION_MICROSOFT_DATA_SQLCLIENT)' == '' ">
     <!-- Can't include reference for Microsoft.Data.SqlClient for target 'netcoreapp1.1'-->
-    <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.0' "><VERSION_MICROSOFT_DATA_SQLCLIENT>2.0.1</VERSION_MICROSOFT_DATA_SQLCLIENT></PropertyGroup>
-    <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.1' "><VERSION_MICROSOFT_DATA_SQLCLIENT>2.0.1</VERSION_MICROSOFT_DATA_SQLCLIENT></PropertyGroup>
-    <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.2' "><VERSION_MICROSOFT_DATA_SQLCLIENT>2.1.7</VERSION_MICROSOFT_DATA_SQLCLIENT></PropertyGroup>
-    <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.0' "><VERSION_MICROSOFT_DATA_SQLCLIENT>3.0.1</VERSION_MICROSOFT_DATA_SQLCLIENT></PropertyGroup>
-    <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' "><VERSION_MICROSOFT_DATA_SQLCLIENT>3.1.7</VERSION_MICROSOFT_DATA_SQLCLIENT></PropertyGroup>
+    <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.0' "><VERSION_MICROSOFT_DATA_SQLCLIENT>5.2.2</VERSION_MICROSOFT_DATA_SQLCLIENT></PropertyGroup>
+    <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.1' "><VERSION_MICROSOFT_DATA_SQLCLIENT>5.2.2</VERSION_MICROSOFT_DATA_SQLCLIENT></PropertyGroup>
+    <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.2' "><VERSION_MICROSOFT_DATA_SQLCLIENT>5.2.2</VERSION_MICROSOFT_DATA_SQLCLIENT></PropertyGroup>
+    <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.0' "><VERSION_MICROSOFT_DATA_SQLCLIENT>5.2.2</VERSION_MICROSOFT_DATA_SQLCLIENT></PropertyGroup>
+    <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' "><VERSION_MICROSOFT_DATA_SQLCLIENT>5.2.2</VERSION_MICROSOFT_DATA_SQLCLIENT></PropertyGroup>
     <PropertyGroup Condition=" '$(TargetFramework)' == 'net5.0'        "><VERSION_MICROSOFT_DATA_SQLCLIENT>5.2.2</VERSION_MICROSOFT_DATA_SQLCLIENT></PropertyGroup>
     <PropertyGroup Condition=" '$(TargetFramework)' == 'net6.0'        "><VERSION_MICROSOFT_DATA_SQLCLIENT>5.2.2</VERSION_MICROSOFT_DATA_SQLCLIENT></PropertyGroup>
     <PropertyGroup Condition=" '$(TargetFramework)' == 'net7.0'        "><VERSION_MICROSOFT_DATA_SQLCLIENT>5.2.2</VERSION_MICROSOFT_DATA_SQLCLIENT></PropertyGroup>
