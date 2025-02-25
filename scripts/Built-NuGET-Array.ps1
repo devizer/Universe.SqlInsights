@@ -61,13 +61,13 @@ foreach($project in $projects) {
 
   if ($NUnit_Version -like "3.7.*" -or $NUnit_Version -like "3.8.*" -or $NUnit_Version -like "3.9.*") {
       $forced="netstandard2.0;net462;net46"
-      $TARGET_FRAMEWORKS_LIB="netstandard1.3;netstandard1.6;net20;net35;net40;net45;$forced"
+      $TARGET_FRAMEWORKS_LIB="netstandard1.3;netstandard1.6;net35;net40;net45;$forced"
       $TARGET_FRAMEWORKS_TEST="netcoreapp1.0;netcoreapp1.1;netcoreapp2.0;netcoreapp2.1;netcoreapp3.0;netcoreapp3.1;net20;net35;net40;net45;net462;net48;net8.0"
   }
   elseif ($NUnit_Version -like "3.10.*") {
       # the latest net20
       $forced="net462;net46"
-      $TARGET_FRAMEWORKS_LIB="netstandard1.6;netstandard2.0;net20;net35;net4.0;net45;$forced"
+      $TARGET_FRAMEWORKS_LIB="netstandard1.6;netstandard2.0;net35;net4.0;net45;$forced"
       $TARGET_FRAMEWORKS_TEST="netcoreapp1.0;netcoreapp1.1;netcoreapp2.0;netcoreapp2.1;netcoreapp3.0;netcoreapp3.1;net20;net35;net40;net45;net462;net48;net8.0"
   }
   elseif ($NUnit_Version -like "3.*") {
@@ -90,4 +90,6 @@ foreach($project in $projects) {
   & { dotnet "build", "-c", "Release", "-p:PackageVersion=$This_Version", "-p:Version=$This_Version" } *| tee "..\..\..\$nunit_Version-build.log"
   popd
   Write-Host ""
-} popd }
+} 
+  popd 
+}
