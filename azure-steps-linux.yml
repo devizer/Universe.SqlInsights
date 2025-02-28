@@ -138,7 +138,7 @@ steps:
 
       for file in mssql.conf sqlservr; do
         Say "FIND $file"
-        docker exec -t sqlserver find / -name $file
+        docker exec -t sqlserver sudo find / -name $file
       done
 
       Say "/var/opt/mssql/mssql.conf"
