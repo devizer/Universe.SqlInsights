@@ -113,14 +113,14 @@ steps:
       test -n "${RAM_DISK:-}" && v="-v ${RAM_DISK}:${RAM_DISK} -e MSSQL_DATA_DIR=${RAM_DISK}"
       Say "volume options: [$v]"
       echo PULL
-      try-and-retry docker pull mcr.microsoft.com/mssql/server:"${SQL_IMAGE_TAG}"
+      try-and-retry docker pull -q mcr.microsoft.com/mssql/server:"${SQL_IMAGE_TAG}"
       echo RUN IN BACKGROUND
       sudo mkdir -p "/ErgoFab-Tests/Integration Tests/Data"
       sudo mkdir -p "/ErgoFab-Tests/Integration Tests/Backups"
       sudo chmod 777 -R /ErgoFab-Tests
       docker run --pull never --name sqlserver --privileged $v -v /ErgoFab-Tests:/ErgoFab-Tests -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@assw0rd!" -p 1433:1433 -d mcr.microsoft.com/mssql/server:"${SQL_IMAGE_TAG}"
 
-      export SQL_SERVER_CONTAINER_NAME=sqlserver
+      export SQL_SERVER_CONTAINER_NAME=sqlserver # Add SqlCmd to Path for Linux Container
       script=https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/Add-SqlCmd-to-Path-for-Linux-Container.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash
 
       set +e
@@ -136,6 +136,8 @@ steps:
       Say "DOCKER IMAGES"
       docker image ls
 
+      # 2022: /etc/ld.so.conf.d/mssql.conf
+      # 2019: /etc/ld.so.conf.d/mssql.conf
       for file in mssql.conf sqlservr; do
         Say "FIND $file"
         docker exec -t sqlserver bash -c "find / -name $file 2>/dev/null"
@@ -182,7 +184,7 @@ steps:
   - bash: |
       set -eu; set -o pipefail;
       cd src/Universe.SqlInsights.SqlServerStorage.Tests
-      dotnet build -c Release --no-restore
+      try-and-retry dotnet build -c Release --no-restore
     condition: succeededOrFailed()
     retryCountOnTaskFailure: 3
     displayName: 'Build'
@@ -279,8 +281,6 @@ steps:
       artifactName: 'Query Cache Reports $(Agent.JobName) $(Build.BUILDNUMBER)'
 
 
-
-    
 
   - publish: $(SYSTEM.ARTIFACTSDIRECTORY)
     displayName: 'Publish Artifacts'
