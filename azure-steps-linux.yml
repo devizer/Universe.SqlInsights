@@ -125,16 +125,21 @@ steps:
 
       set +e
       Say "SQLCMD version:"
-      docker exec -t sqlserver /opt/mssql-tools/bin/sqlcmd -? | head -3
+      docker exec -t sqlserver sqlcmd -? | head -3
       sleep 5
       Say "Show data folder"
-      docker exec -t sqlserver /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "p@assw0rd!" -Q "exec sp_databases; select * from sys.database_files; create database mydb1; exec sp_executesql N'use mydb1; select * from sys.database_files;'"
+      docker exec -t sqlserver sqlcmd -S localhost -U sa -P "p@assw0rd!" -Q "exec sp_databases; select * from sys.database_files; create database mydb1; exec sp_executesql N'use mydb1; select * from sys.database_files;'"
       Say "Show fn_helpcollations"
-      docker exec -t sqlserver /opt/mssql-tools/bin/sqlcmd -W -w 10000 -S localhost -U sa -P "p@assw0rd!" -Q "SELECT Name, Description FROM fn_helpcollations() order by 1" |& tee $SYSTEM_ARTIFACTSDIRECTORY/fn_helpcollations.txt
+      docker exec -t sqlserver sqlcmd -W -w 10000 -S localhost -U sa -P "p@assw0rd!" -Q "SELECT Name, Description FROM fn_helpcollations() order by 1" |& tee $SYSTEM_ARTIFACTSDIRECTORY/fn_helpcollations.txt
       Say "DOCKER ALIVE CONTAINERS"
       docker ps
       Say "DOCKER IMAGES"
       docker image ls
+
+      for file in mssql.conf sqlservr; do
+        Say "FIND $file"
+        docker exec -t sqlserver find / -name $file
+      done
 
       Say "/var/opt/mssql/mssql.conf"
       # /usr/src/app/do-my-sql-commands.sh & /opt/mssql/bin/sqlservr
