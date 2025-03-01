@@ -128,7 +128,6 @@ steps:
       set +e
       Say "SQLCMD version:"
       docker exec -t sqlserver sqlcmd -? | head -3
-      docker exec -t sqlserver sqlcmd -C -S localhost -U sa -P "p@assw0rd!" -Q " " || sleep 5
       Say "Show data folder"
       docker exec -t sqlserver sqlcmd -C -S localhost -U sa -P "p@assw0rd!" -Q "Create Database My_DB_1; Exec(N'Use My_DB_1; Select size, physical_name From sys.database_files;'); exec sp_databases; Drop Database My_DB_1; exec sp_databases;"
       Say "Show fn_helpcollations"
