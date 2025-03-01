@@ -111,14 +111,14 @@ steps:
       set -eu; set -o pipefail;
       v="";
       test -n "${RAM_DISK:-}" && v="-v ${RAM_DISK}:${RAM_DISK} -e MSSQL_DATA_DIR=${RAM_DISK}"
-      Say "volume options: [$v]"
-      echo PULL
-      try-and-retry docker pull -q mcr.microsoft.com/mssql/server:"${SQL_IMAGE_TAG}"
-      echo RUN IN BACKGROUND
+      echo "SQL Server Container Volume Options: [$v]"
+      img="mcr.microsoft.com/mssql/server:${SQL_IMAGE_TAG}"
+      Say "Pull image [$img] and run container"
+      try-and-retry docker pull -q "$img"
       sudo mkdir -p "/ErgoFab-Tests/Integration Tests/Data"
       sudo mkdir -p "/ErgoFab-Tests/Integration Tests/Backups"
       sudo chmod 777 -R /ErgoFab-Tests
-      docker run --pull never --name sqlserver --privileged $v -v /ErgoFab-Tests:/ErgoFab-Tests -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@assw0rd!" -p 1433:1433 -d mcr.microsoft.com/mssql/server:"${SQL_IMAGE_TAG}"
+      docker run --pull never --name sqlserver --privileged $v -v /ErgoFab-Tests:/ErgoFab-Tests -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@assw0rd!" -p 1433:1433 -d "$img"
 
       export SQL_SERVER_CONTAINER_NAME=sqlserver # Add SqlCmd to Path for Linux Container and Wait for
       password='p@assw0rd!'
