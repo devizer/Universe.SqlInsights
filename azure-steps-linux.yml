@@ -180,7 +180,7 @@ steps:
       dotnet restore || dotnet restore --disable-parallel
     condition: succeededOrFailed()
     retryCountOnTaskFailure: 3
-    displayName: 'Restore'
+    displayName: 'Restore SqlServerStorage'
 
   - bash: |
       set -eu; set -o pipefail;
@@ -188,7 +188,7 @@ steps:
       try-and-retry dotnet build -c Release --no-restore
     condition: succeededOrFailed()
     retryCountOnTaskFailure: 3
-    displayName: 'Build'
+    displayName: 'Build SqlServerStorage'
 
   - bash: |
       set -eu; set -o pipefail;
@@ -206,7 +206,7 @@ steps:
       fi
       dotnet test -c Release --no-build -f $W3API_NET
     condition: succeededOrFailed()
-    displayName: 'Test'
+    displayName: 'Test SqlServerStorage'
 
   - bash: |
       echo Starting W3Api
