@@ -151,13 +151,20 @@ steps:
       docker exec -t sqlserver file /opt/mssql/bin/sqlservr || true
 
     condition: ne(variables['SQL_IMAGE_TAG'], '')
-    displayName: 'SQL Server $(SQL_IMAGE_TAG)'
+    displayName: '[SQL Server] $(SQL_IMAGE_TAG) Setup'
+
+  - bash: |
+      for cmd in "exec sp_configure 'show advanced option', 1" "reconfigure with override;" "exec sp_configure 'Min Server Memory (MB)', 4096" "reconfigure with override;"; do
+        docker exec -t sqlserver sqlcmd -C -S localhost -U sa -P "p@assw0rd!" -Q "Set NoCount On; $cmd"
+      done
+    condition: succeededOrFailed()
+    displayName: '[SQL Server] Tuning'
 
   - bash: |
       set -eu; set -o pipefail;
       docker logs sqlserver | cat | tr -d '\r' | grep -v -e "^$"
     condition: succeededOrFailed()
-    displayName: 'SQL Server Logs'
+    displayName: '[SQL Server] Logs'
 
   - bash: |
       set -eu; set -o pipefail;
