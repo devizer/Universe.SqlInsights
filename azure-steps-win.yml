@@ -68,6 +68,7 @@ steps:
   - powershell: |
       Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 7
       $true
+    retryCountOnTaskFailure: 3
     displayName: 'Show Transfer for 20 seconds'
 
   - powershell: 'Set-NetFirewallProfile -All -Enabled False; netsh advfirewall set currentprofile state off; "ok?";'
@@ -218,6 +219,7 @@ steps:
   - powershell: |
       Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 7
       $true
+    retryCountOnTaskFailure: 3
     displayName: 'Show Transfer for 20 seconds'
 
   - bash: |
