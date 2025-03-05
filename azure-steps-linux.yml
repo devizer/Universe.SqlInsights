@@ -276,6 +276,7 @@ steps:
       export SQL_QUERY_CACHE_SUMMARY_1_Cpu_Kind="String"
       export SQL_QUERY_CACHE_SUMMARY_1_Cpu_Value="$(Get-CpuName --name-only)"
       export SQL_QUERY_CACHE_SUMMARY_1_Cpu_Position=10000
+      echo "[debug] Environment"; printenv | grep "SQL_QUERY_CACHE" | sort || true
       export SQLSERVER_WELLKNOWN_In_Docker="TrustServerCertificate=True;Encrypt=False;Data Source=127.0.0.1,1433;User ID=sa;Password=p@assw0rd!"
       cd $AGENT_TEMPDIRECTORY/Goods/QueryCache.tests
       dotnet test Universe.SqlServerQueryCache.Tests.dll
