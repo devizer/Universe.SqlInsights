@@ -272,10 +272,16 @@ steps:
 
   - bash: |
       set -eu; set -o pipefail;
-      export SQL_QUERY_CACHE_SUMMARY_1_Cpu_Title="CPU Name"
+      export SQL_QUERY_CACHE_SUMMARY_1_Cpu_Title="CPU"
       export SQL_QUERY_CACHE_SUMMARY_1_Cpu_Kind="String"
       export SQL_QUERY_CACHE_SUMMARY_1_Cpu_Value="$(Get-CpuName --name-only)"
-      export SQL_QUERY_CACHE_SUMMARY_1_Cpu_Position=10000
+      export SQL_QUERY_CACHE_SUMMARY_1_Cpu_Position=Header
+      if [[ -n "${RAM_DISK:-}" ]]; then
+        export SQL_QUERY_CACHE_SUMMARY_1_Cpu_Title="Data RAM Disk (MB)"
+        export SQL_QUERY_CACHE_SUMMARY_1_Cpu_Kind="Natural"
+        export SQL_QUERY_CACHE_SUMMARY_1_Cpu_Value="${RAM_DISK_SIZE:-}"
+        export SQL_QUERY_CACHE_SUMMARY_1_Cpu_Position=9999
+      fi
       echo "[debug] Environment"; printenv | grep "SQL_QUERY_CACHE" | sort || true
       export SQLSERVER_WELLKNOWN_In_Docker="TrustServerCertificate=True;Encrypt=False;Data Source=127.0.0.1,1433;User ID=sa;Password=p@assw0rd!"
       cd $AGENT_TEMPDIRECTORY/Goods/QueryCache.tests
