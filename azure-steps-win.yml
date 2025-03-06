@@ -378,6 +378,12 @@ steps:
       export SQL_QUERY_CACHE_SUMMARY_1_Cpu_Kind="String"
       export SQL_QUERY_CACHE_SUMMARY_1_Cpu_Value="$(Get-CpuName --name-only)"
       export SQL_QUERY_CACHE_SUMMARY_1_Cpu_Position=Header
+      if [[ -n "${DB_DATA_DIR:-}" ]] then
+        export SQL_QUERY_CACHE_SUMMARY_RAM_Disk_Title="Data RAM Disk (MB)"
+        export SQL_QUERY_CACHE_SUMMARY_RAM_Disk_Kind="Natural"
+        export SQL_QUERY_CACHE_SUMMARY_RAM_Disk_Value="${RAM_DISK_SIZE:-}"
+        export SQL_QUERY_CACHE_SUMMARY_RAM_Disk_Position=9999
+      fi
       cd $AGENT_TEMPDIRECTORY/Goods/QueryCache.tests
       dotnet test Universe.SqlServerQueryCache.Tests.dll
       du -h "${SYSTEM_ARTIFACTSDIRECTORY}" || true
