@@ -18,11 +18,14 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
     public class TestAll : NUnitTestsBase
     {
 
-        private const bool NeedDropDatabaseOnDispose = true;
+        private static bool NeedDropDatabaseOnDispose = true;
 
         [OneTimeSetUp]
         public void OneTimeSetup()
         {
+            var raw = Environment.GetEnvironmentVariable("NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES");
+            bool keep = "True".Equals(raw, StringComparison.OrdinalIgnoreCase);
+            NeedDropDatabaseOnDispose = !keep;
         }
         
         [OneTimeTearDown]
