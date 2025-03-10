@@ -375,6 +375,12 @@ steps:
 
   - bash: |
       set -eu; set -o pipefail;
+      cd scripts
+      powershell -f Load-SQL-Server-by-Stored-Procedure.ps1 
+    displayName: 'Stress SQL via Stor Proc'
+
+  - bash: |
+      set -eu; set -o pipefail;
       export SQL_QUERY_CACHE_SUMMARY_1_Cpu_Title="CPU"
       export SQL_QUERY_CACHE_SUMMARY_1_Cpu_Kind="String"
       export SQL_QUERY_CACHE_SUMMARY_1_Cpu_Value="$(Get-CpuName --name-only)"
