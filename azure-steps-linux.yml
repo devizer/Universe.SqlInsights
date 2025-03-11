@@ -17,6 +17,7 @@ steps:
       Write-Host "CPU: $(Get-Cpu-Name)"
       Write-Host "Platform: $(Get-Os-Platform)"
       Write-Host "Memory $((Get-Memory-Info).Description)"
+      iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
     retryCountOnTaskFailure: 3
     displayName: 'Bootstrap pwsh'
 
@@ -274,7 +275,7 @@ steps:
       set -eu; set -o pipefail;
       cd scripts
       export STRESS_CONNECTION_STRING='Data Source=127.0.0.1,1433;User Id=sa; Password=p@assw0rd!; Encrypt=false'
-      powershell -f Load-SQL-Server-by-Stored-Procedure.ps1 
+      pwsh -f Load-SQL-Server-by-Stored-Procedure.ps1
     displayName: 'Stress SQL via Stor Proc'
 
   - bash: |
