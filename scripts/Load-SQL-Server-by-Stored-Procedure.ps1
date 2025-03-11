@@ -1,6 +1,6 @@
 $instance="(local)"
 $connectionString="Data Source=$instance; Integrated Security=SSPI;Encrypt=False"
-if ("$(ENV:STRESS_CONNECTION_STRING)" -ne "") { $connectionString = "$(ENV:STRESS_CONNECTION_STRING)"; }
+if ("$($ENV:STRESS_CONNECTION_STRING)" -ne "") { $connectionString = "$($ENV:STRESS_CONNECTION_STRING)"; }
 Write-Host "Invoke a commands set on instance '$i'"
 
 # 30000 to fit buffer page into 1.4 Gb of RAM
