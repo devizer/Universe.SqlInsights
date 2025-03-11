@@ -10,15 +10,15 @@ $migrate=@(
  "Use [DB-Stress]; Create Table Detail(Id int identity, Description nvarchar(max), Constraint PK_Detail Primary Key (Id));",
  "Use [DB-Stress]; EXEC('Create Procedure [Stress By Insert] As Begin Declare @desc char(4000); Set @desc = ''A Description''; Insert Detail(Description) Values(@desc); End')",
  "Use [DB-Stress]; EXEC('Create Procedure [Stress By Select] As Begin Select Top 200 Id, Description From Detail Order By Id Desc; End')",
- "Use [DB-Stress]; EXEC('Create Procedure [Stress By Delete] As Begin Delete From Detail Where Id = (Select MAX(Id) From Detail); End')"
+ "Use [DB-Stress]; EXEC('Create Procedure [Stress By Delete] As Begin Delete From Detail Where Id in (Select Top 2 d2.Id From Detail d2 Order By Id Desc); End')"
 );
 $insert="Use [DB-Stress]; Set NoCount On; Declare @i int; Set @i = 0; While @i < 10000 Begin Exec [Stress By Insert]; Set @i = @i + 1; End;";
 $select="Use [DB-Stress]; Set NoCount On; Declare @i int; Set @i = 0; While @i < 50    Begin Exec [Stress By Select]; Set @i = @i + 1; End;";
 $delete="Use [DB-Stress]; Set NoCount On; Declare @i int; Set @i = 0; While @i < 1000  Begin Exec [Stress By Delete]; Set @i = @i + 1; End;";
 
 # WITH Delete
-# $commands=$migrate + @($insert, $select, $delete, $insert, $select, $insert, $select, $insert, $delete, $select);
-  $commands=$migrate + @($insert, $select, $insert, $select, $insert, $select);
+  $commands=$migrate + @($insert, $select, $delete, $insert, $select, $insert, $select, $insert, $delete, $select);
+# $commands=$migrate + @($insert, $select, $insert, $select, $insert, $select);
 
 foreach($cmd in $commands) { 
   Write-Host "Invoke: «$cmd»"; 

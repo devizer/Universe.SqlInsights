@@ -276,7 +276,7 @@ steps:
       cd scripts
       export STRESS_CONNECTION_STRING='Data Source=127.0.0.1,1433;User Id=sa; Password=p@assw0rd!; Encrypt=false'
       pwsh -f Load-SQL-Server-by-Stored-Procedure.ps1
-    displayName: 'Stress SQL via Stor Proc'
+    displayName: 'STRESS SQL via Stor Proc'
 
   - bash: |
       set -eu; set -o pipefail;
