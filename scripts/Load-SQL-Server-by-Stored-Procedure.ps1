@@ -16,7 +16,9 @@ $insert="Use [DB-Stress]; Set NoCount On; Declare @i int; Set @i = 0; While @i <
 $select="Use [DB-Stress]; Set NoCount On; Declare @i int; Set @i = 0; While @i < 50    Begin Exec [Stress By Select]; Set @i = @i + 1; End;";
 $delete="Use [DB-Stress]; Set NoCount On; Declare @i int; Set @i = 0; While @i < 1000  Begin Exec [Stress By Delete]; Set @i = @i + 1; End;";
 
-$commands=$migrate + @($insert, $select, $delete, $insert, $select, $insert, $select, $insert, $delete, $select);
+# WITH Delete
+# $commands=$migrate + @($insert, $select, $delete, $insert, $select, $insert, $select, $insert, $delete, $select);
+  $commands=$migrate + @($insert, $select, $insert, $select, $insert, $select);
 
 foreach($cmd in $commands) { 
   Write-Host "Invoke: «$cmd»"; 

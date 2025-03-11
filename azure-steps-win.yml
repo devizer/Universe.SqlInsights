@@ -377,7 +377,7 @@ steps:
       set -eu; set -o pipefail;
       cd scripts
       powershell -f Load-SQL-Server-by-Stored-Procedure.ps1 
-    displayName: 'Stress SQL via Stor Proc'
+    displayName: 'STRESS SQL via Stor Proc'
 
   - bash: |
       set -eu; set -o pipefail;
