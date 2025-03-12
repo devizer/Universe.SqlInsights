@@ -77,7 +77,7 @@ namespace Universe.SqlInsights.SqlServerStorage
             var motFileFolder = CrossPath.Combine(man.IsWindows, dataFolder, $"MOT for {dbName}");
             Logs.AppendLine($" * MOT Files Folder: {dataFolder}");
 
-			var existingTables = cnn.Query<string>("Select name from sys.objects WHERE xtype = 'U' and name like '%SqlInsights%' Order By 1").ToArray();
+			var existingTables = cnn.Query<string>("Select name from sys.objects WHERE type = 'U' and name like '%SqlInsights%' Order By 1").ToArray();
             var existingTablesInfo = existingTables.Length == 0 ? ">Not Found<" : String.Join(",", existingTables.Select(x => $"[{x}]").ToArray());
             Logs.AppendLine($" * Existing Tables: {existingTablesInfo}");
 
