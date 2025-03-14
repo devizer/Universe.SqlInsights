@@ -288,7 +288,7 @@ jobs:
           (awk -v RS= 'NR==1' "$file"; echo "") | tee -a "$SqlInsightsReport"
         done
 
-        7z a -mx=3 "$SYSTEM_ARTIFACTSDIRECTORY/Combined as is.7z" "${RAW_ARTIFACTS_DIR}"
+        7z a -mx=4 ms=on -mqs=on "$SYSTEM_ARTIFACTSDIRECTORY/SqlInsights Combined As Is.7z" "${RAW_ARTIFACTS_DIR}"
 
         # Clean
         rm -rf ${RAW_ARTIFACTS_DIR}/* || true
