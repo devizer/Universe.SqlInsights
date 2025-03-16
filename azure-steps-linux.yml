@@ -222,7 +222,7 @@ steps:
       export SQLINSIGHTS_REPORT_FULLNAME="${SQLINSIGHTS_REPORT_FOLDER}/Report.Txt"
       pushd src/Universe.SqlInsights.W3Api;
 
-      export ConnectionStrings__SqlInsights="TrustServerCertificate=True;Data Source=localhost,1433;User ID=sa;Password=p@assw0rd!;Initial Catalog=SqlInsightsDb42"
+      export ConnectionStrings__SqlInsights="TrustServerCertificate=True;Data Source=localhost,1433;User ID=sa;Password=p@assw0rd!;Initial Catalog=SqlInsights Local Warehouse"
 
       (dotnet run -c Release | tee "$SYSTEM_ARTIFACTSDIRECTORY/w3api (acceptance test).log") &
       popd
