@@ -42,10 +42,28 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             SqlConnectionStringBuilder master = new SqlConnectionStringBuilder(TheConnectionString);
             master.InitialCatalog = "";
             SqlConnection con = new SqlConnection(master.ConnectionString);
-            return con.Manage().IsMemoryOptimizedTableSupported;
+            var ret = con.Manage().IsMemoryOptimizedTableSupported;
+            if (ret && IsMotTestsDisabled())
+            {
+                Console.WriteLine("Information! MOT Tests are supported, but manually disabled (env var TESTS_FOR_MOT_DISABLED)");
+                return false;
+            }
+            return ret;
         }
 
-        
+        internal static bool IsMotTestsDisabled()
+        {
+            var raw = Environment.GetEnvironmentVariable("TESTS_FOR_MOT_DISABLED");
+            return
+                !string.IsNullOrEmpty(raw)
+                && (raw.Equals("1", StringComparison.OrdinalIgnoreCase)
+                    || raw.Equals("True", StringComparison.OrdinalIgnoreCase)
+                    || raw.Equals("On", StringComparison.OrdinalIgnoreCase)
+                );
+        }
+
+
+
         public static void LogToArtifact(string fileName, string line)
         {
             var artifactDirectory = Environment.GetEnvironmentVariable("SYSTEM_ARTIFACTSDIRECTORY");
