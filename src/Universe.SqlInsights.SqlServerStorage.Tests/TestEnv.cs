@@ -45,7 +45,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             var ret = con.Manage().IsMemoryOptimizedTableSupported;
             if (ret && IsMotTestsDisabled())
             {
-                Console.WriteLine("Information! MOT Tests are supported, but manually disabled (env var TESTS_FOR_MOT_DISABLED)");
+                Console.WriteLine("Information! MOT Tests are supported, but manually temporary disabled (env var TESTS_FOR_MOT_DISABLED)");
                 return false;
             }
             return ret;
