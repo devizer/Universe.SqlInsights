@@ -51,8 +51,9 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
 
 
                     var whenDeleteDb = TestDisposeOptions.AsyncGlobal;
-                    
-                    TestCleaner.OnDispose($"Drop DB '{testDbName}'", () => man.DropDatabase(testDbName).SafeWait(), whenDeleteDb);
+
+                    if (!NeedKeepTempTestDatabases())
+                        TestCleaner.OnDispose($"Drop DB '{testDbName}'", () => man.DropDatabase(testDbName).SafeWait(), whenDeleteDb);
 
                     return;
 
@@ -76,5 +77,17 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
             {
             }
         }
+
+        protected internal static bool NeedKeepTempTestDatabases()
+        {
+            var raw = Environment.GetEnvironmentVariable("NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES");
+            return
+                !string.IsNullOrEmpty(raw)
+                && (raw.Equals("1", StringComparison.OrdinalIgnoreCase)
+                    || raw.Equals("True", StringComparison.OrdinalIgnoreCase)
+                    || raw.Equals("On", StringComparison.OrdinalIgnoreCase)
+                );
+        }
+
     }
 }
