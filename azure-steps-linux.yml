@@ -34,7 +34,7 @@ steps:
       sudo ln -s -f /usr/share/dotnet/dotnet /usr/local/bin/dotnet
     condition: succeededOrFailed()
     retryCountOnTaskFailure: 3
-    displayName: 'Bootstrap'
+    displayName: 'Bootstrap net 6.0 & 8.0'
 
   - task: DownloadPipelineArtifact@2
     condition: succeededOrFailed()
@@ -66,7 +66,7 @@ steps:
       done
     condition: true
     retryCountOnTaskFailure: 3
-    displayName: 'w3app: install chrome'
+    displayName: 'w3app: INSTALL chrome'
 
   - bash: |
       set -eu; set -o pipefail
@@ -81,7 +81,7 @@ steps:
       nohup dotnet serve -p 6060 -o |& tee ~/w3app.log &
       sleep 2; cat ~/w3app.log
     condition: true
-    displayName: 'w3app: run'
+    displayName: 'w3app: RUN'
 
 
   - bash: |
@@ -182,7 +182,7 @@ steps:
       cp -av TestsOutput $SYSTEM_ARTIFACTSDIRECTORY
       Say "Success Complete"
     condition: ne(variables.SKIP_ERGOFAB_TESTS,'True')
-    displayName: 'Test ErgoFab (SQL)'
+    displayName: 'Test ErgoFab (SQL) Net8.0'
 
   - bash: |
       set -eu; set -o pipefail;
@@ -259,7 +259,7 @@ steps:
       Say "Disk Usage"
       df -h -T
     condition: ne(variables['RAM_DISK'], '')
-    displayName: 'Show RAM Disk'
+    displayName: 'SHOW RAM Disk'
 
   - bash: |
       set -eu; set -o pipefail;
@@ -300,11 +300,11 @@ steps:
       # cp -a -v TestResults "${SYSTEM_ARTIFACTSDIRECTORY}"
       Say "Success Complete"
     condition: succeededOrFailed()
-    displayName: 'Test Query Cache'
+    displayName: 'TEST Query Cache'
 
   - task: PublishBuildArtifacts@1
     condition: succeededOrFailed()
-    displayName: 'Publish Query Cache Report'
+    displayName: 'PUBLISH Query Cache Report'
     inputs:
       pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)/QueryCacheReports'
       artifactName: 'Query Cache Reports $(Agent.JobName) $(Build.BUILDNUMBER)'
@@ -312,7 +312,7 @@ steps:
 
 
   - publish: $(SYSTEM.ARTIFACTSDIRECTORY)
-    displayName: 'Publish Artifacts'
+    displayName: 'PUBLISH Artifacts'
     # condition: succeededOrFailed()
     artifact: '$(Agent.JobName)'
 
