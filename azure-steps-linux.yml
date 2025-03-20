@@ -30,6 +30,7 @@ steps:
       yarn --version || true
       node --version || true
       export DOTNET_VERSIONS="6.0 8.0"
+      export SKIP_DOTNET_DEPENDENCIES=False
       script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash; 
       sudo ln -s -f /usr/share/dotnet/dotnet /usr/local/bin/dotnet
     condition: succeededOrFailed()
