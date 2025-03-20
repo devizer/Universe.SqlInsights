@@ -18,6 +18,7 @@ steps:
       Write-Host "Platform: $(Get-Os-Platform)"
       Write-Host "Memory $((Get-Memory-Info).Description)"
       iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
+      dotnet --info
     retryCountOnTaskFailure: 3
     displayName: 'Bootstrap pwsh'
 
@@ -30,6 +31,7 @@ steps:
       node --version || true
       export DOTNET_VERSIONS="6.0 8.0"
       script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash; 
+      sudo ln -s -f /usr/share/dotnet/dotnet /usr/local/bin/dotnet
     condition: succeededOrFailed()
     retryCountOnTaskFailure: 3
     displayName: 'Bootstrap'
