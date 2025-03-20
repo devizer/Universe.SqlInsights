@@ -12,7 +12,7 @@ jobs:
   - job: Build_W3_App
     displayName: 'Build W3App Shared Artifact, JAM Tests and Tests'
     pool:
-      vmImage: "ubuntu-20.04"
+      vmImage: "ubuntu-24.04"
     steps:
 
       - bash: |
@@ -88,33 +88,33 @@ jobs:
       matrix:
 
         "SQL Server 2022 on Ubuntu":
-          VMIMAGE: 'ubuntu-20.04'
+          VMIMAGE: 'ubuntu-24.04'
           SQL_IMAGE_TAG: "2022-latest"
         
         "SQL Server 2019 on Ubuntu":
-          VMIMAGE: 'ubuntu-20.04'
+          VMIMAGE: 'ubuntu-24.04'
           SQL_IMAGE_TAG: "2019-latest"
 
         "SQL Server 2017 on Ubuntu":
-          VMIMAGE: 'ubuntu-20.04'
+          VMIMAGE: 'ubuntu-24.04'
           SQL_IMAGE_TAG: "2017-latest"
         
         
 
         "SQL Server 2022 on Ubuntu with RAM Disk":
-          VMIMAGE: 'ubuntu-20.04'
+          VMIMAGE: 'ubuntu-24.04'
           RAM_DISK: "/ram-disk"
           RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
           SQL_IMAGE_TAG: "2022-latest"
         
         "SQL Server 2019 on Ubuntu with RAM Disk":
-          VMIMAGE: 'ubuntu-20.04'
+          VMIMAGE: 'ubuntu-24.04'
           RAM_DISK: "/ram-disk"
           RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
           SQL_IMAGE_TAG: "2019-latest"
         
         "SQL Server 2017 on Ubuntu with RAM Disk":
-          VMIMAGE: 'ubuntu-20.04'
+          VMIMAGE: 'ubuntu-24.04'
           RAM_DISK: "/ram-disk"
           RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
           SQL_IMAGE_TAG: "2017-latest"
