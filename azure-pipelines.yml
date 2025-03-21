@@ -68,7 +68,7 @@ jobs:
           Say "Build fx-dependent [https://github.com/devizer/Universe.SqlServerQueryCache].Tests"
           git clone https://github.com/devizer/Universe.SqlServerQueryCache ~/QueryCache
           pushd ~/QueryCache/Universe.SqlServerQueryCache.Tests
-          time try-and-retry dotnet publish -c $configuration -o $SYSTEM_ARTIFACTSDIRECTORY/QueryCache.tests -f net6.0
+          time try-and-retry dotnet publish -c $configuration -o $SYSTEM_ARTIFACTSDIRECTORY/QueryCache.tests -f net8.0
           popd
 
         retryCountOnTaskFailure: 1
