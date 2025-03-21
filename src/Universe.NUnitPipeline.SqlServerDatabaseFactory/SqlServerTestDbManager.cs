@@ -152,7 +152,15 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
             sql.Append(" Replace, Recovery");
 
             var masterConnection = CreateMasterConnection();
-            masterConnection.Execute(sql.ToString(), commandTimeout: 180);
+            try
+            {
+                masterConnection.Execute(sql.ToString(), commandTimeout: 300);
+            }
+            catch (Exception ex)
+            {
+                var msg = $"{nameof(SqlServerTestDbManager)}.${nameof(RestoreBackup)} failed. SQL Command is:{Environment.NewLine}{sql}";
+                throw new InvalidOperationException(msg, ex);
+            }
         }
     }
 }
