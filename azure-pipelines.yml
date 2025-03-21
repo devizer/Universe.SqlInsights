@@ -17,7 +17,7 @@ jobs:
 
       - bash: |
           script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
-          Say "CPU: $(Get-Cpu-Name)"
+          Say "CPU: $(Get-CpuName)"
           for v in 8.0 6.0; do
             Say "ASP.NET $v"
             try-and-retry try-and-retry docker manifest inspect mcr.microsoft.com/dotnet/aspnet:$v
@@ -27,7 +27,7 @@ jobs:
         displayName: "INSPECT ASP.NET docker images"
 
       - bash: |
-         Say "CPU: $(Get-Cpu-Name)"
+         Say "CPU: $(Get-CpuName)"
          script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
          export NODE_VER=v16.20.2 SKIP_NPM_UPGRADE=True
          time (script=https://raw.githubusercontent.com/devizer/glist/master/install-dotnet-and-nodejs.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash -s node)
