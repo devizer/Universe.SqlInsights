@@ -113,6 +113,7 @@ steps:
 
   - bash: |
       set -eu; set -o pipefail;
+      Say "CPU: $(Get-CpuName)"
       v="";
       test -n "${RAM_DISK:-}" && v="-v ${RAM_DISK}:${RAM_DISK} -e MSSQL_DATA_DIR=${RAM_DISK}"
       echo "SQL Server Container Volume Options: [$v]"
@@ -160,6 +161,7 @@ steps:
     displayName: '[SQL Server] $(SQL_IMAGE_TAG) Setup'
 
   - bash: |
+      Say "CPU: $(Get-CpuName)"
       for cmd in "exec sp_configure 'show advanced option', 1" "reconfigure with override;" "exec sp_configure 'Min Server Memory (MB)', 4096" "reconfigure with override;"; do
         docker exec -t sqlserver sqlcmd -C -S localhost -U sa -P "p@assw0rd!" -Q "Set NoCount On; $cmd"
       done
@@ -168,12 +170,14 @@ steps:
 
   - bash: |
       set -eu; set -o pipefail;
+      Say "CPU: $(Get-CpuName)"
       docker logs sqlserver | cat | tr -d '\r' | grep -v -e "^$"
     condition: succeededOrFailed()
     displayName: '[SQL Server] Logs'
 
   - bash: |
       set -eu; set -o pipefail;
+      Say "CPU: $(Get-CpuName)"
       if [[ "${RAM_DISK:-}" == "" ]]; then export NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES=True; fi # for query cache
       export ERGOFAB_TESTS_DATA_FOLDER="/ErgoFab-Tests"
       export ERGOFAB_TESTS_MASTER_CONNECTIONSTRING="TrustServerCertificate=True;Data Source=localhost,1433;User ID=sa;Password=p@assw0rd!;Encrypt=False;"
