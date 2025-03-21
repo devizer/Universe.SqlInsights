@@ -122,7 +122,9 @@ steps:
       sudo mkdir -p "/ErgoFab-Tests/Integration Tests/Data"
       sudo mkdir -p "/ErgoFab-Tests/Integration Tests/Backups"
       sudo chmod 777 -R /ErgoFab-Tests
-      docker run --pull never --name sqlserver --privileged $v -v /ErgoFab-Tests:/ErgoFab-Tests -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@assw0rd!" -p 1433:1433 -d "$img"
+
+      # --privileged --privileged --privileged --privileged --privileged --privileged --privileged --privileged
+      docker run --pull never --name sqlserver $v -v /ErgoFab-Tests:/ErgoFab-Tests -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@assw0rd!" -p 1433:1433 -d "$img"
 
       export SQL_SERVER_CONTAINER_NAME=sqlserver # Add SqlCmd to Path for Linux Container and Wait for
       password='p@assw0rd!'
