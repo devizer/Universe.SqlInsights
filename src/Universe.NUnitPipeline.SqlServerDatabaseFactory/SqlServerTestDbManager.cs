@@ -158,7 +158,7 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
             }
             catch (Exception ex)
             {
-                var msg = $"{nameof(SqlServerTestDbManager)}.${nameof(RestoreBackup)} failed. SQL Command is:{Environment.NewLine}{sql}";
+                var msg = $"{nameof(SqlServerTestDbManager)}.{nameof(RestoreBackup)}() failed. SQL Command is:{Environment.NewLine}{sql}";
                 throw new InvalidOperationException(msg, ex);
             }
         }
