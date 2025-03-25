@@ -90,33 +90,33 @@ jobs:
       maxParallel: 6
       matrix:
 
-        "SQL Server 2017 on Ubuntu 24.04a":
-          VMIMAGE: 'ubuntu-24.04'
-          SQL_IMAGE_TAG: "2017-latest"
+        # "SQL Server 2017 on Ubuntu 24.04a":
+        #  VMIMAGE: 'ubuntu-24.04'
+        #  SQL_IMAGE_TAG: "2017-latest"
         
-        "SQL Server 2017 on Ubuntu 24.04b":
-          VMIMAGE: 'ubuntu-24.04'
-          SQL_IMAGE_TAG: "2017-latest"
+        #"SQL Server 2017 on Ubuntu 24.04b":
+        #  VMIMAGE: 'ubuntu-24.04'
+        #  SQL_IMAGE_TAG: "2017-latest"
         
-        "SQL Server 2017 on Ubuntu 24.04c":
-          VMIMAGE: 'ubuntu-24.04'
-          SQL_IMAGE_TAG: "2017-latest"
+        #"SQL Server 2017 on Ubuntu 24.04c":
+        #  VMIMAGE: 'ubuntu-24.04'
+        #  SQL_IMAGE_TAG: "2017-latest"
         
-        "SQL Server 2017 on Ubuntu 24.04d":
-          VMIMAGE: 'ubuntu-24.04'
-          SQL_IMAGE_TAG: "2017-latest"
+        #"SQL Server 2017 on Ubuntu 24.04d":
+        #  VMIMAGE: 'ubuntu-24.04'
+        #  SQL_IMAGE_TAG: "2017-latest"
         
-        "SQL Server 2017 on Ubuntu 24.04e":
-          VMIMAGE: 'ubuntu-24.04'
-          SQL_IMAGE_TAG: "2017-latest"
+        #"SQL Server 2017 on Ubuntu 24.04e":
+        #  VMIMAGE: 'ubuntu-24.04'
+        #  SQL_IMAGE_TAG: "2017-latest"
         
-        "SQL Server 2017 on Ubuntu 24.04f":
-          VMIMAGE: 'ubuntu-24.04'
-          SQL_IMAGE_TAG: "2017-latest"
+        #"SQL Server 2017 on Ubuntu 24.04f":
+        #  VMIMAGE: 'ubuntu-24.04'
+        #  SQL_IMAGE_TAG: "2017-latest"
         
-        "SQL Server 2017 on Ubuntu 22.04":
-          VMIMAGE: 'ubuntu-22.04'
-          SQL_IMAGE_TAG: "2017-latest"
+        #"SQL Server 2017 on Ubuntu 22.04":
+        #  VMIMAGE: 'ubuntu-22.04'
+        #  SQL_IMAGE_TAG: "2017-latest"
         
         "SQL Server 2017 on Ubuntu 20.04":
           VMIMAGE: 'ubuntu-20.04'
