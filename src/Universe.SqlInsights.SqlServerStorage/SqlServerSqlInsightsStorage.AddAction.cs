@@ -34,20 +34,30 @@ Update [SqlInsightsKeyPathSummary] Set
   [Count] = [Count] + @Count,
   ErrorsCount = ErrorsCount + @ErrorsCount,
   AppDuration = AppDuration + @AppDuration,
+  AppDurationSquared = AppDurationSquared + (@AppDuration * @AppDuration),
   AppKernelUsage = AppKernelUsage + @AppKernelUsage,
+  AppKernelUsageSquared = AppKernelUsageSquared + (@AppKernelUsage * @AppKernelUsage),
   AppUserUsage = AppUserUsage + @AppUserUsage,
+  AppUserUsageSquared = AppUserUsageSquared + (@AppUserUsage * @AppUserUsage),
   SqlDuration = SqlDuration + @SqlDuration,
+  SqlDurationSquared = SqlDurationSquared + (@SqlDuration * @SqlDuration),
   SqlCPU = SqlCPU + @SqlCPU,
+  SqlCPUSquared = SqlCPUSquared + (@SqlCPU * @SqlCPU),
   SqlReads = SqlReads + @SqlReads,
+  SqlReadsSquared = SqlReadsSquared + (@SqlReads * @SqlReads),
   SqlWrites = SqlWrites + @SqlWrites,
+  SqlWritesSquared = SqlWritesSquared + (@SqlWrites * @SqlWrites),
   SqlRowCounts = SqlRowCounts + @SqlRowCounts,
+  SqlRowCountsSquared = SqlRowCountsSquared + (@SqlRowCounts + @SqlRowCounts),
   SqlRequests = SqlRequests + @SqlRequests,
-  SqlErrors = SqlErrors + @SqlErrors
+  SqlRequestsSquared = SqlRequestsSquared + (@SqlRequests * @SqlRequests),
+  SqlErrors = SqlErrors + @SqlErrors,
+  SqlErrorsSquared = SqlErrorsSquared + (@SqlErrors * @SqlErrors)
 Where KeyPath = @KeyPath And HostId = @HostId And AppName = @AppName And IdSession = @IdSession;
 Else
 Insert Into [SqlInsightsKeyPathSummary]
-(KeyPath, IdSession, AppName, HostId, Version, [Count], ErrorsCount, AppDuration, AppKernelUsage, AppUserUsage, SqlDuration, SqlCPU, SqlReads, SqlWrites, SqlRowCounts, SqlRequests, SqlErrors)
-Values(@KeyPath, @IdSession, @AppName, @HostId, Cast(@@DBTS as BigInt), @Count, @ErrorsCount, @AppDuration, @AppKernelUsage, @AppUserUsage, @SqlDuration, @SqlCPU, @SqlReads, @SqlWrites, @SqlRowCounts, @SqlRequests, @SqlErrors);
+(KeyPath, IdSession, AppName, HostId, Version, [Count], ErrorsCount, AppDuration, AppDurationSquared, AppKernelUsage, AppKernelUsageSquared, AppUserUsage, AppUserUsageSquared, SqlDuration, SqlDurationSquared, SqlCPU, SqlCPUSquared, SqlReads, SqlReadsSquared, SqlWrites, SqlWritesSquared, SqlRowCounts, SqlRowCountsSquared, SqlRequests, SqlRequestsSquared, SqlErrors, SqlErrorsSquared)
+Values(@KeyPath, @IdSession, @AppName, @HostId, Cast(@@DBTS as BigInt), @Count, @ErrorsCount, @AppDuration, (@AppDuration * @AppDuration), @AppKernelUsage, (@AppKernelUsage * @AppKernelUsage), @AppUserUsage, (@AppUserUsage * @AppUserUsage), @SqlDuration, (@SqlDuration * @SqlDuration), @SqlCPU, (@SqlCPU * @SqlCPU), @SqlReads, (@SqlReads * @SqlReads), @SqlWrites, (@SqlWrites * @SqlWrites), @SqlRowCounts, (@SqlRowCounts * @SqlRowCounts), @SqlRequests, (@SqlRequests * @SqlRequests), @SqlErrors, (@SqlErrors * @SqlErrors));
 ";
 
 

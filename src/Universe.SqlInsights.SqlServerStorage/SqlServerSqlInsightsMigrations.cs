@@ -194,15 +194,25 @@ Create Table SqlInsightsKeyPathSummary(
     [Count] bigint Not Null,
     ErrorsCount bigint Not Null,
     AppDuration real Not Null,
+    AppDurationSquared real Not Null,      -- StdDev ability
     AppKernelUsage real Not Null,
+    AppKernelUsageSquared real Not Null,   -- StdDev ability
     AppUserUsage real Not Null,
+    AppUserUsageSquared real Not Null,     -- StdDev ability
     SqlDuration bigint Not Null,
+    SqlDurationSquared bigint Not Null,    -- StdDev ability
     SqlCPU bigint Not Null,
+    SqlCPUSquared bigint Not Null,         -- StdDev ability
     SqlReads bigint Not Null,
+    SqlReadsSquared bigint Not Null,       -- StdDev ability
     SqlWrites bigint Not Null,
+    SqlWritesSquared bigint Not Null,     -- StdDev ability
     SqlRowCounts bigint Not Null,
+    SqlRowCountsSquared bigint Not Null,  -- StdDev ability
     SqlRequests bigint Not Null,
+    SqlRequestsSquared bigint Not Null,   -- StdDev ability
     SqlErrors bigint Not Null,
+    SqlErrorsSquared bigint Not Null,     -- StdDev ability
     
     {IfLegacy("InternalVersion RowVersion Not Null,")}
 

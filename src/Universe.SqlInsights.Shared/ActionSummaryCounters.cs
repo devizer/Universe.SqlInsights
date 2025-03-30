@@ -11,11 +11,11 @@ namespace Universe.SqlInsights.Shared
         public long ResponseLength { get; set; }
 
         // Total
-        public double AppDuration { get; set; }
-        public double AppKernelUsage { get; set; }
-        public double AppUserUsage { get; set; }
-        public SqlCounters SqlCounters { get; set; }
-        public long SqlErrors { get; set; }
+        public double AppDuration { get; set; }         // Add _Squared Property
+        public double AppKernelUsage { get; set; }      // Add _Squared Property
+        public double AppUserUsage { get; set; }        // Add _Squared Property
+        public SqlCounters SqlCounters { get; set; }    // Heavy Task. Create SqlCountersWithStats class and _Squared properties
+        public long SqlErrors { get; set; }             // Add _Squared Property
 
         public void Add(ActionSummaryCounters other)
         {
