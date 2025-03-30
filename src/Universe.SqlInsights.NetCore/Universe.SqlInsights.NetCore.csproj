@@ -24,7 +24,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="All" />
-        <PackageReference Include="Universe.SqlTrace" Version="1.6.8.1" />
+        <PackageReference Include="Universe.SqlTrace" Version="1.6.8.2" />
     </ItemGroup>
     
 </Project>
