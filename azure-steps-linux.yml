@@ -42,7 +42,7 @@ steps:
       sudo mkdir -p /etc/docker
       cd /etc/docker
       test ! -s daemon.json && echo "{}" | sudo tee daemon.json >/dev/null
-      echo "$(jq '. += {"data-root": "/mnt/docker"}' daemon.json)" > daemon.json
+      echo "$(jq '. += {"data-root": "/mnt/docker"}' daemon.json)" | sudo tee daemon.json >/dev/null
       Say "Final $(pwd)/daemon.json"
       cat $(pwd)/daemon.json
       systemctl restart docker
