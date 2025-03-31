@@ -37,6 +37,18 @@ steps:
     retryCountOnTaskFailure: 3
     displayName: 'Bootstrap net 6.0 & 8.0'
 
+  - bash: |
+      set -eu; set -o pipefail;
+      sudo mkdir -p /etc/docker
+      cd /etc/docker
+      test ! -s daemon.json && echo "{}" | sudo tee daemon.json >/dev/null
+      echo "$(jq '. += {"data-root": "/mnt/docker"}' daemon.json)" > daemon.json
+      Say "Final $(pwd)/daemon.json"
+      cat $(pwd)/daemon.json
+      systemctl restart docker
+    condition: succeededOrFailed()
+    displayName: 'Tune Docker data-root'
+
   - task: DownloadPipelineArtifact@2
     condition: succeededOrFailed()
     displayName: 'w3app: download'
