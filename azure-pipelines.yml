@@ -106,14 +106,6 @@ jobs:
           VMIMAGE: 'ubuntu-24.04'
           SQL_IMAGE_TAG: "2019-CU16-ubuntu-16.04"
           
-        "SQL Server 2017-CU9-ubuntu on Ubuntu 24.04 next":
-          VMIMAGE: 'ubuntu-24.04'
-          SQL_IMAGE_TAG: "2017-CU9-ubuntu"
-
-        "SQL Server 2019-CU16-ubuntu-16.04 on Ubuntu 24.04 next":
-          VMIMAGE: 'ubuntu-24.04'
-          SQL_IMAGE_TAG: "2019-CU16-ubuntu-16.04"
-          
         
         #"SQL Server 2017 on Ubuntu 24.04c":
         #  VMIMAGE: 'ubuntu-24.04'
