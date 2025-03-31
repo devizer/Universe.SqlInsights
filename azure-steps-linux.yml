@@ -41,11 +41,13 @@ steps:
       set -eu; set -o pipefail;
       sudo mkdir -p /etc/docker
       cd /etc/docker
+      ls -la
       test ! -s daemon.json && echo "{}" | sudo tee daemon.json >/dev/null
-      echo "$(jq '. += {"data-root": "/mnt/docker"}' daemon.json)" | sudo tee daemon.json >/dev/null
+      cp daemon.json /tmp/daemon.json
+      echo "$(jq '. += {"data-root": "/mnt/docker"}' /tmp/daemon.json)" | sudo tee daemon.json >/dev/null
       Say "Final $(pwd)/daemon.json"
       cat $(pwd)/daemon.json
-      systemctl restart docker
+      sudo systemctl restart docker
     condition: succeededOrFailed()
     displayName: 'Tune Docker data-root'
 
