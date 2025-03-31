@@ -175,7 +175,7 @@ steps:
       sudo chmod 777 -R /ergo-fab-tests
 
       # --privileged --privileged --privileged --privileged --privileged --privileged --privileged --privileged
-      docker run --pull never --restart on-failure:666 --name sqlserver $v -v /ErgoFab-Tests:/ErgoFab-Tests -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@assw0rd!" -p 1433:1433 -d "$img"
+      docker run --pull never --restart on-failure:666 --name sqlserver $v -v /ergo-fab-tests:/ergo-fab-tests -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@assw0rd!" -p 1433:1433 -d "$img"
 
       export SQL_SERVER_CONTAINER_NAME=sqlserver # Add SqlCmd to Path for Linux Container and Wait for
       password='p@assw0rd!'
