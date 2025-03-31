@@ -27,7 +27,7 @@
 		<!-- PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.5" / -->
   
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-        <PackageReference Include="Universe.SqlTrace" Version="1.6.8.3" />
+        <PackageReference Include="Universe.SqlTrace" Version="1.7.0" />
   </ItemGroup>
 
 
