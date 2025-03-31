@@ -39,9 +39,26 @@ steps:
 
   - bash: |
       set -eu; set -o pipefail;
+      test -s /etc/os-release && . /etc/os-release; ver="${ID:-}-${VERSION_ID:-}"; Say "ver=[$ver]"
       sudo mkdir -p /etc/docker
       cd /etc/docker
       ls -la
+      Say "Original $(pwd)/daemon.json on [$ver]"
+      echo "$(cat daemon.json 2>/dev/null)"
+
+      # reset config on 22.04 and 24.04
+      if [[ "$ver" != "ubuntu-20.04" ]]; then 
+      echo '
+      {
+        "exec-opts": [
+          "native.cgroupdriver=cgroupfs"
+        ],
+        "cgroup-parent": "/actions_job",
+        "data-root": "/mnt/docker"
+      }' | sudo tee daemon.json >/dev/null; 
+      fi
+
+
       test ! -s daemon.json && echo "{}" | sudo tee daemon.json >/dev/null
       cp daemon.json /tmp/daemon.json
       echo "$(jq '. += {"data-root": "/mnt/docker"}' /tmp/daemon.json)" | sudo tee daemon.json >/dev/null
