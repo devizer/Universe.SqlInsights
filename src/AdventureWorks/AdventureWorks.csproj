@@ -181,8 +181,8 @@
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Universe.SqlTrace, Version=1.7.0.0, Culture=neutral, PublicKeyToken=ec9ba58fbeedd2e7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Universe.SqlTrace.1.7.0\lib\net40\Universe.SqlTrace.dll</HintPath>
+    <Reference Include="Universe.SqlTrace, Version=1.8.2.0, Culture=neutral, PublicKeyToken=ec9ba58fbeedd2e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Universe.SqlTrace.1.8.2\lib\net40\Universe.SqlTrace.dll</HintPath>
     </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>

@@ -10,7 +10,7 @@
     <Import Project="..\Shared-Files\Microsoft.Data.SqlClient.proj" />
 
     <ItemGroup>
-        <PackageReference Include="Universe.SqlTrace" Version="1.7.0" />
+        <PackageReference Include="Universe.SqlTrace" Version="1.8.2" />
     </ItemGroup>
 
 </Project>
