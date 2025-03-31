@@ -15,9 +15,9 @@ public class SqlServerTestsConfiguration : ISqlServerTestsConfiguration
 
 
     public string DbName { get; } = "Ergo Fab";
-    public string BackupFolder { get; } = GetDbDataSubFolder("Integration Tests", "Backups");
+    public string BackupFolder { get; } = GetDbDataSubFolder("Integration Tests", "Backup");
     public string DatabaseDataFolder { get; } = GetDbDataSubFolder("Integration Tests", "Data");
-    public string DatabaseLogFolder { get; } = GetDbDataSubFolder("Integration Tests", "Data");
+    public string DatabaseLogFolder { get; } = GetDbDataSubFolder("Integration Tests", "T-Log");
 
     static string GetMasterConnectionString()
     {
@@ -30,18 +30,13 @@ public class SqlServerTestsConfiguration : ISqlServerTestsConfiguration
 
     }
 
-    static string GetDbDataFolderRoot()
-    {
-        var raw = Environment.GetEnvironmentVariable("ERGOFAB_TESTS_DATA_FOLDER");
-        return
-            !string.IsNullOrEmpty(raw)
-            ? raw
-            : Directory.Exists("W:\\Temp") ? "W:\\Temp" : Path.GetFullPath(Path.DirectorySeparatorChar + "ErgoFab DB Data");
-    }
-
     static string GetDbDataSubFolder(params string[] path)
     {
-        var ret = new StringBuilder(GetDbDataFolderRoot());
+        var explicitResult = Environment.GetEnvironmentVariable("ERGOFAB_TESTS_DATA_FOLDER");
+        if (!string.IsNullOrEmpty(explicitResult)) return explicitResult;
+
+        var basePath = Directory.Exists("W:\\Temp") ? "W:\\Temp" : Path.GetFullPath(Path.DirectorySeparatorChar + "ErgoFab DB Data");
+        var ret = new StringBuilder(basePath);
         foreach (var s in path)
             ret.Append(Path.DirectorySeparatorChar).Append(s);
 

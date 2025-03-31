@@ -171,11 +171,8 @@ steps:
       img="mcr.microsoft.com/mssql/server:${SQL_IMAGE_TAG}"
       Say "Pull image [$img] and run container"
       try-and-retry docker pull -q "$img"
-      for d in "/ErgoFab-Tests/Integration Tests/Data" "/ErgoFab-Tests/Integration Tests/Backups"; do
-        sudo mkdir -p "$d"
-        sudo chmod 777 -R /ErgoFab-Tests
-      done 
-      sudo chmod 777 -R /ErgoFab-Tests
+      sudo mkdir -p /ergo-fab-tests
+      sudo chmod 777 -R /ergo-fab-tests
 
       # --privileged --privileged --privileged --privileged --privileged --privileged --privileged --privileged
       docker run --privileged --pull never --restart on-failure:666 --name sqlserver $v -v /ErgoFab-Tests:/ErgoFab-Tests -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@assw0rd!" -p 1433:1433 -d "$img"
@@ -232,7 +229,7 @@ steps:
       set -eu; set -o pipefail;
       Say "CPU: $(Get-CpuName)"
       if [[ "${RAM_DISK:-}" == "" ]]; then export NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES=True; fi # for query cache
-      export ERGOFAB_TESTS_DATA_FOLDER="/ErgoFab-Tests"
+      export ERGOFAB_TESTS_DATA_FOLDER="/ergo-fab-tests"
       export ERGOFAB_TESTS_MASTER_CONNECTIONSTRING="TrustServerCertificate=True;Data Source=localhost,1433;User ID=sa;Password=p@assw0rd!;Encrypt=False;"
       export ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING="Server=localhost;Encrypt=False;Initial Catalog=SqlInsights Local Warehouse;User ID=sa;Password=p@assw0rd!"
       export ERGOFAB_TESTS_REPORT_FULLNAME="$SYSTEM_ARTIFACTSDIRECTORY/ErgFab Tests Report.txt"
