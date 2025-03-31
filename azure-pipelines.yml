@@ -90,13 +90,13 @@ jobs:
       maxParallel: 6
       matrix:
 
-        "SQL Server 2017 on Ubuntu 24.04":
+        "SQL Server 2017 on Ubuntu 24.04a":
           VMIMAGE: 'ubuntu-24.04'
           SQL_IMAGE_TAG: "2017-latest"
         
-        #"SQL Server 2017 on Ubuntu 24.04b":
-        #  VMIMAGE: 'ubuntu-24.04'
-        #  SQL_IMAGE_TAG: "2017-latest"
+        "SQL Server 2017 on Ubuntu 24.04b":
+          VMIMAGE: 'ubuntu-24.04'
+          SQL_IMAGE_TAG: "2017-latest"
         
         #"SQL Server 2017 on Ubuntu 24.04c":
         #  VMIMAGE: 'ubuntu-24.04'

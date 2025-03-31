@@ -247,7 +247,7 @@ steps:
       export TEST_CONFIGURATION="DISK";
       export TEST_CPU_NAME="$(Get-CpuName --name-only)"
       test -s /etc/os-release && . /etc/os-release; export OS="${ID:-}-${VERSION_ID:-}"; Say "OS: '$OS'"
-      if [[ "${SQL_IMAGE_TAG:-}" == *"2017"* ]] && [[ "$OS" != "ubuntu-20.04" ]]; then export TESTS_FOR_MOT_DISABLED=True; echo "TEST MOT DISABLED, TESTS_FOR_MOT_DISABLED=True"; fi
+      if [[ "${SQL_IMAGE_TAG:-}" == *"2017"* ]] && [[ "$OS" != "ubuntu-20.04" ]] && false; then export TESTS_FOR_MOT_DISABLED=True; echo "TEST MOT DISABLED, TESTS_FOR_MOT_DISABLED=True"; fi
       if true && [[ -n "${RAM_DISK:-}" ]]; then
         export TEST_CONFIGURATION="RAM-Disk";
         export SQLINSIGHTS_DATA_DIR="${RAM_DISK}/DB"
