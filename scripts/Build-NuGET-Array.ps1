@@ -1,5 +1,5 @@
 . .\Includes.ps1
-$NUnit_Pipeline_Revision=203
+$NUnit_Pipeline_Revision=212
 $This_SqlIsnights_Version_Base="0.4.1"
 $nunit_versions = @(
   "3.7.0",
@@ -34,7 +34,7 @@ $Commit_Count = Get-Commit-Count
 $This_SqlIsnights_Version = "$This_SqlIsnights_Version_Base.$Commit_Count"
 write-host "Commit Count: $Commit_Count"
 
-$Work_Base="W:\Temp\Universe.SqlInsights-NUnit-Packages"
+$Work_Base="W:\Build\Universe.SqlInsights"
 Remove-Item -Recurse -Force "$Work_Base" -EA SilentlyContinue | Out-Null
 New-Item "$Work_Base" -Force -ItemType Container -EA SilentlyContinue | Out-Null
 & git.exe clone https://github.com:/devizer/Universe.SqlInsights "$Work_Base\base"
