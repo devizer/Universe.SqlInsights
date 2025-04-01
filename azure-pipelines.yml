@@ -127,7 +127,7 @@ jobs:
         #  SQL_IMAGE_TAG: "2017-latest"
         
         "SQL Server 2017 on Ubuntu 20.04":
-          VMIMAGE: 'ubuntu-20.04'
+          VMIMAGE: 'ubuntu-22.04'
           SQL_IMAGE_TAG: "2017-latest"
         
         "SQL Server 2022 on Ubuntu":
@@ -153,7 +153,7 @@ jobs:
           SQL_IMAGE_TAG: "2019-latest"
         
         "SQL Server 2017 on Ubuntu with RAM Disk":
-          VMIMAGE: 'ubuntu-20.04'
+          VMIMAGE: 'ubuntu-22.04'
           RAM_DISK: "/ram-disk"
           RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
           SQL_IMAGE_TAG: "2017-latest"
