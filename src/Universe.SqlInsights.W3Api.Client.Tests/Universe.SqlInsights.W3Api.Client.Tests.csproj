@@ -10,7 +10,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
-		<PackageReference Include="Universe.NUnitPipeline" Version="3.14.0.203" />
+		<PackageReference Include="Universe.NUnitPipeline" Version="3.14.0.212" />
 	</ItemGroup>
 
 	<ItemGroup>

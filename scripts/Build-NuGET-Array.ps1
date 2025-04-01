@@ -1,6 +1,6 @@
 . .\Includes.ps1
 $NUnit_Pipeline_Revision=203
-$This_SqlIsnights_Version_Base="0.4.0"
+$This_SqlIsnights_Version_Base="0.4.1"
 $nunit_versions = @(
   "3.7.0",
   "3.7.1",
@@ -18,7 +18,10 @@ $nunit_versions = @(
   "4.0.1",
   "4.1.0"
   "4.2.1",
-  "4.2.2"
+  "4.2.2",
+  "4.3.0",
+  "4.3.1",
+  "4.3.2"
 )
 $Full_NUnit_Version = "3.14.0"
 
