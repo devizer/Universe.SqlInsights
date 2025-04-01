@@ -282,7 +282,7 @@ jobs:
   - job: 'Combine'
     condition: succeededOrFailed()
     pool:
-      vmImage: 'ubuntu-20.04'
+      vmImage: 'ubuntu-24.04'
     timeoutInMinutes: 30
     dependsOn:
       - IfLinux
