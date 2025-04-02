@@ -29,7 +29,7 @@
         <Description>Reference implementation for integration</Description>
         <PackageProjectUrl>https://github.com/devizer/Universe.SqlInsights</PackageProjectUrl>
         <RepositoryUrl>https://github.com/devizer/Universe.SqlInsights</RepositoryUrl>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
         <PackageIconUrl>https://raw.githubusercontent.com/devizer/Universe.SqlTrace/master/Icon/v1.png</PackageIconUrl>
         <PackageTags>mssql SqlInsights</PackageTags>
         <LangVersion>latest</LangVersion>

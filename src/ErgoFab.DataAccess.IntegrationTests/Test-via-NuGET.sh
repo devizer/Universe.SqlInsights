@@ -17,6 +17,8 @@ function find-build-number() {
 prj=ErgoFab.DataAccess.IntegrationTests.csproj
 build_number="$(find-build-number)"
 echo "BUILD NUMBER = [$build_number]"
+netCoreBuildVersion="$(Get-Nuget-package-Latest-Version "Universe.SqlInsights.NetCore")"
+echo "Universe.SqlInsights.NetCore latest release = [$netCoreBuildVersion]"
 ver="3.14.0.$build_number"
 sed -i '/Universe.NUnitPipeline.SqlServerDatabaseFactory.csproj/d' "$prj"
 sed -i '/Universe.SqlInsights.NUnit.csproj/d' "$prj"
