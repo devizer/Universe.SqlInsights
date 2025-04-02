@@ -1,12 +1,18 @@
-function find-build-number() {
+function Get-Nuget-package-Latest-Version() {
   pushd /tmp >/dev/null
-  dotnet new console -o console1 >/dev/null; 
-  cd console1
-  dotnet add package Universe.SqlInsights.NUnit >/dev/null
-  cat *.csproj | grep PackageReference | grep -Eo "[0-9]{1,7}" | tail -1
+  local folder="console$RANDOM"
+  dotnet new console -o "$folder" >/dev/null; 
+  cd $folder
+  dotnet add package "$1" >/dev/null
+  cat *.csproj | grep PackageReference | grep -Eo "([0-9]{1,}\.)+[0-9]{1,}" | tail -1
   cd ..
-  rm -rf console1 >/dev/null 2>&1
+  rm -rf $folder >/dev/null 2>&1
   popd >/dev/null
+}
+
+function find-build-number() {
+  local fullVersion="$(Get-Nuget-package-Latest-Version "Universe.SqlInsights.NUnit")"
+  echo "$fullVersion" | grep -Eo "[0-9]{1,7}" | tail -1
 }
 prj=ErgoFab.DataAccess.IntegrationTests.csproj
 build_number="$(find-build-number)"
@@ -16,4 +22,6 @@ sed -i '/Universe.NUnitPipeline.SqlServerDatabaseFactory.csproj/d' "$prj"
 sed -i '/Universe.SqlInsights.NUnit.csproj/d' "$prj"
 dotnet add "$prj" package Universe.NUnitPipeline.SqlServerDatabaseFactory -v "$ver"
 dotnet add "$prj" package Universe.SqlInsights.NUnit -v "$ver"
+echo "FINAL [$prj]"
+car "$prj"
 dotnet test -c Release -f net8.0
