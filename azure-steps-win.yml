@@ -208,11 +208,28 @@ steps:
       export ERGOFAB_TESTS_DATA_FOLDER="D:\\ErgFab-Tests"
       export ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING="Server=(local);Encrypt=False;Initial Catalog=SqlInsights Local Warehouse;Integrated Security=SSPI"
       export ERGOFAB_TESTS_REPORT_FULLNAME="$SYSTEM_ARTIFACTSDIRECTORY\\ErgFab Tests Report.txt"
+      for var in ERGOFAB_TESTS_DATA_FOLDER ERGOFAB_TESTS_MASTER_CONNECTIONSTRING ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING ERGOFAB_TESTS_REPORT_FULLNAME NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES; do
+        value="${!var}"
+        echo "EXPORT $var = [$value]" 
+        echo "##vso[task.setvariable variable=$var]$value"
+      done
+
       dotnet test ErgoFab.DataAccess.IntegrationTests.dll
       cp -av TestsOutput $SYSTEM_ARTIFACTSDIRECTORY
       Say "Success Complete"
     condition: ne(variables.SKIP_ERGOFAB_TESTS,'True')
     displayName: 'Test ErgoFab (SQL)'
+
+  - bash: |
+      set -eu; set -o pipefail;
+      Say "CPU: $(Get-CpuName)"
+      printenv | { grep ERGOFAB || true; }
+
+      cd src/ErgoFab.DataAccess.IntegrationTests
+      bash -e -u Test-via-NuGET.sh
+      Say "Success Complete"
+    condition: ne(variables.SKIP_ERGOFAB_TESTS,'True')
+    displayName: '2ND TEST ErgoFab (SQL) via NuGet'
 
   - bash: |
       set -eu; set -o pipefail;

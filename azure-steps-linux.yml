@@ -257,7 +257,7 @@ steps:
       bash -e -u Test-via-NuGET.sh
       Say "Success Complete"
     condition: ne(variables.SKIP_ERGOFAB_TESTS,'True')
-    displayName: '2ND TEST ErgoFab (SQL) Net8.0'
+    displayName: '2ND TEST ErgoFab (SQL) via NuGet'
 
   - bash: |
       set -eu; set -o pipefail;
