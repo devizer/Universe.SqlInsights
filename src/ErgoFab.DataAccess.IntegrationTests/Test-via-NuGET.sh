@@ -23,5 +23,5 @@ sed -i '/Universe.SqlInsights.NUnit.csproj/d' "$prj"
 dotnet add "$prj" package Universe.NUnitPipeline.SqlServerDatabaseFactory -v "$ver"
 dotnet add "$prj" package Universe.SqlInsights.NUnit -v "$ver"
 echo "FINAL [$prj]"
-car "$prj"
+cat "$prj"
 dotnet test -c Release -f net8.0
