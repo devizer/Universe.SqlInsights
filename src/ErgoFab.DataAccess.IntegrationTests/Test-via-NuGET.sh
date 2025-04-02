@@ -1,6 +1,7 @@
 function find-build-number() {
   pushd /tmp >/dev/null
-  dotnet new console -o console1; cd console1 >/dev/null
+  dotnet new console -o console1 >/dev/null; 
+  cd console1
   dotnet add package Universe.SqlInsights.NUnit >/dev/null
   cat *.csproj | grep PackageReference | grep -Eo "[0-9]{1,7}" | tail -1
   cd ..
