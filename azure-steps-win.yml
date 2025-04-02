@@ -170,8 +170,13 @@ steps:
        & setx.exe SQLSERVERS_SETUP_FOLDER "$ENV:SQLSERVERS_SETUP_FOLDER"
 
        $collation = If ("$ENV:SQL" -match "2019" -or "$ENV:SQL" -match "2022") { "Latin1_General_100_CI_AS_SC_UTF8" } Else { "SQL_Latin1_General_CP1_CI_AS" };
-       Setup-SqlServers "$(SQL)" "Features=SQLENGINE" "Collation=$collation" "Startup=Automatic" "InstallTo=D:\SQL" "Password=``1qazxsw2" `
+       $setupErrors = Setup-SqlServers "$(SQL)" "Features=SQLENGINE" "Collation=$collation" "Startup=Automatic" "InstallTo=D:\SQL" "Password=``1qazxsw2" `
          *| tee "$($Env:SYSTEM_ARTIFACTSDIRECTORY)\SQL Setup Log.txt"
+
+       if ($setupErrors.Count -gt 0) {
+         Write-Host "OOPS $($setupErrors)"
+         throw $setupErrors;
+       }
 
        $ErrorActionPreference = "Continue"
 
@@ -187,6 +192,7 @@ steps:
        Say "Successfully Complete"
 
     condition: succeededOrFailed()
+    retryCountOnTaskFailure: 3
     displayName: '[SQL Server] Setup'
 
   - powershell: |
