@@ -119,7 +119,7 @@ steps:
       echo "Bash Version: $BASH_VERSION"
       for cmd in date jq tee cat tr node yarn npm dotnet head grep awk sed perl; do
         echo "'$cmd' path: [$(command -v "$cmd")]"
-        echo "'$cmd' version: [$("$cmd" --version | head -1)]"
+        echo "'$cmd' version: [$("$cmd" --version | grep -v -E '$^' | head -1)]"
       done
       
       echo "'sqlcmd' path: [$(command -v sqlcmd)]"
