@@ -126,9 +126,9 @@ jobs:
         #  VMIMAGE: 'ubuntu-22.04'
         #  SQL_IMAGE_TAG: "2017-latest"
         
-        "SQL Server 2017 on Ubuntu 20.04":
-          VMIMAGE: 'ubuntu-22.04'
-          SQL_IMAGE_TAG: "2017-latest"
+        # "SQL Server 2017 on Ubuntu 20.04":
+        #   VMIMAGE: 'ubuntu-20.04'
+        #  SQL_IMAGE_TAG: "2017-latest"
         
         "SQL Server 2022 on Ubuntu":
           VMIMAGE: 'ubuntu-24.04'
@@ -175,8 +175,12 @@ jobs:
       maxParallel: 10
       matrix:
 
-        "SQL Server 2017 Developer":
+        "SQL Server 2017 Developer RTM":
           SQL: '2017 Developer: MSSQLSERVER'
+          TEST_ADVENTURE_WORKS: true
+
+        "SQL Server 2017 Developer Updated":
+          SQL: '2017 Developer Updated: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
 
         "SQL Server 2019 Developer":
@@ -264,8 +268,12 @@ jobs:
         "SQL Server 2019 Core":
           SQL: '2019 Core: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
-        "SQL Server 2017 Core":
+        "SQL Server 2017 Core RTM":
           SQL: '2017 Core: MSSQLSERVER'
+          TEST_ADVENTURE_WORKS: true
+
+        "SQL Server 2017 Core Updated":
+          SQL: '2017 Core Updated: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
 
     variables:
