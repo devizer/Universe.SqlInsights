@@ -175,12 +175,12 @@ jobs:
       maxParallel: 10
       matrix:
 
-        "SQL Server 2017 Developer RTM":
-          SQL: '2017 Developer: MSSQLSERVER'
-          TEST_ADVENTURE_WORKS: true
-
         "SQL Server 2017 Developer Updated":
           SQL: '2017 Developer Updated: MSSQLSERVER'
+          TEST_ADVENTURE_WORKS: true
+
+        "SQL Server 2017 Developer RTM":
+          SQL: '2017 Developer: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
 
         "SQL Server 2019 Developer":
