@@ -20,8 +20,8 @@ echo "BUILD NUMBER = [$build_number]"
 ver="3.14.0.$build_number"
 sed -i '/Universe.NUnitPipeline.SqlServerDatabaseFactory.csproj/d' "$prj"
 sed -i '/Universe.SqlInsights.NUnit.csproj/d' "$prj"
-dotnet add "$prj" package Universe.NUnitPipeline.SqlServerDatabaseFactory -v "$ver"
-dotnet add "$prj" package Universe.SqlInsights.NUnit -v "$ver"
+dotnet add "$prj" package Universe.NUnitPipeline.SqlServerDatabaseFactory -v "$ver" --no-restore
+dotnet add "$prj" package Universe.SqlInsights.NUnit -v "$ver" --no-restore
 echo "FINAL [$prj]"
 cat "$prj"
 dotnet test -c Release -f net8.0
