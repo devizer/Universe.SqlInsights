@@ -209,7 +209,7 @@ steps:
       export ERGOFAB_TESTS_DATA_FOLDER="D:\\ErgFab-Tests"
       export ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING="Server=(local);Encrypt=False;Initial Catalog=SqlInsights Local Warehouse;Integrated Security=SSPI"
       export ERGOFAB_TESTS_REPORT_FULLNAME="$SYSTEM_ARTIFACTSDIRECTORY\\ErgFab Tests Report.txt"
-      for var in ERGOFAB_TESTS_DATA_FOLDER ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING ERGOFAB_TESTS_REPORT_FULLNAME NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES; do
+      for var in ERGOFAB_TESTS_DATA_FOLDER ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES; do
         value="${!var}"
         echo "EXPORT $var = [$value]" 
         echo "##vso[task.setvariable variable=$var]$value"
