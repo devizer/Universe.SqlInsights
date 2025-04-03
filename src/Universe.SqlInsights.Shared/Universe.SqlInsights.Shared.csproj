@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <!-- NET 4.6.1 Supports Microsoft.Data.SqlClient -->
+        <!-- Microsoft.Data.SqlClient 5.2.2 support Starts from NET 4.6.2 -->
         <TargetFrameworks>net20;net35;net40;net45;net461;netstandard1.3;netstandard2.0;</TargetFrameworks>
     </PropertyGroup>
 

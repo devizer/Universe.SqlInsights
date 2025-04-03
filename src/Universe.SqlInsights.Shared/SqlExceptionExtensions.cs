@@ -34,7 +34,6 @@ namespace Universe.SqlInsights.Shared
             return ex?.AsPlainExceptionList()
                 .Select(IsSqlException)
                 .FirstOrDefault(x => x != null);
-
         }
 
         // Support Both System and Microsoft Sql Client
@@ -45,8 +44,9 @@ namespace Universe.SqlInsights.Shared
                 Message = sysError.Message,
                 Number = sysError.Number
             };
-            
-#if NET461 || NETSTANDARD2_0
+
+#if HAS_MICROSOFT_DATA_SQLCLIENT
+// #if NET461 || NETSTANDARD2_0
             if (theException is Microsoft.Data.SqlClient.SqlException msError)
             {
                 return new SqlExceptionInfo()

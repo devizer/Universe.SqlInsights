@@ -223,7 +223,7 @@ NEXT: {next}");
 #if !NETSTANDARD1_3
                     Thread.Sleep(autoFlushDelayMilliSec);
 #else
-                    Task.Delay(autoFlushDelayMilliSec).Wait();
+                    Task.Delay(autoFlushDelayMilliSec).ConfigureAwait(continueOnCapturedContext: false).GetAwaiter().GetResult();;
 #endif
 
                 }

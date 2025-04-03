@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-	  <Language>latest</Language>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<Language>latest</Language>
+	</PropertyGroup>
 
-  <Import Project="..\Shared-Files\Microsoft.EntityFrameworkCore.SqlServer.proj" />
+	<Import Project="..\Shared-Files\Microsoft.EntityFrameworkCore.SqlServer.proj" />
   <Import Project="..\Shared-Files\Microsoft.EntityFrameworkCore.Design.proj" />
 
 

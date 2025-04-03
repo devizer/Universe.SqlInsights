@@ -19,7 +19,7 @@ namespace Universe.SqlInsights.Shared
             if (ex == null) return null;
 
             var type = ex.GetType();
-            if (type.Name == "HttpException" || true)
+            if (true || type.Name == "HttpException")
             {
 
 #if NETSTANDARD1_3
