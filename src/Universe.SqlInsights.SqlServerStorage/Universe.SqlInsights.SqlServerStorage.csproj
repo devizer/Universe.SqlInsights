@@ -14,7 +14,7 @@
     </ItemGroup>
     <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
       <!-- for System.Text.Json -->
-      <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0" />
+      <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)'=='netstandard2.0' Or '$(TargetFramework)'=='netstandard1.3' or '$(TargetFramework)'=='net50'">
@@ -28,7 +28,6 @@
     <ItemGroup>
       <PackageReference Include="Universe.SqlServerJam" Version="1.0.586" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-      <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="All" />
 
       <ProjectReference Include="..\Universe.SqlInsights.Shared\Universe.SqlInsights.Shared.csproj" />
     </ItemGroup>
