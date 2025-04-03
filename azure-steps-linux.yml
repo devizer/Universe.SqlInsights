@@ -248,18 +248,6 @@ steps:
     condition: ne(variables.SKIP_ERGOFAB_TESTS,'True')
     displayName: 'TEST ErgoFab (SQL) Net8.0'
 
-  # TODO: SHOULD BE OPTIONAL via Variable
-  - bash: |
-      set -eu; set -o pipefail;
-      Say "CPU: $(Get-CpuName)"
-      printenv | { grep ERGOFAB || true; }
-
-      cd src/ErgoFab.DataAccess.IntegrationTests
-      bash -e -u Test-via-NuGET.sh
-      Say "Success Complete"
-    condition: ne(variables.SKIP_ERGOFAB_TESTS,'True')
-    displayName: '2ND TEST ErgoFab (SQL) via NuGet'
-
   - bash: |
       set -eu; set -o pipefail;
       cd src/Universe.SqlInsights.SqlServerStorage.Tests
@@ -387,7 +375,18 @@ steps:
       pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)/QueryCacheReports'
       artifactName: 'Query Cache Reports $(Agent.JobName) $(Build.BUILDNUMBER)'
 
+  # TODO: SHOULD BE OPTIONAL via Variable
+  # Do not feed Query Cache Report
+  - bash: |
+      set -eu; set -o pipefail;
+      Say "CPU: $(Get-CpuName)"
+      printenv | { grep ERGOFAB || true; }
 
+      cd src/ErgoFab.DataAccess.IntegrationTests
+      bash -e -u Test-via-NuGET.sh
+      Say "Success Complete"
+    condition: ne(variables.SKIP_ERGOFAB_TESTS,'True')
+    displayName: '2ND TEST ErgoFab (SQL) via NuGet'
 
   - publish: $(SYSTEM.ARTIFACTSDIRECTORY)
     displayName: 'PUBLISH Artifacts'
