@@ -61,7 +61,7 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
                 PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Created Backup for test DB '{newDbName}' as '{databaseBackupInfo.BackupPoint}' (Caching key is '{cacheKey}')");
                 if (savedDatabaseName != null)
                 {
-                    // TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO: Drop savedDatabaseName
+                    // TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO: Force Drop savedDatabaseName
                     await sqlServerTestDbManager.RestoreBackup(databaseBackupInfo, savedDatabaseName);
                     PipelineLog.LogTrace(
                         $"[SeededDatabaseFactory.BuildDatabase] Restored Reference Test DB '{savedDatabaseName}' from '{databaseBackupInfo.BackupPoint}' (Caching key is '{cacheKey}')");

@@ -1,5 +1,14 @@
 ﻿<Project>
 
+	<PropertyGroup>
+        <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <LangVersion>latest</LangVersion>
+        <DebugSymbols>true</DebugSymbols>
+        <EmbedAllSources>true</EmbedAllSources>
+        <DebugType>portable</DebugType>
+    </PropertyGroup>
+
     <PropertyGroup>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <OutputType>Library</OutputType>

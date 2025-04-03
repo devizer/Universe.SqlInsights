@@ -1,12 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+    <Import Project="..\Shared.props" />
+    <Import Project="..\Shared-Files\Net-2x-4x-Support.proj" />
+
     <PropertyGroup>
         <!-- net35;net40;net45; -->
         <!-- System.Text.Json 6.0.7 starts from net 4.6.1 -->
         <TargetFrameworks>netstandard2.0;net35;net40;net45;net461;netstandard1.3;net5.0;</TargetFrameworks>
     </PropertyGroup>
-
-    <Import Project="..\Shared.props" />
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net461' Or '$(TargetFramework)' == 'netstandard2.0' ">
       <PackageReference Include="System.Text.Json" Version="6.0.7" />
@@ -16,57 +17,20 @@
       <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0" />
     </ItemGroup>
 
-
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net35'">
-        <AssemblyAttribute Include="System.Runtime.Versioning.TargetFrameworkAttribute">
-            <_Parameter1>.NETFramework,Version=v3.5</_Parameter1>
-        </AssemblyAttribute>
-    </ItemGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net30'">
-        <AssemblyAttribute Include="System.Runtime.Versioning.TargetFrameworkAttribute">
-            <_Parameter1>.NETFramework,Version=v3.0</_Parameter1>
-        </AssemblyAttribute>
-    </ItemGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net20'">
-        <AssemblyAttribute Include="System.Runtime.Versioning.TargetFrameworkAttribute">
-            <_Parameter1>.NETFramework,Version=v2.0</_Parameter1>
-        </AssemblyAttribute>
-    </ItemGroup>
-
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net35' Or '$(TargetFramework)' == 'net30' Or '$(TargetFramework)' == 'net20' ">
-        <PackageReference Include="Theraot.Core" Version="3.2.11" />
-    </ItemGroup>
-
     <ItemGroup Condition=" '$(TargetFramework)'=='netstandard2.0' Or '$(TargetFramework)'=='netstandard1.3' or '$(TargetFramework)'=='net50'">
-        <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+        <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
         <PackageReference Include="System.Threading.Thread" Version="4.3.0" />
     </ItemGroup>
 
-    <!--
-    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard1.3' Or '$(TargetFramework)' == 'net461' Or '$(TargetFramework)' == 'net50' ">
-        <PackageReference Include="Dapper" Version="1.60.6" />
-    </ItemGroup>
-
-    <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard2.0' And '$(TargetFramework)' != 'netstandard1.3' And '$(TargetFramework)' != 'net20' And '$(TargetFramework)' != 'net30' and '$(TargetFramework)' != 'net461' and '$(TargetFramework)' != 'net50'">
-        <PackageReference Include="Dapper" Version="1.42.0" />
-    </ItemGroup>
-    -->
-
-<!--
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net20' Or '$(TargetFramework)' == 'net30' ">
-        It is a for .NET 3.5
-        <PackageReference Include="Dapper.Net20" Version="1.42.0.1" />
-    </ItemGroup>
--->
-
     <ItemGroup>
       <PackageReference Include="Universe.SqlServerJam" Version="1.0.586" />
-      <ProjectReference Include="..\Universe.SqlInsights.Shared\Universe.SqlInsights.Shared.csproj" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
       <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="All" />
+
+      <ProjectReference Include="..\Universe.SqlInsights.Shared\Universe.SqlInsights.Shared.csproj" />
     </ItemGroup>
     
 </Project>
