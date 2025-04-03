@@ -221,6 +221,7 @@ steps:
     condition: ne(variables.SKIP_ERGOFAB_TESTS,'True')
     displayName: 'Test ErgoFab (SQL)'
 
+  # TODO: SHOULD BE OPTIONAL via Variable
   - bash: |
       set -eu; set -o pipefail;
       Say "CPU: $(Get-CpuName)"
