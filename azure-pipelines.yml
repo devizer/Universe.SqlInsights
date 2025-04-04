@@ -171,6 +171,8 @@ jobs:
     # condition: eq('Never','')
     dependsOn:
       - Build_W3_App
+    variables:
+      - SQLTRACE_FOLDER: 'D:\Sql-Traces'
     strategy:
       maxParallel: 10
       matrix:

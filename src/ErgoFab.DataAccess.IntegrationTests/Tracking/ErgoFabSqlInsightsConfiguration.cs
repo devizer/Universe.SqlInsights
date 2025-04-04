@@ -16,7 +16,14 @@ public class ErgoFabSqlInsightsConfiguration : ISqlInsightsConfiguration
     public decimal AutoFlushDelay => 1000;
 
     public string ReportFullFileName => _ReportFullFileName.Value;
-    public string SqlTracesDirectory => _IsServerHostOnWindows.Value ? (SystemDriveAccess.WindowsSystemDrive + "Temp\\SqlInsights-Traces") : "/tmp/SqlInsights-Traces";
+    public string SqlTracesDirectory => GetTraceDirectory();
+
+    private string GetTraceDirectory()
+    {
+        var rawRet = Environment.GetEnvironmentVariable("SQLTRACE_FOLDER");
+        if (!string.IsNullOrEmpty(rawRet)) return rawRet;
+        return _IsServerHostOnWindows.Value ? (SystemDriveAccess.WindowsSystemDrive + "Temp\\SqlInsights-Traces") : "/tmp/SqlInsights-Traces";
+    }
 
     // Same as
     //    ISqlServerTestsConfiguration.MasterConnectionString
