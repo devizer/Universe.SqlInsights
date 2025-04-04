@@ -41,12 +41,6 @@ namespace Universe.SqlInsights.SqlServerStorage
             Logs.AppendLine($" * Medium Version: {man.MediumServerVersion}");
             Logs.AppendLine($" * Long Version: {man.LongServerVersion}");
 
-            string GetOptimizedCollation()
-            {
-	            var sqlGetOptimizedCollationName = "Select Top 1 Name From fn_helpcollations() Where Name Like '%UTF8' And Name Like '%Latin1_%' And Name Like '%_BIN2_%'";
-	            return cnn.ExecuteScalar<string>(sqlGetOptimizedCollationName);
-            }
-
 			if (man.IsWindows && (man.FixedServerRoles & FixedServerRoles.SysAdmin) != 0)
             {
                 // TODO: Only if ISqlInsightsConfiguration.DisposeByShellCommand == true
@@ -61,7 +55,7 @@ namespace Universe.SqlInsights.SqlServerStorage
 
             if (DisableMemoryOptimizedTables) supportMOT = false;
 
-            var optimizedCollation = GetOptimizedCollation();
+            var optimizedCollation = GetOptimizedCollation(cnn);
             Logs.AppendLine($" * Optimized Collation: {(string.IsNullOrEmpty(optimizedCollation) ? ">not supported, using default<" : $"'{optimizedCollation}'")}");
             string legacyKeyPathType = "nvarchar(450)";
             string optimizedKeyPathType = $"varchar(880) Collate {optimizedCollation}";
@@ -312,6 +306,12 @@ End
             }
         }
 
+        string GetOptimizedCollation(IDbConnection cnn)
+        {
+            var sqlGetOptimizedCollationName = "Select Top 1 Name From fn_helpcollations() Where Name Like '%UTF8' And Name Like '%Latin1_%' And Name Like '%_BIN2_%'";
+            return cnn.ExecuteScalar<string>(sqlGetOptimizedCollationName);
+        }
+
         private void CreateDatabaseIfNotExists()
         {
             // var master = this.ProviderFactory.CreateConnectionStringBuilder();
@@ -323,20 +323,24 @@ End
             
             master.InitialCatalog = "";
             
-            string sqlCommands = @$"
-Select DB_ID('{dbName}');
-If DB_ID('{dbName}') Is Null 
-Begin 
-    Create Database [{dbName}]; 
-    -- The scenario is for development only
-exec('Alter Database [{dbName}] Set Recovery Simple'); 
-End
-";
 
             try
             {
                 var con = ProviderFactory.CreateConnection();
                 con.ConnectionString = master.ConnectionString;
+
+                var optimizedCollation = GetOptimizedCollation(con);
+                string sqlCollation = string.IsNullOrEmpty(optimizedCollation) ? "" : $"COLLATE {optimizedCollation}";
+                string sqlCommands = @$"
+Select DB_ID('{dbName}');
+If DB_ID('{dbName}') Is Null 
+Begin 
+    Create Database [{dbName}] {sqlCollation}; 
+    -- The scenario is for development only
+exec('Alter Database [{dbName}] Set Recovery Simple'); 
+End
+";
+
                 using (con)
                 {
                     con.Execute(sqlCommands, null);
