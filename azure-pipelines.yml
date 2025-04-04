@@ -172,7 +172,9 @@ jobs:
     dependsOn:
       - Build_W3_App
     variables:
-      - SQLTRACE_FOLDER: 'D:\Sql-Traces'
+      SQLTRACE_FOLDER: 'D:\Sql-Traces'
+      OS: Windows
+      # SQL: 'SqlServer 2019 Developer: MSSQLSERVER'
     strategy:
       maxParallel: 10
       matrix:
@@ -278,9 +280,6 @@ jobs:
           SQL: '2017 Core Updated: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
 
-    variables:
-      OS: Windows
-      # SQL: 'SqlServer 2019 Developer: MSSQLSERVER'
     timeoutInMinutes: 49
     cancelTimeoutInMinutes: 1
     pool:
