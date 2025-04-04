@@ -43,7 +43,7 @@
     <!-- Can't reference Microsoft.Data.SqlClient for target 'net45'-->
     <!-- Can't reference Microsoft.Data.SqlClient for target 'net451'-->
     <!-- Can't reference Microsoft.Data.SqlClient for target 'net452'-->
-    <PropertyGroup Condition=" '$(TargetFramework)' == 'net46'  "><VERSION_MICROSOFT_DATA_SQLCLIENT>3.1.7</VERSION_MICROSOFT_DATA_SQLCLIENT></PropertyGroup>
+    <PropertyGroup Condition=" '$(TargetFramework)' == 'net46'  "><VERSION_MICROSOFT_DATA_SQLCLIENT>2.1.7</VERSION_MICROSOFT_DATA_SQLCLIENT></PropertyGroup>
     <PropertyGroup Condition=" '$(TargetFramework)' == 'net461' "><VERSION_MICROSOFT_DATA_SQLCLIENT>5.2.2</VERSION_MICROSOFT_DATA_SQLCLIENT></PropertyGroup>
     <PropertyGroup Condition=" '$(TargetFramework)' == 'net462' "><VERSION_MICROSOFT_DATA_SQLCLIENT>5.2.2</VERSION_MICROSOFT_DATA_SQLCLIENT></PropertyGroup>
     <PropertyGroup Condition=" '$(TargetFramework)' == 'net47'  "><VERSION_MICROSOFT_DATA_SQLCLIENT>5.2.2</VERSION_MICROSOFT_DATA_SQLCLIENT></PropertyGroup>
