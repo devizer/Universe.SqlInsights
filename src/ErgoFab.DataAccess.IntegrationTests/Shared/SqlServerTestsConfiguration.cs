@@ -14,7 +14,7 @@ public class SqlServerTestsConfiguration : ISqlServerTestsConfiguration
     public string Provider { get; } = "System";
 
 
-    public string DbName { get; } = "Ergo Fab";
+    public string DbNamePrefix { get; } = "Ergo Fab";
     public string BackupFolder { get; } = GetDbDataSubFolder("Integration Tests", "Backup");
     public string DatabaseDataFolder { get; } = GetDbDataSubFolder("Integration Tests", "Data");
     public string DatabaseLogFolder { get; } = GetDbDataSubFolder("Integration Tests", "T-Log");

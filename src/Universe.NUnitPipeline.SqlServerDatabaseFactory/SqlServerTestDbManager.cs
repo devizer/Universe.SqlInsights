@@ -85,7 +85,7 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
             b.ConnectionString = this.SqlTestsConfiguration.MasterConnectionString;
             b["Initial Catalog"] = dbName;
             b["Pooling"] = pooling.ToString();
-            b["Application Name"] = SqlTestsConfiguration.DbName + " Test";
+            b["Application Name"] = SqlTestsConfiguration.DbNamePrefix + " Test";
             return b.ConnectionString;
         }
 
@@ -101,7 +101,7 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
             var csb = CreateDbProviderFactory().CreateConnectionStringBuilder();
             csb.ConnectionString = SqlTestsConfiguration.MasterConnectionString;
             csb["Pooling"] = pooling;
-            csb["Application Name"] = SqlTestsConfiguration.DbName + " Test";
+            csb["Application Name"] = SqlTestsConfiguration.DbNamePrefix + " Test";
             var dbConnection = CreateDbProviderFactory().CreateConnection();
             dbConnection.ConnectionString = csb.ConnectionString;
             return dbConnection;

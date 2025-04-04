@@ -1,2 +1,2 @@
 cd src\ErgoFab.DataAccess.IntegrationTests
-dotnet test -c Release -f net6.0 
+dotnet test -c Release -f net8.0

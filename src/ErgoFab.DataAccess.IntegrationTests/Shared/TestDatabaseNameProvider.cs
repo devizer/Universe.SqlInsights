@@ -16,7 +16,7 @@ namespace ErgoFab.DataAccess.IntegrationTests.Shared
             // TODO: Move it to Universe.SqlInsights.NUnit project
             ISqlServerTestsConfiguration sqlTestsConfiguration = NUnitPipelineConfiguration.GetService<ISqlServerTestsConfiguration>();
             var counter = Interlocked.Increment(ref TestCounter);
-            string dbPrefix = $"{sqlTestsConfiguration.DbName} Test {DateTime.Now.ToString("yyyy-MM-dd")}";
+            string dbPrefix = $"{sqlTestsConfiguration.DbNamePrefix} Test {DateTime.Now.ToString("yyyy-MM-dd")}";
             return $"{dbPrefix} {counter:00000} {Guid.NewGuid():N}";
             
             SqlServerTestDbManager testManager = NUnitPipelineConfiguration.GetService<SqlServerTestDbManager>();

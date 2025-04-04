@@ -4,6 +4,7 @@ using Universe.NUnitPipeline.SqlServerDatabaseFactory;
 namespace ErgoFab.DataAccess.IntegrationTests.Shared;
 
 // TODO: REMOVE IT
+[Obsolete("SeededDatabaseFactory is enough" ,true)]
 public class SeededEfDatabaseFactory : SeededDatabaseFactory
 {
     public SeededEfDatabaseFactory(ISqlServerTestsConfiguration sqlServerTestsConfiguration) : base(sqlServerTestsConfiguration)

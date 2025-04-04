@@ -2,7 +2,7 @@
 {
     public interface ISqlServerTestsConfiguration
     {
-        string DbName { get; }
+        string DbNamePrefix { get; }
         string MasterConnectionString { get; }
         // For local server folders might be configured.
 
