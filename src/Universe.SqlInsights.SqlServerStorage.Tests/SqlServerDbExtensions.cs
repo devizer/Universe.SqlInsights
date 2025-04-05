@@ -1,4 +1,5 @@
-﻿using System.Data.SqlClient;
+﻿using System;
+using System.Data.SqlClient;
 using System.IO;
 using Dapper;
 
@@ -16,7 +17,10 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                 var existingName = con.QueryFirstOrDefault<string>("Select name from sys.databases where name=@db", new { db });
                 if (existingName == null)
                 {
-                    string sql = $@"CREATE DATABASE [{db}]";
+                    var migrations = new SqlServerSqlInsightsMigrations(SqlClientFactory.Instance, connectionString);
+                    var optimizedCollation = migrations.GetOptimizedCollation(con);
+                    string sqlCollation = string.IsNullOrEmpty(optimizedCollation) ? "" : $"COLLATE {optimizedCollation}";
+                    string sql = $@"CREATE DATABASE [{db}] {sqlCollation}";
                     if (!string.IsNullOrEmpty(dbDataDir))
                     {
                         CreateDirectory(dbDataDir);
@@ -29,6 +33,7 @@ LOG ON (NAME = [{db}_log], FILENAME = '{logFile}', SIZE = {initialLogSize}MB, FI
 ";
                     }
  
+                    Console.WriteLine($"Creating New Storage Database {db}{Environment.NewLine}{sql}{Environment.NewLine}");
                     con.Execute(sql);
                     con.Execute($"Alter Database [{db}] Set Recovery Simple;");
                 }

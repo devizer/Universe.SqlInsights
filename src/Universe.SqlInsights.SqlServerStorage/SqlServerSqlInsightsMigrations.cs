@@ -302,27 +302,27 @@ End
                     }
                 }
 
+                Logs.AppendLine($" * Database default collation is {con.Manage().CurrentDatabase.DefaultCollationName}");
                 Logs.Append($" * Done! Migration successfully invoked {sqlMigrations.Count} commands");
             }
         }
 
-        string GetOptimizedCollation(IDbConnection cnn)
+        // public for Tests only
+        public string GetOptimizedCollation(IDbConnection cnn)
         {
             var sqlGetOptimizedCollationName = "Select Top 1 Name From fn_helpcollations() Where Name Like '%UTF8' And Name Like '%Latin1_%' And Name Like '%_BIN2_%'";
             return cnn.ExecuteScalar<string>(sqlGetOptimizedCollationName);
         }
 
+        // Public for Tests only
         private void CreateDatabaseIfNotExists()
         {
             // var master = this.ProviderFactory.CreateConnectionStringBuilder();
             // master.ConnectionString = ConnectionString;
             SqlConnectionStringBuilder master = new SqlConnectionStringBuilder(ConnectionString);
             var dbName = master.InitialCatalog;
-            if (string.IsNullOrEmpty(dbName))
-                return;
-            
+            if (string.IsNullOrEmpty(dbName)) return; // if dbName is missing it means default db. e.g. already exists
             master.InitialCatalog = "";
-            
 
             try
             {
