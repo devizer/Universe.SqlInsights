@@ -310,6 +310,7 @@ End
         // public for Tests only
         public string GetOptimizedCollation(IDbConnection cnn)
         {
+            return null;
             var sqlGetOptimizedCollationName = "Select Top 1 Name From fn_helpcollations() Where Name Like '%UTF8' And Name Like '%Latin1_%' And Name Like '%_BIN2_%'";
             return cnn.ExecuteScalar<string>(sqlGetOptimizedCollationName);
         }
