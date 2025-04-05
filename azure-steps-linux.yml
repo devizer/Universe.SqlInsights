@@ -177,6 +177,9 @@ steps:
       # --privileged --privileged --privileged --privileged --privileged --privileged --privileged --privileged
       docker run --privileged --pull never --restart on-failure:666 --name sqlserver $v -v /mnt/ergo-fab-tests:/mnt/ergo-fab-tests -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@assw0rd!" -p 1433:1433 -d "$img"
       docker exec -t sqlserver mkdir -p /tmp/SqlInsights-Traces
+      docker exec -t sqlserver chmod 777 /tmp/SqlInsights-Traces
+      docker exec -t sqlserver ls -la /tmp/SqlInsights-Traces
+
 
       export SQL_SERVER_CONTAINER_NAME=sqlserver # Add SqlCmd to Path for Linux Container and Wait for
       password='p@assw0rd!'
