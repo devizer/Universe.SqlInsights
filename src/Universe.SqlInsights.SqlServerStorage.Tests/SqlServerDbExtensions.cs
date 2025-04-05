@@ -20,7 +20,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                     var migrations = new SqlServerSqlInsightsMigrations(SqlClientFactory.Instance, connectionString);
                     var optimizedCollation = migrations.GetOptimizedCollation(con);
                     string sqlCollation = string.IsNullOrEmpty(optimizedCollation) ? "" : $"COLLATE {optimizedCollation}";
-                    string sql = $@"CREATE DATABASE [{db}] {sqlCollation}";
+                    string sql = $@"CREATE DATABASE [{db}]";
                     if (!string.IsNullOrEmpty(dbDataDir))
                     {
                         CreateDirectory(dbDataDir);
@@ -29,9 +29,12 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                         Directory.CreateDirectory(dbDataDir);
                         sql += $@"
 ON (NAME = [{db}_dat], FILENAME = '{datFile}', SIZE = {initialDataSize}MB, FILEGROWTH = 8MB) 
-LOG ON (NAME = [{db}_log], FILENAME = '{logFile}', SIZE = {initialLogSize}MB, FILEGROWTH = 8MB ); 
+LOG ON (NAME = [{db}_log], FILENAME = '{logFile}', SIZE = {initialLogSize}MB, FILEGROWTH = 8MB )
 ";
                     }
+
+                    if (!string.IsNullOrEmpty(sqlCollation)) sql += sqlCollation;
+                    sql += ";";
  
                     Console.WriteLine($"Creating New Storage Database {db}{Environment.NewLine}{sql}{Environment.NewLine}");
                     con.Execute(sql);
