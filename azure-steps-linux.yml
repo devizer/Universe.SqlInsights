@@ -175,7 +175,7 @@ steps:
       sudo chmod 777 -R /mnt/ergo-fab-tests
 
       # --privileged --privileged --privileged --privileged --privileged --privileged --privileged --privileged
-      $v="$v -v /tmp/SqlInsights-Traces:/tmp/SqlInsights-Traces"
+      v="$v -v /tmp/SqlInsights-Traces:/tmp/SqlInsights-Traces"
       mkdir -p /tmp/SqlInsights-Traces
       sudo chmod 777 -R /tmp/SqlInsights-Traces
       docker run --privileged --pull never --restart on-failure:666 --name sqlserver $v -v /mnt/ergo-fab-tests:/mnt/ergo-fab-tests -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@assw0rd!" -p 1433:1433 -d "$img"
