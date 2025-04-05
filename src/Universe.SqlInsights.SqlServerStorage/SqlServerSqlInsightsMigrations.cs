@@ -302,7 +302,7 @@ End
                     }
                 }
 
-                Logs.AppendLine($" * Database default collation is {con.Manage().CurrentDatabase.DefaultCollationName}");
+                Logs.AppendLine($" * Database [{GetDatabaseName()}] default collation is {con.Manage().CurrentDatabase.DefaultCollationName}");
                 Logs.Append($" * Done! Migration successfully invoked {sqlMigrations.Count} commands");
             }
         }
@@ -312,6 +312,12 @@ End
         {
             var sqlGetOptimizedCollationName = "Select Top 1 Name From fn_helpcollations() Where Name Like '%UTF8' And Name Like '%Latin1_%' And Name Like '%_BIN2_%'";
             return cnn.ExecuteScalar<string>(sqlGetOptimizedCollationName);
+        }
+
+        private string GetDatabaseName()
+        {
+            SqlConnectionStringBuilder master = new SqlConnectionStringBuilder(ConnectionString);
+            return master.InitialCatalog;
         }
 
         // Public for Tests only
