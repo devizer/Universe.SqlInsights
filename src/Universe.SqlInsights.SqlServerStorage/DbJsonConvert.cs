@@ -28,7 +28,7 @@
         }
     }
 
-#if !NETSTANDARD2_0 && !NET461 && !NET5_0
+#if !NETSTANDARD2_0 && !NET461 && !NET5_0 && !NET5_0_OR_GREATER
     public class DbJsonConvert : DbJsonConvertLegacy
     {
     }
