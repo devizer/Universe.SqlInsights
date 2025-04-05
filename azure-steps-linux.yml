@@ -85,7 +85,7 @@ steps:
       Say "Final $(pwd)/daemon.json"
       cat $(pwd)/daemon.json
       sudo systemctl restart docker
-    condition: succeededOrFailed()
+    condition: false() # succeededOrFailed()
     displayName: 'Tune Docker data-root'
 
   - task: DownloadPipelineArtifact@2
