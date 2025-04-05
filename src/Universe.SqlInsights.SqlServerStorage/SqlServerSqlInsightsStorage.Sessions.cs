@@ -53,8 +53,9 @@ Select 1 [Any]";
         }
 
 
-#if NETSTANDARD || NET5_0 || NET461
-        
+        // W3API Only
+#if NETSTANDARD || NET5_0 || NET461 || NET5_0_OR_GREATER
+
         public async Task<IEnumerable<SqlInsightsSession>> GetSessions()
         {
             const string sql = "Select IdSession, StartedAt, EndedAt, IsFinished, Caption, MaxDurationMinutes From SqlInsightsSession";

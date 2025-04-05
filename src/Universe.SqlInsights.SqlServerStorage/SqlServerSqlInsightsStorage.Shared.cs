@@ -74,7 +74,7 @@ namespace Universe.SqlInsights.SqlServerStorage
         }
 
 
-#if NETSTANDARD || NET5_0 || NET461
+#if NETSTANDARD || NET5_0 || NET461 || NET5_0_OR_GREATER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         static UInt64? RowVersion2Int64(byte[] binaryVersion)
@@ -97,7 +97,8 @@ namespace Universe.SqlInsights.SqlServerStorage
             return null;
         }
 
-#if NETSTANDARD || NET5_0 || NET461
+        // W3API Only
+#if NETSTANDARD || NET5_0 || NET461 || NET5_0_OR_GREATER
         class SelectVersionResult
         {
             public byte[] Version { get; set; }

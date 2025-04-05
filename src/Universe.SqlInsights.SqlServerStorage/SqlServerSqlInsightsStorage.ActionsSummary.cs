@@ -8,10 +8,11 @@ using Universe.SqlInsights.Shared;
 
 namespace Universe.SqlInsights.SqlServerStorage
 {
+    // W3API Only
     partial class SqlServerSqlInsightsStorage 
     {
-#if NETSTANDARD || NET5_0 || NET461
-        
+#if NETSTANDARD || NET5_0 || NET461 || NET5_0_OR_GREATER
+
         class SelectKeyAndDataResult
         {
             public string KeyPath { get; set; }

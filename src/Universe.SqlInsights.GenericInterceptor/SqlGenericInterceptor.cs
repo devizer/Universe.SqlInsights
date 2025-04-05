@@ -101,9 +101,8 @@ namespace Universe.SqlInsights.GenericInterceptor
                     }
                 }
 
-                // TODO: Implement 'isPoolingOn' (cached) and 'dbConnection' (opened?)   
-                bool isPoolingOn = false;
-                if (isPoolingOn)
+                bool needCleanUpPoolForDebug = false;
+                if (needCleanUpPoolForDebug)
                 {
                     IDbConnection dbConnection = null;
 #if HAS_MICROSOFT_DATA_SQLCLIENT

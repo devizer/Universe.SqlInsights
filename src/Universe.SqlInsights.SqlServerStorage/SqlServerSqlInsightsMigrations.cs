@@ -312,7 +312,7 @@ End
         {
             // Create Trace fails if Latin1_General_100_BIN2_UTF8 collation
             // But work with Latin1_General_100_CI_AS_SC_UTF8
-            // FYI: SQL_Latin1_General_CP1_CI_A is default collation
+            // FYI: SQL_Latin1_General_CP1_CI_AS is default collation
             // return null;
             var sqlGetOptimizedCollationName = "Select Top 1 Name From fn_helpcollations() Where Name = 'Latin1_General_100_CI_AS_SC_UTF8'";
             return cnn.ExecuteScalar<string>(sqlGetOptimizedCollationName);

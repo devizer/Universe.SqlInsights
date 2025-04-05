@@ -1,6 +1,6 @@
 . .\Includes.ps1
 $NUnit_Pipeline_Revision=212
-$This_SqlIsnights_Version_Base="0.4.4"
+$This_SqlIsnights_Version_Base="0.4.6"
 $nunit_versions = @(
   "3.7.0",
   "3.7.1",
@@ -37,8 +37,8 @@ write-host "Commit Count: $Commit_Count"
 $Work_Base="W:\Build\Universe.SqlInsights"
 Remove-Item -Recurse -Force "$Work_Base" -EA SilentlyContinue | Out-Null
 New-Item "$Work_Base" -Force -ItemType Container -EA SilentlyContinue | Out-Null
-& git.exe clone https://github.com:/devizer/Universe.SqlInsights "$Work_Base\base"
-# Remove-Item -Recurse -Force "$Work_Base\base\.git" -EA SilentlyContinue | Out-Null
+& git.exe clone https://github.com:/devizer/Universe.SqlInsights "$Work_Base\Source"
+# Remove-Item -Recurse -Force "$Work_Base\Source\.git" -EA SilentlyContinue | Out-Null
 
 $csprojs = @(Get-ChildItem -Path "$Work_Base" -Filter "*.csproj" -Recurse)
 foreach($csproj in $csprojs) {
@@ -52,8 +52,8 @@ $buildCount = $projects.Length * $nunit_versions.Count
 foreach($NUnit_Version in $nunit_versions) {
   $work="$Work_Base\$NUnit_Version"
   New-Item "$work" -Force -ItemType Container -EA SilentlyContinue | Out-Null
-  Copy-Item "$Work_Base\base" -Filter *.* -Destination "$work" -Recurse | out-null
-  pushd "$work\base"
+  Copy-Item "$Work_Base\Source" -Filter *.* -Destination "$work" -Recurse | out-null
+  pushd "$work\Source"
   foreach($project in $projects) {
     $buildIndex++;
     Write-Host "$(Get-Elapsed) $BuildIndex of $($buildCount): $nunit_Version $project" -ForegroundColor Magenta
