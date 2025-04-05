@@ -36,7 +36,7 @@ LOG ON (NAME = [{db}_log], FILENAME = '{logFile}', SIZE = {initialLogSize}MB, FI
                     if (!string.IsNullOrEmpty(sqlCollation)) sql += sqlCollation;
                     sql += ";";
  
-                    Console.WriteLine($"Creating New Storage Database {db}{Environment.NewLine}{sql}{Environment.NewLine}");
+                    Console.WriteLine($"Creating New Storage Database [{db}]{Environment.NewLine}{sql}{Environment.NewLine}");
                     con.Execute(sql);
                     con.Execute($"Alter Database [{db}] Set Recovery Simple;");
                 }
