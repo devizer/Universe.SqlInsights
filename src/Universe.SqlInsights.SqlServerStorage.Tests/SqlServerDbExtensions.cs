@@ -20,6 +20,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                     var migrations = new SqlServerSqlInsightsMigrations(SqlClientFactory.Instance, connectionString);
                     var optimizedCollation = migrations.GetOptimizedCollation(con);
                     string sqlCollation = string.IsNullOrEmpty(optimizedCollation) ? "" : $" COLLATE {optimizedCollation}";
+                    sqlCollation = null;
                     string sql = $@"CREATE DATABASE [{db}]";
                     if (!string.IsNullOrEmpty(dbDataDir))
                     {
