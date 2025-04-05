@@ -310,8 +310,10 @@ End
         // public for Tests only
         public string GetOptimizedCollation(IDbConnection cnn)
         {
-            return null;
-            var sqlGetOptimizedCollationName = "Select Top 1 Name From fn_helpcollations() Where Name Like '%UTF8' And Name Like '%Latin1_%' And Name Like '%_BIN2_%'";
+            // Create Trace fails if Latin1_General_100_BIN2_UTF8 collation
+            // But work with Latin1_General_100_CI_AS_SC_UTF8
+            // return null;
+            var sqlGetOptimizedCollationName = "Select Top 1 Name From fn_helpcollations() Where Name = 'Latin1_General_100_CI_AS_SC_UTF8'";
             return cnn.ExecuteScalar<string>(sqlGetOptimizedCollationName);
         }
 
