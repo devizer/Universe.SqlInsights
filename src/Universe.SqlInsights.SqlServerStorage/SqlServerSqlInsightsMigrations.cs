@@ -56,7 +56,7 @@ namespace Universe.SqlInsights.SqlServerStorage
             if (DisableMemoryOptimizedTables) supportMOT = false;
 
             var optimizedCollation = GetOptimizedCollation(cnn);
-            Logs.AppendLine($" * Optimized Collation: {(string.IsNullOrEmpty(optimizedCollation) ? ">not supported, using default<" : $"'{optimizedCollation}'")}");
+            Logs.AppendLine($" * Size-Optimized Collation: {(string.IsNullOrEmpty(optimizedCollation) ? ">not supported, using default<" : $"'{optimizedCollation}'")}");
             string legacyKeyPathType = "nvarchar(450)";
             string optimizedKeyPathType = $"varchar(880) Collate {optimizedCollation}";
             var sqlKeyPathType = string.IsNullOrEmpty(optimizedCollation) ? legacyKeyPathType : optimizedKeyPathType;
