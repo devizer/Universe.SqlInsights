@@ -46,8 +46,9 @@ New-Item "$Work_Base" -Force -ItemType Container -EA SilentlyContinue | Out-Null
 Write-Host "Remove net framework projects"
 pushd "$Work_Base\Source\src"
 ls 
-& dotnet sln Universe.SqlInsights.sln remove AdventureWorks.csproj
-& dotnet sln Universe.SqlInsights.sln remove AdventureWorks.HeadlessTests.csproj
+& dotnet sln Universe.SqlInsights.sln remove AdventureWorks\AdventureWorks.csproj
+& dotnet sln Universe.SqlInsights.sln remove AdventureWorks.HeadlessTests\AdventureWorks.HeadlessTests.csproj
+& dotnet sln Universe.SqlInsights.sln remove AdventureWorks.Tests\AdventureWorks.Tests.csproj
 popd
 
 $csprojs = @(Get-ChildItem -Path "$Work_Base" -Filter "*.csproj" -Recurse)
