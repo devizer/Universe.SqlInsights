@@ -25,6 +25,8 @@ $nunit_versions = @(
 )
 $Full_NUnit_Version = "3.14.0"
 
+$sed="C:\Apps\Git\usr\bin\sed.exe"; if (-Not (test-Path $sed)) { $sed="sed.exe"; }
+Write-Host "sed is [$sed]"
 
 
 # $nunit_versions = @("3.13.2", "4.2.2");

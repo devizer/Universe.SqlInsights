@@ -20,7 +20,7 @@ jobs:
           Say "CPU: $(Get-CpuName)"
           export SQLINSIGHTS_NUGET_BUILDER_FOLDER='C:\Build'
           cd scripts
-          pwsh -f Build-NuGET-Array.ps1
+          powershell -f Build-NuGET-Array.ps1
           ls -la "$SQLINSIGHTS_NUGET_BUILDER_FOLDER"
           cp -v "$SQLINSIGHTS_NUGET_BUILDER_FOLDER"/*.nupkg "$SYSTEM_ARTIFACTSDIRECTORY"
         retryCountOnTaskFailure: 3
