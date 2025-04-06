@@ -1,7 +1,7 @@
 & dotnet --list-sdks | Sort -Descending
 . .\Includes.ps1
 $NUnit_Pipeline_Revision=212
-$This_SqlIsnights_Version_Base="0.4.7"
+$This_SqlIsnights_Version_Base="0.4.8"
 $nunit_versions = @(
   "3.7.0",
   "3.7.1",
@@ -50,6 +50,8 @@ ls
 & dotnet sln Universe.SqlInsights.sln remove AdventureWorks\AdventureWorks.csproj
 & dotnet sln Universe.SqlInsights.sln remove AdventureWorks.HeadlessTests\AdventureWorks.HeadlessTests.csproj
 & dotnet sln Universe.SqlInsights.sln remove AdventureWorks.Tests\AdventureWorks.Tests.csproj
+& dotnet sln Universe.SqlInsights.sln remove Universe.SqlInsights.SqlServerStorage.Tests\Universe.SqlInsights.SqlServerStorage.Tests.csproj
+& dotnet sln Universe.SqlInsights.sln remove Universe.SqlInsights.W3Api.Client.Tests\Universe.SqlInsights.W3Api.Client.Tests.csproj
 # Say "PARALLEL RESTORE"
 # & dotnet restore Universe.SqlInsights.sln -v:q
 popd
