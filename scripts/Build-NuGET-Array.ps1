@@ -43,6 +43,13 @@ New-Item "$Work_Base" -Force -ItemType Container -EA SilentlyContinue | Out-Null
 & git clone https://github.com:/devizer/Universe.SqlInsights "$Work_Base\Source"
 # Remove-Item -Recurse -Force "$Work_Base\Source\.git" -EA SilentlyContinue | Out-Null
 
+Write-Host "Remove net framework projects"
+pushd "$Work_Base\Source\src"
+ls 
+& dotnet sln Universe.SqlInsights.sln remove AdventureWorks.csproj
+& dotnet sln Universe.SqlInsights.sln remove AdventureWorks.HeadlessTests.csproj
+popd
+
 $csprojs = @(Get-ChildItem -Path "$Work_Base" -Filter "*.csproj" -Recurse)
 foreach($csproj in $csprojs) {
   Write-Host "Patch $($csproj.FullName) as version $($This_SqlIsnights_Version)"
@@ -59,7 +66,7 @@ foreach($NUnit_Version in $nunit_versions) {
   pushd "$work\Source"
   foreach($project in $projects) {
     $buildIndex++;
-    Write-Host "$(Get-Elapsed) $BuildIndex of $($buildCount): $nunit_Version $project" -ForegroundColor Magenta
+    Write-Host "$([Environment]::NewLine)$(Get-Elapsed) $BuildIndex of $($buildCount): $nunit_Version $project" -ForegroundColor Magenta
     $This_NUnit_Version = "$NUnit_Version.$Commit_Count"
     write-host "THIS VERSION: $This_NUnit_Version"
 
