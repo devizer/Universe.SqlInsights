@@ -5,7 +5,7 @@
 	<Import Project="..\Shared-Files\Microsoft.Data.SqlClient.proj" />
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net35;net40;net45;net461;netstandard1.3;net5.0;net6.0</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;net35;net40;net45;net461;netstandard1.3;net5.0;net6.0;net8.0;</TargetFrameworks>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<Nullable>disable</Nullable>
 	</PropertyGroup>

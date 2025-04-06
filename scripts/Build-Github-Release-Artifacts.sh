@@ -9,7 +9,16 @@ function Filter-7z() {
   grep "archive\|bytes" || true;
 }
 
-pushd src/Universe.SqlInsights.W3Api
+pushd src
+Say "Remove 8.0, 9.0, and 10.0 Targets"
+find . -name "*.csproj" | while IFS='' read -r csproj; do
+  sed -i 's/net8.0;//g'  "$csproj"
+  sed -i 's/net9.0;//g'  "$csproj"
+  sed -i 's/net10.0;//g' "$csproj"
+  echo ""; echo "FINAL [$csproj]"
+  cat "$csproj"
+done
+cd Universe.SqlInsights.W3Api
 public=$(pwd)/bin/public
 mkdir -p "$public"
 echo "$SQLINSIGHTS_VERSION" > "$public"/VERSION.txt
