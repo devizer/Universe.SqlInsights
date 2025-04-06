@@ -15,6 +15,11 @@ jobs:
       vmImage: "windows-latest"
     steps:
 
+      - powershell: |
+          iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
+        retryCountOnTaskFailure: 3
+        displayName: "Bootstrap Module"
+
       - bash: |
           script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
           Say "CPU: $(Get-CpuName)"
