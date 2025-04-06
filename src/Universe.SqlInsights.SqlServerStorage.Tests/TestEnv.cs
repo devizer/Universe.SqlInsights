@@ -12,7 +12,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
     {
         // private string ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Database=SqlServerSqlInsightsStorage_Tests; Integrated Security=SSPI";
         // private static readonly string TheConnectionString = "Data Source=(local);Database=SqlServerSqlInsightsStorage_Tests; Integrated Security=SSPI";
-        public static string TheConnectionString => string.IsNullOrEmpty(OptionalDbConnectionString) ? "Data Source=(local);Integrated Security=SSPI;TrustServerCertificate=True" : OptionalDbConnectionString;
+        public static string TheConnectionString => string.IsNullOrEmpty(OptionalDbConnectionString) ? "Data Source=(local);Integrated Security=SSPI;TrustServerCertificate=True;Pooling=true;Encrypt=False;" : OptionalDbConnectionString;
         
         public static readonly string DbNamePattern = "SqlInsights {0} Tests for {1}";
 

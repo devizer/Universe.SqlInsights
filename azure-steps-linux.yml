@@ -274,7 +274,7 @@ steps:
       
       Say "CPU: $(Get-CpuName)"
       cd src/Universe.SqlInsights.SqlServerStorage.Tests
-      export SQLINSIGHTS_CONNECTION_STRING="TrustServerCertificate=True;Data Source=localhost,1433;User ID=sa;Password=p@assw0rd!"
+      export SQLINSIGHTS_CONNECTION_STRING="TrustServerCertificate=True;Data Source=localhost,1433;User ID=sa;Password=p@assw0rd!;Pooling = true; Encrypt=false"
       export TEST_CONFIGURATION="DISK";
       export TEST_CPU_NAME="$(Get-CpuName --name-only)"
       test -s /etc/os-release && . /etc/os-release; export OS="${ID:-}-${VERSION_ID:-}"; Say "OS: '$OS'"
