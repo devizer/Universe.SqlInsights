@@ -50,8 +50,8 @@ ls
 & dotnet sln Universe.SqlInsights.sln remove AdventureWorks\AdventureWorks.csproj
 & dotnet sln Universe.SqlInsights.sln remove AdventureWorks.HeadlessTests\AdventureWorks.HeadlessTests.csproj
 & dotnet sln Universe.SqlInsights.sln remove AdventureWorks.Tests\AdventureWorks.Tests.csproj
-Say "PARALLEL RESTORE"
-& dotnet restore Universe.SqlInsights.sln -v:q
+# Say "PARALLEL RESTORE"
+# & dotnet restore Universe.SqlInsights.sln -v:q
 popd
 
 $csprojs = @(Get-ChildItem -Path "$Work_Base" -Filter "*.csproj" -Recurse)
@@ -81,7 +81,7 @@ foreach($NUnit_Version in $nunit_versions) {
     pushd src\$project
     & "$sed" "-i", "-E", "s|<TargetFrameworks>.*</TargetFrameworks>|<TargetFrameworks>$TARGET_FRAMEWORKS_LIB</TargetFrameworks>|" "$($project).csproj"
     & dotnet remove package Universe.NUnitPipeline
-    & dotnet add package Universe.NUnitPipeline -v "$nunit_Version.$NUnit_Pipeline_Revision"
+    & dotnet add package Universe.NUnitPipeline -v "$nunit_Version.$NUnit_Pipeline_Revision" --no-restore
     Set-CS-Project-Version "$PWD\$($project).csproj" "$This_NUnit_Version"
     & { dotnet "build", "-c", "Release" 2>&1 } *| tee "..\..\..\$nunit_Version-$($project)-build.log"
     if ($nunit_Version -eq $Full_NUnit_Version) {

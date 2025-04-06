@@ -33,7 +33,7 @@ jobs:
 
       - task: PublishBuildArtifacts@1
         condition: succeededOrFailed()
-        displayName: 'Publish'
+        displayName: 'Publish NuGet Array'
         inputs:
           pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)'
           artifactName: 'NuGet Array'
