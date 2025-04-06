@@ -23,6 +23,7 @@ jobs:
          Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
 
          # Remove .NET 9.0 SDK 
+         sudo rm -rf /usr/share/dotnet
          export SKIP_DOTNET_DEPENDENCIES=True
          export DOTNET_TARGET_DIR=/usr/share/dotnet
          export DOTNET_VERSIONS="6.0 8.0"
