@@ -1,3 +1,4 @@
+& dotnet --list-sdks | Sort -Descending
 . .\Includes.ps1
 $NUnit_Pipeline_Revision=212
 $This_SqlIsnights_Version_Base="0.4.7"
