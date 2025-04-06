@@ -61,7 +61,10 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
                 PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Created Backup for test DB '{newDbName}' as '{databaseBackupInfo.BackupPoint}' (Caching key is '{cacheKey}')");
                 if (savedDatabaseName != null)
                 {
-                    // TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO: Force Drop savedDatabaseName
+                    // First. Force Drop savedDatabaseName ...
+                    var savedDbConnectionString = sqlServerTestDbManager.BuildConnectionString(savedDatabaseName);
+                    AgileDbKiller.Kill(savedDbConnectionString, false, 1);
+                    // .. And Restore it from newly created backup
                     await sqlServerTestDbManager.RestoreBackup(databaseBackupInfo, savedDatabaseName);
                     PipelineLog.LogTrace(
                         $"[SeededDatabaseFactory.BuildDatabase] Restored Reference Test DB '{savedDatabaseName}' from '{databaseBackupInfo.BackupPoint}' (Caching key is '{cacheKey}')");

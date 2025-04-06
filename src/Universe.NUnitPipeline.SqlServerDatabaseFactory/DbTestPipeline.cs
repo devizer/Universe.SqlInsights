@@ -39,9 +39,9 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
                     testDbConnectionString.ConnectionString = connectionString;
                     PipelineLog.LogTrace($"[DbTestPipeline.OnStart] Test='{test.Name}' Database {testDbName}. Created. Connection String is '{connectionString}' Applying Migration and Seed '{testDbConnectionString.ManagedBy.Title}'");
 
-                    SeededDatabaseFactory seedEfFactory = new SeededDatabaseFactory(sqlServerTestsConfiguration);
+                    SeededDatabaseFactory seededDatabaseFactory = new SeededDatabaseFactory(sqlServerTestsConfiguration);
                     IDbConnectionString dbcs =
-                        seedEfFactory.BuildDatabase(
+                        seededDatabaseFactory.BuildDatabase(
                             testDbConnectionString.ManagedBy.CacheKey,
                             testDbName,
                             testDbConnectionString.ManagedBy.Title,
