@@ -38,7 +38,7 @@ $Work_Base="$ENV:SQLINSIGHTS_NUGET_BUILDER_FOLDER"
 if (-not $Work_Base) { $Work_Base="W:\Build\Universe.SqlInsights"; }
 Remove-Item -Recurse -Force "$Work_Base" -EA SilentlyContinue | Out-Null
 New-Item "$Work_Base" -Force -ItemType Container -EA SilentlyContinue | Out-Null
-& git.exe clone https://github.com:/devizer/Universe.SqlInsights "$Work_Base\Source"
+& git clone https://github.com:/devizer/Universe.SqlInsights "$Work_Base\Source"
 # Remove-Item -Recurse -Force "$Work_Base\Source\.git" -EA SilentlyContinue | Out-Null
 
 $csprojs = @(Get-ChildItem -Path "$Work_Base" -Filter "*.csproj" -Recurse)
