@@ -66,7 +66,7 @@ function Set-Target-Version-for-NUnit-Version([string] $NUnit_Version) {
   else {
       # v4.x
       $forced="net46;net462;net48;net6.0;net8.0"
-      $GLOBAL:TARGET_FRAMEWORKS_LIB="net462;net6.0";
+      $GLOBAL:TARGET_FRAMEWORKS_LIB="net462;net6.0;net8.0";
       $GLOBAL:TARGET_FRAMEWORKS_TEST="net8.0;net6.0;net48;net462";
   }
 }
