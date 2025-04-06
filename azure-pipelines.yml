@@ -12,7 +12,7 @@ jobs:
   - job: Build_Nuget_Array
     displayName: 'Build NuGet Array'
     pool:
-      vmImage: "ubuntu-24.04"
+      vmImage: "windows-latest"
     steps:
 
       - bash: |
