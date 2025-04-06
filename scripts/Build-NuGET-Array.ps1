@@ -68,7 +68,7 @@ foreach($NUnit_Version in $nunit_versions) {
     Write-Host "TARGET_FRAMEWORKS_TEST: $($TARGET_FRAMEWORKS_TEST)" -ForegroundColor Magenta
 
     pushd src\$project
-    & C:\Apps\Git\usr\bin\sed.exe "-i", "-E", "s|<TargetFrameworks>.*</TargetFrameworks>|<TargetFrameworks>$TARGET_FRAMEWORKS_LIB</TargetFrameworks>|" "$($project).csproj"
+    & "$sed" "-i", "-E", "s|<TargetFrameworks>.*</TargetFrameworks>|<TargetFrameworks>$TARGET_FRAMEWORKS_LIB</TargetFrameworks>|" "$($project).csproj"
     & dotnet remove package Universe.NUnitPipeline
     & dotnet add package Universe.NUnitPipeline -v "$nunit_Version.$NUnit_Pipeline_Revision"
     Set-CS-Project-Version "$PWD\$($project).csproj" "$This_NUnit_Version"
