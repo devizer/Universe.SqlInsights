@@ -6,7 +6,7 @@
     <PropertyGroup>
         <!-- net35;net40;net45; -->
         <!-- System.Text.Json 6.0.7 starts from net 4.6.1 -->
-        <TargetFrameworks>netstandard2.0;net35;net40;net45;net461;netstandard1.3;net5.0;net6.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0;net35;net40;net45;net461;netstandard1.3;net5.0;net6.0</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net461' Or '$(TargetFramework)' == 'netstandard2.0' ">
