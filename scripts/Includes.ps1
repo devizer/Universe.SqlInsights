@@ -1,11 +1,15 @@
 function Set-CS-Project-Version([string] $csproj, [string]$version) {
   $raw = Get-Content -Raw $csproj
-  if ($raw.IndexOf("http://schemas.microsoft.com/developer/msbuild/2003") -ge 0) { return; }
+  if ($raw.IndexOf("http://schemas.microsoft.com/developer/msbuild/2003") -ge 0) { 
+    Write-Host "Skip Legacy Project '$csproj' patching as version '$version'"
+    return; 
+  }
   $lines = @(Get-Content $csproj)
   $lines = @($lines | ? { -not ($_ -match "<PackageVersion>" -or $_ -match "<Version>") })
   $newLine = "<!-- Auto Generated --> <PropertyGroup><PackageVersion>$version</PackageVersion><Version>$version</Version></PropertyGroup> <!-- Auto Generated -->"
   $newLines = @($lines[0]) + @($newLine) + @($lines[1..($lines.Count-1)])
   Write-All-Text "$csproj" ($newLines -join "`r`n")
+  Write-Host "Done: Patch Project '$csproj' as version '$version'"
   # Write-Host "[$($csproj)] at [$PWD]`r`n $($newLines -join "`r`n")"
 }
 
