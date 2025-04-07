@@ -29,7 +29,7 @@ $nunit_versions = @(
 )
 $Full_NUnit_Version = "3.14.0"
 
-$sed="C:\Apps\Git\usr\bin\sed.exe"; if (-Not (test-Path $sed)) { $sed="sed.exe"; }
+$sed="C:\Apps\Git\usr\bin\sed.exe"; if (-Not (test-Path $sed)) { $sed="sed"; }
 Write-Host "sed is [$sed]"
 
 
@@ -44,16 +44,17 @@ $Work_Base="$ENV:SQLINSIGHTS_NUGET_BUILDER_FOLDER"
 if (-not $Work_Base) { $Work_Base="W:\Build\Universe.SqlInsights"; }
 Remove-Item -Recurse -Force "$Work_Base" -EA SilentlyContinue | Out-Null
 New-Item "$Work_Base" -Force -ItemType Container -EA SilentlyContinue | Out-Null
-& git clone https://github.com:/devizer/Universe.SqlInsights "$Work_Base\Source"
+$DS="$([System.IO.Path]::DirectorySeparatorChar)"
+& git clone https://github.com:/devizer/Universe.SqlInsights "$($Work_Base)$($DS)Source"
 # Remove-Item -Recurse -Force "$Work_Base\Source\.git" -EA SilentlyContinue | Out-Null
 
 Say "REMOVING net framework projects"
 pushd "$Work_Base\Source\src"
-& dotnet sln Universe.SqlInsights.sln remove AdventureWorks\AdventureWorks.csproj
-& dotnet sln Universe.SqlInsights.sln remove AdventureWorks.HeadlessTests\AdventureWorks.HeadlessTests.csproj
-& dotnet sln Universe.SqlInsights.sln remove AdventureWorks.Tests\AdventureWorks.Tests.csproj
-& dotnet sln Universe.SqlInsights.sln remove Universe.SqlInsights.SqlServerStorage.Tests\Universe.SqlInsights.SqlServerStorage.Tests.csproj
-& dotnet sln Universe.SqlInsights.sln remove Universe.SqlInsights.W3Api.Client.Tests\Universe.SqlInsights.W3Api.Client.Tests.csproj
+& dotnet sln Universe.SqlInsights.sln remove AdventureWorks$($DS)AdventureWorks.csproj
+& dotnet sln Universe.SqlInsights.sln remove AdventureWorks.HeadlessTests$($DS)AdventureWorks.HeadlessTests.csproj
+& dotnet sln Universe.SqlInsights.sln remove AdventureWorks.Tests$($DS)AdventureWorks.Tests.csproj
+& dotnet sln Universe.SqlInsights.sln remove Universe.SqlInsights.SqlServerStorage.Tests$($DS)Universe.SqlInsights.SqlServerStorage.Tests.csproj
+& dotnet sln Universe.SqlInsights.sln remove Universe.SqlInsights.W3Api.Client.Tests$($DS)Universe.SqlInsights.W3Api.Client.Tests.csproj
 Say "PARALLEL RESTORE"
 & dotnet restore Universe.SqlInsights.sln -v:q
 popd
@@ -69,10 +70,10 @@ foreach($csproj in $csprojs) {
 $buildIndex = 0;
 $buildCount = $projects.Length * $nunit_versions.Count
 foreach($NUnit_Version in $nunit_versions) {
-  $work="$Work_Base\$NUnit_Version"
+  $work="$Work_Base$($DS)$NUnit_Version"
   New-Item "$work" -Force -ItemType Container -EA SilentlyContinue | Out-Null
-  Copy-Item "$Work_Base\Source" -Filter *.* -Destination "$work" -Recurse | out-null
-  pushd "$work\Source"
+  Copy-Item "$Work_Base$($DS)Source" -Filter *.* -Destination "$work" -Recurse | out-null
+  pushd "$work$($DS)Source"
   foreach($project in $projects) {
     $buildIndex++;
     Write-Host "";
@@ -85,13 +86,13 @@ foreach($NUnit_Version in $nunit_versions) {
     Write-Host "TARGET_FRAMEWORKS_TEST: $($TARGET_FRAMEWORKS_TEST)" -ForegroundColor Magenta
 
     $currentNUnitPipelineVersion = "$NUnit_Version.$NUnit_Pipeline_Revision"
-    pushd src\$project
+    pushd "src$($DS)$project"
     & "$sed" "-i", "-E", "s|<TargetFrameworks>.*</TargetFrameworks>|<TargetFrameworks>$TARGET_FRAMEWORKS_LIB</TargetFrameworks>|" "$($project).csproj"
     Write-Host "REFERENCE Universe.NUnitPipeline VERSION [$nunit_Version.$NUnit_Pipeline_Revision]"
     & dotnet remove package Universe.NUnitPipeline
     & dotnet add package Universe.NUnitPipeline -v "$nunit_Version.$NUnit_Pipeline_Revision" --no-restore
-    Set-CS-Project-Version "$PWD\$($project).csproj" "$This_NUnit_Version"
-    Try-And-Retry "Build $project $This_NUnit_Version" { & { dotnet "build", "-c", "Release" 2>&1 } *| tee "..\..\..\$nunit_Version-$($project)-build.log" }
+    Set-CS-Project-Version "$PWD$($DS)$($project).csproj" "$This_NUnit_Version"
+    Try-And-Retry "Build $project $This_NUnit_Version" { & { dotnet "build", "-c", "Release" 2>&1 } *| tee "..$($DS)..$($DS)..$($DS)$nunit_Version-$($project)-build.log" }
     if ($nunit_Version -eq $Full_NUnit_Version) {
       cd ..
       & dotnet build "-c" Release
@@ -105,6 +106,6 @@ foreach($NUnit_Version in $nunit_versions) {
 Write-Host "$(Get-Elapsed) Finish" -ForegroundColor Magenta
 $nupkgs = @(Get-ChildItem -Path "$Work_Base" -Filter "*.nupkg" -Recurse)
 Write-Host "Copying $($nupkgs.Length) nupkg-files"
-$nupkgs | Copy-Item -Destination "$Work_Base\"
+$nupkgs | Copy-Item -Destination "$Work_Base$($DS)"
 
 Write-Host "Reminder: Do NOT publish [Universe.SqlInsights.W3Api.Client.*.nupkg]" -ForegroundColor Yellow
