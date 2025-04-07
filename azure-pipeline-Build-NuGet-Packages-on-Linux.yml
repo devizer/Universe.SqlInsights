@@ -1,6 +1,6 @@
 steps:
 
-      - powershell: |
+      - pwsh: |
           iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
         retryCountOnTaskFailure: 3
         displayName: "Bootstrap Module"
