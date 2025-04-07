@@ -15,7 +15,7 @@ steps:
           cd scripts
           pwsh -f Build-NuGET-Array.ps1
           ls -la "$SQLINSIGHTS_NUGET_BUILDER_FOLDER"
-          cp -v "$SQLINSIGHTS_NUGET_BUILDER_FOLDER"/*.nupkg "$SYSTEM_ARTIFACTSDIRECTORY"
+          cp -v "$SQLINSIGHTS_NUGET_BUILDER_FOLDER"/*nupkg "$SYSTEM_ARTIFACTSDIRECTORY"
           cp -v "$SQLINSIGHTS_NUGET_BUILDER_FOLDER"/*BUILD-LOG*.7z "$SYSTEM_ARTIFACTSDIRECTORY"
         retryCountOnTaskFailure: 3
         displayName: "BUILD NuGet Array (Linux)"
