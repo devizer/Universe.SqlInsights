@@ -105,7 +105,7 @@ foreach($NUnit_Version in $nunit_versions) {
 }
 
 Say "Finish"
-for($ext in @("nupkg", "snupkg")) {
+foreach($ext in @("nupkg", "snupkg")) {
   $nupkgs = @(Get-ChildItem -Path "$Work_Base" -Filter "*.$ext" -Recurse)
   Write-Host "Copying $($nupkgs.Length) (s)nupkg-files"
   $nupkgs | Copy-Item -Destination "$Work_Base$($DS)"
