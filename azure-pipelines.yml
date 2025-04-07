@@ -366,11 +366,11 @@ trigger:
     include:
     - main
   paths:
+    exclude:
+    - 'azure-pipelines-W3App-Docker-Image.yml'
+    - 'scripts/**'
     include:
     - '**'
     - 'scripts/Build-NuGET-Array.ps1'
     - 'scripts/Includes.ps1'
-    exclude:
-    - 'azure-pipelines-W3App-Docker-Image.yml'
-    - 'scripts/**'
 
