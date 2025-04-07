@@ -85,7 +85,7 @@ foreach($NUnit_Version in $nunit_versions) {
     & dotnet remove package Universe.NUnitPipeline
     & dotnet add package Universe.NUnitPipeline -v "$nunit_Version.$NUnit_Pipeline_Revision" --no-restore
     Set-CS-Project-Version "$PWD\$($project).csproj" "$This_NUnit_Version"
-    & { dotnet "build", "-c", "Release" 2>&1 } *| tee "..\..\..\$nunit_Version-$($project)-build.log"
+    Try-And-Retry { & { dotnet "build", "-c", "Release" 2>&1 } *| tee "..\..\..\$nunit_Version-$($project)-build.log" }
     if ($nunit_Version -eq $Full_NUnit_Version) {
       cd ..
       & dotnet build "-c" Release
