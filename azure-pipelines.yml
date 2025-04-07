@@ -9,12 +9,19 @@ variables:
 
 jobs:
 
-  - job: Build_Nuget_Array
-    displayName: 'Build NuGet Array'
+  - job: Build_Nuget_Array_on_Windows
+    displayName: 'Build NuGet Array (on Windows)'
     pool:
       vmImage: "windows-latest"
     steps:
-      - template: azure-pipeline-Build-NuGet-Packages.yml
+      - template: azure-pipeline-Build-NuGet-Packages-on-Windows.yml
+
+  - job: Build_Nuget_Array_on_Linux
+    displayName: 'Build NuGet Array (on Linux)'
+    pool:
+      vmImage: "windows-latest"
+    steps:
+      - template: azure-pipeline-Build-NuGet-Packages-on-Linux.yml
 
 
   - job: Build_W3_App

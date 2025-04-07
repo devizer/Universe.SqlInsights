@@ -14,11 +14,11 @@ steps:
           ls -la "$SQLINSIGHTS_NUGET_BUILDER_FOLDER"
           cp -v "$SQLINSIGHTS_NUGET_BUILDER_FOLDER"/*.nupkg "$SYSTEM_ARTIFACTSDIRECTORY"
         retryCountOnTaskFailure: 3
-        displayName: "BUILD NuGet Array"
+        displayName: "BUILD NuGet Array (Windows)"
 
       - task: PublishBuildArtifacts@1
         condition: succeededOrFailed()
         displayName: 'Publish NuGet Array'
         inputs:
           pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)'
-          artifactName: 'NuGet Array'
+          artifactName: 'NuGet Array (Built on Windows)'
