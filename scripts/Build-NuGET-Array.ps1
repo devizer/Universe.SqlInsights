@@ -81,8 +81,8 @@ foreach($NUnit_Version in $nunit_versions) {
 
     pushd src\$project
     & "$sed" "-i", "-E", "s|<TargetFrameworks>.*</TargetFrameworks>|<TargetFrameworks>$TARGET_FRAMEWORKS_LIB</TargetFrameworks>|" "$($project).csproj"
+    Write-Host "REFERENCE Universe.NUnitPipeline VERSION [$nunit_Version.$NUnit_Pipeline_Revision]"
     & dotnet remove package Universe.NUnitPipeline
-    Write-Host "Refer Universe.NUnitPipeline version [$nunit_Version.$NUnit_Pipeline_Revision]"
     & dotnet add package Universe.NUnitPipeline -v "$nunit_Version.$NUnit_Pipeline_Revision" --no-restore
     Set-CS-Project-Version "$PWD\$($project).csproj" "$This_NUnit_Version"
     & { dotnet "build", "-c", "Release" 2>&1 } *| tee "..\..\..\$nunit_Version-$($project)-build.log"
