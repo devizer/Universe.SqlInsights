@@ -41,7 +41,7 @@ function Get-Commit-Count() {
 function Get-Elapsed { 
     if ($Global:_Say_Stopwatch -eq $null) { $Global:_Say_Stopwatch = [System.Diagnostics.Stopwatch]::StartNew(); }
     $milliSeconds=$Global:_Say_Stopwatch.ElapsedMilliseconds
-    if ($milliSeconds -ge 3600000) { $format="HH:mm:ss"; } else { $format="mm:ss"; }
+    if ($milliSeconds -ge 3599500) { $format="HH:mm:ss"; } else { $format="mm:ss"; }
     return "[$((new-object System.DateTime(0)).AddMilliseconds($milliSeconds).ToString($format))]"
 }; $Global:_Say_Stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 

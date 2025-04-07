@@ -1,0 +1,23 @@
+
+      - powershell: |
+          iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
+        retryCountOnTaskFailure: 3
+        displayName: "Bootstrap Module"
+
+      - bash: |
+          script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
+          Say "CPU: $(Get-CpuName)"
+          export SQLINSIGHTS_NUGET_BUILDER_FOLDER='D:\Build'
+          cd scripts
+          powershell -f Build-NuGET-Array.ps1
+          ls -la "$SQLINSIGHTS_NUGET_BUILDER_FOLDER"
+          cp -v "$SQLINSIGHTS_NUGET_BUILDER_FOLDER"/*.nupkg "$SYSTEM_ARTIFACTSDIRECTORY"
+        retryCountOnTaskFailure: 3
+        displayName: "BUILD NuGet Array"
+
+      - task: PublishBuildArtifacts@1
+        condition: succeededOrFailed()
+        displayName: 'Publish NuGet Array'
+        inputs:
+          pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)'
+          artifactName: 'NuGet Array'
