@@ -1,4 +1,6 @@
 $ErrorActionPreference="Stop"
+Say "Building NuGet Packages. Cpu is '$(Get-Cpu-Name)'. $((Get-Memory-Info).Description)"
+
 & dotnet --list-sdks | Sort -Descending
 . .\Includes.ps1
 $NUnit_Pipeline_Revision=212
@@ -72,7 +74,8 @@ foreach($NUnit_Version in $nunit_versions) {
   pushd "$work\Source"
   foreach($project in $projects) {
     $buildIndex++;
-    Write-Host "$([Environment]::NewLine)$(Get-Elapsed) $BuildIndex of $($buildCount): $nunit_Version $project" -ForegroundColor Magenta
+    Write-Host "";
+    Say "$BuildIndex of $($buildCount): $nunit_Version $project" -ForegroundColor Magenta
     $This_NUnit_Version = "$NUnit_Version.$Commit_Count"
     write-host "THIS VERSION: $This_NUnit_Version"
 
