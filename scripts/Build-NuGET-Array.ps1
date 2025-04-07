@@ -96,7 +96,7 @@ foreach($NUnit_Version in $nunit_versions) {
     Try-And-Retry "Build $project $This_NUnit_Version" { & { dotnet @("build", "-c", "Release") 2>&1 } *| tee "$logFolder$($DS)$nunit_Version-$($project)-build.log" }
     if ($nunit_Version -eq $Full_NUnit_Version) {
       cd ..
-      & { dotnet @("build", "-c", "Release") 2>&1 } *| tee "$logFolder$($DS)ALL-build.log" }
+      & { dotnet @("build", "-c", "Release") 2>&1 } *| tee "$logFolder$($DS)ALL-build.log" 
     }
     popd
     Write-Host ""
