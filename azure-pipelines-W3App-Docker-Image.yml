@@ -209,6 +209,8 @@ trigger:
   paths:
     exclude:
     - '**'
+    - 'scripts/Build-NuGET-Array.ps1'
+    - 'scripts/Includes.ps1'
     include:
     - 'azure-pipelines-W3App-Docker-Image.yml'
     - 'scripts/**'
