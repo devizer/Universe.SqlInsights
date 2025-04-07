@@ -1,3 +1,4 @@
+$ErrorActionPreference="Stop"
 & dotnet --list-sdks | Sort -Descending
 . .\Includes.ps1
 $NUnit_Pipeline_Revision=212
