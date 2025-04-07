@@ -19,7 +19,7 @@ jobs:
   - job: Build_Nuget_Array_on_Linux
     displayName: 'Build NuGet Array (on Linux)'
     pool:
-      vmImage: "windows-latest"
+      vmImage: "linux-latest"
     steps:
       - template: azure-pipeline-Build-NuGet-Packages-on-Linux.yml
 
