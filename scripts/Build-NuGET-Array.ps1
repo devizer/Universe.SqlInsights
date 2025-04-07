@@ -1,7 +1,7 @@
 $ErrorActionPreference="Stop"
 Say "Building NuGet Packages. Cpu is '$(Get-Cpu-Name)'. $((Get-Memory-Info).Description)"
 
-& dotnet --list-sdks | Sort -Descending
+& dotnet --list-sdks | Sort-Object -Descending
 . .\Includes.ps1
 $NUnit_Pipeline_Revision=212
 $This_SqlIsnights_Version_Base="0.4.8"

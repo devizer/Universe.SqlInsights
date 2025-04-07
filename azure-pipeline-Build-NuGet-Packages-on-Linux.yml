@@ -8,8 +8,9 @@ steps:
       - bash: |
           # script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
           # Say "CPU: $(Get-CpuName)"
+          set -eu -o pipefail;
           export SQLINSIGHTS_NUGET_BUILDER_FOLDER='/Build'
-          mkdir -p "$SQLINSIGHTS_NUGET_BUILDER_FOLDER"
+          sudo mkdir -p "$SQLINSIGHTS_NUGET_BUILDER_FOLDER"
           sudo chown -R $USER "$SQLINSIGHTS_NUGET_BUILDER_FOLDER"
           cd scripts
           pwsh -f Build-NuGET-Array.ps1
