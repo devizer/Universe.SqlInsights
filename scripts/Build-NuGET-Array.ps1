@@ -43,8 +43,9 @@ write-host "Commit Count: $Commit_Count"
 $Work_Base="$ENV:SQLINSIGHTS_NUGET_BUILDER_FOLDER"
 if (-not $Work_Base) { $Work_Base="W:\Build\Universe.SqlInsights"; }
 Remove-Item -Recurse -Force "$Work_Base" -EA SilentlyContinue | Out-Null
-New-Item "$Work_Base" -Force -ItemType Container -EA SilentlyContinue | Out-Null
 $DS="$([System.IO.Path]::DirectorySeparatorChar)"
+$logFolder="$Work_Base$($DS)BUILD-LOGS"
+New-Item $logFolder -Force -ItemType Container -EA SilentlyContinue | Out-Null
 & git clone https://github.com:/devizer/Universe.SqlInsights "$($Work_Base)$($DS)Source"
 # Remove-Item -Recurse -Force "$Work_Base\Source\.git" -EA SilentlyContinue | Out-Null
 
@@ -92,7 +93,7 @@ foreach($NUnit_Version in $nunit_versions) {
     & dotnet remove package Universe.NUnitPipeline
     & dotnet add package Universe.NUnitPipeline -v "$nunit_Version.$NUnit_Pipeline_Revision" --no-restore
     Set-CS-Project-Version "$PWD$($DS)$($project).csproj" "$This_NUnit_Version"
-    Try-And-Retry "Build $project $This_NUnit_Version" { & { dotnet @("build", "-c", "Release") 2>&1 } *| tee "..$($DS)..$($DS)..$($DS)$nunit_Version-$($project)-build.log" }
+    Try-And-Retry "Build $project $This_NUnit_Version" { & { dotnet @("build", "-c", "Release") 2>&1 } *| tee "$logFolder$($DS)$nunit_Version-$($project)-build.log" }
     if ($nunit_Version -eq $Full_NUnit_Version) {
       cd ..
       & "dotnet" @("build", "-c", "Release")
@@ -103,9 +104,14 @@ foreach($NUnit_Version in $nunit_versions) {
   popd 
 }
 
-Write-Host "$(Get-Elapsed) Finish" -ForegroundColor Magenta
-$nupkgs = @(Get-ChildItem -Path "$Work_Base" -Filter "*.nupkg" -Recurse)
-Write-Host "Copying $($nupkgs.Length) nupkg-files"
-$nupkgs | Copy-Item -Destination "$Work_Base$($DS)"
+Say "Finish"
+for($ext in @("nupkg", "snupkg")) {
+  $nupkgs = @(Get-ChildItem -Path "$Work_Base" -Filter "*.$ext" -Recurse)
+  Write-Host "Copying $($nupkgs.Length) (s)nupkg-files"
+  $nupkgs | Copy-Item -Destination "$Work_Base$($DS)"
+}
+
+# Logs
+& 7z a "$Work_Base$($DS)BUILD-LOGS.7z" "$logFolder$($DS)"
 
 Write-Host "Reminder: Do NOT publish [Universe.SqlInsights.W3Api.Client.*.nupkg]" -ForegroundColor Yellow
