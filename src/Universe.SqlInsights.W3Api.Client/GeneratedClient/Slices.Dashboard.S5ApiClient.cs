@@ -434,6 +434,11 @@ namespace Slices.Dashboard
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            return;
+                        }
+                        else
                         if (status_ == 202)
                         {
                             return;

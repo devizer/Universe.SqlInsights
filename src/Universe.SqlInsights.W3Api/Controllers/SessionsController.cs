@@ -63,11 +63,13 @@ namespace Universe.SqlInsights.W3Api.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         public async Task<ActionResult> DeleteSession(IdSessionParameters args)
         {
             await _Storage.FinishSession(args.IdSession);
 
+            Exception error = null;
             // as foreground to prevent abort on shutdown
             var thread = new Thread(async () =>
             {
@@ -78,12 +80,20 @@ namespace Universe.SqlInsights.W3Api.Controllers
                 }
                 catch (Exception ex)
                 {
+                    error = ex;
                     _Logger.LogError($"Delete Session {args.IdSession} failed. {ex.GetExceptionDigest()}");
                 }
             }) { IsBackground = false };
             thread.Start();
 
-            return "Accepted".ToJsonResult(httpStatusCode: 202);
+            bool isCompleted = thread.Join(TimeSpan.FromSeconds(10));
+            if (error != null)
+                throw new Exception($"Deleting session {args.IdSession} failed", error);
+
+            if (isCompleted)
+                return "Completed".ToJsonResult(httpStatusCode: 200);
+            else
+                return "Accepted".ToJsonResult(httpStatusCode: 202);
         }
 
         [HttpPost]
