@@ -34,7 +34,7 @@ Write-Host "sed is [$sed]"
 
 
 # $nunit_versions = @("3.13.2", "4.2.2");
-$projects = @("Universe.NUnitPipeline.SqlServerDatabaseFactory", "Universe.SqlInsights.NUnit");
+$projects = @("Universe.SqlInsights.NUnit", "Universe.NUnitPipeline.SqlServerDatabaseFactory");
 
 $Commit_Count = Get-Commit-Count
 $This_SqlIsnights_Version = "$This_SqlIsnights_Version_Base.$Commit_Count"
