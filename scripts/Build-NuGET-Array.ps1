@@ -54,8 +54,8 @@ pushd "$Work_Base\Source\src"
 & dotnet sln Universe.SqlInsights.sln remove AdventureWorks.Tests\AdventureWorks.Tests.csproj
 & dotnet sln Universe.SqlInsights.sln remove Universe.SqlInsights.SqlServerStorage.Tests\Universe.SqlInsights.SqlServerStorage.Tests.csproj
 & dotnet sln Universe.SqlInsights.sln remove Universe.SqlInsights.W3Api.Client.Tests\Universe.SqlInsights.W3Api.Client.Tests.csproj
-# Say "PARALLEL RESTORE"
-# & dotnet restore Universe.SqlInsights.sln -v:q
+Say "PARALLEL RESTORE"
+& dotnet restore Universe.SqlInsights.sln -v:q
 popd
 
 Say "PATCHING projects as version $This_SqlIsnights_Version"
@@ -94,7 +94,7 @@ foreach($NUnit_Version in $nunit_versions) {
     Try-And-Retry "Build $project $This_NUnit_Version" { & { dotnet "build", "-c", "Release" 2>&1 } *| tee "..\..\..\$nunit_Version-$($project)-build.log" }
     if ($nunit_Version -eq $Full_NUnit_Version) {
       cd ..
-      # & dotnet build "-c" Release
+      & dotnet build "-c" Release
     }
     popd
     Write-Host ""
