@@ -47,7 +47,7 @@ New-Item "$Work_Base" -Force -ItemType Container -EA SilentlyContinue | Out-Null
 & git clone https://github.com:/devizer/Universe.SqlInsights "$Work_Base\Source"
 # Remove-Item -Recurse -Force "$Work_Base\Source\.git" -EA SilentlyContinue | Out-Null
 
-Say "REMOVE net framework projects"
+Say "REMOVING net framework projects"
 pushd "$Work_Base\Source\src"
 & dotnet sln Universe.SqlInsights.sln remove AdventureWorks\AdventureWorks.csproj
 & dotnet sln Universe.SqlInsights.sln remove AdventureWorks.HeadlessTests\AdventureWorks.HeadlessTests.csproj
@@ -58,9 +58,10 @@ pushd "$Work_Base\Source\src"
 # & dotnet restore Universe.SqlInsights.sln -v:q
 popd
 
+Say "PATCHING projects as version $This_SqlIsnights_Version"
 $csprojs = @(Get-ChildItem -Path "$Work_Base" -Filter "*.csproj" -Recurse)
 foreach($csproj in $csprojs) {
-  Write-Host "Patch $($csproj.FullName) as version $($This_SqlIsnights_Version)"
+  # Write-Host "Patch $($csproj.FullName) as version $($This_SqlIsnights_Version)"
   Set-CS-Project-Version "$($csproj.FullName)" "$This_SqlIsnights_Version"
 }
 
