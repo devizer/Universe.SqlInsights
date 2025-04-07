@@ -76,7 +76,7 @@ foreach($NUnit_Version in $nunit_versions) {
   foreach($project in $projects) {
     $buildIndex++;
     Write-Host "";
-    Say "$BuildIndex of $($buildCount): $nunit_Version $project"
+    Say "BUILDING $BuildIndex of $($buildCount): $nunit_Version $project"
     $This_NUnit_Version = "$NUnit_Version.$Commit_Count"
     write-host "THIS VERSION: $This_NUnit_Version"
 
