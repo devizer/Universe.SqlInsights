@@ -204,12 +204,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="WebPages\HealthCheck.aspx.cs">
-      <DependentUpon>HealthCheck.aspx</DependentUpon>
+    <Compile Include="WebPages\FakeHealthCheck.aspx.cs">
+      <DependentUpon>FakeHealthCheck.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="WebPages\HealthCheck.aspx.designer.cs">
-      <DependentUpon>HealthCheck.aspx</DependentUpon>
+    <Compile Include="WebPages\FakeHealthCheck.aspx.designer.cs">
+      <DependentUpon>FakeHealthCheck.aspx</DependentUpon>
     </Compile>
     <Compile Include="..\Shared-Files\SystemDriveAccess.cs " />
     <Compile Include="Models\Customer.cs" />
@@ -264,7 +264,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="WebPages\HealthCheck.aspx" />
+    <Content Include="WebPages\FakeHealthCheck.aspx" />
     <Content Include="Scripts\ai.0.22.9-build00167.js" />
     <Content Include="Scripts\ai.0.22.9-build00167.min.js" />
     <Content Include="Scripts\bootstrap.js" />

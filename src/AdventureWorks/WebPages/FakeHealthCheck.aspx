@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="HealthCheck.aspx.cs" Inherits="AdventureWorks.WebPages.HealthCheck" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="FakeHealthCheck.aspx.cs" Inherits="AdventureWorks.WebPages.FakeHealthCheck" %>
 
 <!DOCTYPE html>
 

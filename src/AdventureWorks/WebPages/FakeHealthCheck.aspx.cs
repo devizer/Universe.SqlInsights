@@ -5,7 +5,7 @@ using AdventureWorks.Utils;
 
 namespace AdventureWorks.WebPages
 {
-    public partial class HealthCheck : System.Web.UI.Page
+    public partial class FakeHealthCheck : System.Web.UI.Page
     {
             
         protected void Page_Load(object sender, EventArgs e)

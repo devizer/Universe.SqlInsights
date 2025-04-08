@@ -5,11 +5,11 @@ using AdventureWorks.Utils;
 
 namespace AdventureWorks.Controllers
 {
-    public class HealthCheckController : Controller
+    public class FakeHealthCheckController : Controller
     {
         private readonly DbConnectionOptions DbOptions;
 
-        public HealthCheckController(DbConnectionOptions dbOptions)
+        public FakeHealthCheckController(DbConnectionOptions dbOptions)
         {
             DbOptions = dbOptions;
         }
