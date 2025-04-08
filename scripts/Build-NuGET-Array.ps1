@@ -104,7 +104,7 @@ foreach($NUnit_Version in $nunit_versions) {
   popd 
 }
 
-Say "Finish"
+Say "Finish. Cpu is '$(Get-Cpu-Name)'. $((Get-Memory-Info).Description)"
 foreach($ext in @("nupkg", "snupkg")) {
   $nupkgs = @(Get-ChildItem -Path "$Work_Base" -Filter "*.$ext" -Recurse)
   Write-Host "Copying $($nupkgs.Length) (s)nupkg-files"
