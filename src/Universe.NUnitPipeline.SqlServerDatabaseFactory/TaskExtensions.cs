@@ -2,6 +2,7 @@
 
 namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
 {
+
     public static class TaskExtensions
     {
         public static T GetSafeResult<T>(this Task<T> task)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -101,7 +102,14 @@ Values(
             {
                 foreach (var sql in sqlList)
                 {
-                    await con.ExecuteAsync(sql, new {IdSession = idSession}, commandTimeout: 180);
+                    try
+                    {
+                        await con.ExecuteAsync(sql, new { IdSession = idSession }, commandTimeout: 300);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception($"Deleting session {idSession} failed. Query is {sql}", ex);
+                    }
                 }
             }
         }
