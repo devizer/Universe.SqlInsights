@@ -71,12 +71,13 @@ namespace Universe.SqlInsights.W3Api.Controllers
 
             Exception error = null;
             // as foreground to prevent abort on shutdown
-            var thread = new Thread(async () =>
+            var thread = new Thread(() =>
             {
                 // async void needs try/catch
                 try
                 {
-                    await _Storage.DeleteSession(args.IdSession);
+                    // await _Storage.DeleteSession(args.IdSession);
+                    _Storage.DeleteSession(args.IdSession).ConfigureAwait(continueOnCapturedContext: false).GetAwaiter().GetResult();
                 }
                 catch (Exception ex)
                 {
