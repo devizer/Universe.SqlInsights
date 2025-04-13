@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -28,6 +29,9 @@ namespace Universe.SqlInsights.SqlServerStorage
         public long? AcquireString(StringKind kind, string value)
         {
             if (value == null) return null;
+
+            CacheInvalidation cacheInvalidation = new CacheInvalidation(this);
+            cacheInvalidation.InvalidationProbe();
 
             var cacheKey = new CacheKey()
             {
@@ -172,6 +176,58 @@ namespace Universe.SqlInsights.SqlServerStorage
         internal static void ResetCacheForTests()
         {
             Cache.Clear();
+        }
+
+        class CacheInvalidation
+        {
+            private StringsStorage Strings;
+            private static Stopwatch PrevProbe;
+            private static Guid? PrevDbInstanceUid;
+            private const int ProbeIntervalMilliseconds = 5000;
+
+            public CacheInvalidation(StringsStorage strings)
+            {
+                Strings = strings;
+            }
+
+            public void InvalidationProbe()
+            {
+                var prevProbe = Volatile.Read(ref PrevProbe);
+                bool existsPrevProbe = prevProbe != null;
+                if (prevProbe == null)
+                {
+                    prevProbe = Stopwatch.StartNew();
+                    Volatile.Write(ref PrevProbe, prevProbe);
+                }
+
+                if (!existsPrevProbe)
+                {
+                    PrevDbInstanceUid = ReadDbInstanceUid();
+                    return;
+                }
+
+                var milliseconds = prevProbe.ElapsedMilliseconds;
+                if (milliseconds <= ProbeIntervalMilliseconds) return;
+                var nextDbInstanceUid = ReadDbInstanceUid();
+                if (!PrevDbInstanceUid.HasValue || !nextDbInstanceUid.HasValue) return; // or Exception, caz here both values exists
+                if (nextDbInstanceUid.GetValueOrDefault().Equals(PrevDbInstanceUid.GetValueOrDefault())) return;
+                // Evict
+                PrevDbInstanceUid = nextDbInstanceUid;
+                PrevProbe.Restart();
+                StringsStorage.ResetCacheForTests();
+            }
+
+            Guid? ReadDbInstanceUid()
+            {
+                var guids =
+                    Strings.Connection.Query<Guid>(
+                        "Select Top 1 DbInstanceUid From SqlInsightsKeyPathSummaryTimestamp With (NoLock);",
+                        null,
+                        Strings.Transaction
+                    );
+
+                return guids.FirstOrDefault();
+            }
         }
     }
 

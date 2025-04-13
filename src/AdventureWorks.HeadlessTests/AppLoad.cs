@@ -7,6 +7,11 @@ namespace AdventureWorks.HeadlessTests
 {
     public static class AppLoad
     {
+        public static void RunCustomersLoop()
+        {
+            for (int i = 0; i <= 1; i++) RunCustomers();
+        }
+
         public static void RunCustomers()
         {
             ChromeDriver driver = ChromeDriverFactory.Create();

@@ -141,12 +141,13 @@ END
                 @$"
 If Object_ID('SqlInsightsKeyPathSummaryTimestamp') Is Null
 Create Table SqlInsightsKeyPathSummaryTimestamp(
-    Version BigInt Not Null,
-    Guid UniqueIdentifier Not Null,
+    Version BigInt Not Null, -- Replaced By @@DBTS
+    Guid UniqueIdentifier Not Null, -- Replaced By @@DBTS
+    DbInstanceUid UniqueIdentifier Not Null, -- Used By Strings Cache of another cache
     Constraint PK_SqlInsightsKeyPathSummaryTimestamp Primary Key {(supportMOT ? "NON" : "")}Clustered (Guid)
 ){sqlWithMemory};
 If Not Exists(Select Version From SqlInsightsKeyPathSummaryTimestamp)
-Insert SqlInsightsKeyPathSummaryTimestamp(Version, Guid) Values(0, NewId());
+Insert SqlInsightsKeyPathSummaryTimestamp(Version, Guid, DbInstanceUid) Values(0, NewId(), NewId());
 -- DONE.",
 
                 // Table SqlInsights Session 

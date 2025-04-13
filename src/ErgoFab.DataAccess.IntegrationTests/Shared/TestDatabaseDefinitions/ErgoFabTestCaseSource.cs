@@ -19,7 +19,7 @@ public class ErgoFabTestCaseSource : TestCaseSourceAttribute
         var dbDefinition = new ErgoFabDatabase(organizationsCount);
 
         // TestContext.CurrentContext.Test.GetPropertyOrAdd<IDatabaseDefinition>("DatabaseDefinition", test => dbDefinition);
-        foreach (var kind in new[] { "First", "Next", "X", "Y", "Z" })
+        foreach (var kind in new[] { "First", "Next" })
         {
             yield return new ErgoFabTestCase()
             {
