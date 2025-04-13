@@ -114,12 +114,12 @@ Values(
             }
         }
 
-        public async Task RenameSession(long idSession, string caption)
+        public async Task RenameSession(long idSession, string newCaption)
         {
             const string sql = @"Update SqlInsightsSession Set Caption = @Caption Where IdSession = @IdSession;"; 
             using (var con = GetConnection())
             {
-                await con.ExecuteAsync(sql, new {IdSession = idSession, Caption = caption});
+                await con.ExecuteAsync(sql, new {IdSession = idSession, Caption = newCaption});
             }
         }
 

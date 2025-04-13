@@ -28,7 +28,7 @@ namespace Universe.SqlInsights.Shared
         Task<IEnumerable<SqlInsightsSession>> GetSessions();
         Task<long> CreateSession(string caption, int? maxDurationMinutes);
         Task DeleteSession(long idSession);
-        Task RenameSession(long idSession, string caption);
+        Task RenameSession(long idSession, string newCaption);
         Task FinishSession(long idSession);
         Task ResumeSession(long idSession, int? maxDurationMinutes);
 
