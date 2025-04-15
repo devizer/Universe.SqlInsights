@@ -12,7 +12,7 @@ namespace AdventureWorks.HeadlessTests
         static void Main(string[] args)
         {
             new ChromeDriverInstaller().Install(true);
-            AppLoad.RunCustomersLoop();
+            AppLoad.RunCustomers();
             AppLoad.RunSalesOrders();
             // Parallel.Invoke(() => AppLoad.RunCustomersLoop(), () => AppLoad.RunSalesOrders());
         }

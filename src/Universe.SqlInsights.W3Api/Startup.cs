@@ -24,6 +24,7 @@ using Universe.SqlInsights.Shared;
 using Universe.SqlInsights.SqlServerStorage;
 using Universe.SqlInsights.W3Api.Helpers;
 using Universe.SqlInsights.W3Api.SqlInsightsIntegration;
+using Universe.SqlTrace;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Universe.SqlInsights.W3Api
@@ -237,6 +238,7 @@ namespace Universe.SqlInsights.W3Api
                     : throw new ArgumentException("Invalid DbProviderFactory configuration value. 'System' or 'Microsoft are allowed'");
 
             services.AddSingleton<DbProviderFactory>(x => dbProviderFactory);
+            SqlTraceConfiguration.DbProvider = dbProviderFactory;
             Console.WriteLine($"[Startup Configuration] DB Provider Factory: {dbProviderFactory.GetType().Namespace}");
             return dbProviderFactory;
         }

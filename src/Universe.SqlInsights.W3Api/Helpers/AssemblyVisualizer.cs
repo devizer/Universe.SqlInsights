@@ -94,7 +94,7 @@ namespace Universe.SqlInsights.W3Api.Helpers
             {
                 
                 var assembly = args.LoadedAssembly;
-                Console.WriteLine($"[Loading assembly info] {TryEval(() => assembly.GetName().Version),-12} {GetFileName(assembly)} <- {GetDirName(assembly)}");
+                // Console.WriteLine($"[Loading assembly info] {TryEval(() => assembly.GetName().Version),-12} {GetFileName(assembly)} <- {GetDirName(assembly)}");
             };
         }
 

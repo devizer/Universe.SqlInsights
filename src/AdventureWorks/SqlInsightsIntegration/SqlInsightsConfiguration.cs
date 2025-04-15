@@ -14,7 +14,7 @@ namespace AdventureWorks.SqlInsightsIntegration
 {
     public class SqlInsightsConfiguration : ISqlInsightsConfiguration
     {
-        public string AppName { get; } = "AdventureWorks";
+        public string AppName { get; } = "Adventure Works";
         public string HostId => Environment.MachineName;
         public bool Enabled { get; } = true;
         public bool MeasureSqlMetrics { get; } = true;

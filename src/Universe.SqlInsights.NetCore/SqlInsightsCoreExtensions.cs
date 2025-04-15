@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -54,9 +55,23 @@ namespace Universe.SqlInsights.NetCore
         
         public static IApplicationBuilder UseSqlInsights(this IApplicationBuilder app)
         {
-            var loggerFactory = app.ApplicationServices.CreateScope().ServiceProvider.GetRequiredService<ILoggerFactory>();
+            var serviceScope = app.ApplicationServices.CreateScope();
+            var loggerFactory = serviceScope.ServiceProvider.GetRequiredService<ILoggerFactory>();
             var coreLogger = loggerFactory.CreateLogger("Traceable Storage → AddAction()");
             var logger = new NetCoreLogger(coreLogger);
+            try
+            {
+                var dbProviderFactory = serviceScope.ServiceProvider.GetService<DbProviderFactory>();
+                if (dbProviderFactory != null)
+                {
+                    SqlTraceConfiguration.DbProvider = dbProviderFactory;
+                    logger.LogInformation($"DB Provider Factory for SQL traces: {dbProviderFactory.GetType().FullName}");
+                }
+            }
+            catch (Exception ex1)
+            {
+                logger.LogInformation($"Warning! Unable to reset DB Provider Factory for SQL traces. {ex1.GetExceptionDigest()}");
+            }
 
             app.Use(middleware: async delegate(HttpContext context, Func<Task> next)
             {
