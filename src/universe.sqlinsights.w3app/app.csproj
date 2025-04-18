@@ -6,4 +6,28 @@
         <Exec WorkingDirectory="$(MSBuildThisFileDirectory)" Command="yarn build" />
     </Target>
 
+  <ItemGroup>
+    <Content Include="public/**">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Include="src/**">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+    <ItemGroup>
+      
+      <Content Include=".env" />
+      <Content Include=".eslintrc.json.muted" />
+      <Content Include=".gitignore" />
+      <Content Include="gulpfile.js" />
+      <Content Include="package.json" />
+      <Content Include="README.md" />
+      <Content Include="readme.txt" />
+      <Content Include="run-prod.cmd" />
+      <Content Include="webpack.config.js" />
+      <Content Include="yarn-install.cmd" />
+      <Content Include="yarn.lock" />
+    </ItemGroup>
+
 </Project>
