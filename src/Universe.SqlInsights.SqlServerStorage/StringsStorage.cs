@@ -180,53 +180,63 @@ namespace Universe.SqlInsights.SqlServerStorage
 
         class CacheInvalidation
         {
-            private StringsStorage Strings;
             private static Stopwatch PrevProbe;
             private static Guid? PrevDbInstanceUid;
+            
+            private static long DebugCounter;
+            private long _debugCounter;
+
+            private StringsStorage Strings;
             private const int ProbeIntervalMilliseconds = 5000;
 
             public CacheInvalidation(StringsStorage strings)
             {
                 Strings = strings;
+#if DEBUG
+                _debugCounter = Interlocked.Increment(ref DebugCounter);
+#endif
             }
 
             public void InvalidationProbe()
             {
                 var prevProbe = Volatile.Read(ref PrevProbe);
-                bool existsPrevProbe = prevProbe != null;
                 if (prevProbe == null)
                 {
+                    PrevDbInstanceUid = ReadDbInstanceUid();
+                    DebugLog(() => $"Stopwatch missing (first run). Starting stopwatch and storing DB UID = {PrevDbInstanceUid}");
                     prevProbe = Stopwatch.StartNew();
                     Volatile.Write(ref PrevProbe, prevProbe);
-                }
-
-                if (!existsPrevProbe)
-                {
-                    PrevDbInstanceUid = ReadDbInstanceUid();
                     return;
                 }
 
                 var milliseconds = prevProbe.ElapsedMilliseconds;
-                if (milliseconds <= ProbeIntervalMilliseconds) return;
+                if (milliseconds <= ProbeIntervalMilliseconds)
+                {
+                    DebugLog(() => $"milliseconds ({milliseconds}) < {ProbeIntervalMilliseconds}. Skipping DB UID Query");
+                    return;
+                }
                 var nextDbInstanceUid = ReadDbInstanceUid();
+                // Thread.MemoryBarrier(); Missing NET STANDARD 1.3
+                PrevProbe.Restart();
+                DebugLog(() => $"Milliseconds: {milliseconds}. Prev DB UID: {PrevDbInstanceUid}. NEXT DB UID: {nextDbInstanceUid}");
                 if (!PrevDbInstanceUid.HasValue || !nextDbInstanceUid.HasValue) return; // or Exception, caz here both values exists
                 if (nextDbInstanceUid.GetValueOrDefault().Equals(PrevDbInstanceUid.GetValueOrDefault())) return;
                 // Evict
                 PrevDbInstanceUid = nextDbInstanceUid;
-                PrevProbe.Restart();
                 StringsStorage.ResetCacheForTests();
             }
 
             Guid? ReadDbInstanceUid()
             {
-                var guids =
-                    Strings.Connection.Query<Guid>(
-                        "Select Top 1 DbInstanceUid From SqlInsightsKeyPathSummaryTimestamp With (NoLock);",
-                        null,
-                        Strings.Transaction
-                    );
-
+                var sql = "Select Top 1 DbInstanceUid From SqlInsightsKeyPathSummaryTimestamp With (NoLock);";
+                var guids = Strings.Connection.Query<Guid>(sql, null, Strings.Transaction);
                 return guids.FirstOrDefault();
+            }
+
+            [Conditional("DEBUG")]
+            void DebugLog(Func<string> message)
+            {
+                Console.WriteLine($"[Strings {_debugCounter}] {message?.Invoke()}");
             }
         }
     }
