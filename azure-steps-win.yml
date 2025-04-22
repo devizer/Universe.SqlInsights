@@ -4,7 +4,8 @@
 steps:
 
   - powershell: |
-      iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
+      # iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
+      Install-Module -Name SqlServer-Version-Management
       Say "CPU: $(Get-Cpu-Name). $((Get-Memory-Info).Description)"
       # Measure-Action "Uninstall LocalDB *" { Uninstall-LocalDB-List "*" }
     retryCountOnTaskFailure: 3
