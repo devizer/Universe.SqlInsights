@@ -31,8 +31,8 @@ jobs:
     steps:
 
       - bash: |
-          try-and-retry pwsh -c "Install-Module -Name SqlServer-Version-Management -Force; Get-Cpu-Name"
           script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
+          try-and-retry pwsh -c "Install-Module -Name SqlServer-Version-Management -Force; Get-Cpu-Name"
           Say "CPU: $(Get-CpuName)"
           for v in 8.0 6.0; do
             Say "ASP.NET $v"
