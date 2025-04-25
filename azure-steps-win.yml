@@ -237,8 +237,10 @@ steps:
     displayName: 'Show Transfer for 20 seconds'
 
   - bash: |
-       export SQL_SETUP_LOGS_FOLDER="$SYSTEM_ARTIFACTSDIRECTORY"
-       powershell -f scripts/Publish-SQL-Server-Setup-Logs.ps1 || true
+       set -eu -o pipefail;
+       # export SQL_SETUP_LOGS_FOLDER="$SYSTEM_ARTIFACTSDIRECTORY"
+       # powershell -f scripts/Publish-SQL-Server-Setup-Logs.ps1 || true
+       powershell -c 'Publish-SQLServer-SetupLogs "'$SYSTEM_ARTIFACTSDIRECTORY'" -Compression 9'
     condition: succeededOrFailed()
     displayName: 'Universal SQL Setup Logs'
 
