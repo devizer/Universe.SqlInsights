@@ -135,19 +135,36 @@ Values(@KeyPath, @IdSession, @AppName, @HostId, Cast(@@DBTS as BigInt), @Count, 
                         }
 
                         // DETAILS: SqlInsightsAction
-                        const string sqlInsertDetail = @"Insert SqlInsightsAction(At, IdSession, KeyPath, IsOK, AppName, HostId, Data)
-Values(@At, @IdSession, @KeyPath, @IsOK, @AppName, @HostId, @Data)";
+                        const string sqlInsertDetail = @"Insert SqlInsightsAction(At, IdSession, KeyPath, IsOK, AppName, HostId, AppDuration, AppKernelUsage, AppUserUsage, SqlDuration, SqlCPU, SqlReads, SqlWrites, SqlRowCounts, SqlRequests, SqlErrors, Data)
+Values(@At, @IdSession, @KeyPath, @IsOK, @AppName, @HostId, @AppDuration, @AppKernelUsage, @AppUserUsage, @SqlDuration, @SqlCPU, @SqlReads, @SqlWrites, @SqlRowCounts, @SqlRequests, @SqlErrors, @Data)";
 
                         var detail = reqAction;
                         var dataDetail = DbJsonConvert.Serialize(detail);
+
+                        long GetIntSum(Func<ActionDetailsWithCounters.SqlStatement,long> getItem)
+                        {
+                            return detail.SqlStatements.Count == 0 ? 0 : detail.SqlStatements.Sum(getItem);
+                        }
+
                         try
                         {
+
                             con.Execute(sqlInsertDetail, new
                             {
                                 At = detail.At,
                                 IsOK = string.IsNullOrEmpty(detail.BriefException),
                                 IdSession = idSession,
                                 KeyPath = keyPath,
+                                AppDuration = detail.AppDuration,
+                                AppKernelUsage = detail.AppKernelUsage,
+                                AppUserUsage = detail.AppUserUsage,
+                                SqlDuration = GetIntSum(x => x.Counters.Duration),
+                                SqlCPU = GetIntSum(x => x.Counters.CPU),
+                                SqlReads = GetIntSum(x => x.Counters.Reads),
+                                SqlWrites = GetIntSum(x => x.Counters.Writes),
+                                SqlRowCounts = GetIntSum(x => x.Counters.RowCounts),
+                                SqlRequests = GetIntSum(x => 1),
+                                SqlErrors = GetIntSum(x => x.SqlErrorCode.HasValue ? 1 : 0),
                                 Data = dataDetail,
                                 AppName = idAppName,
                                 HostId = idHostId,

@@ -233,6 +233,19 @@ Create Table SqlInsightsAction(
     AppName bigint Not Null,
     HostId bigint Not Null,
     IsOK bit Not Null,
+
+    -- Next 9 columns need for UI sorting only. Just to make sure grouping is properly implemented.
+    AppDuration real Not Null,
+    AppKernelUsage real Not Null,
+    AppUserUsage real Not Null,
+    SqlDuration bigint Not Null,
+    SqlCPU bigint Not Null,
+    SqlReads bigint Not Null,
+    SqlWrites bigint Not Null,
+    SqlRowCounts bigint Not Null,
+    SqlRequests bigint Not Null,
+    SqlErrors bigint Not Null,
+
     Data nvarchar(max) Not Null,
     InternalVersion RowVersion Not Null,
     -- Constraint PK_SqlInsightsAction Primary Key (IdAction),
