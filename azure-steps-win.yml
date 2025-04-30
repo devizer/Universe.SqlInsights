@@ -5,7 +5,7 @@ steps:
 
   - powershell: |
       # iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
-      Write-Host "Total Modules: $(get-module -ListAvailable).Count"
+      Write-Host "Total Modules: $((get-module -ListAvailable).Count)"
       Install-Module -Name SqlServer-Version-Management -Force
 
       Say "CPU: $(Get-Cpu-Name). $((Get-Memory-Info).Description)"
