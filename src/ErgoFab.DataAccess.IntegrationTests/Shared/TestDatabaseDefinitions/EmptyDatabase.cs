@@ -16,6 +16,6 @@ namespace Shared.TestDatabaseDefinitions
         {
         }
 
-        public string SavedDatabaseName => null;
+        public string PlaygroundDatabaseName => null;
     }
 }

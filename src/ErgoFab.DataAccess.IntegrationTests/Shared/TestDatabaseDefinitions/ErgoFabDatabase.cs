@@ -23,5 +23,5 @@ public class ErgoFabDatabase : IDatabaseDefinition
         ErgoFabDbSeeder.Seed(connectionOptions, OrganizationsCount).SafeWait();
     }
 
-    public string SavedDatabaseName => Title;
+    public string PlaygroundDatabaseName => Title;
 }

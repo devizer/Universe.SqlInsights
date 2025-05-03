@@ -13,6 +13,6 @@
 
         // Nullable. If not null then infrastructure keep DB with the name
         // This database is always reset on first test case invocation
-        string SavedDatabaseName { get; }
+        string PlaygroundDatabaseName { get; }
     }
 }
