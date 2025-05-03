@@ -22,7 +22,7 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
         }
 
 
-        public async Task<IDbConnectionString> BuildDatabase(string cacheKey, string newDbName, string title, string savedDatabaseName, Action<IDbConnectionString> actionMigrateAndSeed)
+        public async Task<IDbConnectionString> BuildDatabase(string cacheKey, string newDbName, string title, string playgroundDatabaseName, Action<IDbConnectionString> actionMigrateAndSeed)
         {
             SqlServerTestDbManager sqlServerTestDbManager = new SqlServerTestDbManager(SqlServerTestsConfiguration);
 
@@ -59,15 +59,16 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
             {
                 databaseBackupInfo = await sqlServerTestDbManager.CreateBackup(cacheKey, newDbName);
                 PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Created Backup for test DB '{newDbName}' as '{databaseBackupInfo.BackupPoint}' (Caching key is '{cacheKey}')");
-                if (savedDatabaseName != null)
+                // TODO: Skip playgroundDatabaseName?
+                if (playgroundDatabaseName != null && InternalDbFactoryTuningConfiguration.SkipTestSqlFactoryPlaygroundDatabase == false)
                 {
-                    // First. Force Drop savedDatabaseName ...
-                    var savedDbConnectionString = sqlServerTestDbManager.BuildConnectionString(savedDatabaseName);
+                    // First. Force Drop playgroundDatabaseName ...
+                    var savedDbConnectionString = sqlServerTestDbManager.BuildConnectionString(playgroundDatabaseName);
                     AgileDbKiller.Kill(savedDbConnectionString, false, 1);
                     // .. And Restore it from newly created backup
-                    await sqlServerTestDbManager.RestoreBackup(databaseBackupInfo, savedDatabaseName);
+                    await sqlServerTestDbManager.RestoreBackup(databaseBackupInfo, playgroundDatabaseName);
                     PipelineLog.LogTrace(
-                        $"[SeededDatabaseFactory.BuildDatabase] Restored Reference Test DB '{savedDatabaseName}' from '{databaseBackupInfo.BackupPoint}' (Caching key is '{cacheKey}')");
+                        $"[SeededDatabaseFactory.BuildDatabase] Restored Reference Test DB '{playgroundDatabaseName}' from '{databaseBackupInfo.BackupPoint}' (Caching key is '{cacheKey}')");
                 }
 
                 // Dispose the Backup
