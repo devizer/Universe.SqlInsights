@@ -1,0 +1,1 @@
+powershell -f test-on-all-servers.ps1 
