@@ -31,6 +31,7 @@ foreach($instance in $instances) {
 
   $ENV:SQLINSIGHTS_DATA_DIR = "W:\Temp\Sql Insight Tests\$($instance.Instance.Replace("\","-"))"
   $ENV:SYSTEM_ARTIFACTSDIRECTORY = $folder
+  Remove-Item "$folder\AddAction.log" -Force -EA SilentlyContinue
   
   pushd ..
   &{ dotnet @("build", "-m:1", "-c", "Release", "-f", "net6.0", "Universe.SqlInsights.SqlServerStorage.Tests.csproj") } *| tee "$folder\build.txt"
