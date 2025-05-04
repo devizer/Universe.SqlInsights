@@ -16,7 +16,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             return $"{ThreadCount}T up to {LimitCount:n0} by {Provider.GetShortProviderName()}, {(NeedMot == true ? "MOT On" : "MOT Off")}";
         }
         
-        public static new IEnumerable<SeedTestCaseProvider> GetTestCases()
+        public new static IEnumerable<SeedTestCaseProvider> GetTestCases()
         {
             var threadsList = new[] { 1, Environment.ProcessorCount + 1, Environment.ProcessorCount * 2 + 1 };
             if (TestEnv.IsTestUnderCoverage) threadsList = new[] { Environment.ProcessorCount };
