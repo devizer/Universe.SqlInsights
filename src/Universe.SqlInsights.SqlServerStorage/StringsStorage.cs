@@ -14,6 +14,8 @@ namespace Universe.SqlInsights.SqlServerStorage
 {
     public class StringsStorage
     {
+
+        const bool Disable_Invalidation_Debug_Log = true;
         
         readonly IDbConnection Connection;
         readonly IDbTransaction Transaction;
@@ -236,6 +238,7 @@ namespace Universe.SqlInsights.SqlServerStorage
             [Conditional("DEBUG")]
             void DebugLog(Func<string> message)
             {
+                if (Disable_Invalidation_Debug_Log) return;
                 Console.WriteLine($"[Strings {_debugCounter}] {message?.Invoke()}");
             }
         }
