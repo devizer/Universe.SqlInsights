@@ -30,9 +30,11 @@ foreach($instance in $instances) {
   Write-Host $instanceTitle -ForeGroundColor Magenta
 
   $ENV:SQLINSIGHTS_DATA_DIR = "W:\Temp\Sql Insight Tests\$($instance.Instance.Replace("\","-"))"
+  $ENV:SYSTEM_ARTIFACTSDIRECTORY = $folder
   
   pushd ..
-  &{ dotnet @("test", "-c", "Release", "-f", "net6.0", "Universe.SqlInsights.SqlServerStorage.Tests.csproj") } *| tee "$folder\log.txt"
+  &{ dotnet @("build", "-m:1", "-c", "Release", "-f", "net6.0", "Universe.SqlInsights.SqlServerStorage.Tests.csproj") } *| tee "$folder\build.txt"
+  &{ dotnet @("test", "--no-build", "-c", "Release", "-f", "net6.0", "Universe.SqlInsights.SqlServerStorage.Tests.csproj") } *| tee "$folder\test.txt"
   $exitCode = $GLOBAL:LASTEXITCODE
   echo $exitCode > "$folder\exitcode.txt"
   popd

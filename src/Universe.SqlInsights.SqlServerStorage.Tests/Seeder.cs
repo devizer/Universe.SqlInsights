@@ -92,8 +92,9 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                 var sqlVersion = sqlServerManagement.ShortServerVersion;
                 var hasMot = sqlServerManagement.CurrentDatabase.HasMemoryOptimizedTableFileGroup;
                 // var hasMot = cnn.Query<string>("Select Top 1 name from sys.filegroups where type = 'FX'").FirstOrDefault() != null;
+                var testConfiguration = string.IsNullOrEmpty(TestEnv.TestConfigName) ? "" : $" on {TestEnv.TestConfigName}";
                 TestEnv.LogToArtifact("AddAction.log",
-                    $"{actualOps,9:n1} 1/s * {actualCores}T | v{sqlVersion} on {TestEnv.TestConfigName} | {(hasMot ? "MOT" : "   ")} | {CrossInfo.ThePlatform} | {TestEnv.TestCpuName} | {providerName,-9} | {numThreads}T on {Environment.ProcessorCount} | {total} / {fail}"
+                    $"{actualOps,9:n1} 1/s * {actualCores}T | v{sqlVersion}{testConfiguration} | {(hasMot ? "MOT" : "   ")} | {CrossInfo.ThePlatform} | {TestEnv.TestCpuName} | {providerName,-9} | {numThreads}T on {Environment.ProcessorCount} | {total} / {fail}"
                 );
             }
 
