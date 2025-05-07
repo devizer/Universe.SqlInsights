@@ -44,10 +44,13 @@ namespace Universe.SqlInsights.SqlServerStorage
                 var sqlParams = optionalParams.Parameters;
                 var sqlWhere = optionalParams.SqlWhere;
 
+                // Null KeyPath: Opposite Order for Export/Import
                 string sqlWhereIsOk = isOk == null ? "" : isOk == true ? " And IsOK = (1)" : " And IsOK = (0)";
-                string sql = $"Select Top (@N) Data From SqlInsightsAction Where KeyPath = @KeyPath And IdSession = @IdSession{sqlWhereIsOk}{sqlWhere} Order By IdAction Desc";
+                string sqlWhereKeyPath = keyPath == null ? "" : "KeyPath = @KeyPath And ";
+                string sqlOrderBy = keyPath == null ? "IdAction Asc" : "IdAction Desc";
+                string sql = $"Select Top (@N) Data From SqlInsightsAction Where {sqlWhereKeyPath}IdSession = @IdSession{sqlWhereIsOk}{sqlWhere} Order By {sqlOrderBy}";
                 
-                sqlParams.Add("KeyPath", SerializeKeyPath(keyPath));
+                if (keyPath != null) sqlParams.Add("KeyPath", SerializeKeyPath(keyPath));
                 sqlParams.Add("IdSession", idSession);
                 sqlParams.Add("N", lastN);
                 
