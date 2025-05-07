@@ -57,7 +57,8 @@ namespace Universe.SqlInsights.SqlServerStorage
                 var ret = query
                     .Select(x => DbJsonConvert.Deserialize<ActionDetailsWithCounters>(x.Data));
 
-                return ret.ToList();
+                // return ret.ToList();
+                return ret;
             }
         }
 

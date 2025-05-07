@@ -267,7 +267,7 @@ namespace Universe.SqlInsights.W3Api
                     var summary = await history.GetActionsSummary(0);
                     var keyPath = summary.FirstOrDefault()?.Key ?? new SqlInsightsActionKeyPath("Pre JIT");
                     await history.GetKeyPathTimestampOfDetails(0, keyPath);
-                    await history.GetActionsByKeyPath(0, keyPath, lastN: 1);
+                    (await history.GetActionsByKeyPath(0, keyPath, lastN: 1)).ToList();
                     // Experimental
                     using (IDbConnection cnn = dbProviderFactory.CreateConnection())
                     {
