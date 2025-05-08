@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.Metrics;
 using System.IO.Compression;
 using ErgoFab.DataAccess.IntegrationTests.Shared;
+using System.Data.SqlClient;
 using Shared.TestDatabaseDefinitions;
 using Universe.NUnitPipeline;
 using Universe.SqlInsights.Shared;
@@ -17,6 +18,7 @@ public class TestSqlInsightExportSnapshot
     public void ExportToNullStream(ErgoFabTestCase testCase)
     {
         ISqlInsightsStorage storage = NUnitPipelineConfiguration.GetService<ISqlInsightsStorage>();
+        // SqlServerSqlInsightsStorage storage = new SqlServerSqlInsightsStorage(SqlClientFactory.Instance, testCase.ConnectionOptions.ConnectionString);
         SqlInsightsExportImport export = new SqlInsightsExportImport(storage)
         {
             BufferSize = 1,

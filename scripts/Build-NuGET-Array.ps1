@@ -5,7 +5,6 @@ Say "Building NuGet Packages. Cpu is '$(Get-Cpu-Name)'. $((Get-Memory-Info).Desc
 . .\Includes.ps1
 $NUnit_Pipeline_Revision=212
 $This_SqlIsnights_Version_Base="0.8.0"
-# 0.8: Added Export to file
 
 $nunit_versions = @(
   "3.7.0",
