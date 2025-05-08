@@ -89,6 +89,10 @@ namespace Universe.SqlInsights.GenericInterceptor
                             new SqlInsightsActionKeyPath($"[{storage.GetType().Name}]", "AddAction()"),
                             connectionString =>
                             {
+                                if (string.IsNullOrEmpty(connectionString))
+                                {
+                                    Console.WriteLine("[DEBUG] RESET TO **EMPTY** Connection String for Storage");
+                                }
                                 traceableStorage.ConnectionString = connectionString;
                                 storage?.AddAction(actionDetails);
                             },

@@ -111,8 +111,12 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                 countCommands += 2;
                 foreach (var key in keys)
                 {
-                    await storage.GetKeyPathTimestampOfDetails(session.IdSession, key);
-                    await storage.GetActionsByKeyPath(session.IdSession, key);
+                    var timestamp = await storage.GetKeyPathTimestampOfDetails(session.IdSession, key);
+                    var actionsByKey = await storage.GetActionsByKeyPath(session.IdSession, key);
+                    // Dispose by foreach | ToList
+                    foreach (var action in actionsByKey)
+                    {
+                    }
                     countCommands += 2;
                 }
             }

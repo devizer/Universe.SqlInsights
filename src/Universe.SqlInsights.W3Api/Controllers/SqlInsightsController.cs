@@ -41,7 +41,8 @@ namespace Universe.SqlInsights.W3Api.Controllers
             var topN = Math.Max(1,Math.Min(10000, args.TopN));
             if (args.TopN == 0) topN = 100;
             IEnumerable<ActionDetailsWithCounters> ret = await _Storage.GetActionsByKeyPath(args.IdSession, keyPath, topN, args.AppsFilter, args.HostsFilter, args.IsOK);
-            return ret.ToJsonResult();
+            // ToList to reduce lock duration
+            return ret.ToList().ToJsonResult();
         }
 
         public class ActionsParameters

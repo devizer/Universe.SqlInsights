@@ -53,6 +53,13 @@ namespace Universe.SqlInsights.SqlServerStorage
 
             var ret = ProviderFactory.CreateConnection();
             ret.ConnectionString = ConnectionString;
+            // Console.WriteLine($"[DEBUG ConnectionString] GetConnection() '{ret.ConnectionString}'");
+            /*
+            ret.StateChange += (sender, args) =>
+            {
+                Console.WriteLine($"[DEBUG ConnectionString] State Changed to {args.CurrentState}: '{ret.ConnectionString}'");
+            };
+            */
             ret.Open();
             return ret;
         }

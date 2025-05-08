@@ -26,7 +26,7 @@ public class OrderedPipelineConfigurationFixture
         var storage = NUnitPipelineConfiguration.GetService<ISqlInsightsStorage>();
         SqlInsightsExportImport export = new SqlInsightsExportImport(storage)
         {
-            BufferSize = 1,
+            BufferSize = 32768,
             CompressionLevel = CompressionLevel.Fastest
         };
 

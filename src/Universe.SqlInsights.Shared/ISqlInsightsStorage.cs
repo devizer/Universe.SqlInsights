@@ -22,6 +22,7 @@ namespace Universe.SqlInsights.Shared
 #if NETSTANDARD || NET461
         Task<IEnumerable<ActionSummaryCounters>> GetActionsSummary(long idSession, IEnumerable<string> optionalApps, IEnumerable<string> optionalHosts);
         Task<string> GetActionsSummaryTimestamp(long idSession, IEnumerable<string> optionalApps, IEnumerable<string> optionalHosts);
+        // keyPath != null for Dashboard, null for Export (1 sec for 20000 actions)
         Task<IEnumerable<ActionDetailsWithCounters>> GetActionsByKeyPath(long idSession, SqlInsightsActionKeyPath keyPath, int lastN, IEnumerable<string> optionalApps, IEnumerable<string> optionalHosts, bool? isOk);
         Task<string> GetKeyPathTimestampOfDetails(long idSession, SqlInsightsActionKeyPath keyPath, IEnumerable<string> optionalApps, IEnumerable<string> optionalHosts);
 

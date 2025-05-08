@@ -32,12 +32,14 @@ namespace Universe.SqlInsights.SqlServerStorage
             }
         }
 
+        // keyPath == null: Return all actions ordered Ascending
         public async Task<IEnumerable<ActionDetailsWithCounters>> GetActionsByKeyPath(long idSession, SqlInsightsActionKeyPath keyPath, int lastN = 100, IEnumerable<string> optionalApps = null, IEnumerable<string> optionalHosts = null, bool? isOk = null)
         {
             if (lastN < 1) 
                 throw new ArgumentOutOfRangeException(nameof(lastN));
-            
-            using (var con = GetConnection())
+
+            var con = GetConnection();
+            // using (var con = GetConnection()) NON-BUFFERED. 
             {
                 StringsStorage strings = new StringsStorage(con, null);
                 var optionalParams = BuildOptionalParameters(strings, optionalApps, optionalHosts);
@@ -48,14 +50,18 @@ namespace Universe.SqlInsights.SqlServerStorage
                 string sqlWhereIsOk = isOk == null ? "" : isOk == true ? " And IsOK = (1)" : " And IsOK = (0)";
                 string sqlWhereKeyPath = keyPath == null ? "" : "KeyPath = @KeyPath And ";
                 string sqlOrderBy = keyPath == null ? "IdAction Asc" : "IdAction Desc";
-                string sql = $"Select Top (@N) Data From SqlInsightsAction Where {sqlWhereKeyPath}IdSession = @IdSession{sqlWhereIsOk}{sqlWhere} Order By {sqlOrderBy}";
+                string sql = $"Select Top (@N) Data From SqlInsightsAction With (NoLock) Where {sqlWhereKeyPath}IdSession = @IdSession{sqlWhereIsOk}{sqlWhere} Order By {sqlOrderBy}";
                 
                 if (keyPath != null) sqlParams.Add("KeyPath", SerializeKeyPath(keyPath));
                 sqlParams.Add("IdSession", idSession);
                 sqlParams.Add("N", lastN);
-                
-                var query = await con
-                    .QueryAsync<SelectDataResult>(sql, sqlParams);
+
+                // non buffered throw exception
+                CommandDefinition cmd = new CommandDefinition(sql, sqlParams, flags: CommandFlags.None);
+                // Console.WriteLine($"[DEBUG ConnectionString] GET ACTIONS {con.ConnectionString}");
+                var query = con.Query<SelectDataResult>(cmd);
+                // var query = con.Query<SelectDataResult>(/*cmd*/sql, sqlParams, buffered: true);
+
 
                 var ret = query
                     .Select(x => DbJsonConvert.Deserialize<ActionDetailsWithCounters>(x.Data));

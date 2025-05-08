@@ -36,6 +36,13 @@ public class SqlInsightsExportImport
             await System.Text.Json.JsonSerializer.SerializeAsync(streamSummary, summaryJson);
         }
 
+        if (EnableDebugLog)
+        {
+            var p = Process.GetCurrentProcess();
+            AppendLog($"Starting export. Memory: {p.WorkingSet64 / 1024:n0} Kb");
+        }
+
+
         Stopwatch startAt = Stopwatch.StartNew();
         int totalActions = 0;
         foreach (var session in sessions)
@@ -46,17 +53,16 @@ public class SqlInsightsExportImport
             streamSession.Write(ArrayStart, 0, ArrayStart.Length);
 
             bool isNext = false;
+            // Console.WriteLine($"[DEBUG ConnectionString] STARTING NON-BUFFERED ACTIONS QUERY");
             var actions = await Storage.GetActionsByKeyPath(session.IdSession, null, int.MaxValue - 1, null, null, null);
             foreach (ActionDetailsWithCounters action in actions)
             {
-                // if (totalActions > 100) continue;
-                if (isNext)
-                {
-                    streamSession.Write(NextSeparator, 0, NextSeparator.Length);
-                }
-
+                if (isNext) streamSession.Write(NextSeparator, 0, NextSeparator.Length);
                 streamSession.Write(Tab, 0, Tab.Length);
+
+                // await System.Text.Json.JsonSerializer.SerializeAsync(streamSession, action);
                 await System.Text.Json.JsonSerializer.SerializeAsync(streamSession, action);
+
                 isNext = true;
                 totalActions++;
                 if (totalActions % 1000 == 0 && EnableDebugLog)
