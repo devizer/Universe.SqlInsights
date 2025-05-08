@@ -10,6 +10,7 @@ namespace Universe.SqlInsights.Shared;
 
 #if NETSTANDARD2_0_OR_GREATER || NET461
 
+// TODO: For Import() sorting by 'Id Desc' is useless on Dashboard. Should be sorted by 'At Desc'
 public class SqlInsightsExportImport 
 {
     private readonly ISqlInsightsStorage Storage;
