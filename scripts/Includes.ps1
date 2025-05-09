@@ -53,7 +53,7 @@ function Set-Target-Version-for-NUnit-Version([string] $NUnit_Version) {
   if ($NUnit_Version -like "3.7.*" -or $NUnit_Version -like "3.8.*" -or $NUnit_Version -like "3.9.*") {
       # the latest net20
       $forced="netstandard2.0;net462;net46;net48;net6.0;net8.0"
-      $GLOBAL:TARGET_FRAMEWORKS_LIB="netstandard1.3;netstandard1.6;net35;net40;net45;$forced"
+      $GLOBAL:TARGET_FRAMEWORKS_LIB="netstandard1.4;netstandard1.6;net35;net40;net45;$forced"
       $GLOBAL:TARGET_FRAMEWORKS_TEST="netcoreapp1.0;netcoreapp1.1;netcoreapp2.0;netcoreapp2.1;netcoreapp3.0;netcoreapp3.1;net20;net35;net40;net45;net462;net48;net8.0"
   }
   elseif ($NUnit_Version -like "3.10.*") {
