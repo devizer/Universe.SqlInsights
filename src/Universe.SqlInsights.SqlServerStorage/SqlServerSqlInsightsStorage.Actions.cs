@@ -57,16 +57,19 @@ namespace Universe.SqlInsights.SqlServerStorage
                 sqlParams.Add("N", lastN);
 
                 // non buffered throw exception
-                CommandDefinition cmd = new CommandDefinition(sql, sqlParams, flags: CommandFlags.None);
+                CommandFlags bufferMode = keyPath == null ? CommandFlags.None : CommandFlags.Buffered;
+                CommandDefinition cmd = new CommandDefinition(sql, sqlParams, flags: bufferMode);
                 // Console.WriteLine($"[DEBUG ConnectionString] GET ACTIONS {con.ConnectionString}");
                 var query = con.Query<SelectDataResult>(cmd);
                 // var query = con.Query<SelectDataResult>(/*cmd*/sql, sqlParams, buffered: true);
 
 
+                if (keyPath != null) query = query.ToList();
                 var ret = query
                     .Select(x => DbJsonConvert.Deserialize<ActionDetailsWithCounters>(x.Data));
 
                 // return ret.ToList();
+                // if (keyPath != null) con.Close();
                 return ret;
             }
         }
