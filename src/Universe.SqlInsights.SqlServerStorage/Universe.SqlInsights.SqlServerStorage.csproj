@@ -6,7 +6,7 @@
     <PropertyGroup>
         <!-- net35;net40;net45; -->
         <!-- System.Text.Json 6.0.7 starts from net 4.6.1 -->
-        <TargetFrameworks>netstandard2.0;net35;net40;net45;net461;netstandard1.3;net5.0;net6.0;net8.0;</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0;net35;net40;net45;net461;netstandard1.4;net5.0;net6.0;net8.0;</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net461' Or '$(TargetFramework)' == 'netstandard2.0' ">
@@ -17,16 +17,16 @@
       <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0" />
     </ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)'=='netstandard2.0' Or '$(TargetFramework)'=='netstandard1.3' or '$(TargetFramework)'=='net50'">
+    <ItemGroup Condition=" '$(TargetFramework)'=='netstandard2.0' Or '$(TargetFramework)'=='netstandard1.4' or '$(TargetFramework)'=='net50'">
         <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
     </ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.4' ">
         <PackageReference Include="System.Threading.Thread" Version="4.3.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Universe.SqlServerJam" Version="1.0.788" />
+      <PackageReference Include="Universe.SqlServerJam" Version="1.0.795" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 
       <ProjectReference Include="..\Universe.SqlInsights.Shared\Universe.SqlInsights.Shared.csproj" />
