@@ -64,7 +64,7 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
                 {
                     // First. Force Drop playgroundDatabaseName ...
                     var savedDbConnectionString = sqlServerTestDbManager.BuildConnectionString(playgroundDatabaseName);
-                    AgileDbKiller.Kill(savedDbConnectionString, false, 1);
+                    ResilientDbKiller.Kill(savedDbConnectionString, false, 3);
                     // .. And Restore it from newly created backup
                     await sqlServerTestDbManager.RestoreBackup(databaseBackupInfo, playgroundDatabaseName);
                     PipelineLog.LogTrace(

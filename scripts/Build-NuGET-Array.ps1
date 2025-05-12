@@ -4,7 +4,7 @@ Say "Building NuGet Packages. Cpu is '$(Get-Cpu-Name)'. $((Get-Memory-Info).Desc
 & dotnet --list-sdks | Sort-Object -Descending
 . .\Includes.ps1
 $NUnit_Pipeline_Revision=212
-$This_SqlIsnights_Version_Base="0.8.0"
+$This_SqlIsnights_Version_Base="0.9.0"
 
 $nunit_versions = @(
   "3.7.0",

@@ -61,7 +61,7 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
             var cs = BuildConnectionString(name, false);
             try
             {
-                AgileDbKiller.Kill(cs, false, 1);
+                ResilientDbKiller.Kill(cs, false, 3);
             }
             catch (Exception ex)
             {

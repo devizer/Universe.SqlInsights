@@ -63,7 +63,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             if (NeedDropDatabaseOnDispose)
             OnDispose(
                 $"Drop Database [{dbName}]",
-                () => AgileDbKiller.Kill(connectionString, throwOnError: false, retryCount: 3),
+                () => ResilientDbKiller.Kill(connectionString, throwOnError: false, retryCount: 3),
                 TestDisposeOptions.Class
             );
             return new SqlServerSqlInsightsStorage(provider, connectionString);
