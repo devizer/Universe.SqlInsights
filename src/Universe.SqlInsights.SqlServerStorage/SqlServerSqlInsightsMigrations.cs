@@ -44,8 +44,8 @@ namespace Universe.SqlInsights.SqlServerStorage
 			if (man.IsWindows && (man.FixedServerRoles & FixedServerRoles.SysAdmin) != 0)
             {
                 // TODO: Only if ISqlInsightsConfiguration.DisposeByShellCommand == true
-                man.ServerConfigurationSettings.XpCmdShell = true;
-                Logs.AppendLine($" * Allow XpCmdShell: {man.ServerConfigurationSettings.XpCmdShell}");
+                man.Configuration.XpCmdShell = true;
+                Logs.AppendLine($" * Allow XpCmdShell: {man.Configuration.XpCmdShell}");
             }
 
             // Server 2016 (13.x) SP1 (or later), any edition. For SQL Server 2014 (12.x) and SQL Server 2016 (13.x) RTM (pre-SP1) you need Enterprise, Developer, or Evaluation edition.
