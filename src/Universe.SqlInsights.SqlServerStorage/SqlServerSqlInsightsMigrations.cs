@@ -30,14 +30,13 @@ namespace Universe.SqlInsights.SqlServerStorage
             var sqlConnectionStringBuilder = new SqlConnectionStringBuilder(ConnectionString);
             string dbName = sqlConnectionStringBuilder.InitialCatalog;
             string serverName = sqlConnectionStringBuilder.DataSource;
-            Logs.AppendLine($" * DisableMemoryOptimizedTables: {DisableMemoryOptimizedTables}");
-            Logs.AppendLine($" * Db Name: [{dbName}] on server \"{serverName}\"");
+            Logs.AppendLine($" * DB Name: [{dbName}] on server \"{serverName}\"");
             
             IDbConnection cnn = this.ProviderFactory.CreateConnection();
             cnn.ConnectionString = this.ConnectionString;
             var man = cnn.Manage();
-            Logs.AppendLine($" * IsLocalDB: {man.IsLocalDB}");
-            Logs.AppendLine($" * Short Version: {man.ShortServerVersion} on {man.HostPlatform}");
+            Logs.AppendLine($" * Is LocalDB: {man.IsLocalDB}");
+            Logs.AppendLine($" * SQL Server Version: {man.ProductVersion ?? man.ShortServerVersion} on {man.HostPlatform}");
             Logs.AppendLine($" * Medium Version: {man.MediumServerVersion}");
             Logs.AppendLine($" * Long Version: {man.LongServerVersion}");
 
@@ -50,6 +49,7 @@ namespace Universe.SqlInsights.SqlServerStorage
 
             // Server 2016 (13.x) SP1 (or later), any edition. For SQL Server 2014 (12.x) and SQL Server 2016 (13.x) RTM (pre-SP1) you need Enterprise, Developer, or Evaluation edition.
             // 2014 Developer Does not support nvarchar(max) for MOT
+            Logs.AppendLine($" * Disable Experimental Memory Optimized Tables: {DisableMemoryOptimizedTables}");
             var supportMOT = man.IsMemoryOptimizedTableSupported && man.ShortServerVersion.Major >= 13;
             Logs.AppendLine($" * Is Memory Optimized Tables Supported: {supportMOT}{(DisableMemoryOptimizedTables & supportMOT ? ", But Disabled": "")}");
 
@@ -69,7 +69,7 @@ namespace Universe.SqlInsights.SqlServerStorage
 			var sampleFile = cnn.Query<string>("Select Top 1 filename from sys.sysfiles").FirstOrDefault();
             var dataFolder = sampleFile != null ? CrossPath.GetDirectoryName(man.IsWindows, sampleFile) : null;
             var motFileFolder = CrossPath.Combine(man.IsWindows, dataFolder, $"MOT for {dbName}");
-            Logs.AppendLine($" * MOT Files Folder: {dataFolder}");
+            Logs.AppendLine($" * MOT Files Default Folder: {dataFolder}");
 
 			var existingTables = cnn.Query<string>("Select name from sys.objects WHERE type = 'U' and name like '%SqlInsights%' Order By 1").ToArray();
             var existingTablesInfo = existingTables.Length == 0 ? ">Not Found<" : String.Join(",", existingTables.Select(x => $"[{x}]").ToArray());
@@ -316,7 +316,7 @@ End
                     }
                 }
 
-                Logs.AppendLine($" * Database [{GetDatabaseName()}] default collation is {con.Manage().CurrentDatabase.DefaultCollationName}");
+                Logs.AppendLine($" * Database [{GetDatabaseName()}] default collation is '{con.Manage().CurrentDatabase.DefaultCollationName}'");
                 Logs.Append($" * Done! Migration successfully invoked {sqlMigrations.Count} commands");
             }
         }
