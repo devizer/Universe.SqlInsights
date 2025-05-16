@@ -20,7 +20,7 @@
 		<!--<PackageReference Include="NUnit.Analyzers" Version="3.9.0" />-->
 		<PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
 		<PackageReference Include="Universe.NUnitPipeline" Version="3.14.0.212" />
-		<PackageReference Include="Universe.SqlServerJam" Version="2.0.809" />
+		<PackageReference Include="Universe.SqlServerJam" Version="2.1.830" />
 
 		<PackageReference Include="Dapper" Version="2.1.35" />
 		<!--
