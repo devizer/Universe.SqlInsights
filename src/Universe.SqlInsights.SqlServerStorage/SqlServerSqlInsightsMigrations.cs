@@ -35,7 +35,7 @@ namespace Universe.SqlInsights.SqlServerStorage
             IDbConnection cnn = this.ProviderFactory.CreateConnection();
             cnn.ConnectionString = this.ConnectionString;
             var man = cnn.Manage();
-            Logs.AppendLine($" * Is LocalDB: {man.IsLocalDB}");
+            // Logs.AppendLine($" * Is LocalDB: {man.IsLocalDB}");
             Logs.AppendLine($" * SQL Server Version: {man.ProductVersion ?? man.ShortServerVersion} on {man.HostPlatform}");
             Logs.AppendLine($" * Medium Version: {man.MediumServerVersion}");
             Logs.AppendLine($" * Long Version: {man.LongServerVersion}");
