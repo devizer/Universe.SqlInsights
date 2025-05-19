@@ -203,6 +203,7 @@ steps:
        iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
        Set-SQLServer-Options -Title "SQL $i" -Instance "(local)" -Options @{ xp_cmdshell = $true; "clr enabled" = $false; "server trigger recursion" = $true; "min server memory (MB)" = 7000; "max server memory (MB)" = 16000; "fill factor (%)" = 70 }
     condition: succeededOrFailed()
+    retryCountOnTaskFailure: 4
     displayName: '[SQL Server] Configure'
 
   - bash: |
