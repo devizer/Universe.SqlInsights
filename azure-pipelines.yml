@@ -2,7 +2,7 @@ variables:
   Project: 'Universe.SqlInsights'
   TEST_W3API: true
   # Default image
-  VMIMAGE: 'windows-2019'
+  VMIMAGE: 'windows-2022'
   DEFAULT_RAM_DISK_SIZE: "2400"
   W3API_NET: net6.0
   SKIP_ERGOFAB_TESTS: 'False'
