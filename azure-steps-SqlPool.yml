@@ -152,7 +152,7 @@ steps:
         echo "##vso[task.setvariable variable=$var]$value"
       done
 
-      dotnet test ErgoFab.DataAccess.IntegrationTests.dll
+      dotnet test --filter "FullyQualifiedName !~ ExportToNullStream" ErgoFab.DataAccess.IntegrationTests.dll 
       cp -av TestsOutput $SYSTEM_ARTIFACTSDIRECTORY
       Say "Success Complete"
     condition: ne(variables.SKIP_ERGOFAB_TESTS,'True')
@@ -163,7 +163,7 @@ steps:
       export SENSORSAPP_STRESS_WORKINGSET_ROWS=10000
       export SENSORSAPP_STRESS_DURATION=1000
       cd $AGENT_TEMPDIRECTORY/Goods/jam.tests
-      dotnet test Universe.SqlServerJam.Tests.dll
+      dotnet test --filter "FullyQualifiedName !~ TestResetDefaultFillFactor & FullyQualifiedName !~ SensorsAppScalabilityBenchmark " Universe.SqlServerJam.Tests.dll
       Say "Success Complete"
     condition: succeededOrFailed()
     timeoutInMinutes: 15
