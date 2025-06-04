@@ -50,6 +50,12 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
             await masterConnection.ExecuteAsync(sql1, new { mdfName = $"{name} mdf", mdfFullName = mdf, ldfName = $"{name} ldf", ldfFullName = ldf, });
             await masterConnection.ExecuteAsync(sql2);
             */
+            Console.WriteLine(@$"[DEBUG] Creating DB [{name}]
+MDF: {mdf}
+LDF: {ldf}
+MDF FOLDER EXISTS: {Directory.Exists(Path.GetDirectoryName(mdf))}
+LDF FOLDER EXISTS: {Directory.Exists(Path.GetDirectoryName(ldf))}
+");
             masterConnection.Execute(sql1, new { mdfName = $"{name} mdf", mdfFullName = mdf, ldfName = $"{name} ldf", ldfFullName = ldf, });
             masterConnection.Execute(sql2);
         }
