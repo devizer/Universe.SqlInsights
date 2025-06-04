@@ -200,8 +200,8 @@ steps:
       # dotnet nuget add source https://api.nuget.org/v3/index.json -n nuget.org
       dotnet serve --version 2>nul || dotnet tool install --global dotnet-serve
       dotnet serve --version
-      taskkill.exe "-t" "-f" "-im" dotnet-serve.exe
-      taskkill.exe "-t" "-f" "-im" chrome.exe
+      taskkill.exe "-t" "-f" "-im" dotnet-serve.exe || true
+      taskkill.exe "-t" "-f" "-im" chrome.exe || true
       start /max "w3app server" dotnet serve -p 6060 -o
       # start /max "w3app browser" chrome.exe --disable-gpu --headless https://localhost:6060
 
