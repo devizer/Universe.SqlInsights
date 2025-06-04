@@ -98,6 +98,17 @@ steps:
 
 
   - powershell: |
+
+       Find-Local-SqlServers | 
+          % { $_.Service } | 
+          % { Get-Service -Name $_ } | 
+          ? { $_.Status -ne "Running" } |
+          % { Write-Host "Starting $($_.Name)"; Start-Service "$($_.Name)" }
+
+
+       Write-Host "Starting DB Clean up"
+       Find-Local-SqlServers | % { Clean-Up-Sql-Server -Instance "$($_.Instance)" -Filter { $true } }
+       
        Find-Local-SqlServers | 
           % { $_.Service } | 
           % { Get-Service -Name $_ } | 
