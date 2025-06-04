@@ -193,8 +193,7 @@ jobs:
       OS: Windows
     timeoutInMinutes: 222
     cancelTimeoutInMinutes: 1
-    pool:
-      vmImage: SqlPool
+    pool: SqlPool
     steps:
       - template: azure-steps-SqlPool.yml
     strategy:
