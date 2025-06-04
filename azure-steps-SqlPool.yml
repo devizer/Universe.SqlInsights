@@ -209,6 +209,7 @@ steps:
       cd build
       echo "SERVING STATIC W3APP. Content of ./static/js:"
       ls -la static/js
+      # dotnet nuget add source https://api.nuget.org/v3/index.json -n nuget.org
       dotnet serve --version 2>nul || dotnet tool install --global dotnet-serve
       dotnet serve --version
       start /max dotnet serve -p 6060 -o
