@@ -178,19 +178,7 @@ steps:
 
   - script: |
        sqlcmd /? | find "Version"
-       for %%a IN ("." "localhost,1433") DO (
-        echo "TRY SERVER [%%a]"
-        sqlcmd -S %%a -h-1 -s"," -E -W -w 10000 -Q "SELECT Name, Description FROM fn_helpcollations() order by 1" > %SYSTEM_ARTIFACTSDIRECTORY%\fn_helpcollations.txt
-        sqlcmd -S %%a -h-1 -s"," -E -W -w 10000 -Q "SET NOCOUNT ON; SELECT DATALENGTH(@@DBTS) as MYDBTS_LENGTH, @@DBTS as MYDBTS;"
-        sqlcmd -S %%a -h-1 -s"," -E -W -w 10000 -Q "SET NOCOUNT ON; Select CONVERT(VARCHAR(128), SERVERPROPERTY ('productversion'))"
-        sqlcmd -S %%a -h-1 -s"," -E -W -w 10000 -Q "SET NOCOUNT ON; Select @@Version"
-        echo. && echo "CHECK Update ... Output"
-        sqlcmd -S %%a -E -Q "Create Table Temp1(id int, rv ROWVERSION); Insert Into Temp1(id) Values(10); Update Top (1) Temp1 Set id=42 Output Inserted.Id as MyNewId;"
-        echo. && echo "fn_helpcollations"
-        sqlcmd -S %%a -h-1 -s"," -E -W -w 10000 -Q "SELECT Name, Description FROM fn_helpcollations() order by 1"
-        echo.
-       )
-       REM true
+       echo "OK"
     displayName: 'Show SQL Info'
   
   - task: DownloadPipelineArtifact@2
@@ -212,7 +200,11 @@ steps:
       # dotnet nuget add source https://api.nuget.org/v3/index.json -n nuget.org
       dotnet serve --version 2>nul || dotnet tool install --global dotnet-serve
       dotnet serve --version
-      start /max dotnet serve -p 6060 -o
+      taskkill.exe "-t" "-f" "-im" dotnet-serve.exe
+      taskkill.exe "-t" "-f" "-im" chrome.exe
+      start /max "w3app server" dotnet serve -p 6060 -o
+      # start /max "w3app browser" chrome.exe --disable-gpu --headless https://localhost:6060
+
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     displayName: 'w3app: run'
 
