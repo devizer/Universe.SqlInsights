@@ -107,7 +107,7 @@ steps:
 
 
        Write-Host "Starting DB Clean up"
-       Find-Local-SqlServers | % { Clean-Up-Sql-Server -Instance "$($_.Instance)" -Filter { $true } }
+       Find-Local-SqlServers | % { Clean-Up-Sql-Server-Databases -Instance "$($_.Instance)" -Filter { $true } }
        
        Find-Local-SqlServers | 
           % { $_.Service } | 
