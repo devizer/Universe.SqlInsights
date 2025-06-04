@@ -183,9 +183,42 @@ jobs:
       - template: azure-steps-linux.yml
   
 
-  - job: IfWindows
+  - job: IfSqlPool
     displayName: If
     # condition: eq('Never','')
+    dependsOn:
+      - Build_W3_App
+    variables:
+      SQLTRACE_FOLDER: 'D:\Sql-Traces'
+      OS: Windows
+    timeoutInMinutes: 222
+    cancelTimeoutInMinutes: 1
+    pool:
+      vmImage: SqlPool
+    steps:
+      - template: azure-steps-SqlPool.yml
+    strategy:
+      maxParallel: 10
+      matrix:
+
+        "SQL Server 2008-R2 x64 Core":
+          SQL_INSTANCE: (local)\COR_2008R2_X64
+
+        "SQL Server 2008-R2 x86 Core":
+          SQL_INSTANCE: (local)\COR_2008R2_X86
+        
+        "SQL Server 2008 x64 Developer":
+          SQL_INSTANCE: (local)\DEV_2008_X64
+        
+        "SQL Server 2008 x86 Developer":
+          SQL_INSTANCE: (local)\DEV_2008_X86
+
+        "SQL Server 2005 Core":
+          SQL_INSTANCE: (local)\COR_2005_X86
+          SKIP_ERGOFAB_TESTS: "True"
+
+  - job: IfWindows
+    displayName: If
     dependsOn:
       - Build_W3_App
     variables:
@@ -220,43 +253,25 @@ jobs:
           RAM_DISK: "R"
           RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
         
-        "SQL Server 2008-R2 Core":
-          SQL: '2008R2 Core: MSSQLSERVER'
-          MSI_DUMP: true
-        
-        "SQL Server 2008-R2 Developer":
-          SQL: '2008R2 Developer Updated: MSSQLSERVER'
-          MSI_DUMP: true
-        
-        "SQL Server 2008 Core":
-          SQL: '2008 Core: MSSQLSERVER'
-
-        "SQL Server 2008 Developer":
-          SQL: '2008 Developer Updated: MSSQLSERVER'
-
-        "SQL Server 2016 Core":
-          SQL: '2016 Core: MSSQLSERVER'
-          TEST_ADVENTURE_WORKS: true
-
         "SQL Server 2016 Developer":
           SQL: '2016 Developer: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
 
-        "SQL Server 2008 Advanced":
-          SQL: '2008 Advanced: MSSQLSERVER'
+        "SQL Server 2016 Core":
+          SQL: '2016 Core: MSSQLSERVER'
+          TEST_ADVENTURE_WORKS: true
+          # MSI_DUMP: true
+
+        
         # "SQL Server 2008 Advanced on Windows Server 2022":
         #   SQL: 'SqlServer 2008 Express Advanced: MSSQLSERVER'
         #   VMIMAGE: 'windows-2022'
  
-        "SQL Server 2005 Core RAM DISK":
-          SQL: '2005 Core: MSSQLSERVER'
-          RAM_DISK: "R"
-          RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
-          SKIP_ERGOFAB_TESTS: "True"
-        
-        "SQL Server 2005 Core":
-          SQL: '2005 Core: MSSQLSERVER'
-          SKIP_ERGOFAB_TESTS: "True"
+        # "SQL Server 2005 Core RAM DISK":
+        #  SQL: '2005 Core: MSSQLSERVER'
+        #  RAM_DISK: "R"
+        #  RAM_DISK_SIZE: "$(DEFAULT_RAM_DISK_SIZE)"
+        #  SKIP_ERGOFAB_TESTS: "True"
         
         # VMIMAGE: 'windows-2016' does not exist
         

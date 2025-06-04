@@ -1,0 +1,349 @@
+# AGENT_OS=Linux|Darwin|Windows_NT
+# condition: eq(variables['Agent.OS'], 'Linux|Darwin|Windows_NT')
+
+steps:
+
+  - powershell: |
+      # iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
+      Write-Host "Total Modules: $((get-module -ListAvailable).Count)"
+      Install-Module -Name SqlServer-Version-Management -Force
+
+      Say "CPU: $(Get-Cpu-Name). $((Get-Memory-Info).Description)"
+      (Get-Module SqlServer-Version-Management -ListAvailable) | fl
+      # Measure-Action "Uninstall LocalDB *" { Uninstall-LocalDB-List "*" }
+    retryCountOnTaskFailure: 3
+    displayName: 'Bootstrap pwsh'
+
+  - bash: |
+      set -eu; set -o pipefail;
+      script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
+      Say --Reset-Stopwatch
+      Say "CPU: $(Get-CpuName)"
+    condition: succeededOrFailed()
+    retryCountOnTaskFailure: 3
+    displayName: 'Bootstrap bash'
+
+  - task: DownloadPipelineArtifact@2
+    condition: succeededOrFailed()
+    displayName: 'Goods: download (w3api, w3api.tests, jam.tests)'
+    inputs:
+      artifactName: Goods
+      path: $(AGENT.TEMPDIRECTORY)\Goods
+      patterns: 
+        "**"
+   
+  - bash: |
+       cd "$AGENT_TEMPDIRECTORY"
+       cd Goods
+       ls -la
+    displayName: 'Show Goods: w3api, w3api.tests, jam.tests'
+
+  - powershell: |
+      (Get-Counter -ListSet *).Paths | Where-Object { $_ -like "*Transfers*" }
+    displayName: 'List Perfmormance Counters'
+
+  - powershell: |
+      Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 7
+      $true
+    retryCountOnTaskFailure: 3
+    displayName: 'Show Transfer for 20 seconds'
+
+  - bash: |
+      script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
+      Say --Reset-Stopwatch
+      Say "CPU: $(Get-CpuName)"
+
+      echo "Bash Version: $BASH_VERSION"
+      for cmd in date jq tee cat tr node yarn npm dotnet head grep awk sed perl; do
+        echo "'$cmd' path: [$(command -v "$cmd")]"
+        echo "'$cmd' version: [$("$cmd" --version | grep -v -E '$^' | head -1)]"
+      done
+      
+      echo "'sqlcmd' path: [$(command -v sqlcmd)]"
+      echo "'sqlcmd' version: [$(sqlcmd -? | head -2 | tr '\n' ' ' | tr '\r' ' ' | tr '  ' ' ')]"
+      
+      echo "'taskkill' path: [$(command -v taskkill)]"
+
+      echo "'msbuild' path: [$(command -v msbuild)]"
+      echo "'msbuild' version: [$(msbuild | head -1)]"
+
+      for csc in 'Framework\v2.0.50727' 'Framework\v3.5' 'Framework\v4.0.30319' 'Framework64/v2.0.50727' 'Framework64/v3.5' 'Framework64/v4.0.30319'; do
+        here="-"
+        fullpath='C:\Windows\Microsoft.NET\'"$csc\\csc.exe"
+        if [[ -s "$fullpath" ]]; then here="Yes"; fi
+        echo "'$fullpath': $here"
+      done
+
+      echo "Seconds since the Epoch: $(date +%s)"
+
+      true
+    displayName: 'Show Commands'
+
+  - powershell: |
+       $ErrorActionPreference = "SilentlyContinue"
+       
+       $nuget = nuget help | select -First 1
+       Write-Host "NUGET: $nuget"
+       $msbuild = msbuild help | select -First 1
+       Write-Host "MSBUILD: $msbuild"
+
+       & dotnet --info
+       "PATH: [" + [Environment]::GetEnvironmentVariable("PATH") + "]"
+       & bash -c "Say ENVIRONMENT; printenv | sort"; $true
+
+       pushd "C:\Program Files (x86)\Microsoft Visual Studio\"
+       # & cmd /c dir /b /s
+       popd
+    displayName: 'system info (pwsh)'
+
+
+  - powershell: |
+       Find-Local-SqlServers | 
+          % { $_.Service } | 
+          % { Get-Service -Name $_ } | 
+          ? { $_.Status -ne "Stopped" } |
+          % { Write-Host "Stopping $($_.Name)"; Stop-Service "$($_.Name)" -Force }
+              
+       $SQL_WINDOWS_SERVICE = "MSSQL`$$(($ENV:SQL_INSTANCE).Split('\') | Select -Last 1)"
+       echo "##vso[task.setvariable variable=SQL_WINDOWS_SERVICE]$SQL_WINDOWS_SERVICE"
+       $SQL_CONNECTION_STRING="Data Source=$SQL_INSTANCE; Integrated Security = SSPI; Enrypt = False"
+       echo "##vso[task.setvariable variable=SQL_CONNECTION_STRING]$SQL_CONNECTION_STRING"
+
+       Write-Host "SQL_WINDOWS_SERVICE: [$SQL_WINDOWS_SERVICE]"
+       Write-Host "SQL_CONNECTION_STRING: [$SQL_CONNECTION_STRING]"
+
+       & net.exe start "$svc"
+       Say "Successfully Complete"
+
+    condition: succeededOrFailed()
+    retryCountOnTaskFailure: 3
+    displayName: '[SQL Server] Setup'
+
+  - powershell: |
+       iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
+       Set-SQLServer-Options -Title "SQL $i" -Instance "$ENV:SQL_INSTANCE" -Options @{ xp_cmdshell = $true; "clr enabled" = $false; "server trigger recursion" = $true; "min server memory (MB)" = 7000; "max server memory (MB)" = 16000; "fill factor (%)" = 70 }
+    condition: succeededOrFailed()
+    retryCountOnTaskFailure: 4
+    displayName: '[SQL Server] Configure'
+
+  - bash: |
+      set -eu; set -o pipefail;
+      NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES=""
+      if [[ "${RAM_DISK:-}" == "" ]]; then export NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES=True; fi # for query cache
+      cd $AGENT_TEMPDIRECTORY/Goods/ergofab.tests
+      export ERGOFAB_TESTS_DATA_FOLDER="D:\\ErgFab-Tests"
+      export ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING="Server=$($ENV:SQL_INSTANCE);Encrypt=False;Initial Catalog=SqlInsights Local Warehouse;Integrated Security=SSPI"
+      echo "##vso[task.setvariable variable=ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING]$ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING"
+      export ERGOFAB_TESTS_REPORT_FULLNAME="$SYSTEM_ARTIFACTSDIRECTORY\\ErgFab Tests Report.txt"
+      for var in ERGOFAB_TESTS_DATA_FOLDER ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES; do
+        value="${!var}"
+        echo "EXPORT $var = [$value]" 
+        echo "##vso[task.setvariable variable=$var]$value"
+      done
+
+      dotnet test ErgoFab.DataAccess.IntegrationTests.dll
+      cp -av TestsOutput $SYSTEM_ARTIFACTSDIRECTORY
+      Say "Success Complete"
+    condition: ne(variables.SKIP_ERGOFAB_TESTS,'True')
+    displayName: 'Test ErgoFab (SQL)'
+
+  - bash: |
+      set -eu; set -o pipefail;
+      cd $AGENT_TEMPDIRECTORY/Goods/jam.tests
+      dotnet test Universe.SqlServerJam.Tests.dll
+      Say "Success Complete"
+    condition: succeededOrFailed()
+    displayName: 'Test JAM (SQL)'
+
+  - powershell: |
+      Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 7
+      $true
+    retryCountOnTaskFailure: 3
+    displayName: 'Show Transfer for 20 seconds'
+
+  - script: |
+       sqlcmd /? | find "Version"
+       for %%a IN ("." "localhost,1433") DO (
+        echo "TRY SERVER [%%a]"
+        sqlcmd -S %%a -h-1 -s"," -E -W -w 10000 -Q "SELECT Name, Description FROM fn_helpcollations() order by 1" > %SYSTEM_ARTIFACTSDIRECTORY%\fn_helpcollations.txt
+        sqlcmd -S %%a -h-1 -s"," -E -W -w 10000 -Q "SET NOCOUNT ON; SELECT DATALENGTH(@@DBTS) as MYDBTS_LENGTH, @@DBTS as MYDBTS;"
+        sqlcmd -S %%a -h-1 -s"," -E -W -w 10000 -Q "SET NOCOUNT ON; Select CONVERT(VARCHAR(128), SERVERPROPERTY ('productversion'))"
+        sqlcmd -S %%a -h-1 -s"," -E -W -w 10000 -Q "SET NOCOUNT ON; Select @@Version"
+        echo. && echo "CHECK Update ... Output"
+        sqlcmd -S %%a -E -Q "Create Table Temp1(id int, rv ROWVERSION); Insert Into Temp1(id) Values(10); Update Top (1) Temp1 Set id=42 Output Inserted.Id as MyNewId;"
+        echo. && echo "fn_helpcollations"
+        sqlcmd -S %%a -h-1 -s"," -E -W -w 10000 -Q "SELECT Name, Description FROM fn_helpcollations() order by 1"
+        echo.
+       )
+       REM true
+    displayName: 'Show SQL Info'
+  
+  - task: DownloadPipelineArtifact@2
+    condition: succeededOrFailed()
+    displayName: 'w3app: download'
+    inputs:
+      artifactName: w3app
+      path: $(Build.SourcesDirectory)/src/universe.sqlinsights.w3app/build
+      patterns: 
+        "**"
+
+  - bash: |
+      set -eu
+      & taskkill.exe /F /T /IM dotnet.exe
+      cd src/universe.sqlinsights.w3app
+      cd build
+      echo "SERVING STATIC W3APP. Content of ./static/js:"
+      ls -la static/js
+      dotnet serve --version 2>nul || dotnet tool install --global dotnet-serve
+      dotnet serve --version
+      start /max dotnet serve -p 6060 -o
+    condition: eq(variables['Agent.OS'], 'Windows_NT')
+    displayName: 'w3app: run'
+
+  - script: |
+      call 0a-Net-Restore-All.cmd
+    # condition: eq(variables['Agent.OS'], 'Windows_NT')
+    condition: ${{ false }}
+    displayName: 'dotnet restore'
+
+  - powershell: |
+      Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 7
+      $true
+    displayName: 'Show Transfer for 20 seconds'
+
+  - bash: |
+      set -eu; set -o pipefail;
+      if [[ "${RAM_DISK:-}" == "" ]]; then export NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES=True; fi # for query cache
+      export SQLINSIGHTS_CONNECTION_STRING="$SQL_CONNECTION_STRING"
+      export SQLINSIGHTS_DATA_DIR=D:\\SQL-Data
+      export TEST_CPU_NAME="$(Get-CpuName --name-only)"
+      export TEST_CONFIGURATION="DISK";
+      if [[ -n "${DB_DATA_DIR:-}" ]]; then
+        export SQLINSIGHTS_DATA_DIR="$DB_DATA_DIR"
+        export TEST_CONFIGURATION="RAM-Disk"
+        Say "SQLINSIGHTS_DATA_DIR is $SQLINSIGHTS_DATA_DIR"
+      fi
+      cd $AGENT_TEMPDIRECTORY/Goods/w3api.tests
+      export TEST_UNDER_COVERAGE=True
+      dotnet test --collect:"XPlat Code Coverage" --logger trx Universe.SqlInsights.SqlServerStorage.Tests.dll
+
+      Say "Benchmark Seed"
+      rm -f $SYSTEM_ARTIFACTSDIRECTORY/AddAction.log
+      export TEST_UNDER_COVERAGE=False
+      dotnet test --filter "Name~Test1_Seed" Universe.SqlInsights.SqlServerStorage.Tests.dll
+    condition: eq(variables['Agent.OS'], 'Windows_NT')
+    displayName: 'TEST STORAGE +BENCHMARK'
+
+  - powershell: |
+      Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 7
+      $true
+    displayName: 'Show Transfer for 7 seconds'
+
+  - bash: |
+      echo Starting W3Api
+      export ConnectionStrings__SqlInsights="$SQL_CONNECTION_STRING"
+      export SQLINSIGHTS_REPORT_FOLDER="D:\\Temp\\SqlInsights-W3Api-Internal-Logs"
+      export SQLINSIGHTS_REPORT_FULLNAME="${SQLINSIGHTS_REPORT_FOLDER}\\Report.Txt"
+      export ASPNETCORE_URLS=http://localhost:50420
+      pushd $AGENT_TEMPDIRECTORY/Goods/w3api;
+      if [[ -s ~/w3api.pid ]]; then 
+        pid=$(<~/w3api.pid) 
+        echo KILL W3API Process $pid
+        kill $pid
+      fi
+      (dotnet Universe.SqlInsights.W3Api.dll | tee "$SYSTEM_ARTIFACTSDIRECTORY/w3api (acceptance test).log") &
+      echo $! > ~/w3api.pid
+      popd
+      sleep 60
+      
+      source scripts/wait_for_http.sh
+      WAIT_HTTP_TIMEOUT=90
+      Say "Waiting for swagger ...."
+      wait_for_http "http://localhost:50420/swagger"
+      
+      # for acceptance test?
+      # sleep 60
+
+      set -o pipefail
+      Say "Final Test: get swagger"
+      curl -I http://localhost:50420/swagger | cat || exit 666;
+      Say "KILL W3API and W3APP"
+      echo Kill dotnet-serve.exe
+      taskkill.exe -F -T -IM dotnet-serve.exe
+      echo Kill dotnet.exe
+      taskkill.exe -F -T -IM dotnet.exe
+      7z a "${SYSTEM_ARTIFACTSDIRECTORY}\\SqlInsights Report.7z" "${SQLINSIGHTS_REPORT_FOLDER}"
+      (echo "CPU: $(Get-CpuName)"; echo "Job: ${AGENT_JOBNAME}"; cat "${SQLINSIGHTS_REPORT_FULLNAME}") > /tmp/report; cp -f /tmp/report "${SQLINSIGHTS_REPORT_FULLNAME}"
+      cp -f "${SQLINSIGHTS_REPORT_FULLNAME}" "${SYSTEM_ARTIFACTSDIRECTORY}\\SqlInsights Report.txt"
+      true
+    condition: eq(variables['TEST_W3API'], 'true')
+    retryCountOnTaskFailure: 3
+    timeoutInMinutes: 10
+    displayName: 'RUN W3API (optional)'
+
+
+  - bash: |
+      set -eu; set -o pipefail;
+      cd scripts
+      export STRESS_CONNECTION_STRING="$SQL_CONNECTION_STRING"
+      powershell -f Stress-SQL-Server-by-Stored-Procedure.ps1 
+    displayName: 'STRESS SQL via Stor Proc'
+
+  - bash: |
+      set -eu; set -o pipefail;
+      export SQL_QUERY_CACHE_SUMMARY_1_Cpu_Title="CPU"
+      export SQL_QUERY_CACHE_SUMMARY_1_Cpu_Kind="String"
+      export SQL_QUERY_CACHE_SUMMARY_1_Cpu_Value="$(Get-CpuName --name-only)"
+      export SQL_QUERY_CACHE_SUMMARY_1_Cpu_Position=Header
+      if [[ -n "${DB_DATA_DIR:-}" ]] then
+        export SQL_QUERY_CACHE_SUMMARY_RAM_Disk_Title="Data RAM Disk (MB)"
+        export SQL_QUERY_CACHE_SUMMARY_RAM_Disk_Kind="Natural"
+        export SQL_QUERY_CACHE_SUMMARY_RAM_Disk_Value="${RAM_DISK_SIZE:-}"
+        export SQL_QUERY_CACHE_SUMMARY_RAM_Disk_Position=9999
+      fi
+      cd $AGENT_TEMPDIRECTORY/Goods/QueryCache.tests
+      dotnet test Universe.SqlServerQueryCache.Tests.dll
+      du -h "${SYSTEM_ARTIFACTSDIRECTORY}" || true
+      # cp -a -v TestResults "${SYSTEM_ARTIFACTSDIRECTORY}"
+      Say "Success Complete"
+    condition: succeededOrFailed()
+    displayName: 'Test Query Cache'
+
+  - task: PublishBuildArtifacts@1
+    condition: succeededOrFailed()
+    displayName: 'Publish Query Cache Report'
+    inputs:
+      pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)\\QueryCacheReports'
+      artifactName: 'Query Cache Reports $(Agent.JobName) $(Build.BUILDNUMBER)'
+
+  # TODO: SHOULD BE OPTIONAL via Variable
+  # Do not feed Query Cache Report
+  - bash: |
+      set -eu; set -o pipefail;
+      Say "CPU: $(Get-CpuName)"
+      printenv | { grep ERGOFAB || true; }
+
+      cd src/ErgoFab.DataAccess.IntegrationTests
+      bash -e -u Test-via-NuGET.sh
+      Say "Success Complete"
+    condition: ne(variables.SKIP_ERGOFAB_TESTS,'True')
+    displayName: '2ND TEST ErgoFab (SQL) via NuGet'
+
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    inputs:
+      testRunner: VSTest
+      testResultsFiles: '**/*.trx'
+      testRunTitle: 'All the tests for $(Agent.JobName)'
+      
+  - task: PublishCodeCoverageResults@1
+    condition: succeededOrFailed()
+    inputs:
+      codeCoverageTool: cobertura
+      failIfCoverageEmpty: false # Optional      
+      summaryFileLocation: '**/In/**/coverage.cobertura.xml'
+
+  - publish: $(SYSTEM.ARTIFACTSDIRECTORY)
+    displayName: 'Publish Artifact'
+    # condition: succeededOrFailed()
+    artifact: 'Artifacts $(Agent.JobName)'
