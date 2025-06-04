@@ -160,6 +160,8 @@ steps:
 
   - bash: |
       set -eu; set -o pipefail;
+      export SENSORSAPP_STRESS_WORKINGSET_ROWS=10000
+      export SENSORSAPP_STRESS_DURATION=1000
       cd $AGENT_TEMPDIRECTORY/Goods/jam.tests
       dotnet test Universe.SqlServerJam.Tests.dll
       Say "Success Complete"
