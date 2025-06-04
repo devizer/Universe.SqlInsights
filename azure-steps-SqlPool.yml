@@ -204,7 +204,7 @@ steps:
 
   - bash: |
       set -eu
-      taskkill.exe "-f" "-t" "-im" dotnet.exe
+      taskkill.exe "-f" "-t" "-im" dotnet.exe || true
       cd src/universe.sqlinsights.w3app
       cd build
       echo "SERVING STATIC W3APP. Content of ./static/js:"
