@@ -55,6 +55,7 @@ MDF: {mdf}
 LDF: {ldf}
 MDF FOLDER EXISTS: {Directory.Exists(Path.GetDirectoryName(mdf))}
 LDF FOLDER EXISTS: {Directory.Exists(Path.GetDirectoryName(ldf))}
+MASTER CONNECTION: {masterConnection.ConnectionString}
 ");
             masterConnection.Execute(sql1, new { mdfName = $"{name} mdf", mdfFullName = mdf, ldfName = $"{name} ldf", ldfFullName = ldf, });
             masterConnection.Execute(sql2);
