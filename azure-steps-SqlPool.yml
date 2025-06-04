@@ -164,6 +164,7 @@ steps:
       dotnet test Universe.SqlServerJam.Tests.dll
       Say "Success Complete"
     condition: succeededOrFailed()
+    timeoutInMinutes: 15
     displayName: 'Test JAM (SQL)'
 
   - powershell: |
