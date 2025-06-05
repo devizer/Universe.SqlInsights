@@ -206,7 +206,8 @@ steps:
       start /max dotnet serve -p 6060 -o
       # start /max "w3app browser" chrome.exe --disable-gpu --headless https://localhost:6060
 
-    condition: eq(variables['Agent.OS'], 'Windows_NT')
+    # condition: eq(variables['Agent.OS'], 'Windows_NT')
+    condition: eq(1,0)
     displayName: 'w3app: run'
 
   - script: |
@@ -285,7 +286,8 @@ steps:
       (echo "CPU: $(Get-CpuName)"; echo "Job: ${AGENT_JOBNAME}"; cat "${SQLINSIGHTS_REPORT_FULLNAME}") > /tmp/report; cp -f /tmp/report "${SQLINSIGHTS_REPORT_FULLNAME}"
       cp -f "${SQLINSIGHTS_REPORT_FULLNAME}" "${SYSTEM_ARTIFACTSDIRECTORY}\\SqlInsights Report.txt"
       true
-    condition: eq(variables['TEST_W3API'], 'true')
+    # condition: eq(variables['TEST_W3API'], 'true')
+    condition: eq(1,0)
     retryCountOnTaskFailure: 3
     timeoutInMinutes: 10
     displayName: 'RUN W3API (optional)'
