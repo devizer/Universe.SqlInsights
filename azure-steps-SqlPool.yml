@@ -3,6 +3,15 @@
 
 steps:
 
+  - script: |
+      rd /q /s %TRANSIENT_FOLDER%
+      mkdir %TRANSIENT_FOLDER%
+      taskkill -f -t -im dotnet-serve.exe
+      taskkill -f -t -im dotnet.exe
+    condition: succeededOrFailed()
+    retryCountOnTaskFailure: 3
+    displayName: 'Clean UP'
+
   - powershell: |
       # iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
       Write-Host "Total Modules: $((get-module -ListAvailable).Count)"
@@ -29,12 +38,12 @@ steps:
     displayName: 'Goods: download (w3api, w3api.tests, jam.tests)'
     inputs:
       artifactName: Goods
-      path: $(AGENT.TEMPDIRECTORY)\Goods
+      path: $(TRANSIENT_FOLDER)\Goods
       patterns: 
         "**"
    
   - bash: |
-       cd "$AGENT_TEMPDIRECTORY"
+       cd "$TRANSIENT_FOLDER"
        cd Goods
        ls -la
     displayName: 'Show Goods: w3api, w3api.tests, jam.tests'
@@ -143,7 +152,7 @@ steps:
       set -eu; set -o pipefail;
       NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES=""
       if [[ "${RAM_DISK:-}" == "" ]]; then export NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES=True; fi # for query cache
-      cd $AGENT_TEMPDIRECTORY/Goods/ergofab.tests
+      cd $TRANSIENT_FOLDER/Goods/ergofab.tests
       export ERGOFAB_TESTS_DATA_FOLDER="T:\\ErgFab-Tests"
       export ERGOFAB_TESTS_MASTER_CONNECTIONSTRING="Server=$SQL_INSTANCE;Encrypt=False;Integrated Security=SSPI"
       export ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING="$ERGOFAB_TESTS_MASTER_CONNECTIONSTRING; Initial Catalog=Sql Insights Warehouse; Pooling=True"
@@ -165,7 +174,7 @@ steps:
       set -eu; set -o pipefail;
       export SENSORSAPP_STRESS_WORKINGSET_ROWS=10000
       export SENSORSAPP_STRESS_DURATION=1000
-      cd $AGENT_TEMPDIRECTORY/Goods/jam.tests
+      cd $TRANSIENT_FOLDER/Goods/jam.tests
       dotnet test --filter "FullyQualifiedName !~ TestResetDefaultFillFactor & FullyQualifiedName !~ SensorsAppScalabilityBenchmark " Universe.SqlServerJam.Tests.dll
       Say "Success Complete"
     condition: succeededOrFailed()
@@ -234,7 +243,7 @@ steps:
         export TEST_CONFIGURATION="RAM-Disk"
         Say "SQLINSIGHTS_DATA_DIR is $SQLINSIGHTS_DATA_DIR"
       fi
-      cd $AGENT_TEMPDIRECTORY/Goods/w3api.tests
+      cd $TRANSIENT_FOLDER/Goods/w3api.tests
       export TEST_UNDER_COVERAGE=True
       dotnet test --collect:"XPlat Code Coverage" --logger trx Universe.SqlInsights.SqlServerStorage.Tests.dll
 
@@ -256,7 +265,7 @@ steps:
       export SQLINSIGHTS_REPORT_FOLDER="T:\\Temp\\SqlInsights-W3Api-Internal-Logs"
       export SQLINSIGHTS_REPORT_FULLNAME="${SQLINSIGHTS_REPORT_FOLDER}\\Report.Txt"
       export ASPNETCORE_URLS=http://localhost:50420
-      pushd $AGENT_TEMPDIRECTORY/Goods/w3api;
+      pushd $TRANSIENT_FOLDER/Goods/w3api;
       if [[ -s ~/w3api.pid ]]; then 
         pid=$(<~/w3api.pid) 
         echo KILL W3API Process $pid
@@ -313,7 +322,7 @@ steps:
         export SQL_QUERY_CACHE_SUMMARY_RAM_Disk_Value="${RAM_DISK_SIZE:-}"
         export SQL_QUERY_CACHE_SUMMARY_RAM_Disk_Position=9999
       fi
-      cd $AGENT_TEMPDIRECTORY/Goods/QueryCache.tests
+      cd $TRANSIENT_FOLDER/Goods/QueryCache.tests
       dotnet test Universe.SqlServerQueryCache.Tests.dll
       du -h "${SYSTEM_ARTIFACTSDIRECTORY}" || true
       # cp -a -v TestResults "${SYSTEM_ARTIFACTSDIRECTORY}"
