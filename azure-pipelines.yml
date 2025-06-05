@@ -190,6 +190,7 @@ jobs:
       - Build_W3_App
     variables:
       SQLTRACE_FOLDER: 'T:\Sql-Traces'
+      RUNNERS_FOLDER: 'T:\Runners'
       OS: Windows
     timeoutInMinutes: 222
     cancelTimeoutInMinutes: 1

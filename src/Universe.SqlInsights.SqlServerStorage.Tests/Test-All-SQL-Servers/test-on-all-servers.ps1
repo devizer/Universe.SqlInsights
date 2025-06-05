@@ -29,7 +29,8 @@ foreach($instance in $instances) {
   if ($index -eq 1) { $host.ui.RawUI.WindowTitle = "$instanceTitle" }
   Write-Host $instanceTitle -ForeGroundColor Magenta
 
-  $ENV:SQLINSIGHTS_DATA_DIR = "W:\Temp\Sql Insight Tests\$($instance.Instance.Replace("\","-"))"
+  $dataDrive = if (Test-Path "W:") { "W:" } Else { "T:" }
+  $ENV:SQLINSIGHTS_DATA_DIR = "$dataDrive\Temp\Sql Insight Tests\$($instance.Instance.Replace("\","-"))"
   $ENV:SYSTEM_ARTIFACTSDIRECTORY = $folder
   Remove-Item "$folder\AddAction.log" -Force -EA SilentlyContinue
   
@@ -53,3 +54,5 @@ foreach($instance in $instances) {
 
 Write-Host "TOTAL TIME: $($startAt.Elapsed)"
 Write-Host "TOTAL ERRORS: $($totalErrors)"
+
+if ($totalErrors -gt 0) throw "Failed counter = $totalErrors"

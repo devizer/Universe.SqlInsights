@@ -110,12 +110,6 @@ steps:
        Write-Host "Starting DB Clean up"
        Find-Local-SqlServers | % { Clean-Up-Sql-Server-Databases -Instance "$($_.Instance)" -Filter { $true } }
        
-       Find-Local-SqlServers | 
-          % { $_.Service } | 
-          % { Get-Service -Name $_ } | 
-          ? { $_.Status -ne "Stopped" } |
-          % { Write-Host "Stopping $($_.Name)"; Stop-Service "$($_.Name)" -Force }
-              
        $SQL_WINDOWS_SERVICE = "MSSQL`$$(($ENV:SQL_INSTANCE).Split('\') | Select -Last 1)"
        echo "##vso[task.setvariable variable=SQL_WINDOWS_SERVICE]$SQL_WINDOWS_SERVICE"
        $SQL_CONNECTION_STRING="Data Source=$($ENV:SQL_INSTANCE); Integrated Security = SSPI; Encrypt = False"
@@ -124,11 +118,11 @@ steps:
        Write-Host "SQL_WINDOWS_SERVICE: [$SQL_WINDOWS_SERVICE]"
        Write-Host "SQL_CONNECTION_STRING: [$SQL_CONNECTION_STRING]"
 
-       & net.exe start "$SQL_WINDOWS_SERVICE"
+       # & net.exe start "$SQL_WINDOWS_SERVICE"
        Say "Successfully Complete"
 
     condition: succeededOrFailed()
-    retryCountOnTaskFailure: 3
+    retryCountOnTaskFailure: 2
     displayName: '[SQL Server] Setup'
 
   - powershell: |
@@ -137,6 +131,13 @@ steps:
     condition: succeededOrFailed()
     retryCountOnTaskFailure: 4
     displayName: '[SQL Server] Configure'
+
+
+  - bash: |
+      set -eu; set -o pipefail;
+      cd src\Universe.SqlInsights.SqlServerStorage.Tests\Test-All-SQL-Servers
+      powershell -f test-on-all-servers.ps1 
+    displayName: 'AIO: Storage Tests'
 
   - bash: |
       set -eu; set -o pipefail;
