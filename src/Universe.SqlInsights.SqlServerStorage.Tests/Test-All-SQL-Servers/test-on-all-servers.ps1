@@ -55,4 +55,4 @@ foreach($instance in $instances) {
 Write-Host "TOTAL TIME: $($startAt.Elapsed)"
 Write-Host "TOTAL ERRORS: $($totalErrors)"
 
-if ($totalErrors -gt 0) throw "Failed counter = $totalErrors"
+if ($totalErrors -gt 0) { throw "Failed counter = $totalErrors" }
