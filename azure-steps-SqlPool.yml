@@ -4,13 +4,18 @@
 steps:
 
   - script: |
+      echo DIR IS [%CD%]
       rd /q /s %TRANSIENT_FOLDER%
       mkdir %TRANSIENT_FOLDER%
       taskkill -f -t -im dotnet-serve.exe
       taskkill -f -t -im dotnet.exe
+      dir
     condition: succeededOrFailed()
     retryCountOnTaskFailure: 3
     displayName: 'Clean UP'
+
+  - checkout: self
+    retryCountOnTaskFailure: 3
 
   - powershell: |
       # iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
