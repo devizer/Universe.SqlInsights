@@ -9,12 +9,13 @@ steps:
       mkdir %TRANSIENT_FOLDER%
       taskkill -f -t -im dotnet-serve.exe
       taskkill -f -t -im dotnet.exe
-      echo "OK"
+      exit 0
     condition: succeededOrFailed()
     retryCountOnTaskFailure: 3
     displayName: 'Clean UP'
 
   - checkout: self
+    condition: always()
     retryCountOnTaskFailure: 3
 
   - powershell: |

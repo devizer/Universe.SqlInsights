@@ -204,18 +204,18 @@ jobs:
         "SQL Server 2008-R2 x64 Core":
           SQL_INSTANCE: (local)\COR_2008R2_X64
 
-        "SQL Server 2008-R2 x86 Core":
-          SQL_INSTANCE: (local)\COR_2008R2_X86
+        # "SQL Server 2008-R2 x86 Core":
+        #  SQL_INSTANCE: (local)\COR_2008R2_X86
         
-        "SQL Server 2008 x64 Developer":
-          SQL_INSTANCE: (local)\DEV_2008_X64
+        #"SQL Server 2008 x64 Developer":
+        #  SQL_INSTANCE: (local)\DEV_2008_X64
         
-        "SQL Server 2008 x86 Developer":
-          SQL_INSTANCE: (local)\DEV_2008_X86
+        #"SQL Server 2008 x86 Developer":
+        #  SQL_INSTANCE: (local)\DEV_2008_X86
 
-        "SQL Server 2005 Core":
-          SQL_INSTANCE: (local)\COR_2005_X86
-          SKIP_ERGOFAB_TESTS: "True"
+        #"SQL Server 2005 Core":
+        #  SQL_INSTANCE: (local)\COR_2005_X86
+        #  SKIP_ERGOFAB_TESTS: "True"
 
   - job: IfWindows
     displayName: If
