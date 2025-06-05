@@ -135,7 +135,7 @@ steps:
 
   - bash: |
       set -eu; set -o pipefail;
-      cd src\Universe.SqlInsights.SqlServerStorage.Tests\Test-All-SQL-Servers
+      cd src/Universe.SqlInsights.SqlServerStorage.Tests/Test-All-SQL-Servers
       powershell -f test-on-all-servers.ps1 
     displayName: 'AIO: Storage Tests'
 
