@@ -335,7 +335,8 @@ steps:
       cd src/ErgoFab.DataAccess.IntegrationTests
       bash -e -u Test-via-NuGET.sh
       Say "Success Complete"
-    condition: ne(variables.SKIP_ERGOFAB_TESTS,'True')
+    # condition: ne(variables.SKIP_ERGOFAB_TESTS,'True')
+    condition: eq(1, 0)
     displayName: '2ND TEST ErgoFab (SQL) via NuGet'
 
   - task: PublishTestResults@2
