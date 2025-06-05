@@ -201,8 +201,11 @@ jobs:
       maxParallel: 10
       matrix:
 
-        "SQL Server 2008-R2 x64 Core":
-          SQL_INSTANCE: (local)\COR_2008R2_X64
+        "SQL Server 2008-R2 x64 Developer":
+          SQL_INSTANCE: (local)\DEV_2008R2_X64
+
+        # "SQL Server 2008-R2 x64 Core":
+        #   SQL_INSTANCE: (local)\COR_2008R2_X64
 
         # "SQL Server 2008-R2 x86 Core":
         #  SQL_INSTANCE: (local)\COR_2008R2_X86
