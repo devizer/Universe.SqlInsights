@@ -202,7 +202,7 @@ steps:
       dotnet serve --version
       taskkill.exe "-t" "-f" "-im" dotnet-serve.exe || true
       taskkill.exe "-t" "-f" "-im" chrome.exe || true
-      start /max "w3app server" dotnet serve -p 6060 -o
+      start /max dotnet serve -p 6060 -o
       # start /max "w3app browser" chrome.exe --disable-gpu --headless https://localhost:6060
 
     condition: eq(variables['Agent.OS'], 'Windows_NT')
