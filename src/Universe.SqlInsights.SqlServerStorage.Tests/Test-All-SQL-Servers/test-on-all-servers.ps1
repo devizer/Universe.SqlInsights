@@ -15,19 +15,14 @@ $instances | ft -AutoSize | Out-String -Width 1234 | Out-Host
 Create-Directory "Bin"
 $instances | ConvertTo-Json -Depth 32 > Bin\instances-arguments.json
 
-$startAt = [System.Diagnostics.Stopwatch]::StartNew()
-$index = 0;
-$totalErrors=0;
-foreach($instance in $instances) {
-  $testDuration = [System.Diagnostics.Stopwatch]::StartNew()
-  $index++;
+$getInstanceTitle = { "$($_.Instance): $($_.Version)" }
+$testAction = {
+  Write-Host ""; Write-Host "$($_.Instance): $($_.Version)"; 
+  $instance = $_
   $ENV:SQLINSIGHTS_CONNECTION_STRING="Server=$($instance.Instance); Integrated Security=SSPI; Encrypt=False;Pooling=True"
   $folder = Combine-Path "$pwd" "Bin" "$($instance.Instance.Replace("\",[char]8594))"
   Create-Directory $folder
   echo $instance.Version > (Combine-Path $folder "version.txt")
-  $instanceTitle = "[$index of $($instances.Count)] '$($instance.Instance)': $($instance.Version)"
-  if ($index -eq 1) { $host.ui.RawUI.WindowTitle = "$instanceTitle" }
-  Write-Host $instanceTitle -ForeGroundColor Magenta
 
   $dataDrive = if (Test-Path "W:") { "W:" } Else { "T:" }
   $ENV:SQLINSIGHTS_DATA_DIR = "$dataDrive\Temp\Sql Insight Tests\$($instance.Instance.Replace("\","-"))"
@@ -35,24 +30,16 @@ foreach($instance in $instances) {
   Remove-Item "$folder\AddAction.log" -Force -EA SilentlyContinue
   
   pushd ..
-  &{ dotnet @("build", "-m:1", "-c", "Release", "-f", "net6.0", "Universe.SqlInsights.SqlServerStorage.Tests.csproj") } *| tee "$folder\build.txt"
-  &{ dotnet @("test", "--no-build", "-c", "Release", "-f", "net6.0", "Universe.SqlInsights.SqlServerStorage.Tests.csproj") } *| tee "$folder\test.txt"
+  &{ dotnet @("build", "-m:1", "-c", "Release", "-f", "net6.0", "Universe.SqlInsights.SqlServerStorage.Tests.csproj") } *| tee "$folder\build.txt" | out-host
+  &{ dotnet @("test", "--no-build", "-c", "Release", "-f", "net6.0", "Universe.SqlInsights.SqlServerStorage.Tests.csproj") } *| tee "$folder\test.txt" | out-host
   $exitCode = $GLOBAL:LASTEXITCODE
   echo $exitCode > "$folder\exitcode.txt"
   popd
   
-  $eta = ($startAt.Elapsed.TotalSeconds / $index * $instances.Count) - $startAt.Elapsed.TotalSeconds;
-  Write-Host "DONE: $($instanceTitle)" -ForeGroundColor Green
-  Write-Host "ETA: $("{0:n1}" -f $eta)s" -ForeGroundColor Green
-  $host.ui.RawUI.WindowTitle = "ETA: $("{0:n1}" -f $eta)s. $instanceTitle"
-  $isOk = [bool] ($exitCode -eq 0)
-  if (-not $isOk) { $totalErrors++ }
-  Set-Property-Smarty $instance "IsOK" $isOk
-  Set-Property-Smarty $instance "Duration" ([Math]::Round($testDuration.Elapsed.TotalSeconds, 1))
   $instances | ConvertTo-Json -Depth 32 > Bin\instances-results.json
 }
 
-Write-Host "TOTAL TIME: $($startAt.Elapsed)"
-Write-Host "TOTAL ERRORS: $($totalErrors)"
+$errors = @($instances | Try-Action-ForEach -ActionTitle "Test Storage" -Action $testAction -ItemTitle $getInstanceTitle)
+$totalErrors = $errors.Count;
 
 if ($totalErrors -gt 0) { throw "Failed counter = $totalErrors" }
