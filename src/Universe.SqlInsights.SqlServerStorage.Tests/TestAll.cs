@@ -165,6 +165,10 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         public async Task Test4_Rename_and_Delete_Session(TestCaseProvider testCase)
         {
             SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
+
+            var idSession = await storage.CreateSession("Session To Finish", null);
+            await storage.FinishSession(idSession);
+
             SqlInsightsSession targetSession = (await storage.GetSessions())
                 .Where(x => x.IsFinished && x.IdSession != 0)
                 .OrderByDescending(x => x.StartedAt)
@@ -173,15 +177,19 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             if (targetSession == null)
                 Assert.Fail("DeleteSession() test needs finished session");
 
+            // Act "Rename"
             var expectedName = $"Tmp Session {Guid.NewGuid()}";
             await storage.RenameSession(targetSession.IdSession, expectedName);
             var actualName = (await storage.GetSessions())
                 .Where(x => x.IdSession == targetSession.IdSession)
                 .FirstOrDefault()?.Caption;
 
+            // Assert "Rename"
             Assert.AreEqual(expectedName, actualName, "Renaming Session");
             
+            // Act Delete
             await storage.DeleteSession(targetSession.IdSession);
+            // Assert Delete
             var sessionsAfter = await storage.GetSessions();
             Assert.IsNull(sessionsAfter.FirstOrDefault(x => x.IdSession == targetSession.IdSession));
         }
@@ -190,6 +198,10 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         public async Task Test5_Select_AppNames(TestCaseProvider testCase)
         {
             SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
+            Seeder seeder = new Seeder(testCase.Provider, storage.ConnectionString);
+            await seeder.Seed(1, 1);
+
+            // Assert
             var appNames = await storage.GetAppNames();
             Console.WriteLine(string.Join("; ", appNames.Select(x => $"{x.Id}='{x.Value}'")));
             bool contains = appNames.Any(x => x.Value == Seeder.TestAppName);
@@ -200,6 +212,10 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         public async Task Test6_Select_HostIds(TestCaseProvider testCase)
         {
             SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
+            Seeder seeder = new Seeder(testCase.Provider, storage.ConnectionString);
+            await seeder.Seed(1, 1);
+
+            // Assert
             var strings = await storage.GetHostIds();
             Console.WriteLine(string.Join("; ", strings.Select(x => $"{x.Id}='{x.Value}'")));
             bool contains = strings.Any(x => x.Value == Environment.MachineName);
