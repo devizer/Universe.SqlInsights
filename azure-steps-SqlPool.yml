@@ -150,9 +150,11 @@ steps:
 
   - bash: |
       set -eu; set -o pipefail;
-      cd src/Universe.SqlInsights.SqlServerStorage.Tests/Test-All-SQL-Servers
-      powershell -f test-on-all-servers.ps1 
-    displayName: 'AIO: Storage Tests'
+      cd src/ErgoFab.DataAccess.IntegrationTests/Test-All-SQL-Servers
+      export ERGOFAB_TEST_BINARY_FOLDER=$TRANSIENT_FOLDER/Goods/ergofab.tests
+      powershell -f test-on-all-servers.ps1
+    displayName: 'AIO: ErgoFAB Tests'
+
 
   - bash: |
       set -eu; set -o pipefail;
@@ -175,6 +177,15 @@ steps:
       Say "Success Complete"
     condition: ne(variables.SKIP_ERGOFAB_TESTS,'True')
     displayName: 'Test ErgoFab (SQL)'
+
+
+  - bash: |
+      set -eu; set -o pipefail;
+      cd src/Universe.SqlInsights.SqlServerStorage.Tests/Test-All-SQL-Servers
+      powershell -f test-on-all-servers.ps1 
+    displayName: 'AIO: Storage Tests'
+
+
 
   - bash: |
       set -eu; set -o pipefail;
