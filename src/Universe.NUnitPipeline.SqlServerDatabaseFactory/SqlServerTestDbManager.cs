@@ -136,7 +136,8 @@ MASTER CONNECTION: {masterConnection.ConnectionString}
             var bakName = Path.Combine(this.SqlTestsConfiguration.BackupFolder, $"{cacheKey}.bak");
 
             // WITH NOFORMAT, INIT,  NAME = N'Ergo Fab-Full Database Backup', SKIP, NOREWIND, NOUNLOAD, COMPRESSION, STATS = 10
-            string sql = $"BACKUP DATABASE [{dbName}] TO DISK = N{EscapeSqlString(bakName)} WITH {withCompression} NOFORMAT, INIT, NAME = N'For Tests Temporary Cache'";
+            // TODO: Revert To NOFORMAT
+            string sql = $"BACKUP DATABASE [{dbName}] TO DISK = N{EscapeSqlString(bakName)} WITH {withCompression} FORMAT, INIT, NAME = N'For Tests Temporary Cache'";
             TryAndForget.Execute(() => Directory.CreateDirectory(this.SqlTestsConfiguration.BackupFolder));
             masterConnection.Execute(sql, commandTimeout: 180);
             SqlBackupDescription backupDescription = masterConnection.Manage().GetBackupDescription(bakName);
