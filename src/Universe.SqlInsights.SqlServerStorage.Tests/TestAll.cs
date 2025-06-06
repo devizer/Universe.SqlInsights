@@ -76,6 +76,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         public async Task Test0_Migrate(TestCaseProvider testCase)
         {
             SqlServerSqlInsightsStorage storage = CreateStorage(testCase, true);
+            await storage.CreateSession("New Alive Session", null);
         }
 
         [Test, TestCaseSource(typeof(SeedTestCaseProvider), nameof(TestCaseProvider.GetTestCases))]
@@ -139,7 +140,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         {
             // Finish a single session
             SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
-            var id = await storage.CreateSession("Test Session", null);
+            var id = await storage.CreateSession($"Test Session {Guid.NewGuid():N}", null);
             var aliveSessions = (await storage.GetSessions()).Where(x => !x.IsFinished).ToList();
             
             if (aliveSessions.Count < 2)
