@@ -140,7 +140,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         {
             // Finish a single session
             SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
-            var id = await storage.CreateSession($"Test Session {Guid.NewGuid():N}", null);
+            var idNewSession = await storage.CreateSession($"Test Session {Guid.NewGuid():N}", null);
             var aliveSessions = (await storage.GetSessions()).Where(x => !x.IsFinished).ToList();
             
             if (aliveSessions.Count < 2)
@@ -159,6 +159,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             int aliveSessionsCount2 = storage.GetAliveSessions().Count(x => x != 0);
             Assert.AreEqual(0, aliveSessionsCount2, "Alive Session count (except default one) should be 0");
 
+            await storage.DeleteSession(idNewSession);
         }
 
         [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetTestCases))]
@@ -192,6 +193,8 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             // Assert Delete
             var sessionsAfter = await storage.GetSessions();
             Assert.IsNull(sessionsAfter.FirstOrDefault(x => x.IdSession == targetSession.IdSession));
+
+            await storage.DeleteSession(idSession);
         }
         
         [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetTestCases))]
