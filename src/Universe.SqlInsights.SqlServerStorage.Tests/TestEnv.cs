@@ -16,6 +16,19 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             string.IsNullOrEmpty(OptionalDbConnectionString) 
                 ? "Data Source=(local);Integrated Security=SSPI;TrustServerCertificate=True;Pooling=true;Encrypt=False;" 
                 : OptionalDbConnectionString;
+
+        public static Version GetTheServerVersion()
+        {
+            try
+            {
+                SqlConnection con = new SqlConnection();
+                return con.Manage().ProductVersion;
+            }
+            catch
+            {
+                return null;
+            }
+        }
         
         public static readonly string DbNamePattern = "SqlInsights {0} Tests for {1}";
 
