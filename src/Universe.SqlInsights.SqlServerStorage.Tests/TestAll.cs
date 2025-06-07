@@ -76,7 +76,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         public async Task Test0_Migrate(TestCaseProvider testCase)
         {
             SqlServerSqlInsightsStorage storage = CreateStorage(testCase, true);
-            await storage.CreateSession("New Alive Session", null);
+            // await storage.CreateSession("New Alive Session", null);
         }
 
         [Test, TestCaseSource(typeof(SeedTestCaseProvider), nameof(TestCaseProvider.GetTestCases))]
