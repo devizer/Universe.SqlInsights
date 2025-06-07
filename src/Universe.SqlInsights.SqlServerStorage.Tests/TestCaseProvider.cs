@@ -29,7 +29,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                 SqlConnectionStringBuilder connectionString = new SqlConnectionStringBuilder(TestEnv.TheConnectionString);
                 var serverVersion = TestEnv.GetTheServerVersion();
                 connectionString.InitialCatalog = string.Format(TestEnv.DbNamePattern, dbNameParameters, Environment.MachineName)
-                    + (serverVersion == null ? "" : $"v{serverVersion}");
+                    + (serverVersion == null ? "" : $" v{serverVersion}");
 
                 yield return new TestCaseProvider()
                 {
