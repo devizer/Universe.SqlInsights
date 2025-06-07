@@ -76,7 +76,8 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         public async Task Test0_Migrate(TestCaseProvider testCase)
         {
             SqlServerSqlInsightsStorage storage = CreateStorage(testCase, true);
-            // await storage.CreateSession("New Alive Session", null);
+            // Next line breaks ram disk tests (2400M)
+            await storage.CreateSession("New Alive Session", null);
         }
 
         [Test, TestCaseSource(typeof(SeedTestCaseProvider), nameof(TestCaseProvider.GetTestCases))]
