@@ -80,8 +80,8 @@ steps:
       
       echo "'taskkill' path: [$(command -v taskkill)]"
 
-      echo "'msbuild' path: [$(command -v msbuild)]"
-      echo "'msbuild' version: [$(msbuild | head -1)]"
+      echo "'msbuild' path: [$(command -v msbuild.exe)]"
+      echo "'msbuild' version: [$(msbuild.exe | head -1)]"
 
       for csc in 'Framework\v2.0.50727' 'Framework\v3.5' 'Framework\v4.0.30319' 'Framework64/v2.0.50727' 'Framework64/v3.5' 'Framework64/v4.0.30319'; do
         here="-"
@@ -97,6 +97,8 @@ steps:
 
   - powershell: |
        $ErrorActionPreference = "SilentlyContinue"
+
+       Say "$(Get-Cpu-Name). $(Get-Memory-Info | % { $_.Description })"
        
        $nuget = nuget help | select -First 1
        Write-Host "NUGET: $nuget"
