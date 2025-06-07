@@ -202,7 +202,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         {
             SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
             Seeder seeder = new Seeder(testCase.Provider, storage.ConnectionString);
-            await seeder.Seed(1, 1);
+            await seeder.Seed(1, 2);
 
             // Assert
             var appNames = await storage.GetAppNames();
