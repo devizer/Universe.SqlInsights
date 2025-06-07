@@ -92,11 +92,20 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         }
 
         [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetTestCases))]
-        public void Test1b_Any_Alive_Session_Exists(TestCaseProvider testCase)
+        public async Task Test1b_Any_Alive_Session_Exists(TestCaseProvider testCase)
         {
             SqlServerSqlInsightsStorage storage = CreateStorage(testCase);
-            bool anyAliveSession = storage.AnyAliveSession();
-            Assert.IsTrue(anyAliveSession);
+            var idNewSession = await storage.CreateSession($"Test Session {Guid.NewGuid():N}", null);
+
+            try
+            {
+                bool anyAliveSession = storage.AnyAliveSession();
+                Assert.IsTrue(anyAliveSession);
+            }
+            finally
+            {
+                await storage.DeleteSession(idNewSession);
+            }
         }
 
         [Test, TestCaseSource(typeof(TestCaseProvider), nameof(TestCaseProvider.GetTestCases))]
@@ -144,7 +153,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             var idNewSession = await storage.CreateSession($"Test Session {Guid.NewGuid():N}", null);
             var aliveSessions = (await storage.GetSessions()).Where(x => !x.IsFinished).ToList();
             
-            if (aliveSessions.Count < 2)
+            if (aliveSessions.Count == 0)
                 throw new InvalidOperationException("At least one alive session is required");
 
             foreach (var session in aliveSessions)
