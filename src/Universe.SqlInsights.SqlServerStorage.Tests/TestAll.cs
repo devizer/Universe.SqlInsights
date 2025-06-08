@@ -35,38 +35,47 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
 
         SqlServerSqlInsightsStorage CreateStorage(DbProviderFactory provider, string connectionString, bool verboseLog)
         {
-            SqlServerSqlInsightsStorage.ResetCacheForTests();
-            
-            if (TestContext.CurrentContext.Test.Arguments.FirstOrDefault() is TestCaseProvider testCase)
+            try
             {
-                SqlServerSqlInsightsMigrations.DisableMemoryOptimizedTables = !testCase.NeedMot.GetValueOrDefault();
-                /*
-                Console.WriteLine($"{{{TestContext.CurrentContext.Test.Name}}}: DisableMemoryOptimizedTables {SqlServerSqlInsightsMigrations.DisableMemoryOptimizedTables}" +
-                                  $", testCase.NeedMot={testCase.NeedMot}");
-                Console.WriteLine("Test Case:" + Environment.NewLine + testCase);
-            */
+                SqlServerSqlInsightsStorage.ResetCacheForTests();
+
+                if (TestContext.CurrentContext.Test.Arguments.FirstOrDefault() is TestCaseProvider testCase)
+                {
+                    SqlServerSqlInsightsMigrations.DisableMemoryOptimizedTables = !testCase.NeedMot.GetValueOrDefault();
+                    /*
+                    Console.WriteLine($"{{{TestContext.CurrentContext.Test.Name}}}: DisableMemoryOptimizedTables {SqlServerSqlInsightsMigrations.DisableMemoryOptimizedTables}" +
+                                      $", testCase.NeedMot={testCase.NeedMot}");
+                    Console.WriteLine("Test Case:" + Environment.NewLine + testCase);
+                */
+                }
+                else
+                    throw new InvalidOperationException($"Test '{TestContext.CurrentContext.Test.Name}' should be parametrized by TestCaseSource attribute and TestCaseProvider argument");
+
+
+                SqlServerDbExtensions.CreateDbIfNotExists(connectionString, TestEnv.OptionalDbDataDir, initialDataSize: 64);
+                var migrations = new SqlServerSqlInsightsMigrations(provider, connectionString)
+                {
+                    ThrowOnDbCreationError = true
+                };
+                migrations.Migrate();
+                if (verboseLog)
+                    Console.WriteLine($"Migration successfully completed. Details:{Environment.NewLine}{migrations.Logs}");
+
+                var dbName = new SqlConnectionStringBuilder(connectionString).InitialCatalog;
+                if (NeedDropDatabaseOnDispose)
+                    OnDispose(
+                        $"Drop Database [{dbName}]",
+                        () => ResilientDbKiller.Kill(connectionString, throwOnError: false, retryCount: 3),
+                        TestDisposeOptions.Class
+                    );
+                return new SqlServerSqlInsightsStorage(provider, connectionString);
             }
-            else
-                throw new InvalidOperationException($"Test '{TestContext.CurrentContext.Test.Name}' should be parametrized by TestCaseSource attribute and TestCaseProvider argument");
-
-
-            SqlServerDbExtensions.CreateDbIfNotExists(connectionString, TestEnv.OptionalDbDataDir, initialDataSize: 64);
-            var migrations = new SqlServerSqlInsightsMigrations(provider, connectionString)
+            catch (Exception ex)
             {
-                ThrowOnDbCreationError = true
-            };
-            migrations.Migrate();
-            if (verboseLog)
-                Console.WriteLine($"Migration successfully completed. Details:{Environment.NewLine}{migrations.Logs}");
-
-            var dbName = new SqlConnectionStringBuilder(connectionString).InitialCatalog;
-            if (NeedDropDatabaseOnDispose)
-            OnDispose(
-                $"Drop Database [{dbName}]",
-                () => ResilientDbKiller.Kill(connectionString, throwOnError: false, retryCount: 3),
-                TestDisposeOptions.Class
-            );
-            return new SqlServerSqlInsightsStorage(provider, connectionString);
+                string msg = $"Test's CreateStorage Failed {ex.GetExceptionDigest()}{Environment.NewLine}Connection String:{Environment.NewLine}{connectionString}{Environment.NewLine}Provider Type:{Environment.NewLine}{provider.GetType()}";
+                Console.WriteLine(msg);
+                throw new Exception(msg, ex);
+            }
         }
 
 
