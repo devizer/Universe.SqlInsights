@@ -20,6 +20,7 @@ $testAction = {
   Write-Host ""; Write-Host "$($_.Instance): $($_.Version)"; 
   $instance = $_
   $ENV:SQLINSIGHTS_CONNECTION_STRING="Server=$($instance.Instance); Integrated Security=SSPI; Encrypt=False;Pooling=True"
+  Write-Host "SQLINSIGHTS_CONNECTION_STRING = [$($ENV:SQLINSIGHTS_CONNECTION_STRING)]"
   $folder = Combine-Path "$pwd" "Bin" "$($instance.Instance.Replace("\",[char]8594))"
   Create-Directory $folder
   echo $instance.Version > (Combine-Path $folder "version.txt")

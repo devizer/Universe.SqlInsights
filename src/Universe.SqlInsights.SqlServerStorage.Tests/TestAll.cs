@@ -52,6 +52,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                     throw new InvalidOperationException($"Test '{TestContext.CurrentContext.Test.Name}' should be parametrized by TestCaseSource attribute and TestCaseProvider argument");
 
 
+                Console.WriteLine($"CreateStorage::CreateDbIfNotExists[{connectionString}]");
                 SqlServerDbExtensions.CreateDbIfNotExists(connectionString, TestEnv.OptionalDbDataDir, initialDataSize: 64);
                 var migrations = new SqlServerSqlInsightsMigrations(provider, connectionString)
                 {

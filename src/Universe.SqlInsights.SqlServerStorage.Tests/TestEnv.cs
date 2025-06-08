@@ -21,7 +21,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         {
             try
             {
-                SqlConnection con = new SqlConnection();
+                SqlConnection con = new SqlConnection(TheConnectionString);
                 return con.Manage().ProductVersion;
             }
             catch
