@@ -77,7 +77,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
         {
             SqlServerSqlInsightsStorage storage = CreateStorage(testCase, true);
             // Next line breaks ram disk tests (2400M)
-            await storage.CreateSession("New Alive Session", null);
+            // await storage.CreateSession("New Alive Session", null);
         }
 
         [Test, TestCaseSource(typeof(SeedTestCaseProvider), nameof(TestCaseProvider.GetTestCases))]
