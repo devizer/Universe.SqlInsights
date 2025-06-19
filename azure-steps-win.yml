@@ -191,8 +191,8 @@ steps:
          & net.exe start MSSQLSERVER
        }
 
-       Remove-Item -Recurse -Force "$ENV:SQLSERVERS_MEDIA_FOLDER"
-       Remove-Item -Recurse -Force "$ENV:SQLSERVERS_SETUP_FOLDER"
+       Remove-Item -Recurse -Force "$ENV:SQLSERVERS_MEDIA_FOLDER" -EA SilentlyContinue
+       Remove-Item -Recurse -Force "$ENV:SQLSERVERS_SETUP_FOLDER" -EA SilentlyContinue
        Say "Successfully Complete"
 
     condition: succeededOrFailed()
