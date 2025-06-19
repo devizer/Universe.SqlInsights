@@ -232,6 +232,10 @@ jobs:
       maxParallel: 10
       matrix:
 
+        "SQL Server 2025":
+          SQL: '2025 Developer: MSSQLSERVER'
+          TEST_ADVENTURE_WORKS: true
+
         "SQL Server 2017 Developer Updated":
           SQL: '2017 Developer Updated: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true

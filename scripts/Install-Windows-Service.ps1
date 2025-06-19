@@ -1,5 +1,5 @@
 param( 
-  [string] $DB = "TrustServerCertificate=True;Server=(local);Database=SqlInsights Local Warehouse;User Id=sa;Password=``1qazxsw2",
+  [string] $DB = "TrustServerCertificate=True;Server=(local);Database=SqlInsights Local Warehouse;Integrated Security=SSPI;Encrypt=False",
   [string] $Compression = "True",
   [string] $CoverItself = "True",
   [string] $ListenOn = "http://*:8080"
