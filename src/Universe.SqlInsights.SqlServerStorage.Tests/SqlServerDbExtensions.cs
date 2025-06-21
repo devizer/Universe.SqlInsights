@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 using System.IO;
 using Dapper;
+using Universe.SqlServerJam;
 
 namespace Universe.SqlInsights.SqlServerStorage.Tests
 {
@@ -14,8 +15,9 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             master.InitialCatalog = "";
             using (var con = new SqlConnection(master.ConnectionString))
             {
-                var existingName = con.QueryFirstOrDefault<string>("Select name from sys.databases where name=@db", new { db });
-                if (existingName == null)
+                bool isDatabaseExists = con.Manage().IsDbExists(db);
+                // var existingName = con.QueryFirstOrDefault<string>("Select name from sys.databases where name=@db", new { db });
+                if (!isDatabaseExists)
                 {
                     var migrations = new SqlServerSqlInsightsMigrations(SqlClientFactory.Instance, connectionString);
                     var optimizedCollation = migrations.GetOptimizedCollation(con);

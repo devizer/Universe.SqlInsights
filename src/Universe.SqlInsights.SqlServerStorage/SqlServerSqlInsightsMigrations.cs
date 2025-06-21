@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
-using Dapper;
 using Universe.SqlServerJam;
 
 namespace Universe.SqlInsights.SqlServerStorage
@@ -341,17 +341,28 @@ End
         // Public for Tests only
         private void CreateDatabaseIfNotExists()
         {
-            // var master = this.ProviderFactory.CreateConnectionStringBuilder();
-            // master.ConnectionString = ConnectionString;
-            SqlConnectionStringBuilder master = new SqlConnectionStringBuilder(ConnectionString);
-            var dbName = master.InitialCatalog;
+            var master = this.ProviderFactory.CreateConnectionStringBuilder();
+            master.ConnectionString = ConnectionString;
+            var dbName = Convert.ToString(master["Initial Catalog"]);
+            master.Remove("Initial Catalog");
             if (string.IsNullOrEmpty(dbName)) return; // if dbName is missing it means default db. e.g. already exists
-            master.InitialCatalog = "";
+            // SqlConnectionStringBuilder master = new SqlConnectionStringBuilder(ConnectionString);
+            // var dbName = master.InitialCatalog;
+            // if (string.IsNullOrEmpty(dbName)) return; // if dbName is missing it means default db. e.g. already exists
+            // master.InitialCatalog = "";
 
             try
             {
                 var con = ProviderFactory.CreateConnection();
                 con.ConnectionString = master.ConnectionString;
+                
+                try
+                {
+                    if (con.Manage().IsDbExists(dbName)) return;
+                }
+                catch
+                {
+                }
 
                 var optimizedCollation = GetOptimizedCollation(con);
                 string sqlCollation = string.IsNullOrEmpty(optimizedCollation) ? "" : $"COLLATE {optimizedCollation}";
