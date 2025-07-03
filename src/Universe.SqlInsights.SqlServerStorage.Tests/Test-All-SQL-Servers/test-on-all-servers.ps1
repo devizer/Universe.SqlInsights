@@ -8,6 +8,7 @@ Find-Local-SqlServers |
 
 $instances1 = @(Find-Local-SqlServers | Select -Property Instance, Version | Populate-Local-SqlServer-Version -Timeout 30)
 $instances2 = @(Find-LocalDb-SqlServers | Populate-Local-SqlServer-Version -Timeout 30)
+if (Is-BuildServer) { $instances2 = @() }
 $instances = $instances1 + $instances2
 
 $instances | ft -AutoSize | Out-String -Width 1234 | Out-Host

@@ -372,7 +372,7 @@ If DB_ID('{dbName}') Is Null
 Begin 
     Create Database [{dbName}] {sqlCollation}; 
     -- The scenario is for development only
-exec('Alter Database [{dbName}] Set Recovery Simple'); 
+    Exec('Alter Database [{dbName}] Set Recovery Simple'); 
 End
 ";
 
