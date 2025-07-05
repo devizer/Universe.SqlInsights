@@ -42,7 +42,7 @@ jobs:
          export MOVE_DOCKER_TO_RAID=""
          export FS=BTRFS-Compressed
          export BTRFS_COMPRESS_MODE=zstd:1
-         url=https://raw.githubusercontent.com/devizer/glist/master/Raid0-on-Azure-Pipelines-Linux.sh; (wget -q -nv --no-check-certificate -O - $url 2>/dev/null || curl -ksSL $url) | bash
+         url=https://raw.githubusercontent.com/devizer/glist/master/Raid0-on-Azure-Pipelines-Linux.sh; try-and-retry curl -o /tmp/Raid0-on-Azure-Pipelines-Linux.sh -ksSL $url; bash /tmp/Raid0-on-Azure-Pipelines-Linux.sh
          Say --Reset-Stopwatch
          echo "${RESET_FOLDERS_TO_RAID:-}" | awk -FFS=";" 'BEGIN{FS=";"}{for(i=1;i<=NF;i++){print $i}}' | while IFS= read -r folder; do
            to="$(whoami):$(id -gn)"
