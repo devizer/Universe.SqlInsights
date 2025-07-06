@@ -67,6 +67,7 @@ steps:
 
   - powershell: |
       (Get-Counter -ListSet *).Paths | Where-Object { $_ -like "*Transfers*" }
+    retryCountOnTaskFailure: 3
     displayName: 'List Perfmormance Counters'
 
   - powershell: |
