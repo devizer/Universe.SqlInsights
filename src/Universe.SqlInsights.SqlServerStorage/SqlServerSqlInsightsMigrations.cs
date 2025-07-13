@@ -27,9 +27,13 @@ namespace Universe.SqlInsights.SqlServerStorage
 
         public List<string> GetSqlMigrations()
         {
-            var sqlConnectionStringBuilder = new SqlConnectionStringBuilder(ConnectionString);
-            string dbName = sqlConnectionStringBuilder.InitialCatalog;
-            string serverName = sqlConnectionStringBuilder.DataSource;
+            // var sqlConnectionStringBuilder = new SqlConnectionStringBuilder(ConnectionString);
+            // string dbName = sqlConnectionStringBuilder.InitialCatalog;
+            // string serverName = sqlConnectionStringBuilder.DataSource;
+            var sqlConnectionStringBuilder = CreateConnectionStringBuilder();
+            string dbName = Convert.ToString(sqlConnectionStringBuilder["Initial Catalog"]);
+            string serverName = Convert.ToString(sqlConnectionStringBuilder["Data Source"]);
+
             Logs.AppendLine($" * DB Name: [{dbName}] on server \"{serverName}\"");
             
             IDbConnection cnn = this.ProviderFactory.CreateConnection();
@@ -334,15 +338,23 @@ End
 
         private string GetDatabaseName()
         {
-            SqlConnectionStringBuilder master = new SqlConnectionStringBuilder(ConnectionString);
-            return master.InitialCatalog;
+            // SqlConnectionStringBuilder master = new SqlConnectionStringBuilder(ConnectionString);
+            // return master.InitialCatalog;
+            var builder = CreateConnectionStringBuilder();
+            return Convert.ToString(builder["Initial Catalog"]);
+        }
+
+        DbConnectionStringBuilder CreateConnectionStringBuilder()
+        {
+            DbConnectionStringBuilder ret = this.ProviderFactory.CreateConnectionStringBuilder();
+            ret.ConnectionString = ConnectionString;
+            return ret;
         }
 
         // Public for Tests only
         private void CreateDatabaseIfNotExists()
         {
-            var master = this.ProviderFactory.CreateConnectionStringBuilder();
-            master.ConnectionString = ConnectionString;
+            DbConnectionStringBuilder master = CreateConnectionStringBuilder();
             var dbName = Convert.ToString(master["Initial Catalog"]);
             master.Remove("Initial Catalog");
             if (string.IsNullOrEmpty(dbName)) return; // if dbName is missing it means default db. e.g. already exists
