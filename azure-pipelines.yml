@@ -335,6 +335,7 @@ jobs:
     dependsOn:
       - IfLinux
       - IfWindows
+      - IfSqlPool
 
     steps: 
     - script: |
