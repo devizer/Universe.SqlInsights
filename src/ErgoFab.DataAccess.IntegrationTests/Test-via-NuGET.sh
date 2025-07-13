@@ -11,14 +11,15 @@ function Get-Nuget-package-Latest-Version() {
 }
 
 function find-build-number() {
-  local fullVersion="$(Get-Nuget-package-Latest-Version "Universe.SqlInsights.NUnit")"
+  local fullVersion="$(Get-Nuget-package-Latest-Version "Universe.SqlInsights.NetCore")"
   echo "$fullVersion" | grep -Eo "[0-9]{1,7}" | tail -1
 }
 prj=ErgoFab.DataAccess.IntegrationTests.csproj
 build_number="$(find-build-number)"
 echo "BUILD NUMBER = [$build_number]"
 netCoreBuildVersion="$(Get-Nuget-package-Latest-Version "Universe.SqlInsights.NetCore")"
-echo "Universe.SqlInsights.NetCore latest release = [$netCoreBuildVersion]"
+echo "Universe.SqlInsights.NetCore latest release = [$(Get-Nuget-package-Latest-Version "Universe.SqlInsights.NetCore")]"
+echo "Universe.SqlInsights.NUnit   latest release = [$(Get-Nuget-package-Latest-Version "Universe.SqlInsights.NUnit")]"
 ver="3.14.0.$build_number"
 sed -i '/Universe.NUnitPipeline.SqlServerDatabaseFactory.csproj/d' "$prj"
 sed -i '/Universe.SqlInsights.NUnit.csproj/d' "$prj"
