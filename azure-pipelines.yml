@@ -298,6 +298,8 @@ jobs:
         
         "SQL Server 2012 Developer":
           SQL: '2012 Developer: MSSQLSERVER'
+        "SQL Server 2012 Core":
+          SQL: '2012 Core: MSSQLSERVER'
         "SQL Server 2014 Developer":
           SQL: '2014 Developer: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
