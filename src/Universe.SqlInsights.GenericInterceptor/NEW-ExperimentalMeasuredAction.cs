@@ -72,11 +72,14 @@ namespace Universe.SqlInsights.GenericInterceptor
             traceReader.MaxFileSize = config.MaxTraceFileSizeKb;
             string appName = string.Format(config.SqlClientAppNameFormat, idAction);
 
-            // For AdventureWorks we should 
-            SqlConnectionStringBuilder csb = new SqlConnectionStringBuilder(traceableConnectionString)
-            {
-                ApplicationName = appName
-            };
+            //SqlConnectionStringBuilder csb = new SqlConnectionStringBuilder(traceableConnectionString)
+            //{
+            //    ApplicationName = appName
+            //};
+            var csb = SqlTraceConfiguration.DbProvider.CreateConnectionStringBuilder();
+            csb.ConnectionString = traceableConnectionString;
+            csb["Application Name"] = appName;
+
             string connectionString = csb.ConnectionString;
 
             TraceRowFilter appFilter = TraceRowFilter.CreateByApplication(appName);
@@ -133,7 +136,13 @@ namespace Universe.SqlInsights.GenericInterceptor
             StringBuilder log = new StringBuilder();
             log.AppendLine($"Detailed metrics for «{keyPath}»");
             if (actionDetailsWithCounters.BriefException != null)
+            {
                 log.AppendLine($"    Fail ...............: {actionDetailsWithCounters.BriefException}");
+#if DEBUG
+                log.AppendLine(actionDetailsWithCounters.ExceptionAsString);
+#endif
+
+            }
 
             log.AppendLine($"    Duration ...........: {duration:n1} milliseconds, average={stat?.AppDuration / stat?.Count:n1}, count={stat?.Count}");
             log.AppendLine($"    Cpu Usage ..........: [user] {cpuUsage?.UserUsage.TotalMicroSeconds / 1000d:n1} + [kernel] {cpuUsage?.KernelUsage.TotalMicroSeconds / 1000d:n1} milliseconds");

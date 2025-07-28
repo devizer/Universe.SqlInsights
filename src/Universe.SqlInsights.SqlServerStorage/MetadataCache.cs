@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using Dapper;
 using Universe.SqlServerJam;
+using Universe.SqlTrace;
 
 namespace Universe.SqlInsights.SqlServerStorage
 {
@@ -25,7 +26,9 @@ namespace Universe.SqlInsights.SqlServerStorage
         // TODO: for SqlInsightsKeyPathSummary on AddAction: do we need WITH (UPDLOCK, ROWLOCK)
         public static bool IsMemoryOptimized(string connectionString)
         {
-            SqlConnection cnn = new SqlConnection(connectionString);
+            // SqlConnection cnn = new SqlConnection(connectionString);
+            var cnn = SqlTraceConfiguration.DbProvider.CreateConnection();
+            cnn.ConnectionString = connectionString;
             return GetMetadata(cnn).IsMemoryOptimized;
         }
 
