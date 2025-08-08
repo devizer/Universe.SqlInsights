@@ -26,7 +26,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Universe.SqlServerJam" Version="2.1.845" />
+      <PackageReference Include="Universe.SqlServerJam" Version="2.1.927" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 
       <ProjectReference Include="..\Universe.SqlInsights.Shared\Universe.SqlInsights.Shared.csproj" />

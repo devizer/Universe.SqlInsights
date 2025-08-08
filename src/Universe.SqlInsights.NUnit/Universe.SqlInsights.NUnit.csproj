@@ -14,7 +14,7 @@
   <ItemGroup>
 		<!-- PackageReference Include="NUnit" Version="3.14.0" / -->
 		<PackageReference Include="Universe.NUnitPipeline" Version="3.14.0.212" />
-		<PackageReference Include="Universe.SqlServerJam" Version="2.1.877" />
+		<PackageReference Include="Universe.SqlServerJam" Version="2.1.927" />
 		<!-- PackageReference Include="Dapper" Version="2.1.35" / -->
 		<PackageReference Include="System.Data.SqlClient" Version="4.8.6" Condition=" '$(TargetFramework)' != 'net35' and '$(TargetFramework)' != 'net40' and '$(TargetFramework)' != 'net403' and '$(TargetFramework)' != 'net45' " />
 		<!-- PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.5" / -->
