@@ -19,7 +19,8 @@ namespace ErgoFab.DataAccess.IntegrationTests
         public async Task OrganizationAnotherTest1st(ErgoFabTestCase testCase)
         {
             var organizationsCount = await testCase.CreateErgoFabDbContext().Organization.AsNoTracking().CountAsync();
-            Assert.AreEqual(7777, organizationsCount);
+            // Assert.AreEqual(7777, organizationsCount);
+            Assert.That(organizationsCount, Is.EqualTo(7777));
             var organizationsCount2 = await testCase.CreateErgoFabDbContext().Organization.AsNoTracking().CountAsync();
         }
 
