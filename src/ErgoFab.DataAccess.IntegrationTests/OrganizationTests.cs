@@ -19,7 +19,6 @@ namespace ErgoFab.DataAccess.IntegrationTests
         public async Task OrganizationAnotherTest1st(ErgoFabTestCase testCase)
         {
             var organizationsCount = await testCase.CreateErgoFabDbContext().Organization.AsNoTracking().CountAsync();
-            // Assert.AreEqual(7777, organizationsCount);
             Assert.That(organizationsCount, Is.EqualTo(7777));
             var organizationsCount2 = await testCase.CreateErgoFabDbContext().Organization.AsNoTracking().CountAsync();
         }
@@ -29,7 +28,7 @@ namespace ErgoFab.DataAccess.IntegrationTests
         public async Task OrganizationAnotherTest2nd(ErgoFabTestCase testCase)
         {
             var organizationsCount = await testCase.CreateErgoFabDbContext().Organization.TagWith("1st query").AsNoTracking().Select(x => x.Id).CountAsync();
-            Assert.AreEqual(7777, organizationsCount);
+            Assert.That(organizationsCount, Is.EqualTo(7777));
             var organizationsCount2 = await testCase.CreateErgoFabDbContext().Organization.TagWith("2nd query").AsNoTracking().Select(x => x.Id).CountAsync();
         }
 
@@ -44,7 +43,7 @@ namespace ErgoFab.DataAccess.IntegrationTests
                 .Include(o => o.TheDepartments)
                 .ToListAsync();
 
-            Assert.AreEqual(7777, organizations.Count);
+            Assert.That(organizations.Count, Is.EqualTo(7777));
         }
 
 
