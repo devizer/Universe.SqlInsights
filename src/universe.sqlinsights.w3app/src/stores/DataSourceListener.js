@@ -5,6 +5,7 @@ import sessionsStore from "./SessionsStore";
 import settingsStore from "./SettingsStore";
 
 import {API_URL} from '../BuildTimeConfiguration';
+import {getAppLevelTriggers, notifyTrigger} from "../AppLevelStages";
 
 // export const API_URL="http://localhost:8776/SqlInsights";
 // export const API_URL="http://localhost:50420/api/v1/SqlInsights";
@@ -64,6 +65,8 @@ class DataSourceListener {
                 .then(dataSource => {
                     DataSourceListener.TransformOnLoad(dataSource);
                     DataSourceActions.DataSourceUpdated(dataSource);
+                    notifyTrigger("SummaryUpdated");
+                    Helper.toConsole("[EVENTS] Summary Updated", getAppLevelTriggers());
                     // console.log("DATA SOURCE RETRIEVED", dataSource);
                 })
                 .catch(error => {

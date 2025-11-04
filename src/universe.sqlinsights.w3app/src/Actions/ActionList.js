@@ -26,6 +26,7 @@ import ReactComponentWithPerformance from "../Shared/ReactComponentWithPerforman
 // 1
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { foundation as theColorScheme } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import {getAppLevelTriggers, notifyTrigger} from "../AppLevelStages";
 /*
 // 2
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -194,6 +195,8 @@ export default class ActionList extends ReactComponentWithPerformance {
                         actions: detailsOfGroup,
                         actionsTimestamp: newTimestamp ? newTimestamp : state.actionsTimestamp
                     }));
+                    notifyTrigger("ActionsUpdated");
+                    Helper.toConsole("[EVENTS] Actions Updated", getAppLevelTriggers());
                 })
                 .catch(error => {
                     console.error(error);

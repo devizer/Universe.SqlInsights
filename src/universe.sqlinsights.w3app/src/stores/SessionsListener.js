@@ -1,6 +1,7 @@
 ﻿import * as Helper from "../Helper"
 import * as SessionsActions from './SessionsActions'
 import {calculateSessionFields} from "./CalculatedSessionProperties"
+import {getAppLevelTriggers, notifyTrigger} from "../AppLevelStages"
 
 class SessionsListener {
 
@@ -32,6 +33,8 @@ class SessionsListener {
                         console.error("!!!! SKIPPED calculateSessionFields");
                     }
                     SessionsActions.SessionsUpdated(sessions);
+                    notifyTrigger("SessionsUpdated");
+                    Helper.toConsole("[EVENTS] Sessions Updated", getAppLevelTriggers());
                     // console.log("SESSIONS RETRIEVED", sessions);
                 })
                 .catch(error => {
