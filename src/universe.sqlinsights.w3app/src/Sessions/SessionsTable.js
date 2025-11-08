@@ -268,7 +268,7 @@ export default class SessionsTable extends Component {
                 <IconButton size={"small"} onClick={handleOpenSessionMenu(row.original)}>
                     <MenuIconSvg style={{width:18,height:18,marginLeft:2,marginRight:2,paddingTop:0, opacity:0.6}}/>
                 </IconButton>
-                <span id={`menu-session-${row.original.IdSession}`}></span>
+                <span data-session-id={row.original.IdSession} id={`menu-session-${row.original.IdSession}`}></span>
             </>
         );
         // const cellMenu = "";

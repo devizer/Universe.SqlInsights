@@ -1,7 +1,7 @@
 ﻿<component name="ProjectRunConfigurationManager">
   <configuration default="false" name="yarn start" type="JavascriptDebugType" editBeforeRun="true" activateToolWindowBeforeRun="false" uri="http://localhost:6060">
     <method v="2">
-      <option name="ToolBeforeRunTask" enabled="true" actionId="Tool_External Tools_yarn" />
+      <option name="ToolBeforeRunTask" enabled="true" actionId="Tool_External Tools_yarn start" />
     </method>
   </configuration>
 </component>
