@@ -232,6 +232,22 @@ jobs:
       maxParallel: 10
       matrix:
 
+        "SQL Server 2008R2-x64 Developer":
+          SQL: '2008R2-x64 Developer: MSSQLSERVER'
+          VMIMAGE: 'windows-2019'
+
+        "SQL Server 2008R2-x86 Developer SP":
+          SQL: '2008R2-x86 Developer Updated: MSSQLSERVER'
+          VMIMAGE: 'windows-2019'
+
+        "SQL Server 2008R2-x64 Core":
+          SQL: '2008R2-x64 Core: MSSQLSERVER'
+          VMIMAGE: 'windows-2019'
+
+        "SQL Server 2008R2-x86 Core SP":
+          SQL: '2008R2-x86 Core Updated: MSSQLSERVER'
+          VMIMAGE: 'windows-2019'
+
         "SQL Server 2025":
           SQL: '2025 Developer: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
