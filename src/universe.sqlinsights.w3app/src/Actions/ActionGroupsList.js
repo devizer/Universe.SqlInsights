@@ -147,7 +147,8 @@ export default class ActionGroupsList extends ReactComponentWithPerformance {
                         cursor: "pointer",
                     },*/
                     className: isSelected ? "SelectedActionKeyRow SelectedTableRow" : "UnSelectedActionKeyRow UnSelectedTableRow",
-                    "data-summary-key": JSON.stringify(rowInfo.original?.Key?.Path)
+                    "data-summary-key": JSON.stringify(rowInfo.original?.Key?.Path),
+                    "data-owner-session-id": (sessionsStore.getSelectedSession()?.IdSession ?? -1),
                 }
             } else {
                 return {}
