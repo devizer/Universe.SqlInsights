@@ -143,13 +143,13 @@ jobs:
       - publish: $(Build.SourcesDirectory)/src/universe.sqlinsights.w3app/build
         retryCountOnTaskFailure: 3
         displayName: 'Publish w3app Artifact'
-        condition: succeededOrFailed()
+        # condition: succeededOrFailed()
         artifact: 'w3app $(SQLINSIGHTS_VERSION)'
     
       - publish: $(SYSTEM.ARTIFACTSDIRECTORY)
         retryCountOnTaskFailure: 3
         displayName: 'Publish Artifact (full)'
-        condition: succeededOrFailed()
+        # condition: succeededOrFailed()
         artifact: '$(Agent.JobName)'
 
 
