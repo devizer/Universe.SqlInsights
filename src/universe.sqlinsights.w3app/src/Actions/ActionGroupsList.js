@@ -146,7 +146,8 @@ export default class ActionGroupsList extends ReactComponentWithPerformance {
                         color: isSelected ? 'white' : 'black',
                         cursor: "pointer",
                     },*/
-                    className: isSelected ? "SelectedActionKeyRow SelectedTableRow" : "UnSelectedActionKeyRow UnSelectedTableRow"
+                    className: isSelected ? "SelectedActionKeyRow SelectedTableRow" : "UnSelectedActionKeyRow UnSelectedTableRow",
+                    "data-summary-key": JSON.stringify(rowInfo.original?.Key?.Path)
                 }
             } else {
                 return {}
