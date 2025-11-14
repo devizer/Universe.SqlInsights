@@ -331,30 +331,30 @@ steps:
 
   - bash: |
       set -eu; set -o pipefail;
-      export SQL_SYSTEM_VIEWS_SUMMARY_1_Cpu_Title="CPU"
-      export SQL_SYSTEM_VIEWS_SUMMARY_1_Cpu_Kind="String"
-      export SQL_SYSTEM_VIEWS_SUMMARY_1_Cpu_Value="$(Get-CpuName --name-only)"
-      export SQL_SYSTEM_VIEWS_SUMMARY_1_Cpu_Position=Header
+      export SQL_ADMINISTRATIVE_VIEWS_SUMMARY_1_Cpu_Title="CPU"
+      export SQL_ADMINISTRATIVE_VIEWS_SUMMARY_1_Cpu_Kind="String"
+      export SQL_ADMINISTRATIVE_VIEWS_SUMMARY_1_Cpu_Value="$(Get-CpuName --name-only)"
+      export SQL_ADMINISTRATIVE_VIEWS_SUMMARY_1_Cpu_Position=Header
       if [[ -n "${DB_DATA_DIR:-}" ]]; then
-        export SQL_SYSTEM_VIEWS_SUMMARY_RAM_Disk_Title="Data RAM Disk (MB)"
-        export SQL_SYSTEM_VIEWS_SUMMARY_RAM_Disk_Kind="Natural"
-        export SQL_SYSTEM_VIEWS_SUMMARY_RAM_Disk_Value="${RAM_DISK_SIZE:-}"
-        export SQL_SYSTEM_VIEWS_SUMMARY_RAM_Disk_Position=9999
+        export SQL_ADMINISTRATIVE_VIEWS_SUMMARY_RAM_Disk_Title="Data RAM Disk (MB)"
+        export SQL_ADMINISTRATIVE_VIEWS_SUMMARY_RAM_Disk_Kind="Natural"
+        export SQL_ADMINISTRATIVE_VIEWS_SUMMARY_RAM_Disk_Value="${RAM_DISK_SIZE:-}"
+        export SQL_ADMINISTRATIVE_VIEWS_SUMMARY_RAM_Disk_Position=9999
       fi
-      cd $TRANSIENT_FOLDER/Goods/SystemViews.tests
-      dotnet test Universe.SqlServer.SystemViews.Tests.dll
+      cd $TRANSIENT_FOLDER/Goods/AdministrativeViews.tests
+      dotnet test Universe.SqlServer.AdministrativeViews.Tests.dll
       du -h "${SYSTEM_ARTIFACTSDIRECTORY}" || true
       # cp -a -v TestResults "${SYSTEM_ARTIFACTSDIRECTORY}"
       Say "Success Complete"
     condition: succeededOrFailed()
-    displayName: 'Test System Views'
+    displayName: 'Test Administrative Views'
 
   - task: PublishBuildArtifacts@1
     condition: succeededOrFailed()
-    displayName: 'Publish System Views Report'
+    displayName: 'Publish Administrative Views Report'
     inputs:
-      pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)\\SystemViewsReports'
-      artifactName: 'System Views Reports $(Agent.JobName) $(Build.BUILDNUMBER)'
+      pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)\\AdministrativeViews'
+      artifactName: 'Administrative Views Reports $(Agent.JobName) $(Build.BUILDNUMBER)'
 
   # TODO: SHOULD BE OPTIONAL via Variable
   # Do not feed Query Cache Report

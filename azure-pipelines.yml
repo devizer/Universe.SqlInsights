@@ -85,10 +85,10 @@ jobs:
           time try-and-retry dotnet publish -c $configuration -o $SYSTEM_ARTIFACTSDIRECTORY/jam.tests -f net6.0
           popd
 
-          Say "Build fx-dependent [https://github.com/devizer/Universe.SqlServer.SystemViews].Tests"
-          git clone https://github.com/devizer/Universe.SqlServer.SystemViews ~/SystemViews
-          pushd ~/SystemViews/Universe.SqlServer.SystemViews.Tests
-          time try-and-retry dotnet publish -c $configuration -o $SYSTEM_ARTIFACTSDIRECTORY/SystemViews.tests -f net8.0
+          Say "Build fx-dependent [https://github.com/devizer/Universe.SqlServer.AdministrativeViews].Tests"
+          git clone https://github.com/devizer/Universe.SqlServer.AdministrativeViews ~/AdministrativeViews
+          pushd ~/AdministrativeViews/Universe.SqlServer.AdministrativeViews.Tests
+          time try-and-retry dotnet publish -c $configuration -o $SYSTEM_ARTIFACTSDIRECTORY/AdministrativeViews.tests -f net8.0
           popd
 
         retryCountOnTaskFailure: 1
