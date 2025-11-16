@@ -232,81 +232,6 @@ jobs:
       maxParallel: 10
       matrix:
 
-        "SQL Server 2008R2-x64 Developer SP3":
-          SQL: '2008R2-x64 Developer: MSSQLSERVER'
-          VMIMAGE: 'windows-2019'
-
-        "SQL Server 2008R2-x86 Developer SP3":
-          SQL: '2008R2-x86 Developer: MSSQLSERVER'
-          VMIMAGE: 'windows-2019'
-
-        "SQL Server 2008R2-x64 Core SP2":
-          SQL: '2008R2-x64 Core: MSSQLSERVER'
-          VMIMAGE: 'windows-2019'
-
-        "SQL Server 2008R2-x64 Core SP3":
-          SQL: '2008R2-x64 Core Updated: MSSQLSERVER'
-          VMIMAGE: 'windows-2019'
-
-        "SQL Server 2008R2-x86 Core SP2":
-          SQL: '2008R2-x86 Core: MSSQLSERVER'
-          VMIMAGE: 'windows-2019'
-
-        "SQL Server 2008R2-x86 Core SP3":
-          SQL: '2008R2-x86 Core Updated: MSSQLSERVER'
-          VMIMAGE: 'windows-2019'
-
-
-        
-        "SQL Server 2008-x64 Developer SP4":
-          SQL: '2008-x64 Developer Updated: MSSQLSERVER'
-          VMIMAGE: 'windows-2019'
-
-        "SQL Server 2008-x86 Developer SP4":
-          SQL: '2008-x86 Developer Updated: MSSQLSERVER'
-          VMIMAGE: 'windows-2019'
-
-        "SQL Server 2008-x64 Developer":
-          SQL: '2008-x64 Developer: MSSQLSERVER'
-          VMIMAGE: 'windows-2019'
-
-        "SQL Server 2008-x86 Developer":
-          SQL: '2008-x86 Developer: MSSQLSERVER'
-          VMIMAGE: 'windows-2019'
-
-
-        "SQL Server 2008-x64 Advanced SP3":
-          SQL: '2008-x64 Advanced: MSSQLSERVER'
-          VMIMAGE: 'windows-2019'
-
-        "SQL Server 2008-x64 Advanced SP4":
-          SQL: '2008-x64 Advanced Updated: MSSQLSERVER'
-          VMIMAGE: 'windows-2019'
-
-        "SQL Server 2008-x86 Advanced SP3":
-          SQL: '2008-x86 Advanced: MSSQLSERVER'
-          VMIMAGE: 'windows-2019'
-
-        "SQL Server 2008-x86 Advanced SP4":
-          SQL: '2008-x86 Advanced Updated: MSSQLSERVER'
-          VMIMAGE: 'windows-2019'
-        
-        "SQL Server 2008-x64 Core SP3":
-          SQL: '2008-x64 Core: MSSQLSERVER'
-          VMIMAGE: 'windows-2019'
-
-        "SQL Server 2008-x64 Core SP4":
-          SQL: '2008-x64 Core Updated: MSSQLSERVER'
-          VMIMAGE: 'windows-2019'
-
-        "SQL Server 2008-x86 Core SP3":
-          SQL: '2008-x86 Core: MSSQLSERVER'
-          VMIMAGE: 'windows-2019'
-
-        "SQL Server 2008-x86 Core SP4":
-          SQL: '2008-x86 Core Updated: MSSQLSERVER'
-          VMIMAGE: 'windows-2019'
-
 
         
         "SQL Server 2025":
@@ -397,6 +322,84 @@ jobs:
         "SQL Server 2017 Core Updated":
           SQL: '2017 Core Updated: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
+
+
+        "SQL Server 2008R2-x64 Developer SP3":
+          SQL: '2008R2-x64 Developer: MSSQLSERVER'
+          VMIMAGE: 'windows-2019'
+
+        "SQL Server 2008R2-x86 Developer SP3":
+          SQL: '2008R2-x86 Developer: MSSQLSERVER'
+          VMIMAGE: 'windows-2019'
+
+        "SQL Server 2008R2-x64 Core SP2":
+          SQL: '2008R2-x64 Core: MSSQLSERVER'
+          VMIMAGE: 'windows-2019'
+
+        "SQL Server 2008R2-x64 Core SP3":
+          SQL: '2008R2-x64 Core Updated: MSSQLSERVER'
+          VMIMAGE: 'windows-2019'
+
+        "SQL Server 2008R2-x86 Core SP2":
+          SQL: '2008R2-x86 Core: MSSQLSERVER'
+          VMIMAGE: 'windows-2019'
+
+        "SQL Server 2008R2-x86 Core SP3":
+          SQL: '2008R2-x86 Core Updated: MSSQLSERVER'
+          VMIMAGE: 'windows-2019'
+
+
+        
+        "SQL Server 2008-x64 Developer SP4":
+          SQL: '2008-x64 Developer Updated: MSSQLSERVER'
+          VMIMAGE: 'windows-2019'
+
+        "SQL Server 2008-x86 Developer SP4":
+          SQL: '2008-x86 Developer Updated: MSSQLSERVER'
+          VMIMAGE: 'windows-2019'
+
+        "SQL Server 2008-x64 Developer":
+          SQL: '2008-x64 Developer: MSSQLSERVER'
+          VMIMAGE: 'windows-2019'
+
+        "SQL Server 2008-x86 Developer":
+          SQL: '2008-x86 Developer: MSSQLSERVER'
+          VMIMAGE: 'windows-2019'
+
+
+        "SQL Server 2008-x64 Advanced SP3":
+          SQL: '2008-x64 Advanced: MSSQLSERVER'
+          VMIMAGE: 'windows-2019'
+
+        "SQL Server 2008-x64 Advanced SP4":
+          SQL: '2008-x64 Advanced Updated: MSSQLSERVER'
+          VMIMAGE: 'windows-2019'
+
+        "SQL Server 2008-x86 Advanced SP3":
+          SQL: '2008-x86 Advanced: MSSQLSERVER'
+          VMIMAGE: 'windows-2019'
+
+        "SQL Server 2008-x86 Advanced SP4":
+          SQL: '2008-x86 Advanced Updated: MSSQLSERVER'
+          VMIMAGE: 'windows-2019'
+        
+        "SQL Server 2008-x64 Core SP3":
+          SQL: '2008-x64 Core: MSSQLSERVER'
+          VMIMAGE: 'windows-2019'
+
+        "SQL Server 2008-x64 Core SP4":
+          SQL: '2008-x64 Core Updated: MSSQLSERVER'
+          VMIMAGE: 'windows-2019'
+
+        "SQL Server 2008-x86 Core SP3":
+          SQL: '2008-x86 Core: MSSQLSERVER'
+          VMIMAGE: 'windows-2019'
+
+        "SQL Server 2008-x86 Core SP4":
+          SQL: '2008-x86 Core Updated: MSSQLSERVER'
+          VMIMAGE: 'windows-2019'
+
+
 
     timeoutInMinutes: 49
     cancelTimeoutInMinutes: 1
