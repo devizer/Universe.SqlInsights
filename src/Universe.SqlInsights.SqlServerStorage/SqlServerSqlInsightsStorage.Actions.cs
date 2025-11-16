@@ -23,7 +23,7 @@ namespace Universe.SqlInsights.SqlServerStorage
         // Same as GetActionsByKeyPath below
         public async Task<string> GetKeyPathTimestampOfDetails(long idSession, SqlInsightsActionKeyPath keyPath, IEnumerable<string> optionalApps = null, IEnumerable<string> optionalHosts = null)
         {
-            const string sql = "Select Top 1 IdAction From SqlInsightsAction Where KeyPath = @KeyPath And IdSession = @IdSession Order By IdAction Desc";
+            const string sql = "Select Top 1 IdAction From SqlInsightsAction With (NoLock) Where KeyPath = @KeyPath And IdSession = @IdSession Order By IdAction Desc";
             using (var con = GetConnection())
             {
                 var query = await con.QueryAsync<SelectIdActionResult>(sql, new {KeyPath = SerializeKeyPath(keyPath), IdSession = idSession});
