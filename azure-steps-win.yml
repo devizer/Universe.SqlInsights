@@ -412,13 +412,32 @@ steps:
         export SQL_ADMINISTRATIVE_VIEWS_SUMMARY_RAM_Disk_Value="${RAM_DISK_SIZE:-}"
         export SQL_ADMINISTRATIVE_VIEWS_SUMMARY_RAM_Disk_Position=9999
       fi
+      dotnet install --global SqlServer.AdministrativeViews
+      SqlServer.AdministrativeViews -av -all -o "$HOME/Administrative Views"
+      ls -la "$HOME/Administrative Views"
+      Say "Success Complete"
+    condition: succeededOrFailed()
+    displayName: 'TEST Administrative Views by Tool'
+
+  - bash: |
+      set -eu; set -o pipefail;
+      export SQL_ADMINISTRATIVE_VIEWS_SUMMARY_1_Cpu_Title="CPU"
+      export SQL_ADMINISTRATIVE_VIEWS_SUMMARY_1_Cpu_Kind="String"
+      export SQL_ADMINISTRATIVE_VIEWS_SUMMARY_1_Cpu_Value="$(Get-CpuName --name-only)"
+      export SQL_ADMINISTRATIVE_VIEWS_SUMMARY_1_Cpu_Position=Header
+      if [[ -n "${DB_DATA_DIR:-}" ]] then
+        export SQL_ADMINISTRATIVE_VIEWS_SUMMARY_RAM_Disk_Title="Data RAM Disk (MB)"
+        export SQL_ADMINISTRATIVE_VIEWS_SUMMARY_RAM_Disk_Kind="Natural"
+        export SQL_ADMINISTRATIVE_VIEWS_SUMMARY_RAM_Disk_Value="${RAM_DISK_SIZE:-}"
+        export SQL_ADMINISTRATIVE_VIEWS_SUMMARY_RAM_Disk_Position=9999
+      fi
       cd $AGENT_TEMPDIRECTORY/Goods/AdministrativeViews.tests
       dotnet test Universe.SqlServer.AdministrativeViews.Tests.dll
       du -h "${SYSTEM_ARTIFACTSDIRECTORY}" || true
       # cp -a -v TestResults "${SYSTEM_ARTIFACTSDIRECTORY}"
       Say "Success Complete"
     condition: succeededOrFailed()
-    displayName: 'TEST Administrative Views'
+    displayName: 'TEST Administrative Views by Source'
 
   - task: PublishBuildArtifacts@1
     condition: succeededOrFailed()
@@ -426,6 +445,7 @@ steps:
     inputs:
       pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)\\AdministrativeViews'
       artifactName: 'Administrative Views Reports $(Agent.JobName) $(Build.BUILDNUMBER)'
+
 
   # TODO: SHOULD BE OPTIONAL via Variable
   # Do not feed Query Cache Report
