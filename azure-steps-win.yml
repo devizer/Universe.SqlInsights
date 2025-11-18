@@ -413,7 +413,7 @@ steps:
         export SQL_ADMINISTRATIVE_VIEWS_SUMMARY_RAM_Disk_Position=9999
       fi
       dotnet tool install --global SqlServer.AdministrativeViews
-      SqlServer.AdministrativeViews -av -all -o "C:\\Administrative Views"
+      SqlServer.AdministrativeViews -av -all -o "C:\\Administrative Views\\{InstanceName}"
       ls -la "/c/Administrative Views" || true
       Say "Success Complete"
     condition: succeededOrFailed()
