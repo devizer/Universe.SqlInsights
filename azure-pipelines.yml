@@ -32,9 +32,11 @@ jobs:
     steps:
 
       - bash: |
+          set -eu
           script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
-          try-and-retry pwsh -c "Install-Module -Name SqlServer-Version-Management -Force; Get-Cpu-Name"
+          try-and-retry pwsh -c "Install-Module -Name SqlServer-Version-Management -Force; Get-Cpu-Name -IncludeCoreCount"
           Say "CPU: $(Get-CpuName)"
+          set +eu
           for v in 8.0 6.0; do
             Say "ASP.NET $v"
             try-and-retry try-and-retry docker manifest inspect mcr.microsoft.com/dotnet/aspnet:$v

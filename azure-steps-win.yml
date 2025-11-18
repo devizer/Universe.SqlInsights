@@ -8,7 +8,7 @@ steps:
       Write-Host "Total Modules: $((get-module -ListAvailable).Count)"
       Install-Module -Name SqlServer-Version-Management -Force
 
-      Say "CPU: $(Get-Cpu-Name). $((Get-Memory-Info).Description)"
+      Say "CPU: $(Get-Cpu-Name -IncludeCoreCount). $((Get-Memory-Info).Description)"
       (Get-Module SqlServer-Version-Management -ListAvailable) | fl
       # Measure-Action "Uninstall LocalDB *" { Uninstall-LocalDB-List "*" }
     retryCountOnTaskFailure: 3
