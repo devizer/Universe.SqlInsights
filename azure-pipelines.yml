@@ -246,8 +246,12 @@ jobs:
 
 
         
-        "SQL Server 2025":
+        "SQL Server 2025 Developer":
           SQL: '2025 Developer: MSSQLSERVER'
+          TEST_ADVENTURE_WORKS: true
+
+        "SQL Server 2025 Express":
+          SQL: '2025 Core: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
 
         "SQL Server 2017 Developer Updated":
