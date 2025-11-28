@@ -368,7 +368,7 @@ steps:
       try-and-retry dotnet tool install --global SqlServer.AdministrativeViews
       SqlServer.AdministrativeViews -h
       Say "Let's Rock!"
-      time SqlServer.AdministrativeViews -o "/tmp/Administrative Views Reports/{InstanceName}" -cs "TrustServerCertificate=True;Encrypt=False;Data Source=127.0.0.1,1433;User ID=sa;Password=p@assw0rd!"
+      time SqlServer.AdministrativeViews -o "/tmp/Administrative Views Reports/{InstanceName} {Version} on {Platform}" -cs "TrustServerCertificate=True;Encrypt=False;Data Source=127.0.0.1,1433;User ID=sa;Password=p@assw0rd!"
       ls -la "/tmp/Administrative Views Reports"
       Say "Success Complete"
     condition: succeededOrFailed()
