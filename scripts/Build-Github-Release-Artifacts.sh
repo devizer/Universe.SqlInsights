@@ -40,18 +40,6 @@ popd
 
 prefix="sqlinsights-dashboard"
 
-Say "BUILD FX DEPENDENT $SQLINSIGHTS_VERSION"
-try-and-retry dotnet publish -f $W3API_NET -o bin/fxdepend -v:q -p:Version=$SQLINSIGHTS_VERSION_SHORT -c Release
-mkdir -p bin/fxdepend/wwwroot; 
-cp -r -a "$BUILD_REPOSITORY_LOCALPATH/src/universe.sqlinsights.w3app/build"/. bin/fxdepend/wwwroot
-# SQL_INSIGHTS_W3API_URL_PLACEHOLDER --> /api/v1/SqlInsights
-pushd bin/fxdepend
-  sed -i 's/SQL_INSIGHTS_W3API_URL_PLACEHOLDER/\/api\/v1\/SqlInsights/g' wwwroot/index.html
-  time tar cf - . | pigz -p $(nproc) -b 128 -${COMPRESSION_LEVEL}  > "$public"/$prefix-fxdependent.tar.gz
-  time tar cf - . | 7za a dummy -txz -mx=${COMPRESSION_LEVEL} -si -so > "$public"/$prefix-fxdependent.tar.xz
-  time 7z a -tzip -mx=${COMPRESSION_LEVEL} "$public"/$prefix-fxdependent.zip * | Filter-7z
-  time 7z a -t7z -mx=${COMPRESSION_LEVEL} -ms=on -mqs=on "$public"/$prefix-fxdependent.7z * | Filter-7z
-popd
 
 n=0
 # only net 6
@@ -66,28 +54,42 @@ RIDS="${kind}_RIDS"; RIDS="${!RIDS}"
 Say "Building '$kind' Array: NET=[$NET], SUFFIX=[$SUFFIX], RIDS=[$RIDS]"
 export DOTNET_VERSIONS=$NET DOTNET_TARGET_DIR=$HOME/DotNet.Custom/$NET SKIP_DOTNET_ENVIRONMENT=true
 script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash;
+
+Say "BUILD FX DEPENDENT $SQLINSIGHTS_VERSION kind=[$kind]"
+try-and-retry dotnet publish -f $NET -o bin/fxdepend${SUFFIX} -v:q -p:Version=$SQLINSIGHTS_VERSION_SHORT -c Release
+mkdir -p bin/fxdepend${SUFFIX}/wwwroot; 
+cp -r -a "$BUILD_REPOSITORY_LOCALPATH/src/universe.sqlinsights.w3app/build"/. bin/fxdepend${SUFFIX}/wwwroot
+# SQL_INSIGHTS_W3API_URL_PLACEHOLDER --> /api/v1/SqlInsights
+pushd bin/fxdepend${SUFFIX}
+  sed -i 's/SQL_INSIGHTS_W3API_URL_PLACEHOLDER/\/api\/v1\/SqlInsights/g' wwwroot/index.html
+  time tar cf - . | pigz -p $(nproc) -b 128 -${COMPRESSION_LEVEL}  > "$public"/$prefix-fxdependent${SUFFIX}.tar.gz
+  time tar cf - . | 7za a dummy -txz -mx=${COMPRESSION_LEVEL} -si -so > "$public"/$prefix-fxdependent${SUFFIX}.tar.xz
+  time 7z a -tzip -mx=${COMPRESSION_LEVEL} "$public"/$prefix-fxdependent${SUFFIX}.zip * | Filter-7z
+  time 7z a -t7z -mx=${COMPRESSION_LEVEL} -ms=on -mqs=on "$public"/$prefix-fxdependent${SUFFIX}.7z * | Filter-7z
+popd
+
 for r in $rids; do
   n=$((n+1))
   Say "#${n}: BUILD SELF-CONTAINED [$r] $SQLINSIGHTS_VERSION"
   df -h -T
-  try-and-retry $DOTNET_TARGET_DIR/dotnet publish --self-contained -r $r -f $W3API_NET -o bin/plain/$r -v:q -p:Version=$SQLINSIGHTS_VERSION_SHORT -c Release
-  mkdir -p bin/plain/$r/wwwroot; cp -r -a "$BUILD_REPOSITORY_LOCALPATH/src/universe.sqlinsights.w3app/build"/. bin/plain/$r/wwwroot
-  pushd bin/plain/$r
+  try-and-retry $DOTNET_TARGET_DIR/dotnet publish --self-contained -r $r -f $NET -o bin/plain/$r${SUFFIX} -v:q -p:Version=$SQLINSIGHTS_VERSION_SHORT -c Release
+  mkdir -p bin/plain/$r${SUFFIX}/wwwroot; cp -r -a "$BUILD_REPOSITORY_LOCALPATH/src/universe.sqlinsights.w3app/build"/. bin/plain/$r${SUFFIX}/wwwroot
+  pushd bin/plain/$r${SUFFIX}
     sed -i 's/SQL_INSIGHTS_W3API_URL_PLACEHOLDER/\/api\/v1\/SqlInsights/g' wwwroot/index.html
     chmod 644 *.dll
     test -s Universe.SqlInsights.W3Api && chmod 755 Universe.SqlInsights.W3Api
     if [[ "$r" == "win"* ]]; then
-      time 7z a -tzip -mx=${COMPRESSION_LEVEL} "$public"/$prefix-$r.zip * | Filter-7z
-      time 7z a -t7z -mx=${COMPRESSION_LEVEL} -ms=on -mqs=on "$public"/$prefix-$r.7z * | Filter-7z
+      time 7z a -tzip -mx=${COMPRESSION_LEVEL} "$public"/$prefix-$r${SUFFIX}.zip * | Filter-7z
+      time 7z a -t7z -mx=${COMPRESSION_LEVEL} -ms=on -mqs=on "$public"/$prefix-$r${SUFFIX}.7z * | Filter-7z
     else
       # time tar cf - . | xz -9 -e -z -T0 > "$public"/$prefix-$r.tar.xz
-      time tar cf - . | pigz -p $(nproc) -b 128 -${COMPRESSION_LEVEL}  > "$public"/$prefix-$r.tar.gz
-      time tar cf - . | 7za a dummy -txz -mx=${COMPRESSION_LEVEL} -si -so > "$public"/$prefix-$r.tar.xz
+      time tar cf - . | pigz -p $(nproc) -b 128 -${COMPRESSION_LEVEL}  > "$public"/$prefix-$r${SUFFIX}.tar.gz
+      time tar cf - . | 7za a dummy -txz -mx=${COMPRESSION_LEVEL} -si -so > "$public"/$prefix-$r${SUFFIX}.tar.xz
       # pigz -p 8 -b 128 -9
       # gzip -9 -c
     fi
   popd
-  rm -rf bin/plain/$r
+  if [[ -n "${TF_BUILD:-}" ]]; then rm -rf bin/plain/$r${SUFFIX}; fi
 done
 done
 
