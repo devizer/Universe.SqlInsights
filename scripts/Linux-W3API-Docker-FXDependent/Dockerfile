@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/aspnet:6.0
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
 # v5 - debian 10, v6 - debian 11
 
 ARG SQLINSIGHTS_VERSION
