@@ -12,6 +12,7 @@ variables:
 jobs:
 
   - job: Build_W3_App_Docker_Image
+    timeoutInMinutes: 120
     displayName: 'W3API Linux Docker Image and GitHub Release'
     pool:
       vmImage: "ubuntu-22.04"
