@@ -98,7 +98,7 @@ for kind in RELEASE LEGACY; do
       popd
       if [[ -n "${TF_BUILD:-}" ]]; then sudo rm -rf bin/plain/$r${SUFFIX}; fi
     done
-    if [[ -n "${TF_BUILD:-}" ]]; then sudo rm -rf $DOTNET_TARGET_DIR; sudo rm -rf ~/.nuget/packages; fi
+    if [[ -n "${TF_BUILD:-}" ]]; then sudo rm -rf $DOTNET_TARGET_DIR; sudo rm -rf ~/.nuget/packages; sudo rm -rf ~/.local/share/NuGet; fi
 done
 
 # HASH SUMS
