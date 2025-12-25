@@ -5,7 +5,7 @@ Say "SHORT_ARTIFACT_RIDS: [${SHORT_ARTIFACT_RIDS:-}]"
 
 RELEASE_NET=10.0
 RELEASE_SUFFIX=
-RELEASE_RIDS="osx-x64 osx-arm64 win-x64 win-x86 win-arm64 linux-x64 linux-arm linux-arm64 linux-musl-x64"
+RELEASE_RIDS="osx-x64 osx-arm64 win-x64 win-x86 win-arm64 linux-x64 linux-arm linux-arm64 linux-musl-x64 linux-musl-arm linux-musl-arm64"
 LEGACY_NET=6.0
 LEGACY_SUFFIX=-legacy
 LEGACY_RIDS="win-arm osx.10.10-x64 osx.10.11-x64 $RELEASE_RIDS"
