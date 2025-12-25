@@ -1,7 +1,15 @@
 set -eu; set -o pipefail
 
 Say "COMPRESSION_LEVEL: [$COMPRESSION_LEVEL]"
-Say "SHORT_ARTIFACT_RIDS: [$SHORT_ARTIFACT_RIDS]"
+Say "SHORT_ARTIFACT_RIDS: [${SHORT_ARTIFACT_RIDS:-}]"
+
+RELEASE_NET=10.0
+RELEASE_SUFFIX=
+RELEASE_RIDS="osx-x64 osx-arm64 win-x64 win-x86 win-arm64 linux-x64 linux-arm linux-arm64 linux-musl-x64"
+LEGACY_NET=6.0
+LEGACY_SUFFIX=-legacy
+LEGACY_RIDS="win-arm osx.10.10-x64 osx.10.11-x64"
+
 
 if [[ "$(command -v pigz)" == "" ]]; then Say "Install pigz"; sudo apt-get update -y -qq; sudo apt-get install pigz -y -qq; fi
 
@@ -47,16 +55,22 @@ popd
 
 n=0
 # only net 6
-rids="osx-x64 osx-arm64 win-x64 win-x86 win-arm64 win-arm linux-x64 linux-arm linux-arm64 linux-musl-x64 osx.10.10-x64 osx.10.11-x64"
 if [[ -n "${SHORT_ARTIFACT_RIDS:-}" ]]; then
   rids="linux-x64 linux-arm linux-arm64 win-x64"
 fi
 # rids="linux-x64 linux-arm linux-arm64"
+for kind in RELEASE LEGACY; do
+NET="${kind}_NET"; NET="${!NET}"
+SUFFIX="${kind}_SUFFIX"; SUFFIX="${!SUFFIX}"
+RIDS="${kind}_RIDS"; RIDS="${!RIDS}"
+Say "Building '$kind' Array: NET=[$NET], SUFFIX=[$SUFFIX], RIDS=[$RIDS]"
+export DOTNET_VERSIONS=$NET DOTNET_TARGET_DIR=$HOME/DotNet.Custom/$NET SKIP_DOTNET_ENVIRONMENT=true
+script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash;
 for r in $rids; do
   n=$((n+1))
   Say "#${n}: BUILD SELF-CONTAINED [$r] $SQLINSIGHTS_VERSION"
   df -h -T
-  try-and-retry dotnet publish --self-contained -r $r -f $W3API_NET -o bin/plain/$r -v:q -p:Version=$SQLINSIGHTS_VERSION_SHORT -c Release
+  try-and-retry $DOTNET_TARGET_DIR/dotnet publish --self-contained -r $r -f $W3API_NET -o bin/plain/$r -v:q -p:Version=$SQLINSIGHTS_VERSION_SHORT -c Release
   mkdir -p bin/plain/$r/wwwroot; cp -r -a "$BUILD_REPOSITORY_LOCALPATH/src/universe.sqlinsights.w3app/build"/. bin/plain/$r/wwwroot
   pushd bin/plain/$r
     sed -i 's/SQL_INSIGHTS_W3API_URL_PLACEHOLDER/\/api\/v1\/SqlInsights/g' wwwroot/index.html
@@ -73,6 +87,8 @@ for r in $rids; do
       # gzip -9 -c
     fi
   popd
+  rm -rf bin/plain/$r
+done
 done
 
 # HASH SUMS
@@ -97,6 +113,8 @@ function build_all_known_hash_sums() {
 build_all_known_hash_sums
 
 cp -r -a "$public" "$SYSTEM_ARTIFACTSDIRECTORY"/
+
+if [[ "${SKIP_PUBLISH:-}" == "True" ]]; then echo SKIPPING PUBLISH. ENOUGH; exit 0; fi
 
 Say "Create Github Release ${SQLINSIGHTS_VERSION}"
 # "-p" option mean pre-release

@@ -16,6 +16,8 @@ internal class InternalDbFactoryTuningConfiguration
         return
             "1".Equals(raw, StringComparison.OrdinalIgnoreCase)
             || "True".Equals(raw, StringComparison.OrdinalIgnoreCase)
+            || "Enable".Equals(raw, StringComparison.OrdinalIgnoreCase)
+            || "Enabled".Equals(raw, StringComparison.OrdinalIgnoreCase)
             || "On".Equals(raw, StringComparison.OrdinalIgnoreCase);
     }
 
