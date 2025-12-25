@@ -53,7 +53,7 @@ for kind in RELEASE LEGACY; do
     SUFFIX="${kind}_SUFFIX"; SUFFIX="${!SUFFIX}"
     RIDS="${kind}_RIDS"; RIDS="${!RIDS}"
     Say "Building '$kind' Array: NET=[$NET], SUFFIX=[$SUFFIX], RIDS=[$RIDS]"
-    export DOTNET_VERSIONS=$NET DOTNET_TARGET_DIR=$HOME/DotNet.Custom/$NET SKIP_DOTNET_ENVIRONMENT=true
+    export DOTNET_VERSIONS=$NET DOTNET_TARGET_DIR=$SYSTEM_ARTIFACTSDIRECTORY/Temp-DotNet.Custom/$NET SKIP_DOTNET_ENVIRONMENT=true
     script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash;
 
     pwd
