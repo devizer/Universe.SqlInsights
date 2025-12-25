@@ -23,6 +23,9 @@ jobs:
          script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
          Say --Reset-Stopwatch; Say "CPU: $(Get-CpuName)"
 
+         Say "CLEAN UP Docker Images"
+         docker image prune -a -f || true
+
          # Remove .NET 9.0 SDK 
          sudo rm -rf /usr/share/dotnet
          export SKIP_DOTNET_DEPENDENCIES=True
