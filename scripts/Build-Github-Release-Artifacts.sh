@@ -74,7 +74,7 @@ for kind in RELEASE LEGACY; do
       time 7z a -t7z -mx=${COMPRESSION_LEVEL} -ms=on -mqs=on "$public"/$prefix-fxdependent${SUFFIX}.7z * | Filter-7z
     popd
 
-    rids_count="$(echo $RIDS | wc -w)"
+    rids_count="$(echo $RIDS | wc -w)"; n=0
     for r in $RIDS; do
       n=$((n+1))
       Say "#${n}/${rids_count}: BUILD SELF-CONTAINED [$r] $SQLINSIGHTS_VERSION, kind = [$kind]"
