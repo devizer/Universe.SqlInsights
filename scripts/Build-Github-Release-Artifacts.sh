@@ -8,7 +8,7 @@ RELEASE_SUFFIX=
 RELEASE_RIDS="osx-x64 osx-arm64 win-x64 win-x86 win-arm64 linux-x64 linux-arm linux-arm64 linux-musl-x64"
 LEGACY_NET=6.0
 LEGACY_SUFFIX=-legacy
-LEGACY_RIDS="win-arm osx.10.10-x64 osx.10.11-x64"
+LEGACY_RIDS="win-arm osx.10.10-x64 osx.10.11-x64 $RELEASE_RIDS"
 
 
 if [[ "$(command -v pigz)" == "" ]]; then Say "Install pigz"; sudo apt-get update -y -qq; sudo apt-get install pigz -y -qq; fi
@@ -98,6 +98,7 @@ for kind in RELEASE LEGACY; do
       popd
       if [[ -n "${TF_BUILD:-}" ]]; then rm -rf bin/plain/$r${SUFFIX}; fi
     done
+    if [[ -n "${TF_BUILD:-}" ]]; then rm -rf $DOTNET_TARGET_DIR; fi
 done
 
 # HASH SUMS
