@@ -47,6 +47,7 @@ if [[ -n "${SHORT_ARTIFACT_RIDS:-}" ]]; then
   rids="linux-x64 linux-arm linux-arm64 win-x64"
 fi
 # rids="linux-x64 linux-arm linux-arm64"
+# -------- LETS ROCK --------
 for kind in RELEASE LEGACY; do
 NET="${kind}_NET"; NET="${!NET}"
 SUFFIX="${kind}_SUFFIX"; SUFFIX="${!SUFFIX}"
@@ -56,7 +57,7 @@ export DOTNET_VERSIONS=$NET DOTNET_TARGET_DIR=$HOME/DotNet.Custom/$NET SKIP_DOTN
 script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash;
 
 Say "BUILD FX DEPENDENT $SQLINSIGHTS_VERSION kind=[$kind]"
-try-and-retry dotnet publish -f $NET -o bin/fxdepend${SUFFIX} -v:q -p:Version=$SQLINSIGHTS_VERSION_SHORT -c Release
+try-and-retry $DOTNET_TARGET_DIR/dotnet publish -f $NET -o bin/fxdepend${SUFFIX} -v:q -p:Version=$SQLINSIGHTS_VERSION_SHORT -c Release
 mkdir -p bin/fxdepend${SUFFIX}/wwwroot; 
 cp -r -a "$BUILD_REPOSITORY_LOCALPATH/src/universe.sqlinsights.w3app/build"/. bin/fxdepend${SUFFIX}/wwwroot
 # SQL_INSIGHTS_W3API_URL_PLACEHOLDER --> /api/v1/SqlInsights
