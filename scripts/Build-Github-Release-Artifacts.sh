@@ -2,8 +2,8 @@ set -eu; set -o pipefail
 
 function Delete-Folder-Content() {
   local dir="$1"
-  if [[ -d "$dir" ]]; then echo "Warning! Can't delete folder's content because it is not exists"; return; fi
-  local before="$(du "$dir" -h --max-depth=0 | awk print '{print $1}')"
+  if [[ ! -d "$dir" ]]; then echo "Warning! Can't delete folder's content because it is not exists: '$dir'"; return; fi
+  local before="$(du "$dir" -h --max-depth=0 | awk '{print $1}')"
   sudo rm -rf "$dir"/* || true
   echo "Deleted folder's content: '$before' of [$dir]"
 }
