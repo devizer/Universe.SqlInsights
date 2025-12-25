@@ -2,7 +2,7 @@ set -eu; set -o pipefail
 
 function Delete-Folder-Content() {
   local dir="$1"
-  if [[ -d "$dir" ]]; then echo "Warning! Can't delte folder's content because it is not exists"; return; fi
+  if [[ -d "$dir" ]]; then echo "Warning! Can't delete folder's content because it is not exists"; return; fi
   local before="$(du "$dir" -h --max-depth=0 | awk print '{print $1}')"
   sudo rm -rf "$dir"/* || true
   echo "Deleted folder's content: '$before' of [$dir]"
@@ -103,8 +103,8 @@ for kind in RELEASE LEGACY; do
           # pigz -p 8 -b 128 -9
           # gzip -9 -c
         fi
+        if [[ -n "${TF_BUILD:-}" ]]; then Delete-Folder-Content "bin/plain/$r${SUFFIX}"; fi
       popd
-      if [[ -n "${TF_BUILD:-}" ]]; then Delete-Folder-Content "bin/plain/$r${SUFFIX}"; fi
     done
     if [[ -n "${TF_BUILD:-}" ]]; then Delete-Folder-Content "$DOTNET_TARGET_DIR"; Delete-Folder-Content ~/.nuget/packages; Delete-Folder-Content ~/.local/share/NuGet; fi
 done
