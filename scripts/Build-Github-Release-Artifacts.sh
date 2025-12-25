@@ -62,7 +62,7 @@ for kind in RELEASE LEGACY; do
     popd
 
     Say "BUILD FX DEPENDENT $SQLINSIGHTS_VERSION kind=[$kind]"
-    try-and-retry $DOTNET_TARGET_DIR/dotnet publish -f $NET -o bin/fxdepend${SUFFIX} -v:q -p:Version=$SQLINSIGHTS_VERSION_SHORT -c Release
+    try-and-retry $DOTNET_TARGET_DIR/dotnet publish -f net$NET -o bin/fxdepend${SUFFIX} -v:q -p:Version=$SQLINSIGHTS_VERSION_SHORT -c Release
     mkdir -p bin/fxdepend${SUFFIX}/wwwroot; 
     cp -r -a "$BUILD_REPOSITORY_LOCALPATH/src/universe.sqlinsights.w3app/build"/. bin/fxdepend${SUFFIX}/wwwroot
     # SQL_INSIGHTS_W3API_URL_PLACEHOLDER --> /api/v1/SqlInsights
@@ -78,7 +78,7 @@ for kind in RELEASE LEGACY; do
       n=$((n+1))
       Say "#${n}: BUILD SELF-CONTAINED [$r] $SQLINSIGHTS_VERSION"
       df -h -T
-      try-and-retry $DOTNET_TARGET_DIR/dotnet publish --self-contained -r $r -f $NET -o bin/plain/$r${SUFFIX} -v:q -p:Version=$SQLINSIGHTS_VERSION_SHORT -c Release
+      try-and-retry $DOTNET_TARGET_DIR/dotnet publish --self-contained -r $r -f net$NET -o bin/plain/$r${SUFFIX} -v:q -p:Version=$SQLINSIGHTS_VERSION_SHORT -c Release
       mkdir -p bin/plain/$r${SUFFIX}/wwwroot; cp -r -a "$BUILD_REPOSITORY_LOCALPATH/src/universe.sqlinsights.w3app/build"/. bin/plain/$r${SUFFIX}/wwwroot
       pushd bin/plain/$r${SUFFIX}
         sed -i 's/SQL_INSIGHTS_W3API_URL_PLACEHOLDER/\/api\/v1\/SqlInsights/g' wwwroot/index.html
