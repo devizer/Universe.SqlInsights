@@ -96,9 +96,9 @@ for kind in RELEASE LEGACY; do
           # gzip -9 -c
         fi
       popd
-      if [[ -n "${TF_BUILD:-}" ]]; then rm -rf bin/plain/$r${SUFFIX}; fi
+      if [[ -n "${TF_BUILD:-}" ]]; then sudo rm -rf bin/plain/$r${SUFFIX}; fi
     done
-    if [[ -n "${TF_BUILD:-}" ]]; then rm -rf $DOTNET_TARGET_DIR; fi
+    if [[ -n "${TF_BUILD:-}" ]]; then sudo rm -rf $DOTNET_TARGET_DIR; fi
 done
 
 # HASH SUMS
