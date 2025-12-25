@@ -1,10 +1,11 @@
 # export NODE_VER=v16.20.2; script=https://raw.githubusercontent.com/devizer/glist/master/install-dotnet-and-nodejs.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash -s node
-work=$HOME/SqlInsights
+BASE=/var/lib/docker/BUILD
+work=$BASE/SqlInsights
 git clone https://github.com/devizer/Universe.SqlInsights $work
 cd $work
 git reset --hard
 git pull
-export SYSTEM_ARTIFACTSDIRECTORY=$HOME/Artifacts.SqlInsights
+export SYSTEM_ARTIFACTSDIRECTORY=$BASE/Artifacts.SqlInsights; mkdir -p "$SYSTEM_ARTIFACTSDIRECTORY"
 export COMPRESSION_LEVEL=1
 export SHORT_ARTIFACT_RIDS=
 export SKIP_PUBLISH=True
