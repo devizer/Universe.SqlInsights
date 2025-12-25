@@ -123,7 +123,7 @@ build_all_known_hash_sums
 
 cp -r -a "$public" "$SYSTEM_ARTIFACTSDIRECTORY"/
 
-if [[ "${SKIP_PUBLISH:-}" == "True" ]]; then echo SKIPPING PUBLISH. ENOUGH; exit 0; fi
+if [[ "${SKIP_PUBLISH:-}" == "True" ]]; then Say "SKIPPING PUBLISH. ENOUGH"; exit 0; fi
 
 Say "Create Github Release ${SQLINSIGHTS_VERSION}"
 # "-p" option mean pre-release
