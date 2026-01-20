@@ -3,6 +3,8 @@ set -e
 set -u
 set -o pipefail
 
+# export FORCE_GZIP_PRIORITY=True DOWNLOAD_SHOW_PROGRESS=True INSTALL_DIR=/opt/s5dashboard-xxx
+
 function say() { 
    NC='\033[0m' Color_Green='\033[1;32m' Color_Red='\033[1;31m' Color_Yellow='\033[1;33m'; 
    local var="Color_${1:-}"
@@ -14,7 +16,7 @@ function say() {
 function find_decompressor() {
   COMPRESSOR_EXT=""
   COMPRESSOR_EXTRACT=""
-  if [[ -n "${GCC_FORCE_GZIP_PRIORITY:-}" ]]; then
+  if [[ "${FORCE_GZIP_PRIORITY:-}" == True ]]; then
     if [[ "$(command -v gzip)" != "" ]]; then
       COMPRESSOR_EXT=gz
       COMPRESSOR_EXTRACT="gzip -f -d"
@@ -119,22 +121,23 @@ fi
 
 
 find_decompressor
-HTTP_PORT="${HTTP_PORT:-40080}"
+HTTP_PORT="${HTTP_PORT:-8080}"
 HTTP_HOST="${HTTP_HOST:-0.0.0.0}"
 ASPNETCORE_URLS="http://${HTTP_HOST}:${HTTP_PORT}" 
-INSTALL_DIR="${INSTALL_DIR:-/opt/s4dashboard}"
+INSTALL_DIR="${INSTALL_DIR:-/opt/s5dashboard}"
 
 # TODO
-export DB_CONNECTION_STRING="${DB_CONNECTION_STRING:-Data Source=192.168.2.42; Initial Catalog=SqlInsights Local Warehouse; User ID=sa; password=\`1qazxsw2;TrustServerCertificate=True;Encrypt=False}"
+export DB_CONNECTION_STRING="${DB_CONNECTION_STRING:-Data Source=192.168.2.69; Initial Catalog=SqlInsights Local Warehouse; User ID=sa; password=\`1qazxsw2;TrustServerCertificate=True;Encrypt=False}"
 
 file="sqlinsights-dashboard-$rid.tar.${COMPRESSOR_EXT}"
 url="https://github.com/devizer/Universe.SqlInsights/releases/latest/download/$file"
 if [[ -z "${HOME:-}" ]]; then copy=/tmp/$file; else copy=$HOME/$file; fi
 
-say Green "Listening on: $ASPNETCORE_URLS"
-say Green "Download url: $url"
-say Green "Temporary download file: $copy"
-say Green "Storage: $DB_CONNECTION_STRING"
+say Green "Installing S5 Dashboard"
+say Green "  * Listening on: $ASPNETCORE_URLS"
+say Green "  * Download url: $url"
+say Green "  * Temporary download file: $copy"
+say Green "  * Storage: $DB_CONNECTION_STRING"
 
 download_file "$url" "$copy"
 
@@ -150,38 +153,56 @@ sudo rm -f "$copy"
 popd >/dev/null
 DB_CONNECTION_STRING_Escaped=$(systemd-escape "${DB_CONNECTION_STRING:-}")
 
-sudo systemctl disable s4dashboard.service 2>/dev/null 1>&2 || true
+if systemctl status s5dashboard.service > /dev/null 2>&1; then
+  echo "Stopping existing s5dashboard service"
+fi
+sudo systemctl stop s5dashboard.service 2>/dev/null 1>&2 || true
+sudo systemctl disable s5dashboard.service 2>/dev/null 1>&2 || true
+
+ver="$("$INSTALL_DIR"/Universe.SqlInsights.W3Api --version 2>/dev/null)"
+if [[ -z "$ver" ]]; then say Red "Warning! Malformed download or incompadible depndencies"; fi
+echo "Launching s5dashboard service ver $ver"
 
 echo '
 [Unit]
-Description=S4 Dashboard
+Description=S5 Dashboard
 After=network.target
 
 [Service]
 Type=simple
-# PIDFile=/var/run/s4dashboard.pid
+# PIDFile=/var/run/s5dashboard.pid
 WorkingDirectory='$INSTALL_DIR'
 ExecStart='$INSTALL_DIR'/Universe.SqlInsights.W3Api
 Restart=on-failure
 RestartSec=2
 KillSignal=SIGINT
 ExecStopPost='${ExecStopPost:-}'
-SyslogIdentifier=s4dashboard
+SyslogIdentifier=s5dashboard
 User=root
-Environment=PID_FILE_FULL_PATH=/var/run/s4dashboard.pid
+Environment=PID_FILE_FULL_PATH=/var/run/s5dashboard.pid
 Environment=ASPNETCORE_URLS='$ASPNETCORE_URLS'
 Environment=RESPONSE_COMPRESSION='${RESPONSE_COMPRESSION:-True}'
 Environment=FORCE_HTTPS_REDIRECT=False
 Environment=ASPNETCORE_ENVIRONMENT=Production
 Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
 Environment=ConnectionStrings__SqlInsights='$DB_CONNECTION_STRING_Escaped'
+Environment=LocalLogsFolder__Enable=True
+Environment=LocalLogsFolder__Unix=/var/log/s5dashboard.logs
+Environment=DOTNET_gcServer=0
+# Environment=DOTNET_ThreadPool_MinThreads=1
+# Environment=DOTNET_ThreadPool_MaxThreads=2
+Environment=DOTNET_BusySpinWait=0
+Environment=DOTNET_JitEnableOptimization=0
+Environment=DOTNET_TC_QuickJitForLoops=0
+Environment=DOTNET_SocketsThreadPool_BlockingMode=1
+
 
 [Install]
 WantedBy=multi-user.target
-' | sudo tee /etc/systemd/system/s4dashboard.service >/dev/null
+' | sudo tee /etc/systemd/system/s5dashboard.service >/dev/null
 
 sudo systemctl daemon-reload || true
-sudo systemctl enable s4dashboard.service
-sudo systemctl start s4dashboard.service
+sudo systemctl enable s5dashboard.service
+sudo systemctl start s5dashboard.service
 
-sudo journalctl -fu s4dashboard.service
+sudo journalctl -fu s5dashboard.service

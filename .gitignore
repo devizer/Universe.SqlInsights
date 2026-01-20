@@ -200,3 +200,5 @@ FakesAssemblies/
 *.opt
 
 */.idea/*
+
+TestOutput

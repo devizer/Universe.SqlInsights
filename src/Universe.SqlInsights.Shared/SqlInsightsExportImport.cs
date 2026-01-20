@@ -48,7 +48,7 @@ public class SqlInsightsExportImport
         int totalActions = 0;
         foreach (var session in sessions)
         {
-            ZipArchiveEntry zipSessionEntry = zipArchive.CreateEntry($"Session-{session.IdSession:n0}.json", CompressionLevel);
+            ZipArchiveEntry zipSessionEntry = zipArchive.CreateEntry($"Session-{session.IdSession:f0}.json", CompressionLevel);
             using var streamSessionRaw = zipSessionEntry.Open();
             using var streamSession = new BufferedStream(streamSessionRaw, bufferSize);
             streamSession.Write(ArrayStart, 0, ArrayStart.Length);

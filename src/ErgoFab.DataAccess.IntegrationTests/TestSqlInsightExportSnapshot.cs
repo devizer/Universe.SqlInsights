@@ -14,20 +14,39 @@ namespace ErgoFab.DataAccess.IntegrationTests;
 public class TestSqlInsightExportSnapshot
 {
     [Test]
-    [ErgoFabTestCaseSource(42)]
-    public void ExportToNullStream(ErgoFabTestCase testCase)
+    [TestCase(CompressionLevel.Fastest)]
+    [TestCase(CompressionLevel.Optimal)]
+    [TestCase(CompressionLevel.NoCompression)]
+    [TestCase(CompressionLevel.SmallestSize)]
+    public void ExportToFile(CompressionLevel compressionLevel)
+    {
+        var fileName = Path.Combine("TestsOutput", $"Storage Snapshot ({compressionLevel})" + ".zip");
+        Directory.CreateDirectory(Path.GetDirectoryName(fileName));
+        using var stream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, 65536);
+        ExportImplementation(stream, compressionLevel);
+    }
+
+
+    [Test]
+    public void ExportToNullStream()
+    {
+        ExportImplementation(Stream.Null, CompressionLevel.NoCompression);
+    }
+
+
+    private static void ExportImplementation(Stream outputStream, CompressionLevel compressionLevel)
     {
         ISqlInsightsStorage storage = NUnitPipelineConfiguration.GetService<ISqlInsightsStorage>();
         // SqlServerSqlInsightsStorage storage = new SqlServerSqlInsightsStorage(SqlClientFactory.Instance, testCase.ConnectionOptions.ConnectionString);
         SqlInsightsExportImport export = new SqlInsightsExportImport(storage)
         {
-            BufferSize = 1,
-            CompressionLevel = CompressionLevel.NoCompression
+            BufferSize = 16384,
+            CompressionLevel = compressionLevel
         };
 
         var cs = (storage as SqlServerSqlInsightsStorage)?.ConnectionString;
         // Console.WriteLine($"[DEBUG ConnectionString] STARTING EXPORT '{cs}'");
-        export.Export(Stream.Null).ConfigureAwait(false).GetAwaiter().GetResult();
+        export.Export(outputStream).ConfigureAwait(false).GetAwaiter().GetResult();
         Console.WriteLine(export.Log);
     }
 }
