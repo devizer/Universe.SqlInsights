@@ -20,6 +20,7 @@ namespace Universe.SqlInsights.W3Api.SqlInsightsIntegration
 
             _IsServerHostOnWindows = new Lazy<bool>(() =>
             {
+                // TODO: Use Proper provider
                 Microsoft.Data.SqlClient.SqlConnection cnn = new SqlConnection(ConnectionString);
                 return cnn.Manage().IsWindows;
             });
@@ -33,7 +34,10 @@ namespace Universe.SqlInsights.W3Api.SqlInsightsIntegration
 
         private Lazy<string> _ReportFullFileName;
         public string ReportFullFileName => _ReportFullFileName.Value;
-        public string SqlTracesDirectory => _IsServerHostOnWindows.Value ? (SystemDriveAccess.WindowsSystemDrive + "Temp\\SqlInsights-Traces") : "/tmp/SqlInsights-Traces";
+        public string SqlTracesDirectory => 
+            _IsServerHostOnWindows.Value 
+                ? (SystemDriveAccess.WindowsSystemDrive + "Temp\\SqlInsights-Traces") 
+                : "/tmp/SqlInsights-Traces";
 
         private Lazy<bool> _IsServerHostOnWindows;
 
