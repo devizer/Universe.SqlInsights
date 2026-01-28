@@ -20,7 +20,7 @@ namespace Universe.SqlInsights.W3Api.SqlInsightsIntegration
 
             _IsServerHostOnWindows = new Lazy<bool>(() =>
             {
-                // TODO: Use Proper provider
+                // TODO: Use Proper provider?
                 Microsoft.Data.SqlClient.SqlConnection cnn = new SqlConnection(ConnectionString);
                 return cnn.Manage().IsWindows;
             });
