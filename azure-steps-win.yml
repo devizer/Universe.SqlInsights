@@ -254,13 +254,21 @@ steps:
 
   - pwsh: |
         Import-DevOps
+        $ErrorActionPreference="Continue"
+
         echo "SQL: '$($ENV:sql)'"
         $image="devizervlad/iis-net4x-net35:$($ENV:SQL_IMAGE_TAG)"
         Say "Pull $image ..."
         # $ENV:IMAGE="$image"
         # Try-And-Retry -title "Pull $image" -action ([scriptblock]{ & docker pull "$($ENV:IMAGE)" | out-host })
-        & docker pull "$image"
         & docker rm -f sql-server 2>$null
+        Try-And-Retry "PULL $image" "& docker pull $image | out-host"
+        & docker pull "$image"
+
+        Say "PROBE PROCESS IMAGE $image"
+        & docker run --rm isolation=process --entrypoint cmd $image /c ver
+        Say "PROBE HYPERV IMAGE $image"
+        & docker run --rm isolation=hyperv --entrypoint cmd $image /c ver
 
         Say "Starting container sql-server"
         New-item C:\SQL -ItemType Directory -Force -EA SilentlyContinue | Out-Null
@@ -268,7 +276,7 @@ steps:
         $mnt="type=bind,source=$(Get-Location),target=C:\App"
         echo "--mount parameter is: [$mnt]"
         echo "SYSTEM_ARTIFACTSDIRECTORY = [$($ENV:SYSTEM_ARTIFACTSDIRECTORY)]"
-        & docker run -d --name sql-server --memory 3g --cpus "$([Environment]::ProcessorCount)" "--isolation=hyperv" `
+        & docker run -d --name sql-server --memory 2500M --cpus "$([Environment]::ProcessorCount)" "--isolation=hyperv" `
           -e SQL="$($ENV:sql)" `
           -e SQL_IMAGE_TAG="$($ENV:SQL_IMAGE_TAG)" `
           --mount "$mnt" `
