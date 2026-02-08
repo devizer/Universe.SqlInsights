@@ -251,7 +251,9 @@ steps:
         $mnt="type=bind,source=$(Get-Location),target=C:\App"
         echo "--mount parameter is: [$mnt]"
         echo "SYSTEM_ARTIFACTSDIRECTORY = [$($ENV:SYSTEM_ARTIFACTSDIRECTORY)]"
-        & docker run -d --name sql-server --memory 4g --cpus "$([Environment]::ProcessorCount)" "--isolation=hyperv" -e SQL="$($ENV:sql)" `
+        & docker run -d --name sql-server --memory 4g --cpus "$([Environment]::ProcessorCount)" "--isolation=hyperv" `
+          -e SQL="$($ENV:sql)" `
+          -e SQL_IMAGE_TAG="$($ENV:SQL_IMAGE_TAG)" `
           --mount "$mnt" `
           --mount type=bind,source=C:\SQL,target=C:\SQL `
           --mount type=bind,source=C:\Temp,target=C:\Temp `
