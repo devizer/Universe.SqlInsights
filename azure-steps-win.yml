@@ -250,11 +250,12 @@ steps:
         New-item C:\Temp -ItemType Directory -Force -EA SilentlyContinue | Out-Null
         $mnt="type=bind,source=$(Get-Location),target=C:\App"
         echo "--mount parameter is: [$mnt]"
+        echo "SYSTEM_ARTIFACTSDIRECTORY = [$($ENV:SYSTEM_ARTIFACTSDIRECTORY)]"
         & docker run -d --name sql-server --memory 4g --cpus 4 "--isolation=hyperv" -e SQL="$($ENV:sql)" `
           --mount "$mnt" `
           --mount type=bind,source=C:\SQL,target=C:\SQL `
           --mount type=bind,source=C:\Temp,target=C:\Temp `
-          --mount type=bind,source=$($ENV:SYSTEM_ARTIFACTSDIRECTORY),target=$($ENV:SYSTEM_ARTIFACTSDIRECTORY) `
+          --mount "type=bind,source=$($ENV:SYSTEM_ARTIFACTSDIRECTORY),target=$($ENV:SYSTEM_ARTIFACTSDIRECTORY)" `
           -e PS1_TROUBLE_SHOOT="On" -e SQLSERVERS_SETUP_FOLDER="C:\SQL-Setup" `
           -p 1433:1433 -p 1434:1434 --workdir=C:\App --entrypoint powershell $image -Command "Sleep 2147482; Wait-Event;"
         Say "Starting Setup in Container"
