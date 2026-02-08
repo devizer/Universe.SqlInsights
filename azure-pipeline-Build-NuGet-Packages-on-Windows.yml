@@ -21,7 +21,7 @@ steps:
         Write-Host (@($ENV:PATH.Split(";")) -join "`n")
         Say "Assigning action ..."
         $action = { Get-ChildItem | Out-Host }
-        Say "Assigning action complete"
+        Say "Assigning action complete. Type is [$($action.GetType())]"
         Try-And-Retry -Title "Acceptance Test: Get-ChildItem" -Action $action
         $true
     displayName: 'TEST PWSH'
