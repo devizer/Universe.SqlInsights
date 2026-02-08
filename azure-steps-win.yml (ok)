@@ -217,21 +217,58 @@ steps:
     displayName: 'system info (pwsh)'
 
 
-  - pwsh: |
-        Copy-Item -Path "$env:AGENT_TEMPDIRECTORY\Goods" -Destination "." -Recurse -Force
-        Say "'.\Goods' Content
-        Get-ChildItem '.\Goods' | Format-Table -AutoSize | Out-Host
-    displayName: 'Copy Goods'
+  - powershell: |
+       iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
+       $ENV:PS1_TROUBLE_SHOOT = "On"
+       $ENV:SQLSERVERS_MEDIA_FOLDER = "D:\SQL-SETUP\Media"
+       $ENV:SQLSERVERS_SETUP_FOLDER = "C:\SQL-SETUP\Installer"
+       & setx.exe PS1_TROUBLE_SHOOT On
+       & setx.exe SQLSERVERS_MEDIA_FOLDER "$ENV:SQLSERVERS_MEDIA_FOLDER"
+       & setx.exe SQLSERVERS_SETUP_FOLDER "$ENV:SQLSERVERS_SETUP_FOLDER"
+
+       $collation = If ("$ENV:SQL" -match "2019" -or "$ENV:SQL" -match "2022") { "Latin1_General_100_CI_AS_SC_UTF8" } Else { "SQL_Latin1_General_CP1_CI_AS" };
+       $setupErrors = Setup-SqlServers "$(SQL)" "Features=SQLENGINE" "Collation=$collation" "Startup=Automatic" "InstallTo=D:\SQL" "Password=``1qazxsw2" `
+         *| tee "$($Env:SYSTEM_ARTIFACTSDIRECTORY)\SQL Setup Log.txt"
+
+       if ($setupErrors.Count -gt 0) {
+         Write-Host "OOPS $($setupErrors)"
+         throw $setupErrors;
+       }
+
+       $ErrorActionPreference = "Continue"
+
+       if ("$ENV:SQL" -match "2005") {
+         Say "Switch SQL Server 2005 to Local System account"
+         & net.exe stop MSSQLSERVER
+         & sc.exe config MSSQLSERVER obj= LocalSystem
+         & net.exe start MSSQLSERVER
+       }
+
+       Remove-Item -Recurse -Force "$ENV:SQLSERVERS_MEDIA_FOLDER" -EA SilentlyContinue
+       Remove-Item -Recurse -Force "$ENV:SQLSERVERS_SETUP_FOLDER" -EA SilentlyContinue
+       Say "Successfully Complete"
+
+    condition: or(failed(), eq(variables['Setup.NEED_CONTAINER'], 'False'))
+    retryCountOnTaskFailure: 3
+    displayName: '[SQL Server] Setup on Host'
 
   - pwsh: |
         Import-DevOps
         $ErrorActionPreference="Continue"
-        echo "SQL: '$($ENV:sql)'"
 
+        echo "SQL: '$($ENV:sql)'"
         $image="devizervlad/iis-net4x-net35:$($ENV:SQL_IMAGE_TAG)"
         Say "Pull $image ..."
+        # $ENV:IMAGE="$image"
+        # Try-And-Retry -title "Pull $image" -action ([scriptblock]{ & docker pull "$($ENV:IMAGE)" | out-host })
+        & docker rm -f sql-server 2>$null
         Try-And-Retry "PULL $image" "& docker pull $image | out-host"
         & docker pull "$image"
+
+        Say "PROBE PROCESS IMAGE $image"
+        & docker run --rm --isolation=process --entrypoint cmd $image /c ver
+        Say "PROBE HYPERV IMAGE $image"
+        & docker run --rm --isolation=hyperv --entrypoint cmd $image /c ver
 
         Say "Starting container sql-server"
         New-item C:\SQL -ItemType Directory -Force -EA SilentlyContinue | Out-Null
@@ -239,6 +276,7 @@ steps:
         $mnt="type=bind,source=$(Get-Location),target=C:\App"
         echo "--mount parameter is: [$mnt]"
         echo "SYSTEM_ARTIFACTSDIRECTORY = [$($ENV:SYSTEM_ARTIFACTSDIRECTORY)]"
+        $image="devizervlad/iis-net4x-net35:$($ENV:SQL_IMAGE_TAG)"
         $cpuCount="$([Environment]::ProcessorCount)"
         # disk D in missing in container
         # --mount "type=bind,source=$($ENV:SYSTEM_ARTIFACTSDIRECTORY),target=$($ENV:SYSTEM_ARTIFACTSDIRECTORY)" `
@@ -252,7 +290,7 @@ steps:
           --mount "type=bind,source=C:\SQL,target=C:\SQL" `
           --mount "type=bind,source=C:\Temp,target=C:\Temp" `
           -e PS1_TROUBLE_SHOOT="On" -e SQLSERVERS_SETUP_FOLDER="C:\SQL-Setup" `
-          -p 1433:1433 -p 1434:1434 --workdir=C:\App --entrypoint powershell $image -Command "Write-Host WAITING; Sleep 214748; Wait-Event;"
+          -p 1433:1433 -p 1434:1434 --workdir=C:\App --entrypoint powershell $image -Command "echo WAITING; Sleep 214748; Wait-Event;"
         Sleep 2
         Say "CONTAINER STARTUP LOGS"
         docker logs --since 0 sql-server
@@ -262,39 +300,58 @@ steps:
 
     condition: or(failed(), eq(variables['Setup.NEED_CONTAINER'], 'True'))
     retryCountOnTaskFailure: 3
-    displayName: 'Setup Container (sql-server)'
+    displayName: '[SQL Server] Setup on Container'
 
-  - powershell: scripts\CI-Steps\Run-CI-Script.ps1 1-Install-Module.ps1
-    displayName: '1-Install-Module.ps1'
+  
+  
+  - powershell: |
+       iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
+       Set-SQLServer-Options -Title "SQL $i" -Instance "(local)" -Options @{ xp_cmdshell = $true; "clr enabled" = $false; "server trigger recursion" = $true; "min server memory (MB)" = 7000; "max server memory (MB)" = 16000; "fill factor (%)" = 70 }
+    condition: or(failed(), eq(variables['Setup.NEED_CONTAINER'], 'False'))
+    retryCountOnTaskFailure: 4
+    displayName: '[SQL Server] Configure'
 
-  - powershell: scripts\CI-Steps\Run-CI-Script.ps1 2-Install-DotNet.ps1
-    displayName: '2-Install-DotNet.ps1'
+  - bash: |
+      set -eu; set -o pipefail;
+      NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES=""
+      if [[ "${RAM_DISK:-}" == "" ]]; then export NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES=True; fi # for query cache
+      cd $AGENT_TEMPDIRECTORY/Goods/ergofab.tests
+      export ERGOFAB_TESTS_DATA_FOLDER="D:\\ErgFab-Tests"
+      export ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING="Server=(local);Encrypt=False;Initial Catalog=SqlInsights Local Warehouse;Integrated Security=SSPI"
+      export ERGOFAB_TESTS_REPORT_FULLNAME="$SYSTEM_ARTIFACTSDIRECTORY\\ErgFab Tests Report.txt"
+      for var in ERGOFAB_TESTS_DATA_FOLDER ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES; do
+        value="${!var}"
+        echo "EXPORT $var = [$value]" 
+        echo "##vso[task.setvariable variable=$var]$value"
+      done
 
-    # "Password=``1qazxsw2"
-  - powershell: scripts\CI-Steps\Run-CI-Script.ps1 3-Install-SQL-Server.ps1
-    displayName: '3-Install-SQL-Server.ps1'
+      dotnet test ErgoFab.DataAccess.IntegrationTests.dll
+      cp -av TestsOutput $SYSTEM_ARTIFACTSDIRECTORY
+      Say "Success Complete"
+    condition: ne(variables.SKIP_ERGOFAB_TESTS,'True')
+    displayName: 'Test ErgoFab (SQL)'
 
-  - powershell: scripts\CI-Steps\Run-CI-Script.ps1 3.1-Install-SQLCMD.ps1
-    displayName: '3.1-Install-SQLCMD.ps1'
-
-  - powershell: scripts\CI-Steps\Run-CI-Script.ps1 4-Publish-Sql-Server-Setup-Logs.ps1
-    displayName: '4-Publish-Sql-Server-Setup-Logs.ps1'
-
-  - powershell: scripts\CI-Steps\Run-CI-Script.ps1 5-Configure-SQL-Server.ps1
-    displayName: '5-Configure-SQL-Server.ps1'
-
-  - powershell: scripts\CI-Steps\Run-CI-Script.ps1 6-ErgoFab-Tests.ps1
-    displayName: '6-ErgoFab-Tests.ps1'
-
-  - powershell: scripts\CI-Steps\Run-CI-Script.ps1 7-SqlJam-Tests.ps1
-    displayName: '7-SqlJam-Tests.ps1'
-
+  - bash: |
+      set -eu; set -o pipefail;
+      cd $AGENT_TEMPDIRECTORY/Goods/jam.tests
+      dotnet test Universe.SqlServerJam.Tests.dll
+      Say "Success Complete"
+    condition: or(failed(), eq(variables['Setup.NEED_CONTAINER'], 'False'))
+    displayName: 'Test JAM (SQL)'
 
   - powershell: |
       Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 7
       $true
     retryCountOnTaskFailure: 3
     displayName: 'Show Transfer for 20 seconds'
+
+  - bash: |
+       set -eu -o pipefail;
+       # export SQL_SETUP_LOGS_FOLDER="$SYSTEM_ARTIFACTSDIRECTORY"
+       # powershell -f scripts/Publish-SQL-Server-Setup-Logs.ps1 || true
+       powershell -c 'Publish-SQLServer-SetupLogs "'$SYSTEM_ARTIFACTSDIRECTORY'" -Compression 9'
+    condition: succeededOrFailed()
+    displayName: 'Universal SQL Setup Logs'
 
   - script: |
        sqlcmd /? | find "Version"
