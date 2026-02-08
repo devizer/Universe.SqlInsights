@@ -10,6 +10,8 @@ steps:
       (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash
       Say --Reset-Stopwatch
       Say "CPU: $(Get-CpuName)"
+      echo "try-and-retry: [$(command -v try-and-retry || true)]"
+      echo "Wait-For-HTTP: [$(command -v Wait-For-HTTP || true)]"
     condition: succeededOrFailed()
     retryCountOnTaskFailure: 3
     displayName: 'Bootstrap bash'
