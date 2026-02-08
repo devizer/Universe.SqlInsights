@@ -259,7 +259,7 @@ steps:
         Say "Pull $image ..."
         # $ENV:IMAGE="$image"
         # Try-And-Retry -title "Pull $image" -action ([scriptblock]{ & docker pull "$($ENV:IMAGE)" | out-host })
-        & docker pull "$($ENV:IMAGE)"
+        & docker pull "$image"
         & docker rm -f sql-server 2>$null
 
         Say "Starting container sql-server"
