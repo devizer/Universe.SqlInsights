@@ -6,7 +6,7 @@ steps:
   - bash: |
       set -eu; set -o pipefail;
       script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; 
-      script=https://devizer.github.io/devops-library/Standalone-Bootstrap.sh
+      # script=https://devizer.github.io/devops-library/Standalone-Bootstrap.sh
       (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash
       Say --Reset-Stopwatch
       Say "CPU: $(Get-CpuName)"
@@ -18,8 +18,8 @@ steps:
 
   - pwsh: |
         Import-DevOps
-        Try-And-Retry "Acceptance Test: Get-ChildItem" { Get-ChildItem | Out-Host }
-        Try-And-Retry "Acceptance Test: docker ps" { & docker.exe ps | Out-Host }
+        Try-And-Retry "Acceptance Test: Get-ChildItem" ([scriptblock]{ Get-ChildItem | Out-Host })
+        Try-And-Retry "Acceptance Test: docker ps" ([scriptblock]{ & docker.exe ps | Out-Host })
     displayName: 'TEST PWSH'
      
   
