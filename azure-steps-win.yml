@@ -234,9 +234,9 @@ steps:
        Remove-Item -Recurse -Force "$ENV:SQLSERVERS_SETUP_FOLDER" -EA SilentlyContinue
        Say "Successfully Complete"
 
-  condition: or(failed(), eq(variables['Setup.NEED_CONTAINER'], 'False'))
-  retryCountOnTaskFailure: 3
-  displayName: '[SQL Server] Setup on Host'
+    condition: or(failed(), eq(variables['Setup.NEED_CONTAINER'], 'False'))
+    retryCountOnTaskFailure: 3
+    displayName: '[SQL Server] Setup on Host'
 
   - pwsh: |
         Import-DevOps
@@ -260,9 +260,9 @@ steps:
         & docker exec sql-server powershell -Command "cd C:\App; ls;" |
           tee-object "$ENV:SYSTEM_ARTIFACTSDIRECTORY/OUTPUT from CONTAINER.txt"
 
-  condition: or(failed(), eq(variables['Setup.NEED_CONTAINER'], 'False'))
-  retryCountOnTaskFailure: 3
-  displayName: '[SQL Server] Setup on Container'
+    condition: or(failed(), eq(variables['Setup.NEED_CONTAINER'], 'False'))
+    retryCountOnTaskFailure: 3
+    displayName: '[SQL Server] Setup on Container'
 
   
   
