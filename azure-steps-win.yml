@@ -243,7 +243,8 @@ steps:
         echo "SQL: '$($ENV:sql)'"
         $image="devizervlad/iis-net4x-net35:$($ENV:SQL_IMAGE_TAG)"
         Say "Pull $image ..."
-        Try-And-Retry "Pull $image" { & docker pull $image | out-host }
+        Try-And-Retry -title "Pull $image" -action ([scriptblock]{ & docker pull $image | out-host })
+
 
         Say "Starting container sql-server"
         New-item C:\SQL -ItemType Directory -Force -EA SilentlyContinue | Out-Null
