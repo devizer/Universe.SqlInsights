@@ -14,15 +14,6 @@ steps:
     retryCountOnTaskFailure: 3
     displayName: 'Bootstrap bash'
 
-  - powershell: |
-      Get-Volume | Select-Object `
-           DriveLetter, `
-           FileSystemLabel, `
-           @{Name="Total(GB)"; Expression={"{0:N2}" -f ($_.Size / 1GB)}}, `
-           @{Name="Free(GB)"; Expression={"{0:N2}" -f ($_.SizeRemaining / 1GB)}} | 
-           Format-Table -AutoSize | out-string -width 2345 | out-host
-    displayName: 'Windows Free Space'
-
   - bash: |
        set -eu; set -o pipefail
        if [[ "$SQL" == 2005* || "$SQL" == 2008* ]]; then NEED_CONTAINER=True; SQL_IMAGE_TAG=ltsc2022;
@@ -39,6 +30,9 @@ steps:
 
   - bash: |
       Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Move-Docker-to-SSD-for-Windows-On-Microsoft-Hosted-Build-Agent.ps1
+    displayName: 'Tune Docker Storage'
+
+  - bash: |
       try-and-retry docker pull mcr.microsoft.com/windows/nanoserver:ltsc2022
     displayName: 'Test Docker process'
   
