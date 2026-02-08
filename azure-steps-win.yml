@@ -14,6 +14,13 @@ steps:
     retryCountOnTaskFailure: 3
     displayName: 'Bootstrap bash'
 
+  - pwsh: |
+        Import-DevOps
+        Try-And-Retry "Acceptance Test: Get-ChildItem" { Get-ChildItem | Out-Host }
+        Try-And-Retry "Acceptance Test: docker ps" { & docker.exe ps | Out-Host }
+    displayName: 'Bootstrap bash'
+     
+  
   - bash: |
        set -eu; set -o pipefail
        if [[ "$SQL" == 2005* || "$SQL" == 2008* ]]; then NEED_CONTAINER=True; SQL_IMAGE_TAG=ltsc2022;
