@@ -244,6 +244,8 @@ jobs:
       maxParallel: 10
       matrix:
 
+        "SQL Server 2008-x64 Core SP3":
+          SQL: '2008-x64 Core: MSSQLSERVER'
 
         
         "SQL Server 2025 Developer":
@@ -386,9 +388,6 @@ jobs:
         "SQL Server 2008-x86 Advanced SP4":
           SQL: '2008-x86 Advanced Updated: MSSQLSERVER'
         
-        "SQL Server 2008-x64 Core SP3":
-          SQL: '2008-x64 Core: MSSQLSERVER'
-
         "SQL Server 2008-x64 Core SP4":
           SQL: '2008-x64 Core Updated: MSSQLSERVER'
 
