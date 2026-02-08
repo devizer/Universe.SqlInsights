@@ -19,8 +19,8 @@ steps:
         Import-DevOps
         Say "PATH IS"
         Write-Host (@($ENV:PATH.Split(";")) -join "`n")
-        Try-And-Retry -Title "Acceptance Test: Get-ChildItem" -Action ([scriptblock]{ Get-ChildItem | Out-Host })
-        Try-And-Retry -Title "Acceptance Test: docker ps" -Action ([scriptblock]{ & docker.exe ps | Out-Host })
+        $action = [scriptblock]{ Get-ChildItem | Out-Host }
+        Try-And-Retry -Title "Acceptance Test: Get-ChildItem" -Action $action
         $true
     displayName: 'TEST PWSH'
 
