@@ -266,9 +266,9 @@ steps:
         & docker pull "$image"
 
         Say "PROBE PROCESS IMAGE $image"
-        & docker run --rm isolation=process --entrypoint cmd $image /c ver
+        & docker run --rm --isolation=process --entrypoint cmd $image /c ver
         Say "PROBE HYPERV IMAGE $image"
-        & docker run --rm isolation=hyperv --entrypoint cmd $image /c ver
+        & docker run --rm --isolation=hyperv --entrypoint cmd $image /c ver
 
         Say "Starting container sql-server"
         New-item C:\SQL -ItemType Directory -Force -EA SilentlyContinue | Out-Null
