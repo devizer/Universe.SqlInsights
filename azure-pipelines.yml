@@ -244,6 +244,9 @@ jobs:
       maxParallel: 10
       matrix:
 
+        "SQL Server 2008R2-x64 Core SP2":
+          SQL: '2008R2-x64 Core: MSSQLSERVER'
+
         "SQL Server 2008-x64 Core SP3":
           SQL: '2008-x64 Core: MSSQLSERVER'
 
@@ -348,9 +351,6 @@ jobs:
 
         "SQL Server 2008R2-x86 Developer SP3":
           SQL: '2008R2-x86 Developer: MSSQLSERVER'
-
-        "SQL Server 2008R2-x64 Core SP2":
-          SQL: '2008R2-x64 Core: MSSQLSERVER'
 
         "SQL Server 2008R2-x64 Core SP3":
           SQL: '2008R2-x64 Core Updated: MSSQLSERVER'
