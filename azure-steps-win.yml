@@ -260,7 +260,7 @@ steps:
         & docker exec sql-server powershell -Command "cd C:\App; ls;" |
           tee-object "$ENV:SYSTEM_ARTIFACTSDIRECTORY/OUTPUT from CONTAINER.txt"
 
-    condition: or(failed(), eq(variables['Setup.NEED_CONTAINER'], 'False'))
+    condition: or(failed(), eq(variables['Setup.NEED_CONTAINER'], 'True'))
     retryCountOnTaskFailure: 3
     displayName: '[SQL Server] Setup on Container'
 
