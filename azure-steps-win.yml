@@ -4,6 +4,13 @@
 steps:
 
   - powershell: |
+      Get-Volume | Select-Object `
+           DriveLetter, `
+           FileSystemLabel, `
+           @{Name="Total(GB)"; Expression={"{0:N2}" -f ($_.Size / 1GB)}}, `
+           @{Name="Free(GB)"; Expression={"{0:N2}" -f ($_.SizeRemaining / 1GB)}} | 
+           Format-Table -AutoSize | out-string -width 2345 | out-host
+      
       # iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
       Write-Host "Total Modules: $((get-module -ListAvailable).Count)"
       Install-Module -Name SqlServer-Version-Management -Force
