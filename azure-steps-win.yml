@@ -218,8 +218,8 @@ steps:
 
 
   - pwsh: |
-        Copy-Item -Path "$env:AGENT_TEMPDIRECTORY\Goods" -Destination "." -Recurse -Force
-        Say "'.\Goods' Content
+        Copy-Item -Path "$($env:AGENT_TEMPDIRECTORY)\Goods" -Destination "." -Recurse -Force
+        Say "'.\Goods' Content"
         Get-ChildItem '.\Goods' | Format-Table -AutoSize | Out-Host
     displayName: 'Copy Goods'
 
