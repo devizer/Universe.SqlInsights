@@ -13,5 +13,5 @@ Else
 {
    Say "Invoking in container [$relative_file]"
    Write-Host "Current Directory: $(Get-Location)"
-   & docker exec sql-server  powershell -f "$relative_file"
+   & docker exec sql-server powershell -f "$relative_file"
 }
