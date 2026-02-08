@@ -4,7 +4,7 @@ param(
 )
 
 $relative_file = "scripts\CI-Steps\$file"
-if ("$(ENV:SQL_IMAGE_TAG)" -eq "") {
+if ("$($ENV:SQL_IMAGE_TAG)" -eq "") {
   Say "Invoking locally [$relative_file]"
   Write-Host "Current Directory: $(Get-Location)"
   powershell -f "$relative_file"
