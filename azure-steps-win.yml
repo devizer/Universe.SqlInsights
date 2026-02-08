@@ -22,6 +22,16 @@ steps:
     displayName: 'Windows Free Space'
 
   - bash: |
+       set -eu; set -o pipefail
+       if [[ "$SQL" == 2005* || "$SQL" == 2008* ]]; then NEED_CONTAINER=True; else NEED_CONTAINER=False; fi
+       echo "##vso[task.setvariable variable=NEED_CONTAINER]$NEED_CONTAINER"
+       Say "NEED_CONTAINER = [$NEED_CONTAINER]"
+       # condition: eq(variables['Setup.NEED_CONTAINER'], 'True')
+       # condition: or(failed(), eq(variables['Setup.NEED_CONTAINER'], 'True'))
+    name: Setup
+    displayName: 'Setup pipeline'
+
+  - bash: |
       Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Move-Docker-to-SSD-for-Windows-On-Microsoft-Hosted-Build-Agent.ps1
       try-and-retry docker pull mcr.microsoft.com/windows/nanoserver:ltsc2022
     displayName: 'Test Docker process'
@@ -224,14 +234,42 @@ steps:
        Remove-Item -Recurse -Force "$ENV:SQLSERVERS_SETUP_FOLDER" -EA SilentlyContinue
        Say "Successfully Complete"
 
-    condition: succeededOrFailed()
+    condition: or(failed(), eq(variables['Setup.NEED_CONTAINER'], 'False'))
     retryCountOnTaskFailure: 3
-    displayName: '[SQL Server] Setup'
+    displayName: '[SQL Server] Setup on Host'
 
+    - pwsh: |
+        Import-DevOps
+        echo "SQL: '$($ENV:sql)'"
+        Say "Pull devizervlad/iis-net4x-net35:ltsc2022"
+        Try-And-Retry "Pull devizervlad/iis-net4x-net35:ltsc2022" { & docker pull devizervlad/iis-net4x-net35:ltsc2022 | out-host }
+
+        Say "Starting container sql-server"
+        New-item C:\SQL -ItemType Directory -Force -EA SilentlyContinue | Out-Null
+        New-item C:\Temp -ItemType Directory -Force -EA SilentlyContinue | Out-Null
+        $mnt="type=bind,source=$(Get-Location),target=C:\App"
+        echo "--mount parameter is: [$mnt]"
+        & docker run -d --name sql-server --memory 4g --cpus 4 "--isolation=hyperv" -e SQL="$($ENV:sql)" `
+          --mount "$mnt" `
+          --mount type=bind,source=C:\SQL,target=C:\SQL `
+          --mount type=bind,source=C:\Temp,target=C:\Temp `
+          --mount type=bind,source=$($ENV:SYSTEM_ARTIFACTSDIRECTORY),target=$($ENV:SYSTEM_ARTIFACTSDIRECTORY) `
+          -e PS1_TROUBLE_SHOOT="On" -e SQLSERVERS_SETUP_FOLDER="C:\SQL-Setup" `
+          -p 1433:1433 -p 1434:1434 --workdir=C:\App --entrypoint powershell devizervlad/iis-net4x-net35:ltsc2022 -Command "Sleep 2147482; Wait-Event;"
+        Say "Starting Setup in Container"
+        & docker exec sql-server powershell -Command "cd C:\App; ls;" |
+          tee-object "$ENV:SYSTEM_ARTIFACTSDIRECTORY/OUTPUT from CONTAINER.txt"
+
+    condition: or(failed(), eq(variables['Setup.NEED_CONTAINER'], 'False'))
+    retryCountOnTaskFailure: 3
+    displayName: '[SQL Server] Setup on Container'
+
+  
+  
   - powershell: |
        iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
        Set-SQLServer-Options -Title "SQL $i" -Instance "(local)" -Options @{ xp_cmdshell = $true; "clr enabled" = $false; "server trigger recursion" = $true; "min server memory (MB)" = 7000; "max server memory (MB)" = 16000; "fill factor (%)" = 70 }
-    condition: succeededOrFailed()
+    condition: or(failed(), eq(variables['Setup.NEED_CONTAINER'], 'False'))
     retryCountOnTaskFailure: 4
     displayName: '[SQL Server] Configure'
 
@@ -260,7 +298,7 @@ steps:
       cd $AGENT_TEMPDIRECTORY/Goods/jam.tests
       dotnet test Universe.SqlServerJam.Tests.dll
       Say "Success Complete"
-    condition: succeededOrFailed()
+    condition: or(failed(), eq(variables['Setup.NEED_CONTAINER'], 'False'))
     displayName: 'Test JAM (SQL)'
 
   - powershell: |
