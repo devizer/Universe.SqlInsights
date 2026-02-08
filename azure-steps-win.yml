@@ -276,13 +276,16 @@ steps:
         $mnt="type=bind,source=$(Get-Location),target=C:\App"
         echo "--mount parameter is: [$mnt]"
         echo "SYSTEM_ARTIFACTSDIRECTORY = [$($ENV:SYSTEM_ARTIFACTSDIRECTORY)]"
-        & docker run -d --name sql-server --memory 2500M --cpus "$([Environment]::ProcessorCount)" "--isolation=hyperv" `
+        $image="devizervlad/iis-net4x-net35:$($ENV:SQL_IMAGE_TAG)"
+        $cpuCount="$([Environment]::ProcessorCount)"
+        # disk D in missing in container
+        # --mount "type=bind,source=$($ENV:SYSTEM_ARTIFACTSDIRECTORY),target=$($ENV:SYSTEM_ARTIFACTSDIRECTORY)" `
+        & docker run -d --name sql-server --memory 4000M --cpus "$cpuCount" "--isolation=hyperv" `
           -e SQL="$($ENV:sql)" `
           -e SQL_IMAGE_TAG="$($ENV:SQL_IMAGE_TAG)" `
           --mount "$mnt" `
-          --mount type=bind,source=C:\SQL,target=C:\SQL `
-          --mount type=bind,source=C:\Temp,target=C:\Temp `
-          --mount "type=bind,source=$($ENV:SYSTEM_ARTIFACTSDIRECTORY),target=$($ENV:SYSTEM_ARTIFACTSDIRECTORY)" `
+          --mount "type=bind,source=C:\SQL,target=C:\SQL" `
+          --mount "type=bind,source=C:\Temp,target=C:\Temp" `
           -e PS1_TROUBLE_SHOOT="On" -e SQLSERVERS_SETUP_FOLDER="C:\SQL-Setup" `
           -p 1433:1433 -p 1434:1434 --workdir=C:\App --entrypoint powershell $image -Command "echo WAITING; Sleep 214748; Wait-Event;"
         Sleep 2
