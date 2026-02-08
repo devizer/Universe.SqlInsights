@@ -23,8 +23,8 @@ steps:
 
   - bash: |
        set -eu; set -o pipefail
-       if [[ "$SQL" == 2005* || "$SQL" == 2008* ]]; then NEED_CONTAINER=True; SQL_IMAGE_TAG=ltsc2016;
-       elif [[ "$SQL" == 2012* ]]; then NEED_CONTAINER=True; SQL_IMAGE_TAG=ltsc2022;
+       if [[ "$SQL" == 2005* || "$SQL" == 2008* ]]; then NEED_CONTAINER=True; SQL_IMAGE_TAG=ltsc2022;
+       elif [[ "$SQL" == 2012* ]]; then NEED_CONTAINER=True; SQL_IMAGE_TAG=ltsc2016;
        else NEED_CONTAINER=False; SQL_IMAGE_TAG=""; fi
        echo "##vso[task.setvariable variable=NEED_CONTAINER;isOutput=true]$NEED_CONTAINER"
        echo "##vso[task.setvariable variable=SQL_IMAGE_TAG]$SQL_IMAGE_TAG"
