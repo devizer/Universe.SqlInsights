@@ -257,9 +257,10 @@ steps:
         echo "SQL: '$($ENV:sql)'"
         $image="devizervlad/iis-net4x-net35:$($ENV:SQL_IMAGE_TAG)"
         Say "Pull $image ..."
-        $ENV:IMAGE="$image"
-        Try-And-Retry -title "Pull $image" -action ([scriptblock]{ & docker pull "$($ENV:IMAGE)" | out-host })
-
+        # $ENV:IMAGE="$image"
+        # Try-And-Retry -title "Pull $image" -action ([scriptblock]{ & docker pull "$($ENV:IMAGE)" | out-host })
+        & docker pull "$($ENV:IMAGE)"
+        & docker rm -f sql-server 2>$null
 
         Say "Starting container sql-server"
         New-item C:\SQL -ItemType Directory -Force -EA SilentlyContinue | Out-Null
