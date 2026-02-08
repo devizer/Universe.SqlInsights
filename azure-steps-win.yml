@@ -34,7 +34,7 @@ steps:
 
   - bash: |
       try-and-retry docker pull mcr.microsoft.com/windows/nanoserver:ltsc2022
-    displayName: 'Test Docker process'
+    displayName: 'Pull nano server'
   
   - bash: |
       docker run --rm --isolation=process mcr.microsoft.com/windows/nanoserver:ltsc2022 cmd //c ver
