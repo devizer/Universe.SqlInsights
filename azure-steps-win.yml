@@ -20,7 +20,7 @@ steps:
         Import-DevOps
         Try-And-Retry "Acceptance Test: Get-ChildItem" { Get-ChildItem | Out-Host }
         Try-And-Retry "Acceptance Test: docker ps" { & docker.exe ps | Out-Host }
-    displayName: 'Bootstrap bash'
+    displayName: 'TEST PWSH'
      
   
   - bash: |
