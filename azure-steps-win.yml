@@ -15,6 +15,20 @@ steps:
     displayName: 'Bootstrap pwsh'
 
   - bash: |
+      docker run --rm --isolation=process mcr.microsoft.com/windows/nanoserver:ltsc2022 cmd //c ver
+      true
+    retryCountOnTaskFailure: 3
+    displayName: 'Test Docker process'
+
+  - bash: |
+      docker run --rm --isolation=hyperv mcr.microsoft.com/windows/nanoserver:ltsc2022 cmd //c ver
+      true
+    retryCountOnTaskFailure: 3
+    displayName: 'Test Docker hyperv'
+
+  
+
+  - bash: |
       set -eu; set -o pipefail;
       script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
       Say --Reset-Stopwatch
