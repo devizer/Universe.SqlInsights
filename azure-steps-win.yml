@@ -216,11 +216,28 @@ steps:
        popd
     displayName: 'system info (pwsh)'
 
+  - task: DownloadPipelineArtifact@2
+    condition: succeededOrFailed()
+    displayName: 'w3app: download'
+    inputs:
+      artifactName: w3app
+      path: $(Build.SourcesDirectory)/src/universe.sqlinsights.w3app/build
+      patterns: 
+        "**"
 
   - pwsh: |
+        Say "Copying Goods ..."
         Copy-Item -Path "$($env:AGENT_TEMPDIRECTORY)\Goods" -Destination "." -Recurse -Force
         Say "'.\Goods' Content"
         Get-ChildItem '.\Goods' | Format-Table -AutoSize | Out-Host
+        
+        Say "Copying w3app"
+        New-Item -ItemType Directory -Force -Path ".\Goods\w3api\wwwroot"
+        Copy-Item -Path "$(Build.SourcesDirectory)/src/universe.sqlinsights.w3app/build/*" -Destination ".\Goods\w3api\wwwroot" -Recurse -Force
+        
+        Say "'.\Goods\w3api\wwwroot' Content"
+        Get-ChildItem ".\Goods\w3api\wwwroot" | Format-Table -AutoSize | Out-Host
+
     displayName: 'Copy Goods'
 
   - pwsh: |
@@ -334,14 +351,6 @@ steps:
     condition: succeededOrFailed()
     displayName: '.NET Install (ps1)'
 
-  - task: DownloadPipelineArtifact@2
-    condition: succeededOrFailed()
-    displayName: 'w3app: download'
-    inputs:
-      artifactName: w3app
-      path: $(Build.SourcesDirectory)/src/universe.sqlinsights.w3app/build
-      patterns: 
-        "**"
 
   - bash: |
       set -eu
