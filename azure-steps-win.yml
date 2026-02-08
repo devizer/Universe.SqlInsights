@@ -276,7 +276,10 @@ steps:
           --mount type=bind,source=C:\Temp,target=C:\Temp `
           --mount "type=bind,source=$($ENV:SYSTEM_ARTIFACTSDIRECTORY),target=$($ENV:SYSTEM_ARTIFACTSDIRECTORY)" `
           -e PS1_TROUBLE_SHOOT="On" -e SQLSERVERS_SETUP_FOLDER="C:\SQL-Setup" `
-          -p 1433:1433 -p 1434:1434 --workdir=C:\App --entrypoint powershell $image -Command "Sleep 2147482; Wait-Event;"
+          -p 1433:1433 -p 1434:1434 --workdir=C:\App --entrypoint powershell $image -Command "echo WAITING; Sleep 214748; Wait-Event;"
+        Sleep 2
+        Say "CONTAINER STARTUP LOGS"
+        docker logs --since 0 sql-server
         Say "Starting Setup in Container"
         & docker exec sql-server powershell -Command "cd C:\App; ls;" |
           tee-object "$ENV:SYSTEM_ARTIFACTSDIRECTORY/OUTPUT from CONTAINER.txt"
