@@ -50,8 +50,8 @@ steps:
 
   - powershell: |
       # iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
-      Write-Host "Total Modules: $((get-module -ListAvailable).Count)"
-      Install-Module -Name SqlServer-Version-Management -Force
+      # Write-Host "Total Modules: $((get-module -ListAvailable).Count)"
+      # Install-Module -Name SqlServer-Version-Management -Force
 
       Say "CPU: $(Get-Cpu-Name -IncludeCoreCount). $((Get-Memory-Info).Description)"
       (Get-Module SqlServer-Version-Management -ListAvailable) | fl
@@ -251,7 +251,7 @@ steps:
         $mnt="type=bind,source=$(Get-Location),target=C:\App"
         echo "--mount parameter is: [$mnt]"
         echo "SYSTEM_ARTIFACTSDIRECTORY = [$($ENV:SYSTEM_ARTIFACTSDIRECTORY)]"
-        & docker run -d --name sql-server --memory 4g --cpus 4 "--isolation=hyperv" -e SQL="$($ENV:sql)" `
+        & docker run -d --name sql-server --memory 4g --cpus "$([Environment]::ProcessorCount)" "--isolation=hyperv" -e SQL="$($ENV:sql)" `
           --mount "$mnt" `
           --mount type=bind,source=C:\SQL,target=C:\SQL `
           --mount type=bind,source=C:\Temp,target=C:\Temp `
