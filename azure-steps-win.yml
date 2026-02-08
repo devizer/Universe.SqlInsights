@@ -3,6 +3,15 @@
 
 steps:
 
+  - bash: |
+      set -eu; set -o pipefail;
+      script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
+      Say --Reset-Stopwatch
+      Say "CPU: $(Get-CpuName)"
+    condition: succeededOrFailed()
+    retryCountOnTaskFailure: 3
+    displayName: 'Bootstrap bash'
+
   - powershell: |
       Get-Volume | Select-Object `
            DriveLetter, `
@@ -10,17 +19,13 @@ steps:
            @{Name="Total(GB)"; Expression={"{0:N2}" -f ($_.Size / 1GB)}}, `
            @{Name="Free(GB)"; Expression={"{0:N2}" -f ($_.SizeRemaining / 1GB)}} | 
            Format-Table -AutoSize | out-string -width 2345 | out-host
-      
-      # iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
-      Write-Host "Total Modules: $((get-module -ListAvailable).Count)"
-      Install-Module -Name SqlServer-Version-Management -Force
+    displayName: 'Windows Free Space'
 
-      Say "CPU: $(Get-Cpu-Name -IncludeCoreCount). $((Get-Memory-Info).Description)"
-      (Get-Module SqlServer-Version-Management -ListAvailable) | fl
-      # Measure-Action "Uninstall LocalDB *" { Uninstall-LocalDB-List "*" }
-    retryCountOnTaskFailure: 3
-    displayName: 'Bootstrap pwsh'
-
+  - bash: |
+      Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Move-Docker-to-SSD-for-Windows-On-Microsoft-Hosted-Build-Agent.ps1
+      try-and-retry docker pull mcr.microsoft.com/windows/nanoserver:ltsc2022
+    displayName: 'Test Docker process'
+  
   - bash: |
       docker run --rm --isolation=process mcr.microsoft.com/windows/nanoserver:ltsc2022 cmd //c ver
       true
@@ -33,16 +38,18 @@ steps:
     retryCountOnTaskFailure: 3
     displayName: 'Test Docker hyperv'
 
-  
+  - powershell: |
+      # iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
+      Write-Host "Total Modules: $((get-module -ListAvailable).Count)"
+      Install-Module -Name SqlServer-Version-Management -Force
 
-  - bash: |
-      set -eu; set -o pipefail;
-      script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
-      Say --Reset-Stopwatch
-      Say "CPU: $(Get-CpuName)"
-    condition: succeededOrFailed()
+      Say "CPU: $(Get-Cpu-Name -IncludeCoreCount). $((Get-Memory-Info).Description)"
+      (Get-Module SqlServer-Version-Management -ListAvailable) | fl
+      # Measure-Action "Uninstall LocalDB *" { Uninstall-LocalDB-List "*" }
     retryCountOnTaskFailure: 3
-    displayName: 'Bootstrap bash'
+    displayName: 'Bootstrap pwsh'
+
+  
 
   - task: DownloadPipelineArtifact@2
     condition: succeededOrFailed()
