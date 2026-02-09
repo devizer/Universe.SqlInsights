@@ -200,7 +200,7 @@ steps:
         $cpuCount="$([Environment]::ProcessorCount)"
         # disk D in missing in container
         # --mount "type=bind,source=$($ENV:SYSTEM_ARTIFACTSDIRECTORY),target=$($ENV:SYSTEM_ARTIFACTSDIRECTORY)" `
-        & docker run -d --name sql-server --memory 4000M --cpus "$cpuCount" "--isolation=hyperv" `
+        & docker run -d --name sql-server --memory 3200M --cpus "$cpuCount" "--isolation=hyperv" `
           -e SQL="$($ENV:sql)" `
           -e SQL_IMAGE_TAG="$($ENV:SQL_IMAGE_TAG)" `
           -e SYSTEM_ARTIFACTSDIRECTORY="$($ENV:SYSTEM_ARTIFACTSDIRECTORY)" `
