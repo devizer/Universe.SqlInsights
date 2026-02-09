@@ -213,7 +213,7 @@ jobs:
       maxParallel: 10
       matrix:
 
-        "SQL Server 2008-R2 x64 Developer":
+        "SQL Server Array on-premises":
           SQL_INSTANCE: (local)\DEV_2008R2_X64
 
         # "SQL Server 2008-R2 x64 Core":
