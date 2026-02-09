@@ -1,6 +1,6 @@
 Import-DevOps
 
-foreach($ver in @("6.0", "10.0")) {
+foreach($ver in @("6.0", "8.0", "10.0")) {
   Run-Remote-Script https://dot.net/v1/dotnet-install.ps1 -Channel "$ver" -InstallDir "C:\Program Files\dotnet"
 }
 
