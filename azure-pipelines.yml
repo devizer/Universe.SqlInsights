@@ -247,9 +247,11 @@ jobs:
         "SQL Server 2008R2-x64 Core SP2":
           SQL: '2008R2-x64 Core: MSSQLSERVER'
 
+        "SQL Server 2012 Core":
+          SQL: '2012 Core: MSSQLSERVER'
+
         "SQL Server 2008-x64 Core SP3":
           SQL: '2008-x64 Core: MSSQLSERVER'
-
         
         "SQL Server 2025 Developer":
           SQL: '2025 Developer: MSSQLSERVER'
@@ -322,8 +324,6 @@ jobs:
         "SQL Server 2012 Developer":
           SQL: '2012 Developer: MSSQLSERVER'
           VM_IMAGE: 'windows-2025'
-        "SQL Server 2012 Core":
-          SQL: '2012 Core: MSSQLSERVER'
         "SQL Server 2014 Developer":
           SQL: '2014 Developer: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
