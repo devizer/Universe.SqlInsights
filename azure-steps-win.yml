@@ -37,6 +37,7 @@ steps:
        echo "##vso[task.setvariable variable=SQL_IMAGE_TAG]$SQL_IMAGE_TAG"
        Say "NEED_CONTAINER = [$NEED_CONTAINER] (for conditions)"
        Say "SQL_IMAGE_TAG = [$SQL_IMAGE_TAG] (for environment variables)"
+
        # condition: eq(variables['Setup.NEED_CONTAINER'], 'True')
        # condition: or(failed(), eq(variables['Setup.NEED_CONTAINER'], 'True'))
     name: Setup
@@ -63,12 +64,14 @@ steps:
     displayName: 'Test Docker hyperv'
 
   - powershell: |
-      # iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'))
-      # Write-Host "Total Modules: $((get-module -ListAvailable).Count)"
-      # Install-Module -Name SqlServer-Version-Management -Force
+      if ("$($ENV:)" -ne "") {
+        Say "CREATING SYMLINK from '$(Get-Location)' to 'C:\App'"
+        cmd /c mklink /d "C:\App" "$(Get-Location)"
+      }
 
       Say "CPU: $(Get-Cpu-Name -IncludeCoreCount). $((Get-Memory-Info).Description)"
       (Get-Module SqlServer-Version-Management -ListAvailable) | fl
+
       # Measure-Action "Uninstall LocalDB *" { Uninstall-LocalDB-List "*" }
     retryCountOnTaskFailure: 3
     displayName: 'Bootstrap pwsh'
