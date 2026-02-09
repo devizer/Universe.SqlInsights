@@ -1,3 +1,5 @@
+setx PS1_TROUBLE_SHOOT "On"
+setx SQLSERVERS_SETUP_FOLDER "C:\SQL-Setup"
 Write-Host "Location: $(Get-Location)"
 
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
