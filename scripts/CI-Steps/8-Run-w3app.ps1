@@ -22,5 +22,8 @@ Get-Process -Name "dotnet-serve" | format-table -autosize | out-host
 
 Say "Validate http connection to http://localhost:6060"
 & curl.exe -I http://localhost:6060
+Say "curl /"
+& curl.exe http://localhost:6060
+
 
 $true
