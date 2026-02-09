@@ -322,6 +322,8 @@ steps:
 
   - bash: |
       set -eu
+      Say "dotnet-serve processes"
+      powershell -c "Get-Process -Name 'dotnet-serve' | format-table -autosize | out-host" || true
       sleep 3
       echo "Wait for STATUS (http://localhost:6060)"
       Wait-For-HTTP http://localhost:6060 || true
@@ -331,7 +333,6 @@ steps:
     displayName: 'w3app: monitor'
 
 
-    powershell -c "Get-Process -Name 'dotnet-serve' | format-table -autosize | out-host"
 
   - script: |
       call 0a-Net-Restore-All.cmd
