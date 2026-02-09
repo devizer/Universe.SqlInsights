@@ -294,7 +294,7 @@ steps:
         echo.
        )
        REM true
-    condition: eq(variables['Setup.NEED_CONTAINER'], 'True')
+    condition: eq(variables['Setup.NEED_CONTAINER'], 'False')
     displayName: 'Show SQL Info'
   
   - task: PublishBuildArtifacts@1
