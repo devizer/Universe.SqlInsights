@@ -131,19 +131,6 @@ steps:
   - powershell: 'Set-NetFirewallProfile -All -Enabled False; netsh advfirewall set currentprofile state off; "ok?";'
     displayName: "Disable firefall"
 
-  - script: |
-      echo $vars=$ENV:PATH.Split(';'); [System.Array]::Sort($vars); foreach ($p in $vars) { echo $p; } | powershell -c -
-      echo.
-      echo %PATH%
-      echo.
-      powershell -c "nuget help | Select -First 1; msbuild /version | Select -First 1;"
-      exit 0;
-      if exist "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\amd64" Set PATH=C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\amd64;%PATH%;
-      echo "##vso[task.setvariable variable=PATH]%PATH%"
-      exit 0
-    condition: eq(variables['Agent.OS'], 'Windows_NT')
-    displayName: "PATH's Patch"
-
   - bash: |
       powershell -f scripts/Uninstall-Stuff.ps1 || true
     condition: ne(variables['UNINSTALL_TRASH'], '')
@@ -154,50 +141,6 @@ steps:
       powershell -f scripts/Create-Windows-Ram-Disk.ps1 || true
     condition: ne(variables['RAM_DISK'], '')
     displayName: 'RAM Disk'
-
-  - powershell: |
-      $file="$($Env:SYSTEM_ARTIFACTSDIRECTORY)\Win32_Product (MSI Dump).txt"
-      get-wmiobject Win32_Product | sort -Property Vendor, Version | Format-Table IdentifyingNumber, Vendor, Version, Name, LocalPackage -AutoSize | Out-File -Width 4444 "$file"
-      cat $file
-    condition: False
-    # condition: ne(variables['MSI_DUMP'], '')
-    displayName: 'MSI DUMP'
-
-  - publish: $(SYSTEM.ARTIFACTSDIRECTORY)
-    displayName: 'Publish MSI DUMP'
-    condition: ne(variables['MSI_DUMP'], '')
-    artifact: 'MSI DUMP $(Agent.JobName)'
-
-  - bash: |
-      script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
-      Say --Reset-Stopwatch
-      Say "CPU: $(Get-CpuName)"
-
-      echo "Bash Version: $BASH_VERSION"
-      for cmd in date jq tee cat tr node yarn npm dotnet head grep awk sed perl; do
-        echo "'$cmd' path: [$(command -v "$cmd")]"
-        echo "'$cmd' version: [$("$cmd" --version | grep -v -E '$^' | head -1)]"
-      done
-      
-      echo "'sqlcmd' path: [$(command -v sqlcmd)]"
-      echo "'sqlcmd' version: [$(sqlcmd -? | head -2 | tr '\n' ' ' | tr '\r' ' ' | tr '  ' ' ')]"
-      
-      echo "'taskkill' path: [$(command -v taskkill)]"
-
-      echo "'msbuild' path: [$(command -v msbuild)]"
-      echo "'msbuild' version: [$(msbuild | head -1)]"
-
-      for csc in 'Framework\v2.0.50727' 'Framework\v3.5' 'Framework\v4.0.30319' 'Framework64/v2.0.50727' 'Framework64/v3.5' 'Framework64/v4.0.30319'; do
-        here="-"
-        fullpath='C:\Windows\Microsoft.NET\'"$csc\\csc.exe"
-        if [[ -s "$fullpath" ]]; then here="Yes"; fi
-        echo "'$fullpath': $here"
-      done
-
-      echo "Seconds since the Epoch: $(date +%s)"
-
-      true
-    displayName: 'Show Commands'
 
   - powershell: |
        $ErrorActionPreference = "SilentlyContinue"
