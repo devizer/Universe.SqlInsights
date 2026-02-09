@@ -9,7 +9,8 @@ Say "About dotnet serve"
 dotnet serve --version 2>$null
 
 Say "LAUNCHING"
-cmd /c "start dotnet serve -p 6060"
+# cmd /c "start dotnet serve -p 6060"
+Start-Process "dotnet" -ArgumentList "serve -p 6060".Split(" ")
 sleep 1
 
 Say "PROCESSES"
