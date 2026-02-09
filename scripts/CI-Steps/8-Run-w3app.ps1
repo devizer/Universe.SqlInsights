@@ -2,6 +2,9 @@ cd C:\App\Goods\w3api\wwwroot
 Say "CONTENT FOR $(Get-Location)"
 Get-ChildItem | format-table
 
+Say "index.html"
+Get-Content "index.html"
+
 Say "Installing dotnet serve"
 dotnet tool install --global dotnet-serve
 

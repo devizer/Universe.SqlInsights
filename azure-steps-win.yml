@@ -308,11 +308,18 @@ steps:
       set -eu
       cd src/universe.sqlinsights.w3app
       cd build
-      echo "SERVING STATIC W3APP. Content of ./static/js:"
+      echo "SERVING STATIC W3APP. Folder '$(pwd -P)', Content of ./static/js:"
       ls -la static/js
+      echo "INDEX.HTML"
+      cat index.html
       dotnet serve --version 2>nul || dotnet tool install --global dotnet-serve
       dotnet serve --version
       start /max dotnet serve -p 6060 -o
+      sleep 3
+      echo "Wait for STATUS"
+      Wait-For-HTTP http://localhost:6060 || true
+      echo HEADERS
+      curl -I http://localhost:6060
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     displayName: 'w3app: run'
 
@@ -362,6 +369,9 @@ steps:
     displayName: 'Show Transfer for 7 seconds'
 
   - bash: |
+      # was Content root path: "D:\\a\\_temp\\Goods\\w3api"
+      # now Content root path: "D:\\a\\_temp\\Goods\\w3api"
+
       echo Starting W3Api
       export SQLINSIGHTS_REPORT_FOLDER="C:\\Temp\\SqlInsights-W3Api-Internal-Logs"
       export SQLINSIGHTS_REPORT_FULLNAME="${SQLINSIGHTS_REPORT_FOLDER}\\Report.Txt"
@@ -372,6 +382,7 @@ steps:
         echo KILL W3API Process $pid
         kill $pid
       fi
+      echo Starting W3Api, folder is $(pwd -P)
       (dotnet Universe.SqlInsights.W3Api.dll | tee "$SYSTEM_ARTIFACTSDIRECTORY/w3api (acceptance test).log") &
       echo $! > ~/w3api.pid
       popd
