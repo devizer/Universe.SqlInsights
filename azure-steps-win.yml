@@ -37,9 +37,19 @@ steps:
        echo "##vso[task.setvariable variable=SQL_IMAGE_TAG]$SQL_IMAGE_TAG"
        Say "NEED_CONTAINER = [$NEED_CONTAINER] (for conditions)"
        Say "SQL_IMAGE_TAG = [$SQL_IMAGE_TAG] (for environment variables)"
-
        # condition: eq(variables['Setup.NEED_CONTAINER'], 'True')
        # condition: or(failed(), eq(variables['Setup.NEED_CONTAINER'], 'True'))
+
+       echo
+       SQLSERVERS_SETUP_FOLDER='C:\SQL-Setup\Installer'
+       SQLSERVERS_MEDIA_FOLDER='C:\SQL-Setup\Media'
+       [[ -d 'D:\' ]] && SQLSERVERS_SETUP_FOLDER='C:\SQL-Setup\Installer'
+       Say "SQLSERVERS_MEDIA_FOLDER (download) = '$SQLSERVERS_MEDIA_FOLDER'"
+       Say "SQLSERVERS_SETUP_FOLDER (installer) = '$SQLSERVERS_SETUP_FOLDER'"
+       echo "##vso[task.setvariable variable=SQLSERVERS_MEDIA_FOLDER]$SQLSERVERS_MEDIA_FOLDER"
+       echo "##vso[task.setvariable variable=SQLSERVERS_SETUP_FOLDER]$SQLSERVERS_SETUP_FOLDER"
+       echo "##vso[task.setvariable variable=PS1_TROUBLE_SHOOT]On"
+
     name: Setup
     displayName: 'Setup pipeline'
 
