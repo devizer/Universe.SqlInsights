@@ -255,6 +255,12 @@ steps:
     condition: succeededOrFailed()
     displayName: '7-SqlJam-Tests.ps1'
 
+  - powershell: scripts\CI-Steps\Run-CI-Script.ps1 8-Run-w3app.ps1
+    condition: succeededOrFailed()
+    displayName: '8-Run-w3app.ps1'
+
+    
+
 
   - powershell: |
       Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 7
@@ -285,21 +291,6 @@ steps:
     inputs:
       pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)'
       artifactName: 'SQL Setup Logs $(Agent.JobName)'
-
-  - bash: |
-      dotnet --info
-      cmd.exe /C "taskkill.exe /F /T /IM dotnet.exe"
-      export DOTNET_VERSIONS="5.0 6.0 7.0"
-      script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash; 
-      dotnet --info
-    condition: False
-    displayName: '.NET Install (bash)'
-
-  - powershell: './install-dotnet-core.ps1'
-    retryCountOnTaskFailure: 3
-    condition: succeededOrFailed()
-    displayName: '.NET Install (ps1)'
-
 
   - bash: |
       set -eu
