@@ -1,3 +1,5 @@
+Import-DevOps
+
 foreach($ver in @("6.0", "10.0")) {
   Run-Remote-Script https://dot.net/v1/dotnet-install.ps1 -Channel "$ver" -Runtime aspnetcore -InstallDir "C:\Program Files\dotnet"
 }
