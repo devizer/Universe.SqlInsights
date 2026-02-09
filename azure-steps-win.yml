@@ -284,6 +284,7 @@ steps:
         echo.
        )
        REM true
+    condition: eq(variables['Setup.NEED_CONTAINER'], 'True')
     displayName: 'Show SQL Info'
   
   - task: PublishBuildArtifacts@1
@@ -335,7 +336,8 @@ steps:
       rm -f $SYSTEM_ARTIFACTSDIRECTORY/AddAction.log
       export TEST_UNDER_COVERAGE=False
       dotnet test --filter "Name~Test1_Seed" Universe.SqlInsights.SqlServerStorage.Tests.dll
-    condition: eq(variables['Agent.OS'], 'Windows_NT')
+    # condition: eq(variables['Agent.OS'], 'Windows_NT')
+    condition: eq(variables['Setup.NEED_CONTAINER'], 'True')
     displayName: 'TEST STORAGE +BENCHMARK'
 
   - script: |
