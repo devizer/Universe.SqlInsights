@@ -211,7 +211,7 @@ steps:
         # disk D in missing in container
         # --mount "type=bind,source=$($ENV:SYSTEM_ARTIFACTSDIRECTORY),target=$($ENV:SYSTEM_ARTIFACTSDIRECTORY)" `
         # bad: --mount "type=bind,source=C:\SQL,target=C:\SQL" `
-        & docker run -d --name sql-server --memory 4000M --cpus "$cpuCount" "--isolation=hyperv" `
+        & docker run -d --name sql-server --memory 3300M --cpus "$cpuCount" "--isolation=hyperv" `
           -e SQL="$($ENV:sql)" `
           -e TF_BUILD=True `
           -e SQL_IMAGE_TAG="$($ENV:SQL_IMAGE_TAG)" `

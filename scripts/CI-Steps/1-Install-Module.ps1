@@ -10,4 +10,8 @@ if ($PSVersionTable.PSEdition -ne "Core") {
 $urlSource = 'https://devizer.github.io/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1'; 
 foreach($attempt in 1..3) { try { iex ((New-Object System.Net.WebClient).DownloadString($urlSource)); Write-Host "Success: Install-SqlServer-Version-Management.ps1"; break; } catch {sleep 0.1;} }
 
-Get-ChildItem | Format-Table -Autosize
+$memDescription = Get-Memory-Info | ForEach-Object { $_.Description }
+Say "Memory: $memDescription"
+Write-Host "CPU: $(Get-Cpu-Name -includeCoreCount)"
+
+# Get-ChildItem | Format-Table -Autosize
