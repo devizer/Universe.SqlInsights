@@ -1,5 +1,8 @@
 Import-DevOps
 
+Say "Hiding LocalDB Servers"
+Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server Local DB\Installed Versions" -Recurse -Force -EA SilentlyContinue
+
 <#
 setx PS1_TROUBLE_SHOOT "On"
 setx SQLSERVERS_SETUP_FOLDER "C:\SQL-Setup"
