@@ -225,28 +225,36 @@ steps:
     displayName: 'Setup Container (sql-server)'
 
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 1-Install-Module.ps1
+    condition: succeededOrFailed()
     displayName: '1-Install-Module.ps1'
 
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 2-Install-DotNet.ps1
+    condition: succeededOrFailed()
     displayName: '2-Install-DotNet.ps1'
 
     # "Password=``1qazxsw2"
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 3-Install-SQL-Server.ps1
+    condition: succeededOrFailed()
     displayName: '3-Install-SQL-Server.ps1'
 
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 3.1-Install-SQLCMD.ps1
+    condition: succeededOrFailed()
     displayName: '3.1-Install-SQLCMD.ps1'
 
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 4-Publish-Sql-Server-Setup-Logs.ps1
+    condition: succeededOrFailed()
     displayName: '4-Publish-Sql-Server-Setup-Logs.ps1'
 
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 5-Configure-SQL-Server.ps1
+    condition: succeededOrFailed()
     displayName: '5-Configure-SQL-Server.ps1'
 
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 6-ErgoFab-Tests.ps1
+    condition: succeededOrFailed()
     displayName: '6-ErgoFab-Tests.ps1'
 
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 7-SqlJam-Tests.ps1
+    condition: succeededOrFailed()
     displayName: '7-SqlJam-Tests.ps1'
 
 
