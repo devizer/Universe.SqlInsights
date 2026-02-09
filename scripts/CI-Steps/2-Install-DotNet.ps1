@@ -1,12 +1,15 @@
 Import-DevOps
 
-pushd $ENV:USERPROFILE
+pushd "$ENV:USERPROFILE"
 Download-File-Managed https://dot.net/v1/dotnet-install.ps1 ".\dotnet-install.ps1"
+<#
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
 if ($PSVersionTable.PSEdition -ne "Core") {
   [System.Net.ServicePointManager]::ServerCertificateValidationCallback={$true};
 }
+#>
 
+# 2016 by default TLS is not 1.2
 foreach($ver in @("6.0", "8.0", "10.0")) {
   . .\dotnet-install.ps1 -Channel "$ver" -InstallDir "C:\Program Files\dotnet"
 }
