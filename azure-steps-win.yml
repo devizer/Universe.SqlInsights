@@ -266,10 +266,15 @@ steps:
     condition: succeededOrFailed()
     displayName: '7-SqlJam-Tests.ps1'
 
-  - powershell: scripts\CI-Steps\Run-CI-Script.ps1 8-Run-w3app.ps1
+  - powershell: scripts\CI-Steps\Run-CI-Script.ps1 8-Install-Chrome.ps1
+    condition: succeededOrFailed()
+    displayName: '8-Install-Chrome.ps1'
+
+  
+  - powershell: scripts\CI-Steps\Run-CI-Script.ps1 9-Run-w3app.ps1
     # condition: succeededOrFailed()
     condition: false
-    displayName: '8-Run-w3app.ps1'
+    displayName: '9-Run-w3app.ps1'
 
     
 
