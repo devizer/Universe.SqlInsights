@@ -3,6 +3,12 @@ param(
     [string]$file
 )
 
+if ("$($ENV:SQL_IMAGE_TAG)" -eq "" -and -not (Test-Path C:\App)) {
+  Say "CREATING SYMLINK from '$(Get-Location)' to 'C:\App'"
+  cmd /c mklink /d "C:\App" "$(Get-Location)"
+}
+
+
 $relative_file = "scripts\CI-Steps\$file"
 if ("$($ENV:SQL_IMAGE_TAG)" -eq "") {
   Say "Invoking locally [$relative_file]"

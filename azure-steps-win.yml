@@ -64,11 +64,6 @@ steps:
     displayName: 'Test Docker hyperv'
 
   - powershell: |
-      if ("$($ENV:)" -ne "") {
-        Say "CREATING SYMLINK from '$(Get-Location)' to 'C:\App'"
-        cmd /c mklink /d "C:\App" "$(Get-Location)"
-      }
-
       Say "CPU: $(Get-Cpu-Name -IncludeCoreCount). $((Get-Memory-Info).Description)"
       (Get-Module SqlServer-Version-Management -ListAvailable) | fl
 
