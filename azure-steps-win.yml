@@ -347,7 +347,7 @@ steps:
       export TEST_UNDER_COVERAGE=False
       dotnet test --filter "Name~Test1_Seed" Universe.SqlInsights.SqlServerStorage.Tests.dll
     # condition: eq(variables['Agent.OS'], 'Windows_NT')
-    condition: eq(variables['Setup.NEED_CONTAINER'], 'True')
+    condition: eq(variables['Setup.NEED_CONTAINER'], 'False')
     displayName: 'TEST STORAGE +BENCHMARK'
 
   - script: |
@@ -407,6 +407,7 @@ steps:
       set -eu; set -o pipefail;
       cd scripts
       powershell -f Stress-SQL-Server-by-Stored-Procedure.ps1 
+    condition: eq(variables['Setup.NEED_CONTAINER'], 'False')
     displayName: 'STRESS SQL via Stor Proc'
 
   - bash: |
@@ -466,7 +467,8 @@ steps:
       cd src/ErgoFab.DataAccess.IntegrationTests
       bash -e -u Test-via-NuGET.sh
       Say "Success Complete"
-    condition: ne(variables.SKIP_ERGOFAB_TESTS,'True')
+    # New Sql Versions should support ERGOFAB TESTS
+    condition: and(ne(variables['SKIP_ERGOFAB_TESTS'], 'True'), eq(variables['Setup.NEED_CONTAINER'], 'False'))
     displayName: '2ND TEST ErgoFab (SQL) via NuGet'
 
   - task: PublishTestResults@2
