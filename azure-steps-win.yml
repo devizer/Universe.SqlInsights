@@ -202,6 +202,7 @@ steps:
         # --mount "type=bind,source=$($ENV:SYSTEM_ARTIFACTSDIRECTORY),target=$($ENV:SYSTEM_ARTIFACTSDIRECTORY)" `
         & docker run -d --name sql-server --memory 3200M --cpus "$cpuCount" "--isolation=hyperv" `
           -e SQL="$($ENV:sql)" `
+          -e TF_BUILD=True `
           -e SQL_IMAGE_TAG="$($ENV:SQL_IMAGE_TAG)" `
           -e SYSTEM_ARTIFACTSDIRECTORY="$($ENV:SYSTEM_ARTIFACTSDIRECTORY)" `
           -e SYSTEM_ARTIFACTSDIRECTORY="C:\ARTIFACTS" `
