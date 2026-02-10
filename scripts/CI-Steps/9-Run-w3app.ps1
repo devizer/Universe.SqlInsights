@@ -4,8 +4,8 @@ function Smart-Start-Process([string] $exe, [string] $parameters) {
    $psi = New-Object System.Diagnostics.ProcessStartInfo
    $psi.FileName = $exe
    $psi.Arguments = $parameters
-   $psi.UseShellExecute = $false       
-   $psi.CreateNoWindow = $false         
+   $psi.UseShellExecute = $true
+   $psi.CreateNoWindow = $true
    # $psi.RedirectStandardOutput = $false 
    # $psi.RedirectStandardError = $false  
    $proc = [System.Diagnostics.Process]::Start($psi)

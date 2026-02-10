@@ -233,9 +233,13 @@ steps:
     retryCountOnTaskFailure: 3
     displayName: 'Setup Container (sql-server)'
 
-  - powershell: scripts\CI-Steps\Run-CI-Script.ps1 1-Install-Module.ps1
+  - powershell: scripts\CI-Steps\Run-CI-Script.ps1 1-Install-Bash-from-Git.ps1
     condition: succeededOrFailed()
-    displayName: '1-Install-Module.ps1'
+    displayName: '1-Install-Bash-from-Git.ps1'
+
+  - powershell: scripts\CI-Steps\Run-CI-Script.ps1 1.1-Install-Module.ps1 
+    condition: succeededOrFailed()
+    displayName: '1.1-Install-Module.ps1 '
 
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 2-Install-DotNet.ps1
     condition: succeededOrFailed()
