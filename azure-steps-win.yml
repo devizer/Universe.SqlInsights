@@ -272,8 +272,8 @@ steps:
 
   
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 9-Run-w3app.ps1
-    # condition: succeededOrFailed()
-    condition: false
+    condition: succeededOrFailed()
+    # condition: false
     displayName: '9-Run-w3app.ps1'
 
     
