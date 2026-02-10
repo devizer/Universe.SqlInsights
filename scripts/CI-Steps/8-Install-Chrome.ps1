@@ -1,7 +1,9 @@
 Import-DevOps
 
 Say "Installing chrome ..."
-choco install googlechrome
+# choco install googlechrome
+choco install chromium --version 74.0.3729.157
+
 
 Say "CONTENT: C:\Program Files\Google\Chrome\Application"
 Get-ChildItem "C:\Program Files\Google\Chrome\Application" | format-table -autosize

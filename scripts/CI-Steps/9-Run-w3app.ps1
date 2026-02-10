@@ -1,3 +1,45 @@
+function Get-FreePort { $listener = [System.Net.Sockets.TcpListener]0; $listener.Start(); $port = $listener.LocalEndpoint.Port; $listener.Stop(); return $port }
+
+function Open-Url-By-Chrome-On-Windows([string] $url) {
+   foreach($candidate in @("C:\Program Files (x86)\Chromium\Application\chrome.exe", "C:\Program Files\Chromium\Application\chrome.exe")) {
+     if (Test-Path $candidate) { $chromePath=$candidate }
+   }
+   try { $ver = (Get-Item "$chromePath").VersionInfo.ProductVersion; Write-Host "BROWSER VERSION $ver OPENING $url ..." } catch {}
+   if (-not (Test-Path $chromePath)) {
+      Write-Host "[Open-Url-By-Chrome] WARNING! Chromium is missing '$chromePath'" -ForeGroundColor Red;
+      return $false
+   }
+
+   $chromeArgs = @(
+       "--headless",
+       "--disable-gpu",
+       "--enable-logging",
+       "--no-first-run",
+       "--no-sandbox",
+       "--remote-debugging-port=$(Get-FreePort)",
+       "$url"
+   )
+
+   Start-Process $chromePath -ArgumentList $chromeArgs
+}
+
+function Show-Chrome() {
+  $chomes = @(Get-Process | Where-Object { $_.ProcessName -match "chrome" })
+
+  if (-not $chomes) {
+    Write-Host "Browser Chrome is not running" -ForeGroundColor Red;
+  } else {
+    $megabytes = (Get-Process chrome | Measure-Object WorkingSet64 -Sum).Sum / 1MB
+    $megabytes = [Math]::Round($megabytes,1)
+    Say "Total $($chomes.Count) processes are running, total $megabytes MB"
+    $chomes | Format-Table -autosize | Out-String -width 123 | Out-Host 
+  }
+}
+
+function Kill-Chrome() {
+  & taskkill /f /t /im chrome.exe 2>$null
+}
+
 function show-mem() {
    $memDescription = Get-Memory-Info | ForEach-Object { $_.Description }
    Say "Memory: $memDescription"
@@ -10,7 +52,7 @@ cd C:\App\Goods\w3api\wwwroot
 Say "CONTENT FOR $(Get-Location)"
 Get-ChildItem | format-table
 
-Say "index.html"
+Say "index.html as file"
 Get-Content "index.html"
 
 Say "Installing dotnet serve"
@@ -21,8 +63,10 @@ dotnet serve --version 2>$null
 
 Say "LAUNCHING w3app on port 6060"
 # cmd /c "start dotnet serve -p 6060"
-Start-Process "dotnet" -ArgumentList "serve -p 6060 -o".Split(" ")
+Start-Process "dotnet" -ArgumentList "serve -p 6060".Split(" ")
 sleep 1
+
+Open-Url-By-Chrome-On-Windows "http://127.0.0.1:6060"
 
 Say "PROCESSES: dotnet-serve"
 Get-Process -Name "dotnet-serve" | format-table -autosize | out-host
@@ -30,7 +74,7 @@ Get-Process -Name "dotnet-serve" | format-table -autosize | out-host
 echo "Waiting ........"
 Sleep 9
 Say "PROCESSES: chrome"
-Get-Process | where-object { "$($_.ProcessName)" -match "chrome" } | format-table -autosize
+Show-Chrome
 
 
 Say "Validate http connection to http://localhost:6060"
