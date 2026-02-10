@@ -19,5 +19,9 @@ Write-Host "CPU: $(Get-Cpu-Name -includeCoreCount)"
 & choco feature enable -n allowGlobalConfirmation
 & choco feature disable -n showDownloadProgress
 
+Say "About BASH"
 try { & bash --version } catch {}
 try { & bash -c 'uname -a; echo $BASH_VERSION; echo Path is below; echo $PATH' } catch {}
+
+Say "Get-PS1-Repo-Downloads-Folder(): $(Get-PS1-Repo-Downloads-Folder)"
+
