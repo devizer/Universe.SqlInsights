@@ -1,5 +1,6 @@
 setx PS1_TROUBLE_SHOOT "On"
 setx SQLSERVERS_SETUP_FOLDER "C:\SQL-Setup"
+setx PS1_REPO_DOWNLOAD_FOLDER "C:\Temp\DevOps"
 Write-Host "Location: $(Get-Location)"
 
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
@@ -17,3 +18,6 @@ Write-Host "CPU: $(Get-Cpu-Name -includeCoreCount)"
 # Get-ChildItem | Format-Table -Autosize
 & choco feature enable -n allowGlobalConfirmation
 & choco feature disable -n showDownloadProgress
+
+try { & bash --version } catch {}
+try { & bash -c 'uname -a; echo $BASH_VERSION' } catch {}
