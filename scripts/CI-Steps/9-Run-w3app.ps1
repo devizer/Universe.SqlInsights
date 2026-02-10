@@ -31,7 +31,8 @@ function Open-Url-By-Chrome-On-Windows([string] $url) {
        "$url"
    )
 
-   Start-Process $chromePath -ArgumentList $chromeArgs
+   # Start-Process $chromePath -ArgumentList $chromeArgs
+   Smart-Start-Process $chromePath "$chromeArgs"
 }
 
 function Show-Chrome() {
@@ -72,7 +73,7 @@ dotnet tool install --global dotnet-serve
 Say "About dotnet serve"
 dotnet serve --version 2>$null
 
-Say "LAUNCHING w3app on port 6060"
+Say "LAUNCHING w3app on port 6060 (folder is '$(Get-Location)')"
 # cmd /c "start dotnet serve -p 6060"
 # Start-Process "dotnet" -ArgumentList "serve -p 6060".Split(" ") -NoNewWindow
 # & { dotnet Universe.SqlInsights.W3Api.dll } &
