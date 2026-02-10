@@ -238,6 +238,7 @@ jobs:
       - Build_W3_App
     variables:
       SQLTRACE_FOLDER: 'D:\Sql-Traces'
+      PS1_REPO_DOWNLOAD_FOLDER: "C:\Temp\DevOps"
       OS: Windows
       # SQL: 'SqlServer 2019 Developer: MSSQLSERVER'
     strategy:
