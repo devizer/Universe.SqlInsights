@@ -9,7 +9,8 @@ function show-mem([string]$title) {
    Say "[$title $file] Memory: $memDescription. CPU: $(Get-Cpu-Name -includeCoreCount)"
 }
 
-show-mem "BEFORE"
+$kind=If ("$($ENV:SQL_IMAGE_TAG)" -eq "") { "HOST" } Else { "Container" }
+show-mem "Starting on $kind"
 
 if ("$($ENV:SQL_IMAGE_TAG)" -eq "" -and -not (Test-Path C:\App)) {
   Say "CREATING SYMLINK from '$(Get-Location)' to 'C:\App'"
@@ -31,7 +32,7 @@ Else
    & docker exec sql-server pwsh -c "`$ErrorActionPreference='Stop'; . `"$relative_file`""
 }
 
-show-mem "AFTER"
+show-mem "Finished on $kind"
 
 # Select-WMI-Objects Win32_Process | Select-Object ProcessId, Name, @{Name="WS(MB)"; Expression={[math]::Round($_.WorkingSetSize / 1MB, 1)}}, CommandLine | ft -AutoSize | Out-String -width 200
 # Select-WMI-Objects Win32_Process | Select-Object ProcessId, Name, @{Name="WS(MB)"; Expression={[math]::Round($_.WorkingSetSize / 1MB, 1)}}, CommandLine | Sort-Object ProcessId | ft -AutoSize | Out-String -width 200
