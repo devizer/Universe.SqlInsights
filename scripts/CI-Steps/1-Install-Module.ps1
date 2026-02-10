@@ -15,3 +15,5 @@ Say "Memory: $memDescription"
 Write-Host "CPU: $(Get-Cpu-Name -includeCoreCount)"
 
 # Get-ChildItem | Format-Table -Autosize
+& choco feature enable -n allowGlobalConfirmation
+& choco feature disable -n showDownloadProgress
