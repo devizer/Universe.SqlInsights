@@ -334,7 +334,8 @@ steps:
       Wait-For-HTTP http://localhost:6060 || true
       echo HEADERS
       curl -I http://localhost:6060
-    condition: eq(variables['Agent.OS'], 'Windows_NT')
+    # condition: eq(variables['Agent.OS'], 'Windows_NT')
+    condition: false
     displayName: 'w3app: monitor'
 
 
