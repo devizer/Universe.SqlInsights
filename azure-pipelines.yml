@@ -106,7 +106,7 @@ jobs:
     dependsOn:
       - Build_W3_App
     strategy:
-      maxParallel: 6
+      maxParallel: 2
       matrix:
 
         # "SQL Server 2017 on Ubuntu 24.04a":
