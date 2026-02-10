@@ -6,6 +6,7 @@ function Smart-Start-Process([string] $exe, [string] $parameters) {
    $psi.Arguments = $parameters
    $psi.UseShellExecute = $true
    $psi.CreateNoWindow = $true
+   $psi.WorkingDirectory = "$(Get-Location)"
    # $psi.RedirectStandardOutput = $false 
    # $psi.RedirectStandardError = $false  
    $proc = [System.Diagnostics.Process]::Start($psi)
@@ -78,6 +79,7 @@ Say "LAUNCHING w3app on port 6060 (folder is '$(Get-Location)')"
 # Start-Process "dotnet" -ArgumentList "serve -p 6060".Split(" ") -NoNewWindow
 # & { dotnet Universe.SqlInsights.W3Api.dll } &
 # & { dotnet serve -p 6060 } &
+cd C:\App\Goods\w3api\wwwroot
 Smart-Start-Process "dotnet" "serve -p 6060"
 sleep 1
 
