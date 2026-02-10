@@ -63,7 +63,9 @@ dotnet serve --version 2>$null
 
 Say "LAUNCHING w3app on port 6060"
 # cmd /c "start dotnet serve -p 6060"
-Start-Process "dotnet" -ArgumentList "serve -p 6060".Split(" ") -NoNewWindow
+# Start-Process "dotnet" -ArgumentList "serve -p 6060".Split(" ") -NoNewWindow
+# & { dotnet Universe.SqlInsights.W3Api.dll } &
+& { dotnet serve -p 6060 } &
 sleep 1
 
 Open-Url-By-Chrome-On-Windows "http://127.0.0.1:6060"
@@ -79,9 +81,9 @@ Show-Chrome
 
 Say "Validate http connection to http://localhost:6060"
 & curl.exe -I http://localhost:6060
-Say "curl /"
+Say "curl http://localhost:6060"
 & curl.exe http://localhost:6060
 
 show-mem
 
-$true
+Say "9-Run-w3app.ps1 completed"

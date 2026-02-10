@@ -3,6 +3,14 @@ param(
     [string]$file
 )
 
+
+function show-mem([string]$title) {
+   $memDescription = Get-Memory-Info | ForEach-Object { $_.Description }
+   Say "[$title $file] Memory: $memDescription. CPU: $(Get-Cpu-Name -includeCoreCount)"
+}
+
+show-mem "BEFORE"
+
 if ("$($ENV:SQL_IMAGE_TAG)" -eq "" -and -not (Test-Path C:\App)) {
   Say "CREATING SYMLINK from '$(Get-Location)' to 'C:\App'"
   cmd /c mklink /d "C:\App" "$(Get-Location)"
@@ -22,3 +30,5 @@ Else
    # & docker exec sql-server powershell -f "$relative_file"
    & docker exec sql-server powershell -c "`$ErrorActionPreference='Stop'; . `"$relative_file`""
 }
+
+show-mem "AFTER"
