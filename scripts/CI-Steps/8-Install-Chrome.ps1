@@ -6,7 +6,7 @@ choco install chromium --version 74.0.3729.157
 
 
 Say "CONTENT: C:\Program Files\Google\Chrome\Application"
-Get-ChildItem "C:\Program Files\Google\Chrome\Application" | format-table -autosize
+Get-ChildItem "C:\Program Files\Google\Chrome\Application" -EA SilentlyContinue | format-table -autosize
 
 Say "Assing chrome for http://"
 # reg add "HKEY_CLASSES_ROOT\http\shell\open\command" /ve /t REG_SZ /d "\"C:\Program Files\Google\Chrome\Application\chrome.exe\" --headless --no-sandbox --disable-gpu \"%%1\"" /f
