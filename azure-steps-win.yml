@@ -276,6 +276,10 @@ steps:
     # condition: false
     displayName: '9-Run-w3app.ps1'
 
+  - powershell: scripts\CI-Steps\Run-CI-Script.ps1 10-Run-w3api.ps1
+    condition: succeededOrFailed()
+    displayName: '10-Run-w3api.ps1'
+
     
 
 

@@ -63,7 +63,7 @@ dotnet serve --version 2>$null
 
 Say "LAUNCHING w3app on port 6060"
 # cmd /c "start dotnet serve -p 6060"
-Start-Process "dotnet" -ArgumentList "serve -p 6060".Split(" ")
+Start-Process "dotnet" -ArgumentList "serve -p 6060".Split(" ") -NoNewWindow
 sleep 1
 
 Open-Url-By-Chrome-On-Windows "http://127.0.0.1:6060"
