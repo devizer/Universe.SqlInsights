@@ -1,5 +1,16 @@
 function Get-FreePort { $listener = [System.Net.Sockets.TcpListener]0; $listener.Start(); $port = $listener.LocalEndpoint.Port; $listener.Stop(); return $port }
 
+function Smart-Start-Process([string] $exe, [string] $parameters) {
+   $psi = New-Object System.Diagnostics.ProcessStartInfo
+   $psi.FileName = $exe
+   $psi.Arguments = $parameters
+   $psi.UseShellExecute = $false       
+   $psi.CreateNoWindow = $false         
+   # $psi.RedirectStandardOutput = $false 
+   # $psi.RedirectStandardError = $false  
+   $proc = [System.Diagnostics.Process]::Start($psi)
+}
+
 function Open-Url-By-Chrome-On-Windows([string] $url) {
    foreach($candidate in @("C:\Program Files (x86)\Chromium\Application\chrome.exe", "C:\Program Files\Chromium\Application\chrome.exe")) {
      if (Test-Path $candidate) { $chromePath=$candidate }
@@ -65,7 +76,8 @@ Say "LAUNCHING w3app on port 6060"
 # cmd /c "start dotnet serve -p 6060"
 # Start-Process "dotnet" -ArgumentList "serve -p 6060".Split(" ") -NoNewWindow
 # & { dotnet Universe.SqlInsights.W3Api.dll } &
-& { dotnet serve -p 6060 } &
+# & { dotnet serve -p 6060 } &
+Smart-Start-Process "dotnet" "serve -p 6060"
 sleep 1
 
 Open-Url-By-Chrome-On-Windows "http://127.0.0.1:6060"
