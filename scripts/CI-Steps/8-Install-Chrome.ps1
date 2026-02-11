@@ -1,8 +1,8 @@
 . "$PSScriptRoot\Functions.ps1"
 
 Say "Installing chrome ..."
-# choco install googlechrome
-choco install chromium --version 74.0.3729.157
+choco install googlechrome
+# choco install chromium --version 74.0.3729.157
 
 
 Say "CONTENT: C:\Program Files\Google\Chrome\Application"
