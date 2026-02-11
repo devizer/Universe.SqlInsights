@@ -51,7 +51,7 @@ function Open-Url-By-Chrome-On-Windows([string] $url) {
    )
 
    # Start-Process $chromePath -ArgumentList $chromeArgs
-   Smart-Start-Process $chromePath "$chromeArgs"
+   Smart-Start-Process $chrome.FullPath "$chromeArgs"
 }
 
 function Show-Chrome() {
