@@ -19,7 +19,7 @@ function Open-Url-By-Chrome-On-Windows([string] $url) {
      if (Test-Path $candidate) { $chromePath=$candidate }
    }
    try { $ver = (Get-Item "$chromePath").VersionInfo.ProductVersion; Write-Host "BROWSER VERSION $ver OPENING $url ..." } catch {}
-   if (-not (Test-Path $chromePath)) {
+   if (-not ("$chromePath") -or -not (Test-Path $chromePath)) {
       Write-Host "[Open-Url-By-Chrome] WARNING! Chromium is missing '$chromePath'" -ForeGroundColor Red;
       return $false
    }
