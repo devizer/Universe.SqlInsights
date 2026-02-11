@@ -1,3 +1,4 @@
+. "$PSScriptRoot\Functions.ps1"
 
       & dotnet tool install --global SqlServer.AdministrativeViews
       $output_folder = "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\Administrative Views"

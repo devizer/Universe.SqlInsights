@@ -1,4 +1,4 @@
-Import-DevOps
+. "$PSScriptRoot\Functions.ps1"
 
 Say "Installing chrome ..."
 # choco install googlechrome

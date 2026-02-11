@@ -1,3 +1,4 @@
+. "$PSScriptRoot\Functions.ps1"
 $ENV:NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES = "True"
 
 # if [[ "${RAM_DISK:-}" == "" ]]; then export NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES=True; fi # for query cache
