@@ -400,7 +400,7 @@ steps:
     condition: succeededOrFailed()
     displayName: 'PUBLISH Administrative Views Report'
     inputs:
-      pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)/AdministrativeViews'
+      pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)/Administrative Views (Tests)'
       artifactName: 'Administrative Views Reports $(Agent.JobName) $(Build.BUILDNUMBER)'
 
   # TODO: SHOULD BE OPTIONAL via Variable

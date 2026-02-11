@@ -503,7 +503,7 @@ steps:
     condition: succeededOrFailed()
     displayName: 'Publish Administrative Views Report'
     inputs:
-      pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)\\AdministrativeViews'
+      pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)\\Administrative Views (Tests)'
       artifactName: 'Administrative Views Reports $(Agent.JobName) $(Build.BUILDNUMBER)'
 
 
