@@ -14,15 +14,31 @@ function Smart-Start-Process([string] $exe, [string] $parameters) {
    $proc = [System.Diagnostics.Process]::Start($psi)
 }
 
-function Open-Url-By-Chrome-On-Windows([string] $url) {
+function Find-Chrome-Exe() {
    foreach($candidate in @("C:\Program Files (x86)\Chromium\Application\chrome.exe", "C:\Program Files\Chromium\Application\chrome.exe", "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", "C:\Program Files\Google\Chrome\Application\chrome.exe")) {
      if (Test-Path $candidate) { $chromePath=$candidate }
    }
-   try { $ver = (Get-Item "$chromePath").VersionInfo.ProductVersion; Write-Line -TextCyan "OPENING $url By BROWSER VERSION $ver ..." } catch {}
-   if (-not ("$chromePath") -or -not (Test-Path $chromePath)) {
-      Write-Host "[Open-Url-By-Chrome] WARNING! Chromium is missing '$chromePath'" -ForeGroundColor Red;
-      return $false
+
+   try { 
+      $info = (Get-Item "$chromePath").VersionInfo; 
+      $ver = $info.ProductVersion; 
+      $product = $info.ProductName; 
+      # $info | fl | out-host 
+   } catch {}
+   $description = "Missing Chrome and Chromium, Not Found"; if ($ver) { $description = "Browser '$product' v$($ver) location is '$chromePath'" }
+   return @{ FullPath = $chromePath; Version = $ver; Product = $product; Description = $description} 
+}
+$chrome = Find-Chrome-Exe;
+# $chrome | ft -autosize
+
+
+function Open-Url-By-Chrome-On-Windows([string] $url) {
+   $chrome = Find-Chrome-Exe;
+   if (-not $chrome.FullPath) {
+      Write-Line -TextRed "[Open-Url-By-Chrome] WARNING! Chromium is missing";
+      return $false;
    }
+   Write-Line -TextCyan "OPENING $url By [$($chrome.Description)] ..."
 
    $chromeArgs = @(
        "--headless",
@@ -47,7 +63,7 @@ function Show-Chrome() {
     $megabytes = (Get-Process chrome | Measure-Object WorkingSet64 -Sum).Sum / 1MB
     $megabytes = [Math]::Round($megabytes,1)
     Say "Total $($chomes.Count) processes are running, total $megabytes MB"
-    $chomes | Format-Table -autosize | Out-String -width 123 | Out-Host 
+    $chomes | Format-Table -autosize | Out-String -width 123 | Out-Host
   }
 }
 
@@ -75,16 +91,6 @@ function Set-Var {
         Set-ItemProperty -Path $registryPath -Name $Name -Value $Value -ErrorAction Stop
 
         <#
-        # Notify the system that environment variables have changed
-        # This prevents the need for a reboot/logoff for most apps
-        $signature = '[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-                      public static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint Msg, UIntPtr wParam, string lParam, uint fuFlags, uint uTimeout, out UIntPtr lpdwResult);'
-        
-        $type = Add-Type -MemberDefinition $signature -Name "NativeMethods" -Namespace "Win32" -PassThru
-        
-        $result = [UIntPtr]::Zero
-        # 0xffff = HWND_BROADCAST, 0x001A = WM_SETTINGCHANGE
-        $type::SendMessageTimeout([IntPtr]0xffff, 0x001A, [UIntPtr]::Zero, "Environment", 0x02, 1000, out $result)
         #>
 
         if ("$prev_value" -ne $Value) {
@@ -96,6 +102,29 @@ function Set-Var {
     }
 }
 
+Function BroadCast-Variables() {
+    try {
+        # Сигнатура Win32 API
+        $signature = '[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+                      public static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint Msg, UIntPtr wParam, string lParam, uint fuFlags, uint uTimeout, out UIntPtr lpdwResult);'
+
+        # Добавляем тип (с проверкой, чтобы избежать ошибок при повторном вызове)
+        if (-not ([System.Management.Automation.PSTypeName]"Win32.NativeMethods").Type) {
+            Add-Type -MemberDefinition $signature -Name "NativeMethods" -Namespace "Win32"
+        }
+
+        $result = [UIntPtr]::Zero
+        # Используем [ref] вместо out
+        $ret = [Win32.NativeMethods]::SendMessageTimeout([IntPtr]0xffff, 0x001A, [UIntPtr]::Zero, "Environment", 0x02, 1000, [ref]$result)
+        
+        Write-Line -TextGreen "Broadcast variables success, SendMessageTimeout() --> $ret, [ref] result = $result"
+    } 
+    catch {
+        Write-Line -TextRed "Broadcast variables failed: $($_.Exception.Message)"
+    }
+}
+# BroadCast-Variables
+# OK: Bradcast variables success, SendMessageTimeout() --> 1, [ref] result = 0
 
 Set-Var "PS1_TROUBLE_SHOOT" "On"
 Set-Var "SQLSERVERS_SETUP_FOLDER" "C:\SQL-Setup"
@@ -117,3 +146,4 @@ if ("$($ENV:DB_DATA_DIR)") {
 Set-Var "TEST_SQL_NET_DURATION_OF_Upload" "42"
 Set-Var "TEST_SQL_NET_DURATION_OF_Download" "42"
 Set-Var "TEST_SQL_NET_DURATION_OF_Ping" "150"
+BroadCast-Variables
