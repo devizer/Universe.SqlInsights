@@ -42,7 +42,7 @@ function Show-Chrome() {
   $chomes = @(Get-Process | Where-Object { $_.ProcessName -match "chrome" })
 
   if (-not $chomes) {
-    Write-Host "Browser Chrome is not running" -ForeGroundColor Red;
+    Write-Line -TextRed "WARNING! Browser Chrome is not running";
   } else {
     $megabytes = (Get-Process chrome | Measure-Object WorkingSet64 -Sum).Sum / 1MB
     $megabytes = [Math]::Round($megabytes,1)

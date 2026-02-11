@@ -9,6 +9,7 @@ $ENV:ASPNETCORE_URLS="http://*:50420"
 Smart-Start-Process "dotnet" "Universe.SqlInsights.W3Api.dll"
 
 Sleep 60
+Show-Chrome
 
 Select-WMI-Objects Win32_Process | Select-Object ProcessId, Name, @{Name="WS(MB)"; Expression={[math]::Round($_.WorkingSetSize / 1MB, 1)}}, CommandLine | Sort-Object Name | ft -AutoSize | Out-String -width 200
 
@@ -29,3 +30,4 @@ if ($logsExists) {
   }
 }
 
+Show-Chrome
