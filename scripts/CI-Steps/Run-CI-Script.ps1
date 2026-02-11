@@ -12,7 +12,8 @@ function show-mem([string]$title) {
 $kind=If ("$($ENV:SQL_IMAGE_TAG)" -eq "") { "HOST" } Else { "Container" }
 show-mem "Starting on $kind"
 
-if ("$($ENV:SQL_IMAGE_TAG)" -eq "" -and -not (Test-Path C:\App)) {
+# if ("$($ENV:SQL_IMAGE_TAG)" -eq "" -and -not (Test-Path C:\App)) {
+if (-not (Test-Path C:\App)) {
   Say "CREATING SYMLINK from '$(Get-Location)' to 'C:\App'"
   cmd /c mklink /d "C:\App" "$(Get-Location)"
 }
