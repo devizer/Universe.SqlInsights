@@ -27,7 +27,8 @@ $logsFolder = "$($ENV:SystemDrive)\\Temp\\SqlInsights Dashboard Logs"
 $logsExists = [bool] (Test-Path $logsFolder)
 Say "W3API logsFolder = [$logsFolder]"
 Say "W3API logsExists = [$logsExists]"
-if ($logsExists) { Get-ChildItem $logsFolder | Format-Table -AutoSize }
-
-
+if ($logsExists) { 
+  Get-ChildItem $logsFolder | Format-Table -AutoSize 
+  Get-ChildItem -Path $logsFolder -File | ForEach-Object { Say "W3API LOG FILE $($_.FullName)"; Get-Content "$($_.FullName)" -Raw | out-host }
+}
 
