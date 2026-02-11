@@ -15,7 +15,7 @@ function Smart-Start-Process([string] $exe, [string] $parameters) {
 }
 
 function Open-Url-By-Chrome-On-Windows([string] $url) {
-   foreach($candidate in @("C:\Program Files (x86)\Chromium\Application\chrome.exe", "C:\Program Files\Chromium\Application\chrome.exe")) {
+   foreach($candidate in @("C:\Program Files (x86)\Chromium\Application\chrome.exe", "C:\Program Files\Chromium\Application\chrome.exe", "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", "C:\Program Files\Google\Chrome\Application\chrome.exe")) {
      if (Test-Path $candidate) { $chromePath=$candidate }
    }
    try { $ver = (Get-Item "$chromePath").VersionInfo.ProductVersion; Write-Host "BROWSER VERSION $ver OPENING $url ..." } catch {}
