@@ -13,7 +13,7 @@
         $ENV:SQLINSIGHTS_DATA_DIR = "$ENV:DB_DATA_DIR"
         $ENV:TEST_CONFIGURATION = "RAM-Disk"
         Say "SQLINSIGHTS_DATA_DIR is $ENV:SQLINSIGHTS_DATA_DIR"
-      fi
+      }
       $ENV:TEST_UNDER_COVERAGE = "True"
       & dotnet test --collect:"XPlat Code Coverage" --logger trx Universe.SqlInsights.SqlServerStorage.Tests.dll
 
