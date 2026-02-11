@@ -275,7 +275,6 @@ steps:
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 8-Install-Chrome.ps1
     condition: succeededOrFailed()
     displayName: '8-Install-Chrome.ps1'
-
   
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 9-Run-w3app.ps1
     condition: succeededOrFailed()
@@ -286,6 +285,10 @@ steps:
     condition: succeededOrFailed()
     displayName: '10-Run-w3api.ps1'
 
+  - powershell: scripts\CI-Steps\Run-CI-Script.ps1 20-Storage-Tests-and-Benchmark.ps1
+    condition: succeededOrFailed()
+    displayName: '20-Storage-Tests-and-Benchmark.ps1'
+
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 90-Administrative-Views-By-Tool.ps1
     condition: succeededOrFailed()
     displayName: '90-Administrative-Views-By-Tool.ps1'
@@ -293,9 +296,6 @@ steps:
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 91-Administrative-Views-By-Tests.ps1
     condition: succeededOrFailed()
     displayName: '91-Administrative-Views-By-Tests.ps1'
-
-
-    
 
 
   - powershell: |
