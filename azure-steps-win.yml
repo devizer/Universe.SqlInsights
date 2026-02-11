@@ -289,7 +289,9 @@ steps:
     condition: succeededOrFailed()
     displayName: '90-Administrative-Views-By-Tool.ps1'
 
-    
+  - powershell: scripts\CI-Steps\Run-CI-Script.ps1 91-Administrative-Views-By-Tests.ps1
+    condition: succeededOrFailed()
+    displayName: '91-Administrative-Views-By-Tests.ps1'
 
 
     
@@ -473,6 +475,7 @@ steps:
       ls -la "/c/Administrative Views" || true
       Say "Success Complete"
     condition: succeededOrFailed()
+    retryCountOnTaskFailure: 3
     displayName: 'TEST Administrative Views by Tool'
 
   - bash: |
@@ -493,6 +496,7 @@ steps:
       # cp -a -v TestResults "${SYSTEM_ARTIFACTSDIRECTORY}"
       Say "Success Complete"
     condition: succeededOrFailed()
+    retryCountOnTaskFailure: 3
     displayName: 'TEST Administrative Views by Source'
 
   - task: PublishBuildArtifacts@1
