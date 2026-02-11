@@ -29,6 +29,13 @@ Say "W3API logsFolder = [$logsFolder]"
 Say "W3API logsExists = [$logsExists]"
 if ($logsExists) { 
   Get-ChildItem $logsFolder | Format-Table -AutoSize 
-  Get-ChildItem -Path $logsFolder -File | ForEach-Object { Say "W3API LOG FILE $($_.FullName)"; Get-Content "$($_.FullName)" -Raw | out-host }
+  Get-ChildItem -Path $logsFolder -File | ForEach-Object { 
+     Say "W3API LOG FILE $($_.FullName)";
+     $copyTo="$(ENV:SYSTEM_ARTIFACTSDIRECTORY)\SqlInsights Dashboard Logs"
+     Write-Host "Copy it to [$copyTo]"
+     New-item "$copyTo" -ItemType Directory -Force -EA SilentlyContinue | Out-Null
+     Copy-Item -Path "$($_.FullName)" -Destination $copyTo -Force
+     Get-Content "$($_.FullName)" -Raw | out-host 
+  }
 }
 
