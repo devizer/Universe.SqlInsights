@@ -20,7 +20,7 @@ Smart-Start-Process "dotnet" "Universe.SqlInsights.W3Api.dll"
 
 Sleep 60
 
-Select-WMI-Objects Win32_Process | Select-Object ProcessId, Name, @{Name="WS(MB)"; Expression={[math]::Round($_.WorkingSetSize / 1MB, 1)}}, CommandLine | Sort-Object ProcessId | ft -AutoSize | Out-String -width 200
+Select-WMI-Objects Win32_Process | Select-Object ProcessId, Name, @{Name="WS(MB)"; Expression={[math]::Round($_.WorkingSetSize / 1MB, 1)}}, CommandLine | Sort-Object Name | ft -AutoSize | Out-String -width 200
 
 # SHOW Logs
 $logsFolder = "$($ENV:SystemDrive)\\Temp\\SqlInsights Dashboard Logs"
