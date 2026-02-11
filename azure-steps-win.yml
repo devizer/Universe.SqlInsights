@@ -289,6 +289,12 @@ steps:
     condition: succeededOrFailed()
     displayName: '20-Storage-Tests-and-Benchmark.ps1'
 
+  - powershell: scripts\CI-Steps\Run-CI-Script.ps1 80-Stress-SQL-Server-by-Stored-Procedure.ps1
+    condition: succeededOrFailed()
+    displayName: '80-Stress-SQL-Server-by-Stored-Procedure.ps1'
+
+     
+
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 90-Administrative-Views-By-Tool.ps1
     condition: succeededOrFailed()
     displayName: '90-Administrative-Views-By-Tool.ps1'
@@ -390,7 +396,8 @@ steps:
       export TEST_UNDER_COVERAGE=False
       dotnet test --filter "Name~Test1_Seed" Universe.SqlInsights.SqlServerStorage.Tests.dll
     # condition: eq(variables['Agent.OS'], 'Windows_NT')
-    condition: eq(variables['Setup.NEED_CONTAINER'], 'False')
+    # condition: eq(variables['Setup.NEED_CONTAINER'], 'False')
+    condition: false
     displayName: 'TEST STORAGE +BENCHMARK'
 
   - script: |
@@ -402,6 +409,7 @@ steps:
   - powershell: |
       Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 7
       $true
+    condition: false
     displayName: 'Show Transfer for 7 seconds'
 
   - bash: |
@@ -456,7 +464,8 @@ steps:
       set -eu; set -o pipefail;
       cd scripts
       powershell -f Stress-SQL-Server-by-Stored-Procedure.ps1 
-    condition: eq(variables['Setup.NEED_CONTAINER'], 'False')
+    # condition: eq(variables['Setup.NEED_CONTAINER'], 'False')
+    condition: false
     displayName: 'STRESS SQL via Stor Proc'
 
   - bash: |
@@ -475,7 +484,8 @@ steps:
       SqlServer.AdministrativeViews -all -o "C:\\Administrative Views\\{InstanceName} {Version} on {Platform}"
       ls -la "/c/Administrative Views" || true
       Say "Success Complete"
-    condition: succeededOrFailed()
+    # condition: succeededOrFailed()
+    condition: false
     retryCountOnTaskFailure: 3
     displayName: 'TEST Administrative Views by Tool'
 
@@ -496,13 +506,14 @@ steps:
       du -h "${SYSTEM_ARTIFACTSDIRECTORY}" || true
       # cp -a -v TestResults "${SYSTEM_ARTIFACTSDIRECTORY}"
       Say "Success Complete"
-    condition: succeededOrFailed()
+    # condition: succeededOrFailed()
+    condition: false
     retryCountOnTaskFailure: 3
     displayName: 'TEST Administrative Views by Source'
 
   - task: PublishBuildArtifacts@1
     condition: succeededOrFailed()
-    displayName: 'Publish Administrative Views Report'
+    displayName: 'Publish Administrative Views (Test) Report'
     inputs:
       pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)\\Administrative Views (Tests)'
       artifactName: 'Administrative Views (Test) Reports $(Agent.JobName) $(Build.BUILDNUMBER)'
