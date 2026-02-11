@@ -1,4 +1,4 @@
-Import-DevOps
+. "$PSScriptRoot\Functions.ps1"
 
 Say "Hiding LocalDB Servers"
 Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server Local DB\Installed Versions" -Recurse -Force -EA SilentlyContinue
