@@ -25,7 +25,8 @@ $delete="Use [DB-Stress]; Set NoCount On; Declare @i int; Set @i = 0; While @i <
 
 foreach($cmd in $commands) { 
   Say "Invoke: «$cmd»"; 
-  Measure-Action "Stress" { Invoke-SqlServer-Command -Title "Instance" -ConnectionString "$connectionString" -SqlCommand $cmd; }
+  # Measure-Action "Stress" { Invoke-SqlServer-Command -Title "Instance" -ConnectionString "$connectionString" -SqlCommand $cmd; }
+  try { Invoke-SqlServer-Command -Title "Instance" -ConnectionString "$connectionString" -SqlCommand $cmd; } catch { Write-Line -TextRed "FAIL: [$cmd]" }
 }
 
 Say "Bye"

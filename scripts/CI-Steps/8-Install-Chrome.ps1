@@ -1,8 +1,8 @@
 . "$PSScriptRoot\Functions.ps1"
 
 Say "Installing chrome ..."
-choco install googlechrome --version 144.0.7559.97 --ignore-checksums
-# choco install chromium --version 74.0.3729.157 --ignore-checksums
+# choco install googlechrome --version 144.0.7559.97 --ignore-checksums
+choco install chromium --version 74.0.3729.157 --ignore-checksums
 
 Say "CONTENT: C:\Program Files\Google\Chrome\Application"
 Get-ChildItem "C:\Program Files\Google\Chrome\Application" -EA SilentlyContinue | format-table -autosize
