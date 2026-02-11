@@ -29,7 +29,7 @@ Open-Url-By-Chrome-On-Windows "http://127.0.0.1:6060"
 Say "PROCESSES: dotnet-serve"
 Get-Process -Name "dotnet-serve" | format-table -autosize | out-host
 
-echo "Waiting ........"
+echo "Waiting 9 seconds ........"
 Sleep 9
 Say "PROCESSES: chrome"
 Show-Chrome

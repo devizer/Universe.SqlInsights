@@ -222,7 +222,7 @@ steps:
           --mount "$mnt" `
           --mount "type=bind,source=C:\Temp,target=C:\Temp" `
           -e PS1_TROUBLE_SHOOT="On" -e SQLSERVERS_SETUP_FOLDER="C:\SQL-Setup" `
-          -p 1433:1433 -p 1434:1434 --workdir=C:\App --entrypoint powershell $image -Command "Write-Host WAITING; Sleep 214748; Wait-Event;"
+          -p 1433:1433 -p 1434:1434 -p 50420:50420 --workdir=C:\App --entrypoint powershell $image -Command "Write-Host WAITING; Sleep 214748; Wait-Event;"
         Sleep 2
         Say "CONTAINER STARTUP LOGS"
         docker logs --since 0 sql-server
@@ -273,13 +273,27 @@ steps:
     displayName: '7-SqlJam-Tests.ps1'
 
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 8-Install-Chrome.ps1
-    condition: succeededOrFailed()
+    # condition: succeededOrFailed()
+    condition: false
     displayName: '8-Install-Chrome.ps1'
   
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 9-Run-w3app.ps1
-    condition: succeededOrFailed()
-    # condition: false
+    # condition: succeededOrFailed()
+    condition: false
     displayName: '9-Run-w3app.ps1'
+
+  - powershell: |
+       pwsh scripts\CI-Steps\8-Install-Chrome.ps1
+       pwsh scripts\CI-Steps\9-Run-w3app.ps1 
+       . scripts\CI-Steps\Functions.ps1
+       Open-Url-By-Chrome-On-Windows "http://127.0.0.1:6060"
+       Say "PROCESSES: chrome"
+       Sleep 9
+       Show-Chrome
+
+    # condition: succeededOrFailed()
+    condition: false
+    displayName: 'RUN w3app on HOST'
 
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 10-Run-w3api.ps1
     condition: succeededOrFailed()
