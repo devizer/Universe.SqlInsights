@@ -285,6 +285,13 @@ steps:
     condition: succeededOrFailed()
     displayName: '10-Run-w3api.ps1'
 
+  - powershell: scripts\CI-Steps\Run-CI-Script.ps1 90-Administrative-Views-By-Tool.ps1
+    condition: succeededOrFailed()
+    displayName: '90-Administrative-Views-By-Tool.ps1'
+
+    
+
+
     
 
 
