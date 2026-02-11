@@ -283,6 +283,8 @@ steps:
     displayName: '9-Run-w3app.ps1'
 
   - powershell: |
+       & choco feature enable -n allowGlobalConfirmation
+       & choco feature disable -n showDownloadProgress
        pwsh scripts\CI-Steps\8-Install-Chrome.ps1
        pwsh scripts\CI-Steps\9-Run-w3app.ps1
        . scripts\CI-Steps\Functions.ps1
