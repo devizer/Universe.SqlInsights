@@ -201,7 +201,9 @@ steps:
         Try-And-Retry "PULL $image" "& docker pull $image | out-host"
         & docker pull "$image"
 
+
         Say "Starting container sql-server"
+        & docker rm -f sql-server 2>$null
         New-item C:\SQL -ItemType Directory -Force -EA SilentlyContinue | Out-Null
         New-item C:\Temp -ItemType Directory -Force -EA SilentlyContinue | Out-Null
         $mnt="type=bind,source=$(Get-Location),target=C:\App"
