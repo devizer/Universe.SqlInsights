@@ -212,6 +212,7 @@ steps:
         # --mount "type=bind,source=$($ENV:SYSTEM_ARTIFACTSDIRECTORY),target=$($ENV:SYSTEM_ARTIFACTSDIRECTORY)" `
         # bad: --mount "type=bind,source=C:\SQL,target=C:\SQL" `
         & docker run -d --name sql-server --memory 3300M --cpus "$cpuCount" "--isolation=hyperv" `
+          --storage-opt "size=50GB" `
           -e SQL="$($ENV:sql)" `
           -e TF_BUILD=True `
           -e SQL_IMAGE_TAG="$($ENV:SQL_IMAGE_TAG)" `
