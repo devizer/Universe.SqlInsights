@@ -83,22 +83,19 @@ function Set-Var {
         [Parameter(Mandatory=$true)] [string]$Value
     )
 
-
     try {
         $prev_value = [Environment]::GetEnvironmentVariable($Name)
         Set-Content -Path "Env:$Name" -Value $Value
         $registryPath = "HKCU:\Environment"
         Set-ItemProperty -Path $registryPath -Name $Name -Value $Value -ErrorAction Stop
 
-        <#
-        #>
-
         if ("$prev_value" -ne $Value) {
-           Write-Host "Variable '$Name' set to '$Value'." -ForegroundColor Green
+           Write-Line "Env Variable " -TextMagenta "'$Name'" -Reset " set to " -TextGreen "'$Value'"
+           # Write-Host "Variable '$Name' set to '$Value'." -ForegroundColor Green
         }
     }
     catch {
-        Write-Error "Failed to write ENV variable '$Name': $($_.Exception.Message)"
+        Write-Line -TextRed "Failed to write ENV variable '$Name': $($_.Exception.Message)"
     }
 }
 
