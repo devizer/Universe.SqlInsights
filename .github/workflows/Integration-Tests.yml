@@ -40,13 +40,11 @@ jobs:
     - name: build fx dependent (if parallel fail)
       if: failure()
       run: bash -eu -o pipefail scripts/CI-Pre-Build/Pre-Build-FX-Dependent.sh
-        
+
     - name: copy w3app to w3api/wwwroot
       run: bash -eu -o pipefail scripts/CI-Pre-Build/Copy-w3app-to-W3API-wwwroot.sh
     - name: Content of w3api
       run: ls -laR $SYSTEM_ARTIFACTSDIRECTORY/w3api || true
-        
-
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
@@ -56,15 +54,13 @@ jobs:
         path: ${{ env.SYSTEM_ARTIFACTSDIRECTORY }}
         overwrite: true
         compression-level: 1
-  
 
 
-          
   Combine:
     runs-on: ubuntu-latest
     needs: Pre-Build
     if: always()
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
 
     - name: Bootstrap
@@ -86,4 +82,3 @@ jobs:
         path: artifacts
         overwrite: true
         compression-level: 1
-        
