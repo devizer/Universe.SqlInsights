@@ -9,18 +9,22 @@ on:
 
 defaults:
   run:
-    shell: powershell
+    shell: pwsh
 
 
 jobs:
 
   Pre-Build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
     timeout-minutes: 20
     steps:
     - name: Bootstrap
       uses: devizer/devops-library@main
-
+    - name: Checkout repository
+      uses: actions/checkout@v4
     - name: Variables
       run: 'printenv | sort'
 
