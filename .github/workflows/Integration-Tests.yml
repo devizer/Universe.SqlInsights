@@ -69,7 +69,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
          name: Pre-Build
-         path: artifacts
+         path: artifacts/Pre-Build
 
     - name: Pack 7z
       shell: bash
@@ -96,7 +96,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
          name: Pre-Build
-         path: artifacts
+         path: artifacts/Pre-Build
 
     - name: Pack 7z
       shell: bash
@@ -125,7 +125,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
          name: Pre-Build
-         path: artifacts
+         path: artifacts/Pre-Build
 
     - name: Pack 7z
       shell: bash
@@ -152,6 +152,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
          name: Pre-Build
+         path: artifacts/Pre-Build
          path: artifacts
 
     - name: Pack 7z
@@ -183,7 +184,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
          name: Pre-Build
-         path: artifacts
+         path: artifacts/Pre-Build
 
     - name: Pack xz
       shell: bash
@@ -210,7 +211,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
          name: Pre-Build
-         path: artifacts
+         path: artifacts/Pre-Build
 
     - name: Pack xz
       shell: bash
