@@ -1,4 +1,4 @@
-name: Test SqlInsights
+name: SqlInsights Test MATRIX
 
 on:
   workflow_dispatch:
