@@ -78,7 +78,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: 'Combined.7z'
+        name: 'Combined.1.7z'
         path: artifacts
         overwrite: true
         compression-level: 1
@@ -104,7 +104,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: 'Combined.7z'
+        name: 'Combined.9.7z'
         path: artifacts
         overwrite: true
         compression-level: 1
@@ -131,7 +131,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: 'Combined.xz'
+        name: 'Combined.9.xz'
         path: artifacts
         overwrite: true
         compression-level: 1
@@ -157,7 +157,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: 'Combined.xz'
+        name: 'Combined.1.xz'
         path: artifacts
         overwrite: true
         compression-level: 1
