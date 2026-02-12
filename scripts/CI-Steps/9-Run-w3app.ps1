@@ -15,12 +15,12 @@ Say "LAUNCHING w3app on port 6060 (folder is '$(Get-Location)')"
 # & { dotnet serve -p 6060 } &
 cd C:\App\Goods\w3api\wwwroot
 Smart-Start-Process "dotnet" "serve -p 6060"
-sleep 1
+sleep 2
 
 Open-Url-By-Chrome-On-Windows "http://127.0.0.1:6060"
 
 Say "PROCESSES: dotnet-serve"
-Get-Process -Name "dotnet-serve" | format-table -autosize | out-host
+Get-Process -Name "dotnet-serve" -EA SilentlyContinue | format-table -autosize | out-host
 
 echo "Waiting 9 seconds ........"
 Sleep 9

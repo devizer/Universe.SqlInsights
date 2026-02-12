@@ -301,7 +301,7 @@ steps:
        . scripts\CI-Steps\Functions.ps1
        Say "PROCESSES: chrome"
        Sleep 13
-       Show-Chrome
+       Show-Chrome-Processes
 
     condition: succeededOrFailed()
     # condition: false
