@@ -23,7 +23,7 @@ $relative_file = "scripts\CI-Steps\$file"
 if ("$($ENV:SQL_IMAGE_TAG)" -eq "") {
   Say "Invoking locally [$relative_file]"
   Write-Host "Current Directory: $(Get-Location)"
-  pwsh -c "Write-Line -TextMagenta (Get-Memory-Info).Description; `$ErrorActionPreference='Stop'; . `"$relative_file`""
+  pwsh -c "Write-Line -TextMagenta ('HOST '+(Get-Memory-Info).Description); `$ErrorActionPreference='Stop'; . `"$relative_file`""
 }
 Else
 {

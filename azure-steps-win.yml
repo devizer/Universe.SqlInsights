@@ -196,6 +196,13 @@ steps:
         $ErrorActionPreference="Continue"
         echo "SQL: '$($ENV:sql)'"
 
+        Say "Restarting Host Network Service"
+        try { Restart-Service hns } catch {}
+        Say "docker network prune"
+        & docker network prune
+        Say "docker system prune -f"
+        & docker system prune -f
+
         $image="devizervlad/iis-net4x-net35:$($ENV:SQL_IMAGE_TAG)"
         Say "Pull $image ..."
         Try-And-Retry "PULL $image" "& docker pull $image | out-host"
