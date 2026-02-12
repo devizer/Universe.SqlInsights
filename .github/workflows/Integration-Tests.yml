@@ -41,12 +41,7 @@ jobs:
     - name: copy w3app to w3api/wwwroot
       shell: bash
       run: |
-        set -eu; set -o pipefial
-        cd src/universe.sqlinsights.w3app/build
-        mkdir -p $SYSTEM_ARTIFACTSDIRECTORY/w3api/wwwroot
-        copy -av * $SYSTEM_ARTIFACTSDIRECTORY/w3api/wwwroot/
-        Say "CONTENT FOR [$SYSTEM_ARTIFACTSDIRECTORY/w3api]"
-        ls -laR $SYSTEM_ARTIFACTSDIRECTORY/w3api
+        bash -eu -o pipefail scripts/CI-Pre-Build/Copy-w3app-to-W3API-wwwroot.sh; 
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
