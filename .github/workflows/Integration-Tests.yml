@@ -28,15 +28,15 @@ jobs:
     - name: Variables
       run: 'printenv | sort'
 
-    - name: build fx dependent
-      shell: bash
-      run: |
-        bash -eu -o pipefail scripts/CI-Pre-Build/Pre-Build-FX-Dependent.sh; 
-        
     - name: build w3app
       shell: bash
       run: |
         bash -eu -o pipefail scripts/CI-Pre-Build/Pre-Build-w3app.sh; 
+        
+    - name: build fx dependent
+      shell: bash
+      run: |
+        bash -eu -o pipefail scripts/CI-Pre-Build/Pre-Build-FX-Dependent.sh; 
         
     - name: copy w3app to w3api/wwwroot
       shell: bash
