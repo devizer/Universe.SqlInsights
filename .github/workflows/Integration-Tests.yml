@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        shell: pwsh
+        shell: bash
     timeout-minutes: 20
     steps:
     - name: Bootstrap
@@ -27,21 +27,18 @@ jobs:
       uses: actions/checkout@v4
     - name: Variables
       run: 'printenv | sort'
+    
+    - name: Install GNU Parallel
+      run: Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Install-GNU-Parallel.sh
 
     - name: build w3app
-      shell: bash
-      run: |
-        bash -eu -o pipefail scripts/CI-Pre-Build/Pre-Build-w3app.sh; 
+      run: bash -eu -o pipefail scripts/CI-Pre-Build/Pre-Build-w3app.sh
         
     - name: build fx dependent
-      shell: bash
-      run: |
-        bash -eu -o pipefail scripts/CI-Pre-Build/Pre-Build-FX-Dependent.sh; 
+      run: bash -eu -o pipefail scripts/CI-Pre-Build/Pre-Build-FX-Dependent.sh
         
     - name: copy w3app to w3api/wwwroot
-      shell: bash
-      run: |
-        bash -eu -o pipefail scripts/CI-Pre-Build/Copy-w3app-to-W3API-wwwroot.sh; 
+      run: bash -eu -o pipefail scripts/CI-Pre-Build/Copy-w3app-to-W3API-wwwroot.sh
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
