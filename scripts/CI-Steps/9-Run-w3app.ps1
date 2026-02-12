@@ -1,16 +1,9 @@
 . "$PSScriptRoot\Functions.ps1"
 
-show-mem
-
 cd C:\App\Goods\w3api\wwwroot
-Say "CONTENT FOR $(Get-Location)"
-Get-ChildItem | format-table
 
 Say "index.html as file"
 Get-Content "index.html"
-
-Say "Installing dotnet serve"
-dotnet tool install --global dotnet-serve
 
 Say "About dotnet serve"
 dotnet serve --version 2>$null
@@ -39,6 +32,4 @@ Say "Validate http connection to http://localhost:6060"
 Say "curl http://localhost:6060"
 & curl.exe http://localhost:6060
 
-show-mem
-
-Say "9-Run-w3app.ps1 completed"
+Say "Frontend launch completed"
