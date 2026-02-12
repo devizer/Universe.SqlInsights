@@ -27,19 +27,16 @@ jobs:
       uses: actions/checkout@v4
     - name: Variables
       run: 'printenv | sort'
-    
     - name: Install GNU Parallel
       run: Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Install-GNU-Parallel.sh
 
     - name: build all parallel
       run: |
         parallel --group --halt 0 "bash -eu -o pipefail scripts/CI-Pre-Build/{}.sh 2>&1" ::: "Pre-Build-w3app" "Pre-Build-FX-Dependent"
-        # parallel --group --halt 0 bash -eu -o pipefail scripts/CI-Pre-Build/{}.sh 2>&1 ::: "Pre-Build-w3app" "Pre-Build-FX-Dependent"
 
     - name: build w3app (if parallel fail)
       if: failure()
       run: bash -eu -o pipefail scripts/CI-Pre-Build/Pre-Build-w3app.sh
-        
     - name: build fx dependent (if parallel fail)
       if: failure()
       run: bash -eu -o pipefail scripts/CI-Pre-Build/Pre-Build-FX-Dependent.sh
@@ -54,8 +51,7 @@ jobs:
         name: 'Pre-Build'
         path: ${{ env.SYSTEM_ARTIFACTSDIRECTORY }}
         overwrite: true
-        compression-level: 9
-          
+        compression-level: 1
   
 
 
