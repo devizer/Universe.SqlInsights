@@ -232,7 +232,7 @@ steps:
           --mount "$mnt" `
           --mount "type=bind,source=C:\Temp,target=C:\Temp" `
           -e PS1_TROUBLE_SHOOT="On" -e SQLSERVERS_SETUP_FOLDER="C:\SQL-Setup" `
-          -p "$w3api_port:$w3api_port" --workdir=C:\App --entrypoint powershell $image -Command "Write-Host WAITING; Sleep 214748; Wait-Event;"
+          -p "${w3api_port}:${w3api_port}" --workdir=C:\App --entrypoint powershell $image -Command "Write-Host WAITING; Sleep 214748; Wait-Event;"
         Sleep 3
         Say "CONTAINER STARTUP LOGS"
         docker logs --since 0 sql-server
