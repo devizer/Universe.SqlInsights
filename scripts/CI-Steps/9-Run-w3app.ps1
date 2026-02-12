@@ -5,11 +5,11 @@ cd C:\App\Goods\w3api\wwwroot
 Say "index.html as file"
 Get-Content "index.html"
 
-Add-Folder-To-User-Path "$($ENV:USERPROFILE)\.dotnet\tools"
-$ENV:PATH="$($ENV:USERPROFILE)\.dotnet\tools;$($ENV:PATH)"
-
 # Either host or container
 dotnet tool install -g dotnet-serve
+
+Add-Folder-To-User-Path "$($ENV:USERPROFILE)\.dotnet\tools"
+$ENV:PATH="$($ENV:USERPROFILE)\.dotnet\tools;$($ENV:PATH)"
 
 Say "About dotnet serve"
 dotnet serve --version 2>$null
