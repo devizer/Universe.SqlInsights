@@ -33,7 +33,8 @@ jobs:
 
     - name: build all parallel
       run: |
-        parallel --group --halt 0 ::: "bash -eu -o pipefail scripts/CI-Pre-Build/Pre-Build-w3app.sh" "bash -eu -o pipefail scripts/CI-Pre-Build/Pre-Build-FX-Dependent.sh"
+        parallel --group --halt 0 "bash -eu -o pipefail scripts/CI-Pre-Build/{}.sh 2>&1" ::: "Pre-Build-w3app" "Pre-Build-FX-Dependent"
+        # parallel --group --halt 0 bash -eu -o pipefail scripts/CI-Pre-Build/{}.sh 2>&1 ::: "Pre-Build-w3app" "Pre-Build-FX-Dependent"
 
     - name: build w3app (if parallel fail)
       if: failure()
