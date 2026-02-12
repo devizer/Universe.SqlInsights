@@ -1,4 +1,4 @@
-Import-DevOps
+﻿Import-DevOps
 
 function Get-FreePort { $listener = [System.Net.Sockets.TcpListener]0; $listener.Start(); $port = $listener.LocalEndpoint.Port; $listener.Stop(); return $port }
 
@@ -14,27 +14,44 @@ function Smart-Start-Process([string] $exe, [string] $parameters) {
    $proc = [System.Diagnostics.Process]::Start($psi)
 }
 
-function Find-Chrome-Exe() {
+function Find-Chrome-Program-List() {
+   $ret = @()
    foreach($candidate in @("C:\Program Files (x86)\Chromium\Application\chrome.exe", "C:\Program Files\Chromium\Application\chrome.exe", "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", "C:\Program Files\Google\Chrome\Application\chrome.exe")) {
-     if (Test-Path $candidate) { $chromePath=$candidate }
+     if (Test-Path $candidate) { 
+         try { 
+            $info = (Get-Item "$candidate").VersionInfo; 
+            $ver = $info.ProductVersion; 
+            $product = $info.ProductName; 
+            $description = "Browser '$product' v$($ver) location is '$candidate'"
+            $ret += [pscustomobject] @{ FullPath = $candidate; Version = $ver; Product = $product; Description = $description}
+         } catch {}
+     }
    }
-
-   try { 
-      $info = (Get-Item "$chromePath").VersionInfo; 
-      $ver = $info.ProductVersion; 
-      $product = $info.ProductName; 
-      # $info | fl | out-host 
-   } catch {}
-   $description = "Missing Chrome and Chromium, Not Found"; if ($ver) { $description = "Browser '$product' v$($ver) location is '$chromePath'" }
-   return @{ FullPath = $chromePath; Version = $ver; Product = $product; Description = $description} 
+   @($ret | Sort-Object -Property @{ Expression = { To-Sortable-Version-String $_.Version }; Ascending = $true })
 }
-$chrome = Find-Chrome-Exe;
-Write-Line -TextMagenta "$((Find-Chrome-Exe).Description)"
-# $chrome | ft -autosize
 
+function Find-Chrome-Program() {
+   $chrome = Find-Chrome-Program-List | Select -First 1
+   if (-not $chrome) {
+     $chrome = [pscustomobject] @{ FullPath = $null; Version = $null; Product = $null; Description = "Missing Chrome and Chromium (Not Found)" }
+   }
+   return $chrome
+}
+# $chrome = Find-Chrome;
+# Write-Line -TextMagenta "BROWSER: $((Find-Chrome).Description)"
+# Find-Chrome-List | Format-Table -AutoSize | Out-String -Width 1234
+function Show-Chrome-Program-List() {
+  $chrome_list = @(Find-Chrome-Program-List)
+  if ($chrome_list) { 
+     Write-Line -TextMagenta "Pre-installed $($chrome_list.Count) chrome or chromium:"; 
+     foreach($chrome in $chrome_list) { Write-Line -TextMagenta "  $($chrome.Description)" }
+  } Else { 
+     Write-Line -TextMagenta "Missing any Chrome and Chromium (Not Found)" 
+  }
+}
 
 function Open-Url-By-Chrome-On-Windows([string] $url) {
-   $chrome = Find-Chrome-Exe;
+   $chrome = Find-Chrome-Program;
    if (-not $chrome.FullPath) {
       Write-Line -TextRed "[Open-Url-By-Chrome] WARNING! Chromium is missing";
       return $false;
@@ -55,16 +72,16 @@ function Open-Url-By-Chrome-On-Windows([string] $url) {
    Smart-Start-Process $chrome.FullPath "$chromeArgs"
 }
 
-function Show-Chrome() {
-  $chomes = @(Get-Process | Where-Object { $_.ProcessName -match "chrome" })
+function Show-Chrome-Processes() {
+  $chromes = @(Get-Process | Where-Object { $_.ProcessName -match "chrome" })
 
-  if (-not $chomes) {
-    Write-Line -TextRed "WARNING! Browser Chrome is not running";
+  if (-not $chromes) {
+    Write-Line -TextRed "No any chrome processes are running";
   } else {
-    $megabytes = (Get-Process chrome | Measure-Object WorkingSet64 -Sum).Sum / 1MB
+    $megabytes = ($chromes | Measure-Object WorkingSet64 -Sum).Sum / 1MB
     $megabytes = [Math]::Round($megabytes,1)
-    Say "Total $($chomes.Count) Chrome Processes are running, total $megabytes MB"
-    $chomes | Format-Table -autosize | Out-String -width 123 | Out-Host
+    Say "Total $($chromes.Count) Chrome Processes are running, total $megabytes MB"
+    $chromes | Format-Table -autosize | Out-String -width 123 | Out-Host
   }
 }
 

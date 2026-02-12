@@ -31,8 +31,7 @@ Get-Process -Name "dotnet-serve" | format-table -autosize | out-host
 
 echo "Waiting 9 seconds ........"
 Sleep 9
-Say "PROCESSES: chrome"
-Show-Chrome
+Show-Chrome-Processes
 
 
 Say "Validate http connection to http://localhost:6060"

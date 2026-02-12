@@ -282,6 +282,7 @@ steps:
     retryCountOnTaskFailure: 3
     displayName: '7-SqlJam-Tests.ps1'
 
+    # The Step is optional
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 8-Install-Chrome.ps1
     # condition: succeededOrFailed()
     condition: false

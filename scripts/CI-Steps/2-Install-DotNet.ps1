@@ -23,4 +23,8 @@ Add-Folder-To-User-Path "$tools_folder"
 
 & "C:\Program Files\dotnet\dotnet" --info
 
+Say "Installing dotnet serve ..."
+& "C:\Program Files\dotnet\dotnet" tool install --global dotnet-serve
+
+
 # popd
