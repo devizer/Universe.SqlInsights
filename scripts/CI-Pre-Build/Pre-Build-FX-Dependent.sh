@@ -1,3 +1,5 @@
+          configuration=Release
+
           Say "Build fx-dependent [ErgoFab.DataAccess.IntegrationTests]"
           pushd src/ErgoFab.DataAccess.IntegrationTests
           time try-and-retry dotnet publish -c $configuration -o $SYSTEM_ARTIFACTSDIRECTORY/ergofab.tests -f net8.0
