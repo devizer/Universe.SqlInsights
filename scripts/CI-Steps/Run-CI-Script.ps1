@@ -23,14 +23,14 @@ $relative_file = "scripts\CI-Steps\$file"
 if ("$($ENV:SQL_IMAGE_TAG)" -eq "") {
   Say "Invoking locally [$relative_file]"
   Write-Host "Current Directory: $(Get-Location)"
-  pwsh -c "`$ErrorActionPreference='Stop'; . `"$relative_file`""
+  pwsh -c "Write-Line -TextMagenta (Get-Memory-Info).Description; `$ErrorActionPreference='Stop'; . `"$relative_file`""
 }
 Else
 {
    Say "Invoking in container [$relative_file]"
    Write-Host "Current Directory: $(Get-Location)"
    # & docker exec sql-server powershell -f "$relative_file"
-   & docker exec sql-server pwsh -c "`$ErrorActionPreference='Stop'; . `"$relative_file`""
+   & docker exec sql-server pwsh -c "Write-Line -TextMagenta `"CONTAINER (Get-Memory-Info).Description`"; `$ErrorActionPreference='Stop'; . `"$relative_file`""
 }
 
 show-mem "Finished on $kind"

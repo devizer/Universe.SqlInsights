@@ -290,9 +290,8 @@ steps:
        pwsh scripts\CI-Steps\8-Install-Chrome.ps1
        pwsh scripts\CI-Steps\9-Run-w3app.ps1
        . scripts\CI-Steps\Functions.ps1
-       Open-Url-By-Chrome-On-Windows "http://127.0.0.1:6060"
        Say "PROCESSES: chrome"
-       Sleep 9
+       Sleep 13
        Show-Chrome
 
     condition: succeededOrFailed()

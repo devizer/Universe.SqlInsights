@@ -29,6 +29,7 @@ function Find-Chrome-Exe() {
    return @{ FullPath = $chromePath; Version = $ver; Product = $product; Description = $description} 
 }
 $chrome = Find-Chrome-Exe;
+Write-Line -TextMagenta "$((Find-Chrome-Exe).Description)"
 # $chrome | ft -autosize
 
 
@@ -62,7 +63,7 @@ function Show-Chrome() {
   } else {
     $megabytes = (Get-Process chrome | Measure-Object WorkingSet64 -Sum).Sum / 1MB
     $megabytes = [Math]::Round($megabytes,1)
-    Say "Total $($chomes.Count) processes are running, total $megabytes MB"
+    Say "Total $($chomes.Count) Chrome Processes are running, total $megabytes MB"
     $chomes | Format-Table -autosize | Out-String -width 123 | Out-Host
   }
 }
@@ -75,6 +76,7 @@ function show-mem() {
    $memDescription = Get-Memory-Info | ForEach-Object { $_.Description }
    Say "Memory: $memDescription"
    Write-Host "CPU: $(Get-Cpu-Name -includeCoreCount)"
+   # Write-Line -TextMagenta (Get-Memory-Info).Description
 }
 
 function Set-Var {
