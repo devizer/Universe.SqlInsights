@@ -220,6 +220,7 @@ steps:
         # disk D in missing in container
         # --mount "type=bind,source=$($ENV:SYSTEM_ARTIFACTSDIRECTORY),target=$($ENV:SYSTEM_ARTIFACTSDIRECTORY)" `
         # bad: --mount "type=bind,source=C:\SQL,target=C:\SQL" `
+        $w3api_port=50420
         & docker run -d --name sql-server --memory 3300M --cpus "$cpuCount" "--isolation=hyperv" `
           --storage-opt "size=50GB" `
           -e SQL="$($ENV:sql)" `
@@ -231,8 +232,8 @@ steps:
           --mount "$mnt" `
           --mount "type=bind,source=C:\Temp,target=C:\Temp" `
           -e PS1_TROUBLE_SHOOT="On" -e SQLSERVERS_SETUP_FOLDER="C:\SQL-Setup" `
-          -p 1433:1433 -p 1434:1434 -p 50420:50420 --workdir=C:\App --entrypoint powershell $image -Command "Write-Host WAITING; Sleep 214748; Wait-Event;"
-        Sleep 2
+          -p "$w3api_port:$w3api_port" --workdir=C:\App --entrypoint powershell $image -Command "Write-Host WAITING; Sleep 214748; Wait-Event;"
+        Sleep 3
         Say "CONTAINER STARTUP LOGS"
         docker logs --since 0 sql-server
         Say "Starting Setup in Container"
