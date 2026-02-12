@@ -1,0 +1,76 @@
+name: Test SqlInsights
+
+on:
+  workflow_dispatch:
+  push:
+      branches: [ "none" ]
+  schedule:
+      - cron: "15 4 * * *"
+
+defaults:
+  run:
+    shell: powershell
+
+
+jobs:
+
+  Pre-Build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+    - name: Bootstrap
+      uses: devizer/devops-library@main
+
+    - name: Variables
+      run: 'printenv | sort'
+
+    - name: build fx dependent
+      shell: bash
+      run: |
+        bash -eu -o pipefial scripts/Pre-Build/Pre-Build-FX-Dependent.sh; 
+        
+    - name: build w3app
+      shell: bash
+      run: |
+        bash -eu -o pipefial scripts/Pre-Build/Pre-Build-w3app.sh; 
+        
+    - name: copy w3app to w3api/wwwroot
+      shell: bash
+      run: |
+        set -eu; set -o pipefial
+        cd src/universe.sqlinsights.w3app/build
+        mkdir -p $SYSTEM_ARTIFACTSDIRECTORY/w3api/wwwroot
+        copy -av * $SYSTEM_ARTIFACTSDIRECTORY/w3api/wwwroot/
+        Say "CONTENT FOR [$SYSTEM_ARTIFACTSDIRECTORY/w3api]"
+        ls -laR $SYSTEM_ARTIFACTSDIRECTORY/w3api
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: 'Pre-Build'
+        path: ${{ env.SYSTEM_ARTIFACTSDIRECTORY }}
+          
+  
+
+
+          
+  Combine:
+    runs-on: ubuntu-latest
+    needs: Pre-Build
+    if: always()
+    timeout-minutes: 15
+    steps:
+
+    - name: Download all workflow run artifacts
+      uses: actions/download-artifact@v4
+      with:
+         path: artifactcs
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: 'Combianed'
+        path: artifactcs
+        owerwrite: true
