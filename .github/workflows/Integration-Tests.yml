@@ -32,10 +32,19 @@ jobs:
       run: Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Install-GNU-Parallel.sh
 
     - name: build w3app
+      if: false
       run: bash -eu -o pipefail scripts/CI-Pre-Build/Pre-Build-w3app.sh
         
     - name: build fx dependent
+      if: false
       run: bash -eu -o pipefail scripts/CI-Pre-Build/Pre-Build-FX-Dependent.sh
+
+    - name: build all parallel
+      run: |
+        parallel --group --halt 0 ::: \
+            "bash -eu -o pipefail scripts/CI-Pre-Build/Pre-Build-w3app.sh" \
+            "bash -eu -o pipefail scripts/CI-Pre-Build/Pre-Build-FX-Dependent.sh"
+
         
     - name: copy w3app to w3api/wwwroot
       run: bash -eu -o pipefail scripts/CI-Pre-Build/Copy-w3app-to-W3API-wwwroot.sh
