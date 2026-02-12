@@ -153,7 +153,6 @@ jobs:
       with:
          name: Pre-Build
          path: artifacts/Pre-Build
-         path: artifacts
 
     - name: Pack 7z
       shell: bash
