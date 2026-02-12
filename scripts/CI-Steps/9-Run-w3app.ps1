@@ -5,6 +5,8 @@ cd C:\App\Goods\w3api\wwwroot
 Say "index.html as file"
 Get-Content "index.html"
 
+Add-Folder-To-User-Path "$($ENV:USERPROFILE)\.dotnet\tools"
+
 Say "About dotnet serve"
 dotnet serve --version 2>$null
 
