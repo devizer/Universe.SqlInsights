@@ -43,6 +43,10 @@ jobs:
         
     - name: copy w3app to w3api/wwwroot
       run: bash -eu -o pipefail scripts/CI-Pre-Build/Copy-w3app-to-W3API-wwwroot.sh
+    - name: Content of w3api
+      run: ls -laR $SYSTEM_ARTIFACTSDIRECTORY/w3api || true
+        
+
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
