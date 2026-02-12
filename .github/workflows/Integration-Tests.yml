@@ -72,6 +72,10 @@ jobs:
       with:
          path: artifacts
 
+    - name: Pack 7z
+      shell: bash
+      run: cd artifacts; COMPRESSION_LEVEL=7 bash scripts/CI-Combine/Pack-each-Artifact-per-Archive.sh
+
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       if: always()
@@ -79,5 +83,5 @@ jobs:
         name: 'Combined'
         path: artifacts
         overwrite: true
-        compression-level: 9
+        compression-level: 1
         
