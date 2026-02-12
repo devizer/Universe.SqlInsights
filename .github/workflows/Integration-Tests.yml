@@ -67,6 +67,8 @@ jobs:
     timeout-minutes: 15
     steps:
 
+    - name: Bootstrap
+      uses: devizer/devops-library@main
     - name: Download all workflow run artifacts
       uses: actions/download-artifact@v4
       with:
@@ -74,7 +76,7 @@ jobs:
 
     - name: Pack 7z
       shell: bash
-      run: cd artifacts; COMPRESSION_LEVEL=7 bash scripts/CI-Combine/Pack-each-Artifact-per-Archive.sh
+      run: cd artifacts; export COMPRESSION_LEVEL=7; Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Pack-each-Artifact-per-Archive.sh
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
