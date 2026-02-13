@@ -35,8 +35,10 @@ steps:
   
   - bash: |
        set -eu; set -o pipefail
-       if [[ "$SQL" == 2005* || "$SQL" == 2008* ]]; then NEED_CONTAINER=True; SQL_IMAGE_TAG=ltsc2025;
-       elif [[ "$SQL" == "HOST FOR 2012"* ]]; then NEED_CONTAINER=True; SQL_IMAGE_TAG=ltsc2016;
+       if   [[ "$SQL" == "2005"* ]] && [[ -n "$TAG_SQL_2005" ]] ; then NEED_CONTAINER=True; SQL_IMAGE_TAG=$TAG_SQL_2005;
+       elif [[ "$SQL" == "2008"* ]] && [[ -n "$TAG_SQL_2008" ]] ; then NEED_CONTAINER=True; SQL_IMAGE_TAG=$TAG_SQL_2008;
+       elif [[ "$SQL" == "2012"* ]] && [[ -n "$TAG_SQL_2012" ]] ; then NEED_CONTAINER=True; SQL_IMAGE_TAG=$TAG_SQL_2012;
+       elif [[ "$SQL" == "2014"* ]] && [[ -n "$TAG_SQL_2014" ]] ; then NEED_CONTAINER=True; SQL_IMAGE_TAG=$TAG_SQL_2014;
        else NEED_CONTAINER=False; SQL_IMAGE_TAG=""; fi
        echo "##vso[task.setvariable variable=NEED_CONTAINER;isOutput=true]$NEED_CONTAINER"
        echo "##vso[task.setvariable variable=SQL_IMAGE_TAG]$SQL_IMAGE_TAG"

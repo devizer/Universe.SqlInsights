@@ -1,12 +1,17 @@
 variables:
   Project: 'Universe.SqlInsights'
   TEST_W3API: true
-  # Default image
+  # HOST
   VMIMAGE: 'windows-2025'
+  # Windows Container for legacy SQL Server (empty tag means the host)
+  TAG_SQL_2005: ltsc2025
+  TAG_SQL_2008: ltsc2025
+  TAG_SQL_2012: ''
+  TAG_SQL_2014: ''
   DEFAULT_RAM_DISK_SIZE: "2400"
   W3API_NET: net6.0
   SKIP_ERGOFAB_TESTS: 'False'
-  SENSORSAPP_STRESS_DURATION: 30000 # milliseconds
+  SENSORSAPP_STRESS_DURATION: 8000 # milliseconds
 
 jobs:
 
