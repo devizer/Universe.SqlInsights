@@ -21,7 +21,6 @@ Select-WMI-Objects Win32_Process | Select-Object ProcessId, Name, @{Name="WS(MB)
 Show-Chrome-Processes
 
 # SHOW Logs
-$logsFolder = "$($ENV:SystemDrive)\\Temp\\SqlInsights Dashboard Logs"
 $logsExists = [bool] (Test-Path $logsFolder)
 Say "W3API logsFolder = [$logsFolder]"
 Say "W3API logsExists = [$logsExists]"
