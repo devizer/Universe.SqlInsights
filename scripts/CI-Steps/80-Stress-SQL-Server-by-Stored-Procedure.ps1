@@ -31,3 +31,4 @@ foreach($cmd in $commands) {
 
 Say "Bye"
 
+# SELECT name, physical_name, type_desc FROM sys.database_files
