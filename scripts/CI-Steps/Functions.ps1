@@ -17,9 +17,12 @@ function Smart-Start-Process([string] $exe, [string] $parameters, [int] $guard_t
    if ($finished) {
        $exitCode = $proc.ExitCode
        if ($exitCode -ne 0) {
-           $msg = "`"$exe`" $parameters failed with exit code $exitCode"
+           $msg = "`"$exe`" $parameters failed with exit code '$exitCode'"
            Write-Line -TextRed $msg
            throw $msg
+       } Else {
+           $msg = "SICCESS: `"$exe`" $parameters successfully completed"
+           Write-Line -TextGreen $msg
        }
    }
    # return $proc
