@@ -365,7 +365,8 @@ steps:
     displayName: 'Show SQL Info'
   
   - task: PublishBuildArtifacts@1
-    condition: succeededOrFailed()
+    # condition: succeededOrFailed()
+    condition: and(false, succeeded())
     displayName: 'Publish SQL Setup Logs'
     inputs:
       pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)'
@@ -586,4 +587,4 @@ steps:
   - publish: $(SYSTEM.ARTIFACTSDIRECTORY)
     displayName: 'Publish Artifact'
     # condition: succeededOrFailed()
-    artifact: 'Artifacts $(Agent.JobName)'
+    artifact: '$(Agent.JobName)'
