@@ -3,7 +3,7 @@
 
 steps:
 
-  - bash: 'echo $AGENT_JOBNAME > $SYSTEM_ARTIFACTSDIRECTORY/JOB-NAME.TXT'
+  - bash: 'echo $AGENT_JOBNAME | tee $SYSTEM_ARTIFACTSDIRECTORY/JOB-NAME.TXT'
     displayName: 'Store Job Name'
 
   - pwsh: |
