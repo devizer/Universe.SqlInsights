@@ -123,7 +123,7 @@ function Set-Var {
         Set-ItemProperty -Path $registryPath -Name $Name -Value $Value -ErrorAction Stop
 
         $PSNativeCommandArgumentPassing = "Legacy" # does not affect Start-Process
-        Start-Process "setx" -ArgumentList @("`"$Name`"", "`"$Value`"")
+        Start-Process "setx" -ArgumentList @("`"$Name`"", "`"$Value`"") -NoNewWindow # supported by powershell 2.0
 
         if ("$prev_value" -ne $Value) {
            Write-Line "Env Variable " -TextMagenta "'$Name'" -Reset " set to " -TextGreen "'$Value'"
