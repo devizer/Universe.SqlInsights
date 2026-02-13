@@ -2,7 +2,7 @@
 
 function Get-FreePort { $listener = [System.Net.Sockets.TcpListener]0; $listener.Start(); $port = $listener.LocalEndpoint.Port; $listener.Stop(); return $port }
 
-function Smart-Start-Process([string] $exe, [string] $parameters) {
+function Smart-Start-Process([string] $exe, [string] $parameters, [int] $guard_timeout = 1500) {
    $psi = New-Object System.Diagnostics.ProcessStartInfo
    $psi.FileName = $exe
    $psi.Arguments = $parameters
@@ -12,6 +12,17 @@ function Smart-Start-Process([string] $exe, [string] $parameters) {
    # $psi.RedirectStandardOutput = $false 
    # $psi.RedirectStandardError = $false  
    $proc = [System.Diagnostics.Process]::Start($psi)
+   
+   $finished = $proc.WaitForExit($guard_timeout)
+   if ($finished) {
+       $exitCode = $proc.ExitCode
+       if ($exitCode -ne 0) {
+           $msg = "`"$exe`" $parameters failed with exit code $exitCode"
+           Write-Line -TextRed $msg
+           throw $msg
+       }
+   }
+   # return $proc
 }
 
 function Find-Chrome-Program-List() {
