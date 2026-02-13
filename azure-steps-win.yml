@@ -224,7 +224,7 @@ steps:
         # --mount "type=bind,source=$($ENV:SYSTEM_ARTIFACTSDIRECTORY),target=$($ENV:SYSTEM_ARTIFACTSDIRECTORY)" `
         # bad: --mount "type=bind,source=C:\SQL,target=C:\SQL" `
         $w3api_port=50420
-        & docker run -d --name sql-server --memory 3500M --cpus "$cpuCount" "--isolation=hyperv" `
+        & docker run -d --name sql-server --memory 3700M --cpus "$cpuCount" "--isolation=hyperv" `
           --storage-opt "size=50GB" `
           -e SQL="$($ENV:sql)" `
           -e TF_BUILD=True `
