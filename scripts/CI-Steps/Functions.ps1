@@ -142,6 +142,12 @@ Function BroadCast-Variables() {
 # BroadCast-Variables
 # OK: Bradcast variables success, SendMessageTimeout() --> 1, [ref] result = 0
 
+function Show-Dotnet-And-Chrome-Processes([string] $title) {
+  Say "[$title]: DOTNET and CHROME Processes"
+  Select-WMI-Objects Win32_Process | Select-Object ProcessId, Name, @{Name="WS(MB)"; Expression={[math]::Round($_.WorkingSetSize / 1MB, 1)}}, CommandLine | ? { $_.Name -match "chrome" -or $_.Name -match "dotnet" } | Sort-Object Name | ft -AutoSize | Out-String -width 200
+}
+
+
 Set-Var "PS1_TROUBLE_SHOOT" "On"
 Set-Var "SQLSERVERS_SETUP_FOLDER" "C:\SQL-Setup"
 Set-Var "PS1_REPO_DOWNLOAD_FOLDER" "C:\Temp\DevOps"

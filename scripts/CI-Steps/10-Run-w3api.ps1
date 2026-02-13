@@ -15,8 +15,7 @@ Smart-Start-Process "dotnet" "Universe.SqlInsights.W3Api.dll"
 Sleep 60
 Show-Chrome-Program-List
 
-Say "DOTNET and CHROME Processes"
-Select-WMI-Objects Win32_Process | Select-Object ProcessId, Name, @{Name="WS(MB)"; Expression={[math]::Round($_.WorkingSetSize / 1MB, 1)}}, CommandLine | ? { $_.Name -match "chrome" -or $_.Name -match "dotnet" } | Sort-Object Name | ft -AutoSize | Out-String -width 200
+Show-Dotnet-And-Chrome-Processes "ALL is Started"
 
 Show-Chrome-Processes
 
