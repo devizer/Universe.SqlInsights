@@ -464,6 +464,7 @@ jobs:
         SqlInsightsReport="$SYSTEM_ARTIFACTSDIRECTORY/SqlInsightsReport.txt"
         find "${RAW_ARTIFACTS_DIR}" -name "SqlInsights Report.txt" | sort | while IFS='' read -r file; do
           job_name="$(basename "$(dirname "$file")")"
+          sed -i 's/\r$//' "$file" # dos2unix
           (echo $job_name; awk -v RS= 'NR==1' "$file"; echo "") | tee -a "$SqlInsightsReport"
         done
 
