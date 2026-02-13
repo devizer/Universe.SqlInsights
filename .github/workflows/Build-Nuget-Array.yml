@@ -33,7 +33,7 @@ jobs:
       with:
           fetch-depth: 9999999
     - name: Variables
-      run: 'printenv | sort; nohup pwsh -c "Install-Module SqlServer-Version-Management -Force" &'
+      run: 'printenv | sort'
 
     - name: Build Nuget Array
       run: |
