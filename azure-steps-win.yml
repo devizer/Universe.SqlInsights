@@ -293,6 +293,7 @@ steps:
     condition: false
     displayName: '9-Run-w3app.ps1'
 
+    # Frontend always on Host
   - powershell: |
        & choco feature enable -n allowGlobalConfirmation
        & choco feature disable -n showDownloadProgress
@@ -307,9 +308,15 @@ steps:
     # condition: false
     displayName: 'RUN w3app on host'
 
+    # API on Container
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 10-Run-w3api.ps1
     condition: succeededOrFailed()
     displayName: '10-Run-W3API.ps1'
+
+    # Warning! It kills all the dotnet processes
+  - powershell: scripts\CI-Steps\Run-CI-Script.ps1 999-Stop-Apps.ps1
+    condition: succeededOrFailed()
+    displayName: '999-Stop-Apps.ps1'
 
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 20-Storage-Tests-and-Benchmark.ps1
     condition: succeededOrFailed()
