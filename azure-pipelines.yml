@@ -15,14 +15,17 @@ jobs:
     pool:
       vmImage: "windows-latest"
     steps:
-      - template: azure-pipeline-Build-NuGet-Packages-on-Windows.yml
+#      - template: azure-pipeline-Build-NuGet-Packages-on-Windows.yml
+      - template: azure-pipeline-Build-NuGet-Packages.yml
+
 
   - job: Build_Nuget_Array_on_Linux
     displayName: 'Build NuGet Array (on Linux)'
     pool:
       vmImage: "ubuntu-latest"
     steps:
-      - template: azure-pipeline-Build-NuGet-Packages-on-Linux.yml
+#      - template: azure-pipeline-Build-NuGet-Packages-on-Linux.yml
+      - template: azure-pipeline-Build-NuGet-Packages.yml
 
 
   - job: Build_W3_App

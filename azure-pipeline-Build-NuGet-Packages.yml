@@ -1,0 +1,36 @@
+steps:
+
+  - bash: |
+      set -eu; set -o pipefail;
+      export TARGET_DIR=/usr/bin
+      script=https://devizer.github.io/devops-library/Standalone-Bootstrap.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash
+      Say --Reset-Stopwatch
+      Say "CPU: $(Get-CpuName)"
+    condition: succeededOrFailed()
+    retryCountOnTaskFailure: 3
+    displayName: 'Bootstrap bash'
+
+  - bash: |
+      set -eu -o pipefail;
+      Say "CPU: $(Get-CpuName)"
+      if [[ "$(Get-OS-Platform)" == Windows ]]; then
+         export SQLINSIGHTS_NUGET_BUILDER_FOLDER='D:\Build'
+      else
+         export SQLINSIGHTS_NUGET_BUILDER_FOLDER='/Build'
+         sudo mkdir -p "$SQLINSIGHTS_NUGET_BUILDER_FOLDER"
+         sudo chown -R $USER "$SQLINSIGHTS_NUGET_BUILDER_FOLDER"
+      fi
+      cd scripts
+      pwsh -f Build-NuGET-Array.ps1
+      ls -la "$SQLINSIGHTS_NUGET_BUILDER_FOLDER"
+      cp -v "$SQLINSIGHTS_NUGET_BUILDER_FOLDER"/*nupkg "$SYSTEM_ARTIFACTSDIRECTORY"
+      cp -v "$SQLINSIGHTS_NUGET_BUILDER_FOLDER"/*BUILD-LOG*.7z "$SYSTEM_ARTIFACTSDIRECTORY"
+    retryCountOnTaskFailure: 3
+    displayName: "BUILD NuGet Array (Linux/Windows)"
+
+  - task: PublishBuildArtifacts@1
+    condition: succeededOrFailed()
+    displayName: 'Publish NuGet Array'
+    inputs:
+      pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)'
+      artifactName: 'NuGet Array (Built on $(Agent.OS))'
