@@ -43,8 +43,9 @@ jobs:
          export SQLINSIGHTS_NUGET_BUILDER_FOLDER="${{ runner.temp }}"
          cd scripts
          pwsh -f Build-NuGET-Array.ps1
+         Say "CONTENT OF SQLINSIGHTS_NUGET_BUILDER_FOLDER [$SQLINSIGHTS_NUGET_BUILDER_FOLDER]"
          ls -la "$SQLINSIGHTS_NUGET_BUILDER_FOLDER"
-         cp -v "$SQLINSIGHTS_NUGET_BUILDER_FOLDER"/*nupkg
+         cp -v "$SQLINSIGHTS_NUGET_BUILDER_FOLDER"/*nupkg         "$SYSTEM_ARTIFACTSDIRECTORY"
          cp -v "$SQLINSIGHTS_NUGET_BUILDER_FOLDER"/*BUILD-LOG*.7z "$SYSTEM_ARTIFACTSDIRECTORY"
 
     - name: Upload artifacts
