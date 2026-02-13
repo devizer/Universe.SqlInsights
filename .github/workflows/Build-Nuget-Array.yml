@@ -76,7 +76,8 @@ jobs:
 
     - name: Pack 7z
       shell: bash
-      run: cd artifacts; Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Pack-each-Artifact-per-Archive.sh -9 -7z
+      # run: cd artifacts; Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Pack-each-Artifact-per-Archive.sh -9 -7z
+      run: cd artifacts; 7z a -mx=9 -sdel "Combined Nuget Array (Windows, Linux, MacOS).7z"
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
