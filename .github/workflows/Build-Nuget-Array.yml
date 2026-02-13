@@ -33,10 +33,9 @@ jobs:
       with:
           fetch-depth: 9999999
     - name: Variables
-      run: 'printenv | sort'
+      run: 'printenv | sort; nohup pwsh -c "Install-Module SqlServer-Version-Management -Force" &'
 
     - name: Build Nuget Array
-      shell: bash
       run: |
          set -eu -o pipefail;
          Say "CPU: $(Get-CpuName)"
