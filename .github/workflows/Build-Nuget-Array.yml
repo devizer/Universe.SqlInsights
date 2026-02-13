@@ -32,8 +32,6 @@ jobs:
       uses: actions/checkout@v4
     - name: Variables
       run: 'printenv | sort'
-    - name: Install GNU Parallel
-      run: Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Install-GNU-Parallel.sh
 
     - name: Build Nuget Array
       shell: bash
