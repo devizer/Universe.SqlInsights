@@ -122,10 +122,9 @@ function Set-Var {
         $registryPath = "HKCU:\Environment"
         Set-ItemProperty -Path $registryPath -Name $Name -Value $Value -ErrorAction Stop
 
-        $PSNativeCommandArgumentPassing = "Legacy" # does not affect Start-Process
-        Start-Process "setx" -ArgumentList @("`"$Name`"", "`"$Value`"") -WindowStyle Hidden # supported by powershell 2.0
-
         if ("$prev_value" -ne $Value) {
+           $PSNativeCommandArgumentPassing = "Legacy" # does not affect Start-Process
+           Start-Process "setx" -ArgumentList @("`"$Name`"", "`"$Value`"") -WindowStyle Hidden # supported by powershell 2.0
            Write-Line "Env Variable " -TextMagenta "'$Name'" -Reset " set to " -TextGreen "'$Value'"
            # Write-Host "Variable '$Name' set to '$Value'." -ForegroundColor Green
         }
