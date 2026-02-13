@@ -257,9 +257,6 @@ jobs:
         "SQL Server 2005 Core SP4":
           SQL: '2005 Core: MSSQLSERVER'
 
-        "SQL Server 2005 Advanced SP4":
-          SQL: '2005 Advanced Updated: MSSQLSERVER'
-
         "SQL Server 2008-x64 Core SP3":
           SQL: '2008-x64 Core: MSSQLSERVER'
         
@@ -406,6 +403,9 @@ jobs:
 
         "SQL Server 2008-x86 Core SP4":
           SQL: '2008-x86 Core Updated: MSSQLSERVER'
+
+        "SQL Server 2005 Advanced SP4":
+          SQL: '2005 Advanced Updated: MSSQLSERVER'
 
 
 
