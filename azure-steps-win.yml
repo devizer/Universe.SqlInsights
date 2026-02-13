@@ -3,6 +3,9 @@
 
 steps:
 
+  - bash: 'echo $AGENT_JOBNAME > $SYSTEM_ARTIFACTSDIRECTORY/JOB-NAME.TXT'
+    displayName: 'Store Job Name'
+  
   - bash: |
       set -eu; set -o pipefail;
       export TARGET_DIR=/usr/bin

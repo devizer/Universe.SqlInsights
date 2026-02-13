@@ -3,6 +3,9 @@
 
 steps:
 
+  - bash: 'echo $AGENT_JOBNAME > $SYSTEM_ARTIFACTSDIRECTORY/JOB-NAME.TXT'
+    displayName: 'Store Job Name'
+
   - pwsh: |
       . scripts/Measure-Action.ps1
       # Measure-Action "List Package Providers" {Get-PackageProvider -ListAvailable}
