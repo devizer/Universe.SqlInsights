@@ -2,14 +2,10 @@
 
 cd C:\App\Goods\w3api
 $ENV:ASPNETCORE_URLS="http://*:50420"
-
-
-
 # Start-Process "dotnet" -ArgumentList "Universe.SqlInsights.W3Api.dll".Split(" ") -NoNewWindow
 # & { dotnet Universe.SqlInsights.W3Api.dll } &
-$logsFolder = "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\SqlInsights Dashboard Logs"
-$ENV:LocalLogsFolder__Windows = "$logsFolder"
-$ENV:LocalLogsFolder__Enable = "True"
+# $ENV:LocalLogsFolder__Windows = "C:\Artifacts\Api-Logs"
+# $ENV:LocalLogsFolder__Enable = "True"
 Smart-Start-Process "dotnet" "Universe.SqlInsights.W3Api.dll"
 
 Sleep 60
@@ -29,6 +25,10 @@ if ($logsExists) {
   Get-ChildItem $logsFolder | Format-Table -AutoSize 
   Get-ChildItem -Path $logsFolder -File | ForEach-Object { 
      Say "W3API LOG FILE $($_.FullName)";
+     $copyTo="$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\SqlInsights Dashboard Logs"
+     Write-Host "Copy it to [$copyTo]"
+     New-item "$copyTo" -ItemType Directory -Force -EA SilentlyContinue | Out-Null
+     Copy-Item -Path "$($_.FullName)" -Destination $copyTo -Force
      Get-Content "$($_.FullName)" -Raw | out-host 
   }
 }
