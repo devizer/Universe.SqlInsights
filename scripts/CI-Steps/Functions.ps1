@@ -164,6 +164,10 @@ function Show-Dotnet-And-Chrome-Processes([string] $title) {
   Select-WMI-Objects Win32_Process | Select-Object ProcessId, Name, @{Name="WS(MB)"; Expression={[math]::Round($_.WorkingSetSize / 1MB, 1)}}, CommandLine | ? { $_.Name -match "chrome" -or $_.Name -match "dotnet" } | Sort-Object Name | ft -AutoSize | Out-String -width 200
 }
 
+$osName = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -EA SilentlyContinue | Select-Object -ExpandProperty ProductName
+Write-Line -BackGreen -TextWhite " OS: $osName `r`n"
+Write-Line -BackBlue -TextWhite " OS: $osName `r`n"
+Write-Line -BackCyan -TextWhite " OS: $osName "
 
 Set-Var "PS1_TROUBLE_SHOOT" "On"
 Set-Var "SQLSERVERS_SETUP_FOLDER" "C:\SQL-Setup"
