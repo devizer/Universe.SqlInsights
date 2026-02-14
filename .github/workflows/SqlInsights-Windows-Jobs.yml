@@ -25,6 +25,7 @@ jobs:
       - name: Bootstrap
         uses: devizer/devops-library@main
       - name: 'Store Job Name'
+        shell: bash
         run: 'echo ${{ matrix.SQL }} | tee $SYSTEM_ARTIFACTSDIRECTORY/JOB-NAME.TXT'
       - name: Download Pre-Build Artifacts
         uses: actions/download-artifact@v4
