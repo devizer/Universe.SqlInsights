@@ -61,7 +61,7 @@ steps:
 
     name: Setup
     condition: succeededOrFailed()
-    displayName: 'Setup pipeline'
+    displayName: 'SETUP pipeline'
 
   - bash: |
       Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Move-Docker-to-SSD-for-Windows-On-Microsoft-Hosted-Build-Agent.ps1
@@ -252,7 +252,7 @@ steps:
 
     condition: or(failed(), eq(variables['Setup.NEED_CONTAINER'], 'True'))
     retryCountOnTaskFailure: 3
-    displayName: 'Setup Container (sql-server)'
+    displayName: 'SETUP Container (sql-server)'
 
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 1-Install-Bash-from-Git.ps1
     condition: succeededOrFailed()
@@ -269,7 +269,7 @@ steps:
     # "Password=``1qazxsw2"
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 3-Install-SQL-Server.ps1
     condition: succeededOrFailed()
-    displayName: '3-Install-SQL-Server.ps1'
+    displayName: '3-INSTALL-SQL-Server.ps1'
 
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 3.1-Install-SQLCMD.ps1
     condition: succeededOrFailed()
