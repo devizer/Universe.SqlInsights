@@ -42,6 +42,9 @@ jobs:
           ls .\Goods\w3api | ft -autosize
           Say ".\Goods\w3api\wwwroot content"
           ls .\Goods\w3api\wwwroot | ft -autosize
+          Say "SYSTEM_ARTIFACTSDIRECTORY content ($ENV:SYSTEM_ARTIFACTSDIRECTORY)"
+          ls $ENV:SYSTEM_ARTIFACTSDIRECTORY | ft -autosize
+
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
