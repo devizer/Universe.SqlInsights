@@ -1,0 +1,36 @@
+name: SqlInsights Windows Matrix
+
+on:
+  workflow_call:
+    inputs:
+      matrix:
+        required: true
+        type: string
+
+jobs:
+  Windows-Job:
+    name: "${{ matrix.SQL }}"
+    runs-on: "windows-${{ matrix.OS }}"
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(inputs.matrix) }}
+    
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - name: Bootstrap
+        uses: devizer/devops-library@main
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download Pre-Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: Pre-Build
+          path: ${{ env.SYSTEM_ARTIFACTSDIRECTORY }}
+
+      - name: Run Windows Logic
+        run: |
+          Write-Host "SQL: [${{ matrix.SQL }}]"
