@@ -164,13 +164,26 @@ function Show-Dotnet-And-Chrome-Processes([string] $title) {
   Select-WMI-Objects Win32_Process | Select-Object ProcessId, Name, @{Name="WS(MB)"; Expression={[math]::Round($_.WorkingSetSize / 1MB, 1)}}, CommandLine | ? { $_.Name -match "chrome" -or $_.Name -match "dotnet" } | Sort-Object Name | ft -AutoSize | Out-String -width 200
 }
 
+function Get-OS-Name() {
+  $osName = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -EA SilentlyContinue | Select-Object -ExpandProperty ProductName
+  "$osName".Trim()
+}
+
 function Show-OS() {
   $is_host = [bool] ("$($ENV:SQL_IMAGE_TAG)" -eq "");
   $is_container = (-not $is_host)
   $kind=If (-not $is_container) { "HOST" } Else { "Container" }
-  $osName = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -EA SilentlyContinue | Select-Object -ExpandProperty ProductName
+  $osName = Get-OS-Name
   Write-Line -BackBlack -TextMagenta " $($kind) OS: $osName "
 }
+
+function Write-Artifact-Info([string] $file, [string] $content) {
+  $fullName="$Env:SYSTEM_ARTIFACTSDIRECTORY\$file"
+  $trimmed="$content".Trim()
+  Say "Writing [$trimmed] to [$fullName]"
+  [System.IO.File]::WriteAllText($fullName, $trimmed)
+}
+
 
 Show-OS
 

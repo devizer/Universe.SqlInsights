@@ -12,3 +12,11 @@ if ("$ENV:SQL" -match "2005") {
   & net.exe start MSSQLSERVER
 }
 
+try { 
+  $sql_ver = Query-SqlServer-Version -Title "Default Instance" -Instance "(local)"
+  if ($sql_ver) { 
+    Say "Query-SqlServer-Version SUCCESS: $sql_ver"
+    Write-Artifact-Info "SQL-SERVER-MEDIUM-VERSION.TXT" "$sql_ver" 
+  }
+}
+catch {}
