@@ -484,7 +484,7 @@ jobs:
             # ON Linux these files are missing
             value="$(cat "$value_full_name" || true)"
             echo "KEY: [$info_key] VALUE: [$value]"
-            echo "[$info_key]: '$value'" | tee -a "$summary_file"
+            Colorize Green "$(echo "$info_key: $value" | tee -a "$summary_file")"
           done
           sed -i 's/\r$//' "$file" # dos2unix
           (echo $job_name; cat "$summary_file" || true; awk -v RS= 'NR==1' "$file"; echo "") | tee -a "$SqlInsightsReport"
