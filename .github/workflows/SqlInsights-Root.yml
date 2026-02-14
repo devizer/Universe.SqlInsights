@@ -80,12 +80,12 @@ jobs:
     - name: Download all workflow run artifacts
       uses: actions/download-artifact@v4
       with:
-         name: Pre-Build
-         path: artifacts/Pre-Build
+         # name: Pre-Build
+         path: artifacts
 
     - name: Pack 7z
       shell: bash
-      run: cd artifacts; Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Pack-each-Artifact-per-Archive.sh -9 -7z
+      run: cd artifacts; rm -rf Pre-Build; 7z a -sdel -mx=9 -ms=on -mqs=on 'Combined SqlInsights Matrix.7z'; # Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Pack-each-Artifact-per-Archive.sh -9 -7z
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
