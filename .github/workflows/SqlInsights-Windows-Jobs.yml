@@ -9,7 +9,7 @@ on:
 
 jobs:
   Windows-Job:
-    name: "If ${{ matrix.SQL }}"
+    name: ${{ matrix.SQL }}
     runs-on: "windows-${{ matrix.OS }}"
     strategy:
       fail-fast: false
