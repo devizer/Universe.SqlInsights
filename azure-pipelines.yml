@@ -468,11 +468,24 @@ jobs:
           echo "" >> "$benchmark"
         done
 
+        # Signle report file for W3API Validation by all the jobs
         SqlInsightsReport="$SYSTEM_ARTIFACTSDIRECTORY/SqlInsightsReport.txt"
         find "${RAW_ARTIFACTS_DIR}" -name "SqlInsights Report.txt" | sort | while IFS='' read -r file; do
-          job_name="$(basename "$(dirname "$file")")"
+          report_folder="$(dirname "$file")"
+          summary_file=$(mktemp)
+          for info_file in CPU-NAME.TXT JOB-NAME.TXT MEMORY-INFO.TXT OS-NAME.TXT SQL-SERVER-MEDIUM-VERSION.TXT; do
+            info_key="${info_file%.*}"
+            echo "KEY: [$info_key]"
+            value_full_name="$report_folder/$info_file"
+            echo "value_full_name: [$value_full_name]"
+            # ON Linux these files are missing
+            value="$(cat "$value_full_name")"
+            echo "KEY: [$info_key] VALUE: [$value]"
+            echo "$info_key: $value" | tee -a "$summary_file"
+          done
+          job_name="$(basename "$report_folder")"
           sed -i 's/\r$//' "$file" # dos2unix
-          (echo $job_name; awk -v RS= 'NR==1' "$file"; echo "") | tee -a "$SqlInsightsReport"
+          (echo $job_name; cat "$summary_file"; awk -v RS= 'NR==1' "$file"; echo "") | tee -a "$SqlInsightsReport"
         done
 
         7z a -mx=6 -ms=on -mqs=on "$SYSTEM_ARTIFACTSDIRECTORY/SqlInsights Combined As Is.7z" "${RAW_ARTIFACTS_DIR}"
