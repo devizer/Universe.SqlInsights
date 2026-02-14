@@ -45,7 +45,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: 'Pre-Build'
+          name: 'If ${{ matrix.SQL }}'
           path: ${{ env.SYSTEM_ARTIFACTSDIRECTORY }}
           overwrite: true
           compression-level: 9
