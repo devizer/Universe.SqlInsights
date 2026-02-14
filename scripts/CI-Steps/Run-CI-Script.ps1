@@ -38,3 +38,4 @@ show-mem "Finished on $kind"
 # Select-WMI-Objects Win32_Process | Select-Object ProcessId, Name, @{Name="WS(MB)"; Expression={[math]::Round($_.WorkingSetSize / 1MB, 1)}}, CommandLine | ft -AutoSize | Out-String -width 200
 # Select-WMI-Objects Win32_Process | Select-Object ProcessId, Name, @{Name="WS(MB)"; Expression={[math]::Round($_.WorkingSetSize / 1MB, 1)}}, CommandLine | Sort-Object ProcessId | ft -AutoSize | Out-String -width 200
 
+$true | out-null

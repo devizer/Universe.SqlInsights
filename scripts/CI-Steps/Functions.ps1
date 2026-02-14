@@ -169,7 +169,7 @@ function Show-OS() {
   $is_container = (-not $is_host)
   $kind=If (-not $is_container) { "HOST" } Else { "Container" }
   $osName = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -EA SilentlyContinue | Select-Object -ExpandProperty ProductName
-  Write-Line -BackBlack -TextWhite "$($kind) OS: $osName"
+  Write-Line -BackBlack -TextMagenta " $($kind) OS: $osName "
 }
 
 Show-OS
