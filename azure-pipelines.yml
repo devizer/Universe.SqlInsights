@@ -6,8 +6,8 @@ variables:
   # Windows Container for legacy SQL Server (empty tag means the host)
   TAG_SQL_2005: ltsc2025
   TAG_SQL_2008: ltsc2025
-  TAG_SQL_2012: ''
-  TAG_SQL_2014: ltsc2022
+  TAG_SQL_2012: ltsc2025
+  TAG_SQL_2014: ltsc2025
   DEFAULT_RAM_DISK_SIZE: "2400"
   W3API_NET: net6.0
   SKIP_ERGOFAB_TESTS: 'False'
