@@ -312,21 +312,21 @@ steps:
       Colorize Magenta CPU-NAME.TXT
       echo "$(Get-CpuName)" | tee "$SQLINSIGHTS_REPORT_FOLDER/CPU-NAME.TXT"
       Colorize Magenta MEMORY-INFO.TXT
-      echo "$(pwsh -c '(Get-Memory-Info).Description')" | tee "$SQLINSIGHTS_REPORT_FOLDER/MEMORY-INFO.TXT"
+      echo "$(pwsh -c '(Get-Memory-Info).Description')" | tee "${SYSTEM_ARTIFACTSDIRECTORY}/MEMORY-INFO.TXT"
       Colorize Magenta OS-NAME.TXT
       OS_NAME=$( (source /etc/os-release && echo "${PRETTY_NAME:-${ID} ${VERSION_ID}}") 2>/dev/null || echo "Unknown Linux" )
-      echo "$OS_NAME" | tee "$SQLINSIGHTS_REPORT_FOLDER/OS-NAME.TXT"
+      echo "$OS_NAME" | tee "${SYSTEM_ARTIFACTSDIRECTORY}/OS-NAME.TXT"
       
       Colorize Magenta SQL-SERVER-MEDIUM-VERSION.TXT
       export connection_string="$ConnectionStrings__SqlInsights"
       pwsh_code_version='Query-SqlServer-Version -Title "Docker Instance" -ConnectionString $ENV:connection_string'
       sql_medium_version="$(pwsh -c "$pwsh_code_version" || true)"
-      echo "$sql_medium_version" | tee "$SQLINSIGHTS_REPORT_FOLDER/SQL-SERVER-MEDIUM-VERSION.TXT"
+      echo "$sql_medium_version" | tee "${SYSTEM_ARTIFACTSDIRECTORY}/SQL-SERVER-MEDIUM-VERSION.TXT"
       
       Colorize Magenta SQL-SERVER-TITLE.TXT
       pwsh_code_title='Query-SqlServer-Version -Title "Docker Instance" -ConnectionString $ENV:connection_string -Kind "Title"'
       sql_title="$(pwsh -c "$pwsh_code_title" || true)"
-      echo "$sql_title" | tee "$SQLINSIGHTS_REPORT_FOLDER/SQL-SERVER-TITLE.TXT"
+      echo "$sql_title" | tee "${SYSTEM_ARTIFACTSDIRECTORY}/SQL-SERVER-TITLE.TXT"
 
 
       cp -f "${SQLINSIGHTS_REPORT_FULLNAME}" "${SYSTEM_ARTIFACTSDIRECTORY}/SqlInsights Report.txt"
