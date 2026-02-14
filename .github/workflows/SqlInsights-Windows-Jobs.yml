@@ -20,17 +20,32 @@ jobs:
         shell: pwsh
 
     steps:
-      - name: Bootstrap
-        uses: devizer/devops-library@main
       - name: Checkout repository
         uses: actions/checkout@v4
-
+      - name: Bootstrap
+        uses: devizer/devops-library@main
+      - name: 'Store Job Name'
+        run: 'echo ${{ matrix.SQL }} | tee $SYSTEM_ARTIFACTSDIRECTORY/JOB-NAME.TXT'
       - name: Download Pre-Build Artifacts
         uses: actions/download-artifact@v4
         with:
           name: Pre-Build
-          path: ${{ env.SYSTEM_ARTIFACTSDIRECTORY }}
+          path: {{ github.workspace }}\Goods
 
-      - name: Run Windows Logic
+      - name: Show Arguments and 
         run: |
-          Write-Host "SQL: [${{ matrix.SQL }}]"
+          Import-DevOps
+          Say "SQL: [${{ matrix.SQL }}]"
+          Say ".\Goods content"
+          ls Goods | ft -autosize
+          Say ".\Goods\w3api content"
+          ls .\Goods\w3api | ft -autosize
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 'Pre-Build'
+          path: ${{ env.SYSTEM_ARTIFACTSDIRECTORY }}
+          overwrite: true
+          compression-level: 9
