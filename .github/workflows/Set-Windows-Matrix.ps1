@@ -1,6 +1,6 @@
 Import-DevOps
 
-Enumerate-Plain-SQLServer-Downloads | % { [pscustomobject] $_ } | ft
+Enumerate-Plain-SQLServer-Downloads | % { [pscustomobject] $_ } | ft -autosize | tee-object "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\Plain-SQLServer-Downloads.txt"
 
 $jobs=@()
 foreach($meta in Enumerate-Plain-SQLServer-Downloads) { 
