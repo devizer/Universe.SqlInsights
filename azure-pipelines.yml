@@ -479,9 +479,9 @@ jobs:
             value_full_name="$report_folder/$info_file"
             echo "value_full_name: [$value_full_name]"
             # ON Linux these files are missing
-            value="$(cat "$value_full_name")"
+            value="$(cat "$value_full_name" || true)"
             echo "KEY: [$info_key] VALUE: [$value]"
-            echo "$info_key: $value" | tee -a "$summary_file"
+            echo "[$info_key]: '$value'" | tee -a "$summary_file"
           done
           job_name="$(basename "$report_folder")"
           sed -i 's/\r$//' "$file" # dos2unix
