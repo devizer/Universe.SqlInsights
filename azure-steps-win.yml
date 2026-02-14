@@ -53,6 +53,7 @@ steps:
        SQL_IMAGE_ISOLATION=hyperv
        [[ "$SQL_IMAGE_TAG" == ltsc2025 && $current_od_build == "26100" ]] && SQL_IMAGE_ISOLATION=process
        [[ "$SQL_IMAGE_TAG" == ltsc2022 && $current_od_build == "20348" ]] && SQL_IMAGE_ISOLATION=process
+       [[ "$NEED_CONTAINER" == False ]] && SQL_IMAGE_ISOLATION="avoid-docker"
        Say "SQL_IMAGE_ISOLATION = [$SQL_IMAGE_ISOLATION] (for environment and conditions)"
        echo "##vso[task.setvariable variable=SQL_IMAGE_ISOLATION;isOutput=true]$SQL_IMAGE_ISOLATION"
        echo "##vso[task.setvariable variable=SQL_IMAGE_ISOLATION]$SQL_IMAGE_ISOLATION"
@@ -72,7 +73,7 @@ steps:
 
     name: Setup
     condition: succeededOrFailed()
-    displayName: 'SETUP pipeline'
+    displayName: 'SETUP pipeline vars'
 
   - bash: |
       Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Move-Docker-to-SSD-for-Windows-On-Microsoft-Hosted-Build-Agent.ps1
