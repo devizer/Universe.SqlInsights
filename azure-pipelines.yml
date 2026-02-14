@@ -6,7 +6,7 @@ variables:
   # Windows Container for legacy SQL Server (empty tag means the host)
   TAG_SQL_2005: ltsc2025
   TAG_SQL_2008: ltsc2025
-  TAG_SQL_2012: ltsc2016
+  TAG_SQL_2012: ''
   TAG_SQL_2014: ltsc2022
   DEFAULT_RAM_DISK_SIZE: "2400"
   W3API_NET: net6.0
@@ -253,11 +253,23 @@ jobs:
       maxParallel: 10
       matrix:
 
+        "SQL Server 2012 Developer":
+          SQL: '2012 Developer: MSSQLSERVER'
+          VM_IMAGE: 'windows-2025'
+        "SQL Server 2014 Developer":
+          SQL: '2014 Developer: MSSQLSERVER'
+          TEST_ADVENTURE_WORKS: true
+        "SQL Server 2014 Core":
+          SQL: '2014 Core Updated: MSSQLSERVER'
+          TEST_ADVENTURE_WORKS: true
+        
+
         "SQL Server 2008R2-x64 Core SP2":
           SQL: '2008R2-x64 Core: MSSQLSERVER'
 
         "SQL Server 2012 Core":
           SQL: '2012 Core: MSSQLSERVER'
+          VMIMAGE: 'windows-2022'
 
         "SQL Server 2005 Core SP4":
           SQL: '2005 Core: MSSQLSERVER'
@@ -332,16 +344,6 @@ jobs:
         #   SQL: 'SqlServer 2005 Express: MSSQLSERVER'
         #   VMIMAGE: 'windows-2022'
         #   UNINSTALL_TRASH: True
-        
-        "SQL Server 2012 Developer":
-          SQL: '2012 Developer: MSSQLSERVER'
-          VM_IMAGE: 'windows-2025'
-        "SQL Server 2014 Developer":
-          SQL: '2014 Developer: MSSQLSERVER'
-          TEST_ADVENTURE_WORKS: true
-        "SQL Server 2014 Core":
-          SQL: '2014 Core Updated: MSSQLSERVER'
-          TEST_ADVENTURE_WORKS: true
         
         "SQL Server 2022 Core":
           SQL: '2022 Core: MSSQLSERVER'

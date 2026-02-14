@@ -164,14 +164,26 @@ function Show-Dotnet-And-Chrome-Processes([string] $title) {
   Select-WMI-Objects Win32_Process | Select-Object ProcessId, Name, @{Name="WS(MB)"; Expression={[math]::Round($_.WorkingSetSize / 1MB, 1)}}, CommandLine | ? { $_.Name -match "chrome" -or $_.Name -match "dotnet" } | Sort-Object Name | ft -AutoSize | Out-String -width 200
 }
 
-$osName = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -EA SilentlyContinue | Select-Object -ExpandProperty ProductName
-Write-Line -BackGreen -TextWhite " OS: $osName `r`n"
-Write-Line -BackBlue -TextWhite " OS: $osName `r`n"
-Write-Line -BackCyan -TextWhite " OS: $osName "
+function Show-OS() {
+  $is_host = [bool] ("$($ENV:SQL_IMAGE_TAG)" -eq "");
+  $is_container = (-not $is_host)
+  $kind=If (-not $is_container) { "HOST" } Else { "Container" }
+  $osName = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -EA SilentlyContinue | Select-Object -ExpandProperty ProductName
+  Write-Line -BackBlack -TextWhite "$($kind) OS: $osName"
+}
+
+Show-OS
 
 Set-Var "PS1_TROUBLE_SHOOT" "On"
-Set-Var "SQLSERVERS_SETUP_FOLDER" "C:\SQL-Setup"
-Set-Var "PS1_REPO_DOWNLOAD_FOLDER" "C:\Temp\DevOps"
+if (Test-Path "D:\") { 
+  $sqlMediaFolder = "D:\SQL-Media"; $sqlSetupFolder = "C:\SQL-Setup"; $sqlInstallTo = "D:\SQL"
+} Else {
+  $sqlMediaFolder = "C:\SQL-Media"; $sqlSetupFolder = "C:\SQL-Setup"; $sqlInstallTo = "C:\SQL"
+}
+Set-Var "SQLSERVERS_SETUP_FOLDER" "$sqlSetupFolder"
+Set-Var "SQLSERVERS_MEDIA_FOLDER" "$sqlMediaFolder"
+Set-Var "SQLSERVERS_INSTALL_TO" "$sqlInstallTo"
+Set-Var "PS1_REPO_DOWNLOAD_FOLDER" "C:\Temp-DevOps"
 Set-Var "DOTNET_CLI_TELEMETRY_OPTOUT" "1"
 
 Set-Var "SQL_ADMINISTRATIVE_VIEWS_SUMMARY_1_Cpu_Title" "CPU"
