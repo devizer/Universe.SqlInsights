@@ -46,6 +46,8 @@ jobs:
           Say "SYSTEM_ARTIFACTSDIRECTORY content ($ENV:SYSTEM_ARTIFACTSDIRECTORY)"
           ls $ENV:SYSTEM_ARTIFACTSDIRECTORY | ft -autosize
 
+      - name: 'Tune Docker'
+        run: Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Move-Docker-to-SSD-for-Windows-On-Microsoft-Hosted-Build-Agent.ps1
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
