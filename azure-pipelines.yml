@@ -470,6 +470,7 @@ jobs:
 
         # Signle report file for W3API Validation by all the jobs
         SqlInsightsReport="$SYSTEM_ARTIFACTSDIRECTORY/SqlInsightsReport.txt"
+        # TODO: loop by JOB-NAME.TXT. it will include failed jobs too
         find "${RAW_ARTIFACTS_DIR}" -name "SqlInsights Report.txt" | sort | while IFS='' read -r file; do
           report_folder="$(dirname "$file")"
           summary_file=$(mktemp)
@@ -485,7 +486,7 @@ jobs:
           done
           job_name="$(basename "$report_folder")"
           sed -i 's/\r$//' "$file" # dos2unix
-          (echo $job_name; cat "$summary_file"; awk -v RS= 'NR==1' "$file"; echo "") | tee -a "$SqlInsightsReport"
+          (echo $job_name; cat "$summary_file" || true; awk -v RS= 'NR==1' "$file"; echo "") | tee -a "$SqlInsightsReport"
         done
 
         7z a -mx=6 -ms=on -mqs=on "$SYSTEM_ARTIFACTSDIRECTORY/SqlInsights Combined As Is.7z" "${RAW_ARTIFACTS_DIR}"
