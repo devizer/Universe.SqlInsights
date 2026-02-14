@@ -48,6 +48,17 @@ steps:
        # condition: eq(variables['Setup.NEED_CONTAINER'], 'True')
        # condition: or(failed(), eq(variables['Setup.NEED_CONTAINER'], 'True'))
 
+       current_od_build="$(powershell -c "[Environment]::OsVersion.Version.Build")"
+       echo "current_od_build: $current_od_build"
+       SQL_IMAGE_ISOLATION=hyperv
+       [[ "$SQL_IMAGE_TAG" == ltsc2025 && $current_od_build == "26100" ]] && SQL_IMAGE_ISOLATION=process
+       [[ "$SQL_IMAGE_TAG" == ltsc2022 && $current_od_build == "20348" ]] && SQL_IMAGE_ISOLATION=process
+       Say "SQL_IMAGE_ISOLATION = [$SQL_IMAGE_ISOLATION] (for environment and conditions)"
+       echo "##vso[task.setvariable variable=SQL_IMAGE_ISOLATION;isOutput=true]$SQL_IMAGE_ISOLATION"
+       echo "##vso[task.setvariable variable=SQL_IMAGE_ISOLATION]$SQL_IMAGE_ISOLATION"
+
+
+
        exit 0
        echo
        SQLSERVERS_SETUP_FOLDER='C:\SQL-Setup\Installer'
@@ -202,7 +213,14 @@ steps:
     displayName: 'Copy Goods'
 
   - bash: |
-        image="devizervlad/iis-net4x-net35:$($ENV:SQL_IMAGE_TAG)"
+        image="devizervlad/iis-net4x-net35:$(SQL_IMAGE_TAG)"
+        Say "Pull $image ..."
+        try-and-retry docker pull $image || true
+    condition: or(failed(), eq(variables['Setup.NEED_CONTAINER'], 'True'))
+    displayName: 'PULL Image $(SQL_IMAGE_TAG)'
+        
+  - bash: |
+        image="devizervlad/iis-net4x-net35:$(SQL_IMAGE_TAG)"
         Say "Pull $image ..."
         try-and-retry docker pull $image || true
     condition: or(failed(), eq(variables['Setup.NEED_CONTAINER'], 'True'))
@@ -226,7 +244,7 @@ steps:
         # & docker.exe pull "$image"; & docker.exe pull "$image"; & docker.exe pull "$image"; 
 
 
-        Say "Starting container sql-server"
+        Say "Starting container sql-server, SQL_IMAGE_ISOLATION = [$($ENV:SQL_IMAGE_ISOLATION)]"
         & docker rm -f sql-server 2>$null
         New-item C:\SQL -ItemType Directory -Force -EA SilentlyContinue | Out-Null
         New-item C:\Temp -ItemType Directory -Force -EA SilentlyContinue | Out-Null
@@ -238,7 +256,7 @@ steps:
         # --mount "type=bind,source=$($ENV:SYSTEM_ARTIFACTSDIRECTORY),target=$($ENV:SYSTEM_ARTIFACTSDIRECTORY)" `
         # bad: --mount "type=bind,source=C:\SQL,target=C:\SQL" `
         $w3api_port=50420
-        & docker run -d --name sql-server --memory 3700M --cpus "$cpuCount" "--isolation=hyperv" `
+        & docker run -d --name sql-server --memory 3700M --cpus "$cpuCount" "--isolation=$($ENV:SQL_IMAGE_ISOLATION)" `
           --storage-opt "size=50GB" `
           -e SQL="$($ENV:sql)" `
           -e TF_BUILD=True `
