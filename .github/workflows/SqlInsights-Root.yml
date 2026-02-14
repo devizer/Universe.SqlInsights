@@ -16,6 +16,8 @@ jobs:
 
   Pre-Build:
     runs-on: ubuntu-latest
+    outputs:
+          matrix: ${{ steps.set-matrix.outputs.matrix }}
     defaults:
       run:
         shell: bash
@@ -30,6 +32,13 @@ jobs:
     - name: Install GNU Parallel
       run: Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Install-GNU-Parallel.sh
 
+    - id: set-matrix
+      run: |
+        # Пример: находим все папки с изменениями или используем JSON
+        # На выходе должно быть: '{"include":[{"service":"app1"},{"service":"app2"}]}'
+        echo "matrix={\"include\":[{\"service\":\"app1\"},{\"service\":\"app2\"}]}" >> $GITHUB_OUTPUT
+
+  # Шаг 2: Использование динамич
     - name: build all parallel
       run: |
         parallel --group --halt 0 "bash -eu -o pipefail scripts/CI-Pre-Build/{}.sh 2>&1" ::: "Pre-Build-w3app" "Pre-Build-FX-Dependent"
