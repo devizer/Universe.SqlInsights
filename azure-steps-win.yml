@@ -35,6 +35,7 @@ steps:
   
   - bash: |
        set -eu; set -o pipefail
+       echo "Installing [$SQL]"
        if   [[ "$SQL" == "2005"* ]] && [[ -n "$TAG_SQL_2005" ]] ; then NEED_CONTAINER=True; SQL_IMAGE_TAG=$TAG_SQL_2005;
        elif [[ "$SQL" == "2008"* ]] && [[ -n "$TAG_SQL_2008" ]] ; then NEED_CONTAINER=True; SQL_IMAGE_TAG=$TAG_SQL_2008;
        elif [[ "$SQL" == "2012"* ]] && [[ -n "$TAG_SQL_2012" ]] ; then NEED_CONTAINER=True; SQL_IMAGE_TAG=$TAG_SQL_2012;
@@ -47,6 +48,7 @@ steps:
        # condition: eq(variables['Setup.NEED_CONTAINER'], 'True')
        # condition: or(failed(), eq(variables['Setup.NEED_CONTAINER'], 'True'))
 
+       exit 0
        echo
        SQLSERVERS_SETUP_FOLDER='C:\SQL-Setup\Installer'
        SQLSERVERS_MEDIA_FOLDER='C:\SQL-Setup\Media'
@@ -245,7 +247,7 @@ steps:
         Say "CONTAINER STARTUP LOGS"
         docker logs --since 0 sql-server
         Say "Starting Setup in Container"
-        & docker exec sql-server powershell -Command "cd C:\App; ls;" |
+        & docker exec sql-server powershell -Command "cd C:\App; Write-Line -TextGreen 'Success: Container is Running and Has C:\App';" |
           tee-object "$ENV:SYSTEM_ARTIFACTSDIRECTORY/OUTPUT from CONTAINER.txt"
 
     condition: or(failed(), eq(variables['Setup.NEED_CONTAINER'], 'True'))
