@@ -40,6 +40,8 @@ jobs:
           ls Goods | ft -autosize
           Say ".\Goods\w3api content"
           ls .\Goods\w3api | ft -autosize
+          Say ".\Goods\w3api\wwwroot content"
+          ls .\Goods\w3api\wwwroot | ft -autosize
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
