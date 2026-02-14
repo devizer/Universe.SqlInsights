@@ -291,6 +291,14 @@ steps:
     condition: succeededOrFailed()
     displayName: '3-INSTALL-SQL-Server.ps1'
 
+  - task: PublishBuildArtifacts@1
+    condition: succeededOrFailed()
+    # condition: and(false, succeeded())
+    displayName: 'Publish SQL Setup Logs'
+    inputs:
+      pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)/SQL Setup Logs'
+      artifactName: 'SQL Setup Logs $(Agent.JobName).$(System.JobAttempt)'
+
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 3.1-Install-SQLCMD.ps1
     condition: succeededOrFailed()
     displayName: '3.1-Install-SQLCMD.ps1'
@@ -391,14 +399,6 @@ steps:
     condition: eq(variables['Setup.NEED_CONTAINER'], 'False')
     displayName: 'Show SQL Info'
   
-  - task: PublishBuildArtifacts@1
-    # condition: succeededOrFailed()
-    condition: and(false, succeeded())
-    displayName: 'Publish SQL Setup Logs'
-    inputs:
-      pathtoPublish: '$(SYSTEM.ARTIFACTSDIRECTORY)'
-      artifactName: 'SQL Setup Logs $(Agent.JobName)'
-
   - bash: |
       set -eu
       cd src/universe.sqlinsights.w3app
