@@ -201,6 +201,13 @@ steps:
 
     displayName: 'Copy Goods'
 
+  - bash: |
+        image="devizervlad/iis-net4x-net35:$($ENV:SQL_IMAGE_TAG)"
+        Say "Pull $image ..."
+        try-and-retry docker pull $image || true
+    condition: or(failed(), eq(variables['Setup.NEED_CONTAINER'], 'True'))
+    displayName: 'PULL Image $(SQL_IMAGE_TAG)'
+        
   - pwsh: |
         Import-DevOps
         $ErrorActionPreference="Continue"
@@ -214,9 +221,9 @@ steps:
         & docker system prune -f
 
         $image="devizervlad/iis-net4x-net35:$($ENV:SQL_IMAGE_TAG)"
-        Say "Pull $image ..."
-        Try-And-Retry "PULL $image" "& docker pull $image | out-host"
-        & docker.exe pull "$image"; & docker.exe pull "$image"; & docker.exe pull "$image"; 
+        # Say "Pull $image ..."
+        # Try-And-Retry "PULL $image" "& docker pull $image | out-host"
+        # & docker.exe pull "$image"; & docker.exe pull "$image"; & docker.exe pull "$image"; 
 
 
         Say "Starting container sql-server"
