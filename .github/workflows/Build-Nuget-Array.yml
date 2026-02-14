@@ -83,3 +83,4 @@ jobs:
         name: 'Combined Nuget Array'
         overwrite: true
         compression-level: 1
+        path: .
