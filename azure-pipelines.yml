@@ -254,10 +254,10 @@ jobs:
       matrix:
 
         "SQL Server 2012 Developer":
-          SQL: '2012 Developer: MSSQLSERVER'
+          SQL: '2012 Developer Update: MSSQLSERVER'
           VM_IMAGE: 'windows-2025'
         "SQL Server 2014 Developer":
-          SQL: '2014 Developer: MSSQLSERVER'
+          SQL: '2014 Developer Update: MSSQLSERVER'
           TEST_ADVENTURE_WORKS: true
         "SQL Server 2014 Core":
           SQL: '2014 Core Updated: MSSQLSERVER'
@@ -268,7 +268,7 @@ jobs:
           SQL: '2008R2-x64 Core: MSSQLSERVER'
 
         "SQL Server 2012 Core":
-          SQL: '2012 Core: MSSQLSERVER'
+          SQL: '2012 Core Update: MSSQLSERVER'
           VMIMAGE: 'windows-2022'
 
         "SQL Server 2005 Core SP4":

@@ -11,6 +11,9 @@ HOST 2025
 
 2012 & 2014 Fails on 2025 Host
 
+2012 Core On HOST 2022: OK
+2012 Developer on HOST 2025: Fail
+
 2012 on ltsc2016 --> fail on Azure, Works on Github
 2014 on ltsc2022 --> fail
 
