@@ -310,7 +310,7 @@ steps:
       (echo "CPU: $(Get-CpuName)"; echo "Job: ${AGENT_JOBNAME}"; cat "${SQLINSIGHTS_REPORT_FULLNAME}") > /tmp/report; cp -f /tmp/report "${SQLINSIGHTS_REPORT_FULLNAME}"
 
       Colorize Magenta CPU-NAME.TXT
-      echo $(Get-CpuName)" | tee "$SQLINSIGHTS_REPORT_FOLDER/CPU-NAME.TXT"
+      echo "$(Get-CpuName)" | tee "$SQLINSIGHTS_REPORT_FOLDER/CPU-NAME.TXT"
       Colorize Magenta MEMORY-INFO.TXT
       echo "$(pwsh -c '(Get-Memory-Info).Description')" | tee "$SQLINSIGHTS_REPORT_FOLDER/MEMORY-INFO.TXT"
       Colorize Magenta OS-NAME.TXT
