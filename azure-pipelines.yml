@@ -416,7 +416,7 @@ jobs:
 
 
 
-    timeoutInMinutes: 49
+    timeoutInMinutes: 66
     cancelTimeoutInMinutes: 1
     pool:
       vmImage: "$(VMIMAGE)"
