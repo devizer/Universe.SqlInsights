@@ -62,8 +62,7 @@ jobs:
         compression-level: 1
 
   # Run Window Matrix
-  Windows-Matrix-Jobs:
-    name: Windows
+  Windows:
     needs: Pre-Build
     uses: ./.github/workflows/SqlInsights-Windows-Jobs.yml
     with:
@@ -71,7 +70,7 @@ jobs:
 
   Combine:
     runs-on: ubuntu-latest
-    needs: [Pre-Build, Windows-Matrix-Jobs]
+    needs: [Pre-Build, Windows]
     if: always()
     timeout-minutes: 20
     steps:
