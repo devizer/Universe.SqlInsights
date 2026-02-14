@@ -3,6 +3,9 @@
 
 steps:
 
+  - bash: 'script=https://devizer.github.io/devops-library/Standalone-Bootstrap.sh; file="${TMPDIR:-/tmp}/$(basename "$script")"; cmd="curl -kfsSL -o $file $script"; $cmd || $cmd || $cmd || echo "ERROR."; bash "$file"'
+    displayName: 'Bootstrap'
+
   - bash: 'echo $AGENT_JOBNAME | tee $SYSTEM_ARTIFACTSDIRECTORY/JOB-NAME.TXT'
     displayName: 'Store Job Name'
 
@@ -12,10 +15,10 @@ steps:
       # Get-PackageProvider -ListAvailable
       # Measure-Action "Install Nuget Package Provider" {Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force}
       # Measure-Action "Install PowerShellGet" {Install-Module PowerShellGet -AllowClobber -Force}
-      Measure-Action "Install the Platform-Info module" {Install-Module Platform-Info -Force}
+      Measure-Action "Install the SqlServer-Vresion-Management module" {Install-Module SqlServer-Vresion-Management -Force}
 
-      Write-Host "Latest Version of Platform-Info: '$((Find-Module Platform-Info -EA SilentlyContinue).Version)'"
-      Write-Host "Installed Version of Platform-Info: '$((Get-InstalledModule Platform-Info -EA SilentlyContinue).Version)'"
+      Write-Host "Latest Version of SqlServer-Vresion-Management: '$((Find-Module SqlServer-Vresion-Management -EA SilentlyContinue).Version)'"
+      Write-Host "Installed Version of SqlServer-Vresion-Management: '$((Get-InstalledModule SqlServer-Vresion-Management -EA SilentlyContinue).Version)'"
 
       Write-Host "CPU: $(Get-Cpu-Name -IncludeCoreCount)"
       Write-Host "Platform: $(Get-Os-Platform)"
@@ -27,7 +30,6 @@ steps:
 
   - bash: |
         set -eu; set -o pipefail
-        script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
         Say "/etc/sysctl.conf"
         cat /etc/sysctl.conf
         Say "IP"
@@ -47,14 +49,13 @@ steps:
 
   - bash: |
       set -eu; set -o pipefail;
-      script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
       Say --Reset-Stopwatch
       Say "CPU: $(Get-CpuName)"
       yarn --version || true
       node --version || true
       export DOTNET_VERSIONS="6.0 8.0"
       export SKIP_DOTNET_DEPENDENCIES=False
-      script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash; 
+      Run-Remote-Script https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh
       sudo ln -s -f /usr/share/dotnet/dotnet /usr/local/bin/dotnet
     condition: succeededOrFailed()
     retryCountOnTaskFailure: 3
