@@ -61,6 +61,12 @@ jobs:
         overwrite: true
         compression-level: 1
 
+  # Wun Window Matrix
+  Windows-Matrix-Jobs:
+    needs: Pre-Build
+    uses: ./.github/workflows/SqlInsights-Windows-Jobs.yml
+    with:
+      matrix: ${{ needs.Pre-Build.outputs.matrix }}
 
   Combine:
     runs-on: ubuntu-latest
