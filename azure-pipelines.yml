@@ -474,7 +474,7 @@ jobs:
         find "${RAW_ARTIFACTS_DIR}" -name "SqlInsights Report.txt" | sort | while IFS='' read -r file; do
           report_folder="$(dirname "$file")"
           summary_file=$(mktemp)
-          for info_file in CPU-NAME.TXT JOB-NAME.TXT MEMORY-INFO.TXT OS-NAME.TXT SQL-SERVER-MEDIUM-VERSION.TXT; do
+          for info_file in CPU-NAME.TXT JOB-NAME.TXT MEMORY-INFO.TXT OS-NAME.TXT SQL-SERVER-MEDIUM-VERSION.TXT SQL-SERVER-TITLE.TXT; do
             info_key="${info_file%.*}"
             echo "KEY: [$info_key]"
             value_full_name="$report_folder/$info_file"
@@ -487,7 +487,9 @@ jobs:
           job_name="$(basename "$report_folder")"
           sed -i 's/\r$//' "$file" # dos2unix
           (echo $job_name; cat "$summary_file" || true; awk -v RS= 'NR==1' "$file"; echo "") | tee -a "$SqlInsightsReport"
+          cp -v "$summary_file" "$SYSTEM_ARTIFACTSDIRECTORY/JOB-STRUCTURED-SUMMARY.TXT"
         done
+        
 
         7z a -mx=6 -ms=on -mqs=on "$SYSTEM_ARTIFACTSDIRECTORY/SqlInsights Combined As Is.7z" "${RAW_ARTIFACTS_DIR}"
 
