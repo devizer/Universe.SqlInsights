@@ -47,7 +47,7 @@ jobs:
           $SQL="${{ matrix.SQL }}: MSSQLSERVER"
           Set-Var "SQL" "$SQL"
 
-          $SQL_IMAGE_ISOLATION=hyperv
+          $SQL_IMAGE_ISOLATION="hyperv"
           Set-Var "SQL_IMAGE_ISOLATION" "$SQL_IMAGE_ISOLATION"
 
           $SQL_INSTANCE_NAME="(local)"
