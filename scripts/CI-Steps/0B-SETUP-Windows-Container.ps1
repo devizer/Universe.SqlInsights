@@ -27,7 +27,11 @@
         # --mount "type=bind,source=$($ENV:SYSTEM_ARTIFACTSDIRECTORY),target=$($ENV:SYSTEM_ARTIFACTSDIRECTORY)" `
         # bad: --mount "type=bind,source=C:\SQL,target=C:\SQL" `
         $w3api_port=50420
-        & docker run -d --name sql-server --memory 3700M --cpus "$cpuCount" "--isolation=$($ENV:SQL_IMAGE_ISOLATION)" `
+        $free_ram_mb=((Get-Memory-Info).Free)
+        $container_ram_mb=if ($free_ram_mb) { $free_ram_mb - 2000 } Else { 2000 }
+        if ($container_ram_mb -lt 3700) { $container_ram_mb=3700 }
+        Say "Container RAM = [$container_ram_mb]"
+        & docker run -d --name sql-server --memory "$($container_ram_mb)M" --cpus "$cpuCount" "--isolation=$($ENV:SQL_IMAGE_ISOLATION)" `
           --hostname MSSQL `
           --storage-opt "size=50GB" `
           -e SQL="$($ENV:sql)" `
