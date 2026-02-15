@@ -127,7 +127,7 @@ function Set-Var {
         Set-ItemProperty -Path $registryPath -Name $Name -Value $Value -ErrorAction Stop
 
         $has_github_env = [bool] ("$env:GITHUB_ENV".Trim().Length -ne 0)
-        if (Is-GITHUB-ACTIONS -and $has_github_env) {
+        if ((Is-GITHUB-ACTIONS) -and $has_github_env) {
            $utf8 = New-Object System.Text.UTF8Encoding($false)
            Write-Host "[Debug] env:GITHUB_ENV is [$env:GITHUB_ENV], Length=$("$env:GITHUB_ENV".Length)"
            Write-Host "[Debug] utf8 type is [$utf8.GetType()]"
