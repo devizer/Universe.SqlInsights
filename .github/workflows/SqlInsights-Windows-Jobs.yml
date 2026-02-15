@@ -57,7 +57,7 @@ jobs:
           echo "SQL_INSTANCE_NAME=$SQL_INSTANCE_NAME" >> $GITHUB_ENV
 
           Say "SQL_"
-          printenv | grep -e "^SQL_" | tee "$ENV:SYSTEM_ARTIFACTSDIRECTORY/job-variables.txt"
+          printenv | grep -e "^SQL_" | tee "$SYSTEM_ARTIFACTSDIRECTORY/job-variables.txt"
 
 
       - name: Show Arguments and Pre-Build Content
