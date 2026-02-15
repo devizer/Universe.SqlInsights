@@ -199,6 +199,9 @@ Set-Var "SQLSERVERS_INSTALL_TO" "$sqlInstallTo"
 Set-Var "PS1_REPO_DOWNLOAD_FOLDER" "C:\Temp-DevOps"
 Set-Var "DOTNET_CLI_TELEMETRY_OPTOUT" "1"
 
+$sql_instance_name=if ("$($ENV:SQL_INSTANCE_NAME)") { $ENV:SQL_INSTANCE_NAME } Else { "(local)" }
+Set-Var "SQL_INSTANCE_NAME" "$sql_instance_name"
+
 Set-Var "SQL_ADMINISTRATIVE_VIEWS_SUMMARY_1_Cpu_Title" "CPU"
 Set-Var "SQL_ADMINISTRATIVE_VIEWS_SUMMARY_1_Cpu_Kind" "String"
 Set-Var "SQL_ADMINISTRATIVE_VIEWS_SUMMARY_1_Cpu_Value" "$(Get-Cpu-Name)"

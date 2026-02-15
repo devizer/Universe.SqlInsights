@@ -12,9 +12,9 @@ if ("$ENV:SQL" -match "2005") {
   & net.exe start MSSQLSERVER
 }
 
-echo "Query SQL Server Medium Version"
+echo "Query SQL Server '$ENV:SQL_INSTANCE_NAME' Medium Version"
 try { 
-  $sql_ver = Query-SqlServer-Version -Title "Default Instance" -Instance "(local)"
+  $sql_ver = Query-SqlServer-Version -Title "Instance $ENV:SQL_INSTANCE_NAME" -Instance "$ENV:SQL_INSTANCE_NAME"
   if ($sql_ver) { 
     Write-Line -TextGreen "Query-SqlServer-Version for Medium Version SUCCESS: $sql_ver"
     Write-Artifact-Info "SQL-SERVER-MEDIUM-VERSION.TXT" "$sql_ver" 
@@ -22,9 +22,9 @@ try {
 }
 catch {}
 
-echo "Query SQL Server Title"
+echo "Query SQL Server '$ENV:SQL_INSTANCE_NAME' Title"
 try { 
-  $sql_ver = Query-SqlServer-Version -Title "Default Instance" -Instance "(local)" -Kind "Title"
+  $sql_ver = Query-SqlServer-Version -Title "Instance $ENV:SQL_INSTANCE_NAME" -Instance "$ENV:SQL_INSTANCE_NAME" -Kind "Title"
   if ($sql_ver) {
     Write-Line -TextGreen "Query-SqlServer-Version for Title SUCCESS: $sql_ver"
     Write-Artifact-Info "SQL-SERVER-TITLE.TXT" "$sql_ver"
