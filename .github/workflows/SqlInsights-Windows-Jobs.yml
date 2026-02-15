@@ -12,6 +12,7 @@ jobs:
     name: ${{ matrix.SQL }}
     runs-on: "windows-${{ matrix.HOST }}"
     strategy:
+      max-parallel: 20
       fail-fast: false
       matrix: ${{ fromJson(inputs.matrix) }}
     
