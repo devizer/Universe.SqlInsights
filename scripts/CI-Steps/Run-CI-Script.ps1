@@ -32,11 +32,14 @@ Else
    # & docker exec sql-server powershell -f "$relative_file"
    & docker exec sql-server powershell -c "Write-Line -TextMagenta ('CONTAINER '+(Get-Memory-Info).Description); `$ErrorActionPreference='Stop'; . `"$relative_file`""
 }
+$exitCode = $LASTEXITCODE
+show-mem "Finished on $kind, Exit Code: $exitCode"
 
-show-mem "Finished on $kind"
 
 # Select-WMI-Objects Win32_Process | Select-Object ProcessId, Name, @{Name="WS(MB)"; Expression={[math]::Round($_.WorkingSetSize / 1MB, 1)}}, CommandLine | ft -AutoSize | Out-String -width 200
 # Select-WMI-Objects Win32_Process | Select-Object ProcessId, Name, @{Name="WS(MB)"; Expression={[math]::Round($_.WorkingSetSize / 1MB, 1)}}, CommandLine | Sort-Object ProcessId | ft -AutoSize | Out-String -width 200
 
 $true | out-null
-$Global:LASTEXITCODE=0
+# $Global:LASTEXITCODE=0
+if ($exitCode -ne 0) { throw "STEP $file failed. Exit Code $exitCode" }
+

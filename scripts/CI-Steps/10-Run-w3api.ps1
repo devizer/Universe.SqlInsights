@@ -10,6 +10,8 @@ $ENV:ASPNETCORE_URLS="http://*:50420"
 $logsFolder = "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\SqlInsights Dashboard Logs"
 $ENV:LocalLogsFolder__Windows = "$logsFolder"
 $ENV:LocalLogsFolder__Enable = "True"
+$ENV:ConnectionStrings__SqlInsights="TrustServerCertificate=True;Data Source=$($ENV:SQL_INSTANCE_NAME);Integrated Security=SSPI;Initial Catalog=SqlInsights Local Warehouse;Encrypt=False"
+
 Smart-Start-Process "dotnet" "Universe.SqlInsights.W3Api.dll"
 
 Sleep 60

@@ -206,10 +206,11 @@ Show-OS
 
 Set-Var "PS1_TROUBLE_SHOOT" "On"
 if (Test-Path "D:\") { 
-  $sqlMediaFolder = "D:\SQL-Media"; $sqlSetupFolder = "C:\SQL-Setup"; $sqlInstallTo = "D:\SQL"
+  $sqlMediaFolder = "D:\SQL-Media"; $sqlSetupFolder = "C:\SQL-Setup"; $sqlInstallTo = "D:\SQL"; $root_drive="D:\"
 } Else {
-  $sqlMediaFolder = "C:\SQL-Media"; $sqlSetupFolder = "C:\SQL-Setup"; $sqlInstallTo = "C:\SQL"
+  $sqlMediaFolder = "C:\SQL-Media"; $sqlSetupFolder = "C:\SQL-Setup"; $sqlInstallTo = "C:\SQL"; $root_drive="C:\"
 }
+
 Set-Var "SQLSERVERS_SETUP_FOLDER" "$sqlSetupFolder"
 Set-Var "SQLSERVERS_MEDIA_FOLDER" "$sqlMediaFolder"
 Set-Var "SQLSERVERS_INSTALL_TO" "$sqlInstallTo"
@@ -237,5 +238,27 @@ Set-Var "TEST_SQL_NET_DURATION_OF_Ping" "200"
 
 Set-Var "SQLINSIGHTS_REPORT_FOLDER" "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)"
 Set-Var "SQLINSIGHTS_REPORT_FULLNAME" "$($ENV:SQLINSIGHTS_REPORT_FOLDER)\SqlInsights Report.txt"
+
+  Say "Setup ErgoFab Tests"
+  $NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES=""
+  if ( "$env:RAM_DISK" -eq "" ) { $NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES="True" }
+  Set-Var "NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES" "$NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES"
+
+  Set-Var "ERGOFAB_TESTS_DATA_FOLDER" "$($root_drive)\ergo-fab-tests"
+  Set-Var "ERGOFAB_TESTS_MASTER_CONNECTIONSTRING" "TrustServerCertificate=True;Data Source=$sql_instance_name;Integrated Security=SSPI;Encrypt=False;"
+  Set-Var "ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING" "Server=$sql_instance_name;Encrypt=False;Initial Catalog=SqlInsights Local Warehouse;Integrated Security=SSPI;"
+  Set-Var "ERGOFAB_TESTS_REPORT_FULLNAME" "$SYSTEM_ARTIFACTSDIRECTORY\ErgFab Tests Report.txt"
+
+  Say "Setup SQL Storage Tests"
+  Set-Var "SQLINSIGHTS_CONNECTION_STRING" "TrustServerCertificate=True;Data Source=$sql_instance_name;Integrated Security=SSPI;Pooling = true; Encrypt=false"
+  Set-Var "TEST_CONFIGURATION" "DISK";
+  Set-Var "TEST_CPU_NAME" "$(Get-Cpu-Name -IncludeCoreCount)"
+  Set-Var "OS" "$(Get-OS-Name)"
+  Set-Var "TESTS_FOR_MOT_DISABLED" "False"
+
+  # Say "Setup W3API"
+
+
+
 
 BroadCast-Variables
