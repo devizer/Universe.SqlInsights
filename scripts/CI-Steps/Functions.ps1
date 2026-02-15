@@ -116,8 +116,8 @@ function show-mem() {
 
 function Set-Var {
     param (
-        [Parameter(Mandatory=$true)] [string]$Name,
-        [Parameter(Mandatory=$true)] [string]$Value
+        [Parameter(Mandatory=$true)] [string] [AllowEmptyString()] $Name,
+        [Parameter(Mandatory=$true)] [string] [AllowEmptyString()] $Value
     )
 
     try {
