@@ -27,7 +27,7 @@ foreach($meta in Enumerate-Plain-SQLServer-Downloads) {
 }
 
 # 2012 and 2014 first
-$jobs = @($jobs | Sort-Object @{Expression={$_.Keywords -match "2014" -or $_.Keywords -match "2012"}; Descending=$true}, @{Expression="Keywords"; Descending=$true})
+$jobs = @($jobs | Sort-Object @{Expression={($_.Keywords -match "2014") -or ($_.Keywords -match "2012")}; Descending=$true}, @{Expression="Keywords"; Descending=$true})
 
 
 $matrix_object = @{ include = $jobs }
