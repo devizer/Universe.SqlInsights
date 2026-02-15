@@ -22,6 +22,7 @@ foreach($meta in Enumerate-Plain-SQLServer-Downloads) {
   $container_tag = $null
   if ($sql -like '2005*' -or $sql -like '2008*') { $container_tag = "2022" }
   elseif ($sql -like '2012*' -or $sql -like '2014*') { $container_tag = "2016" } 
+  if ($sql -match 'LocalDB') { $container_tag=$null }
   $jobs += [pscustomobject] @{ SQL=$sql; HOST=$run_on; SQL_CONTAINER_SUFFIX=$container_tag }
 }
 

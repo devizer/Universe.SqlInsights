@@ -36,7 +36,7 @@ jobs:
       - name: Setup Variables
         shell: bash
         run: |
-          set -eu; set -o pipefil
+          set -eu; set -o pipefail
 
           SQL_IMAGE_TAG="";
           if [[ -n "${{ matrix.SQL_CONTAINER_SUFFIX }}" ]]; then SQL_IMAGE_TAG="ltsc${{ matrix.SQL_CONTAINER_SUFFIX }}"; fi
