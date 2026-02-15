@@ -26,6 +26,10 @@ foreach($meta in Enumerate-Plain-SQLServer-Downloads) {
   $jobs += [pscustomobject] @{ SQL=$sql; HOST=$run_on; SQL_CONTAINER_SUFFIX=$container_tag }
 }
 
+# 2012 and 2014 first
+$jobs = @($jobs | Sort-Object @{Expression={$_.Keywords -match "2014" -or $_.Keywords -match "2012"}; Descending=$true}, @{Expression="Keywords"; Descending=$true})
+
+
 $matrix_object = @{ include = $jobs }
 $matrix_string_mini = $matrix_object | ConvertTo-Json -Depth 64 -Compress
 $matrix_string_formatted = $matrix_object | ConvertTo-Json -Depth 64
