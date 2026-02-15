@@ -206,9 +206,9 @@ Show-OS
 
 Set-Var "PS1_TROUBLE_SHOOT" "On"
 if (Test-Path "D:\") { 
-  $sqlMediaFolder = "D:\SQL-Media"; $sqlSetupFolder = "C:\SQL-Setup"; $sqlInstallTo = "D:\SQL"; $root_drive="D:\"
+  $sqlMediaFolder = "D:\SQL-Media"; $sqlSetupFolder = "C:\SQL-Setup"; $sqlInstallTo = "D:\SQL"; $root_drive="D:"
 } Else {
-  $sqlMediaFolder = "C:\SQL-Media"; $sqlSetupFolder = "C:\SQL-Setup"; $sqlInstallTo = "C:\SQL"; $root_drive="C:\"
+  $sqlMediaFolder = "C:\SQL-Media"; $sqlSetupFolder = "C:\SQL-Setup"; $sqlInstallTo = "C:\SQL"; $root_drive="C:"
 }
 
 Set-Var "SQLSERVERS_SETUP_FOLDER" "$sqlSetupFolder"
