@@ -128,7 +128,7 @@ function Set-Var {
 
         if (Is-GITHUB-ACTIONS -and ("$env:GITHUB_ENV" -ne "")) {
            $utf8 = New-Object System.Text.UTF8Encoding($false)
-           [System.IO.File]::AppendAllText($env:GITHUB_ENV, "${Name}=${Value}$([Environment]::NewLine)", $utf8)
+           [System.IO.File]::AppendAllText("$env:GITHUB_ENV", "${Name}=${Value}$([Environment]::NewLine)", $utf8)
         }
         if (Is-AZURE_PIPELINE) {
            echo "##vso[task.setvariable variable=${Name};isOutput=true]${Value}"
