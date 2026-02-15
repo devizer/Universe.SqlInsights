@@ -12,8 +12,8 @@ if ("$ENV:SQL" -match "2005") {
   & net.exe start MSSQLSERVER
 }
 
-if ("$ENV:SQL" -match "LocalDB 2017") { Update-SqlServer-LocalDB-and-Shared-Tools "2017" }
-if ("$ENV:SQL" -match "LocalDB 2019") { Update-SqlServer-LocalDB-and-Shared-Tools "2019" }
+if ("$ENV:SQL" -match "2017 LocalDB") { Update-SqlServer-LocalDB-and-Shared-Tools "2017" }
+if ("$ENV:SQL" -match "2019 LocalDB") { Update-SqlServer-LocalDB-and-Shared-Tools "2019" }
 
 if ("$ENV:SQL" -match "LocalDB") {
   $isDeleted = Delete-LocalDB-Instance "v11.0"
