@@ -1,3 +1,4 @@
+param([string] $SqlSetSize = "MINI")
 Import-DevOps
 
 Enumerate-Plain-SQLServer-Downloads | % { [pscustomobject] $_ } | ft -autosize | out-string -width 222 | tee-object "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\Plain-SQLServer-Downloads.Table.txt"
@@ -5,6 +6,8 @@ Enumerate-Plain-SQLServer-Downloads | % { [pscustomobject] $_ } | ft -autosize |
 $jobs=@()
 foreach($meta in Enumerate-Plain-SQLServer-Downloads) { 
   $sql = $meta.NormalizedKeywords
+  $isMini = [bool] ($sql -match "Core" -and $sql -notmatch "Update")
+  if ($SqlSetSize -eq "MINI" -and (-not $isMini)) { continue; }
   $run_on = '2025'
   $container_tag = $null
   if ($sql -like '2005*' -or $sql -like '2008*') { $container_tag = "2022" }
@@ -16,17 +19,17 @@ $matrix_object = @{ include = $jobs }
 $matrix_string_mini = $matrix_object | ConvertTo-Json -Depth 64 -Compress
 $matrix_string_formatted = $matrix_object | ConvertTo-Json -Depth 64
 
-Say "Github Windows Matrix Formatted-JSON"
+Say "[Size $SqlSetSize] Github Windows Matrix Formatted-JSON"
 Write-Host $matrix_string_formatted
 
-Say "Github Windows Jobs Table"
+Say "[Size $SqlSetSize] Github Windows Jobs Table"
 $jobs | ft -autosize | out-string -width 222 | tee-object "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\Windows-Jobs.Table.txt"
 
-Say "Github Windows Matrix Mini-JSON"
+Say "[Size $SqlSetSize] Github Windows Matrix Mini-JSON"
 Write-Host $matrix_string_mini
 
 if ($env:GITHUB_OUTPUT) {
-  Say "Generating GITHUB_OUTPUT variable 'matrix'"
+  Say "[Size $SqlSetSize] Generating GITHUB_OUTPUT variable 'matrix'"
   $utf8NoBom = New-Object System.Text.UTF8Encoding $false
   $outputLine = "matrix=$matrix_string_mini" + [System.Environment]::NewLine
   [System.IO.File]::AppendAllText($env:GITHUB_OUTPUT, $outputLine, $utf8NoBom)

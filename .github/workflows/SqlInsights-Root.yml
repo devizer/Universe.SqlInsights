@@ -2,6 +2,15 @@ name: SqlInsights Test MATRIX
 
 on:
   workflow_dispatch:
+    inputs:
+      SQL_SET_SIZE:
+        type: choice
+        description: 'SQL Set Amount'
+        default: 'MINI'
+        options:
+        - MINI
+        - FULL
+  
   push:
       branches: [ "none" ]
   schedule:
@@ -34,7 +43,7 @@ jobs:
 
     - id: set-windows-matrix
       shell: pwsh
-      run: . .\.github\workflows\Set-Windows-Matrix.ps1
+      run: . .\.github\workflows\Set-Windows-Matrix.ps1 -SqlSetSize "${{ github.event.inputs.SQL_SET_SIZE }}"
 
     - name: build all parallel
       run: |
@@ -85,14 +94,14 @@ jobs:
 
     - name: Pack 7z
       shell: bash
-      run: cd artifacts; rm -rf Pre-Build; 7z a -sdel -mx=9 -ms=on -mqs=on 'Combined SqlInsights Matrix.7z'; # Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Pack-each-Artifact-per-Archive.sh -9 -7z
+      run: cd artifacts; rm -rf Pre-Build; 7z a -sdel -mx=9 -ms=on -mqs=on 'Combined SqlInsights Matrix ${{ github.event.inputs.SQL_SET_SIZE }}.7z'; # Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Pack-each-Artifact-per-Archive.sh -9 -7z
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: 'Combined SqlInsights Matrix.7z'
-        path: artifacts/Combined SqlInsights Matrix.7z
+        name: 'Combined SqlInsights Matrix ${{ github.event.inputs.SQL_SET_SIZE }}.7z'
+        path: artifacts
         overwrite: true
         compression-level: 1
 
