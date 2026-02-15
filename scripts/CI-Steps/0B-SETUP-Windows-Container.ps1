@@ -5,7 +5,7 @@
         Say "Restarting Host Network Service"
         try { Restart-Service hns } catch {}
         Say "docker network prune"
-        & docker network prune
+        & docker network prune -f
         Say "docker system prune -f"
         & docker system prune -f
 
