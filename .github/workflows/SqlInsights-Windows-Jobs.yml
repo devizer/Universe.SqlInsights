@@ -80,9 +80,14 @@ jobs:
         run: . '.\scripts\CI-Steps\0A-Pull-Docker-Image.sh'
 
       - name: RUN Container
+        uses: nick-fields/retry@v3
         if: ${{ env.SQL_IMAGE_TAG != '' }}
-        run: . .\scripts\CI-Steps\0B-SETUP-Windows-Container.ps1
-
+        with:
+          timeout_minutes: 10
+          max_attempts: 4
+          shell: pwsh
+          retry_wait_seconds: 2
+          command: . .\scripts\CI-Steps\0B-SETUP-Windows-Container.ps1
       
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
