@@ -51,6 +51,15 @@ jobs:
           Say "SQL_IMAGE_ISOLATION = [$SQL_IMAGE_ISOLATION]"
           echo "SQL_IMAGE_ISOLATION=$SQL_IMAGE_ISOLATION" >> $GITHUB_ENV
 
+          SQL_INSTANCE_NAME="(local)"
+          if [[ "$SQL" == *LocalDB* ]]; then SQL_INSTANCE_NAME='(local)\MSSQLLocalDB'; fi
+          Say "SQL_INSTANCE_NAME = [$SQL_INSTANCE_NAME]"
+          echo "SQL_INSTANCE_NAME=$SQL_INSTANCE_NAME" >> $GITHUB_ENV
+
+          Say "SQL_"
+          printenv | grep -e "^SQL_" | tee "$ENV:SYSTEM_ARTIFACTSDIRECTORY/job-variables.txt"
+
+
       - name: Show Arguments and Pre-Build Content
         run: |
           Import-DevOps
