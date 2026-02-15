@@ -1,6 +1,6 @@
 Import-DevOps
 
-Enumerate-Plain-SQLServer-Downloads | % { [pscustomobject] $_ } | ft -autosize | tee-object "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\Plain-SQLServer-Downloads.txt"
+Enumerate-Plain-SQLServer-Downloads | % { [pscustomobject] $_ } | ft -autosize | out-string -width 222 | tee-object "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\Plain-SQLServer-Downloads.Table.txt"
 
 $jobs=@()
 foreach($meta in Enumerate-Plain-SQLServer-Downloads) { 
@@ -16,10 +16,13 @@ $matrix_object = @{ include = $jobs }
 $matrix_string_mini = $matrix_object | ConvertTo-Json -Depth 64 -Compress
 $matrix_string_formatted = $matrix_object | ConvertTo-Json -Depth 64
 
-Say "Github Matrix Formatted"
+Say "Github Windows Matrix Formatted-JSON"
 Write-Host $matrix_string_formatted
 
-Say "Github Matrix Mini"
+Say "Github Windows Jobs Table"
+$jobs | ft -autosize | out-string -width 222 | tee-object "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\Windows-Jobs.Table.txt"
+
+Say "Github Windows Matrix Mini-JSON"
 Write-Host $matrix_string_mini
 
 if ($env:GITHUB_OUTPUT) {

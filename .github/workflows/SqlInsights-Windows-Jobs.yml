@@ -33,7 +33,7 @@ jobs:
           name: Pre-Build
           path: "${{ github.workspace }}/Goods"
 
-      - name: Show Arguments and 
+      - name: Show Arguments and Pre-Build Content
         run: |
           Import-DevOps
           Say "SQL: [${{ matrix.SQL }}]"
