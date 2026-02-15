@@ -56,8 +56,9 @@ jobs:
           Say "SQL_INSTANCE_NAME = [$SQL_INSTANCE_NAME]"
           echo "SQL_INSTANCE_NAME=$SQL_INSTANCE_NAME" >> $GITHUB_ENV
 
-          Say "SQL_"
-          printenv | grep -e "^SQL_" | tee "$SYSTEM_ARTIFACTSDIRECTORY/job-variables.txt"
+          export SQL_INSTANCE_NAME SQL_IMAGE_ISOLATION SQL SQL_IMAGE_TAG
+          Say "Variables SQL*"
+          printenv | sort | (grep "^SQL" || true) | tee "$SYSTEM_ARTIFACTSDIRECTORY/job-variables.txt"
 
 
       - name: Show Arguments and Pre-Build Content
