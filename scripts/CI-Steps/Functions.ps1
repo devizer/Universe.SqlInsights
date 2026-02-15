@@ -1,5 +1,9 @@
 ﻿Import-DevOps
 
+
+function Is-GITHUB-ACTIONS() { $ENV:GITHUB_ACTIONS -eq "true" }
+function Is-AZURE_PIPELINE() { $ENV:TF_BUILD -eq "true" }
+
 function Get-FreePort { $listener = [System.Net.Sockets.TcpListener]0; $listener.Start(); $port = $listener.LocalEndpoint.Port; $listener.Stop(); return $port }
 
 function Smart-Start-Process([string] $exe, [string] $parameters, [int] $guard_timeout = 1500) {
@@ -122,11 +126,20 @@ function Set-Var {
         $registryPath = "HKCU:\Environment"
         Set-ItemProperty -Path $registryPath -Name $Name -Value $Value -ErrorAction Stop
 
+        if (Is-GITHUB-ACTIONS -and ($env:GITHUB_ENV)) {
+           $utf8 = New-Object System.Text.UTF8Encoding($false)
+           [System.IO.File]::AppendAllText($env:GITHUB_ENV, "${Name}=${Value}$([Environment]::NewLine)", $utf8)
+        }
+        if (Is-AZURE_PIPELINE) {
+           echo "##vso[task.setvariable variable=${Name};isOutput=true]${Value}"
+           echo "##vso[task.setvariable variable=${Name}]${Value}"
+        }
+
         if ("$prev_value" -ne $Value) {
            Write-Line "Env Variable " -TextMagenta "'$Name'" -Reset " set to " -TextGreen "'$Value'"
            $PSNativeCommandArgumentPassing = "Legacy" # does not affect Start-Process
            # Start-Process "setx" -ArgumentList @("`"$Name`"", "`"$Value`"") -WindowStyle Hidden # supported by powershell 2.0
-           setx "$Name" "$Value" >$null
+           & setx "$Name" "$Value" >$null
            # Write-Host "Variable '$Name' set to '$Value'." -ForegroundColor Green
         }
     }

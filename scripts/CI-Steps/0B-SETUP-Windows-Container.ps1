@@ -34,7 +34,8 @@
         & docker run -d --name sql-server --memory "$($container_ram_mb)M" --cpus "$cpuCount" "--isolation=$($ENV:SQL_IMAGE_ISOLATION)" `
           --hostname MSSQL `
           --storage-opt "size=50GB" `
-          -e TF_BUILD=True `
+          -e TF_BUILD="$($ENV:TF_BUILD)" `
+          -e GITHUB_ACTIONS="$($ENV:GITHUB_ACTIONS)" `
           -e SQL="$($ENV:sql)" `
           -e SQL_IMAGE_TAG="$($ENV:SQL_IMAGE_TAG)" `
           -e SQL_INSTANCE_NAME="$($ENV:SQL_INSTANCE_NAME)" `

@@ -35,33 +35,45 @@ jobs:
           path: "${{ github.workspace }}/Goods"
 
       - name: Setup Variables
-        shell: pwsh
+        shell: bash
         run: |
-          . .\scripts\CI-Steps\Functions.ps1
-          Say "Variables for GitHub Actions"
-          
-          $SQL_IMAGE_TAG="";
-          if ("${{ matrix.SQL_CONTAINER_SUFFIX }}") { $SQL_IMAGE_TAG="ltsc${{ matrix.SQL_CONTAINER_SUFFIX }}"; }
-          Set-Var "SQL_IMAGE_TAG" "$SQL_IMAGE_TAG"
+          set -eu; set -o pipefail
 
-          $SQL="${{ matrix.SQL }}: MSSQLSERVER"
-          Set-Var "SQL" "$SQL"
+          SQL_IMAGE_TAG="";
+          if [[ -n "${{ matrix.SQL_CONTAINER_SUFFIX }}" ]]; then SQL_IMAGE_TAG="ltsc${{ matrix.SQL_CONTAINER_SUFFIX }}"; fi
+          Say "SQL_IMAGE_TAG = [$SQL_IMAGE_TAG]"
+          echo "SQL_IMAGE_TAG=$SQL_IMAGE_TAG" >> $GITHUB_ENV
 
-          $SQL_IMAGE_ISOLATION=hyperv
-          Set-Var "SQL_IMAGE_ISOLATION" "$SQL_IMAGE_ISOLATION"
+          SQL="${{ matrix.SQL }}: MSSQLSERVER"
+          Say "SQL = [$SQL]"
+          echo "SQL=$SQL" >> $GITHUB_ENV
 
-          $SQL_INSTANCE_NAME="(local)"
-          if ("$SQL" -match "LocalDB") { $SQL_INSTANCE_NAME='(LocalDB)\MSSQLLocalDB'; }
-          Set-Var "SQL_INSTANCE_NAME" "$SQL_INSTANCE_NAME"
+          SQL_IMAGE_ISOLATION=hyperv
+          Say "SQL_IMAGE_ISOLATION = [$SQL_IMAGE_ISOLATION]"
+          echo "SQL_IMAGE_ISOLATION=$SQL_IMAGE_ISOLATION" >> $GITHUB_ENV
+
+          SQL_INSTANCE_NAME="(local)"
+          if [[ "$SQL" == *LocalDB* ]]; then SQL_INSTANCE_NAME='(LocalDB)\MSSQLLocalDB'; fi
+          Say "SQL_INSTANCE_NAME = [$SQL_INSTANCE_NAME]"
+          echo "SQL_INSTANCE_NAME=$SQL_INSTANCE_NAME" >> $GITHUB_ENV
+
+          export SQL_INSTANCE_NAME SQL_IMAGE_ISOLATION SQL SQL_IMAGE_TAG
+          Say "Variables SQL*"
+          printenv | sort | (grep "^SQL" || true) | tee "$SYSTEM_ARTIFACTSDIRECTORY/job-variables.txt"
+
 
       - name: Show Arguments and Pre-Build Content
         run: |
           Import-DevOps
           Say "SQL: [${{ matrix.SQL }}]"
-          foreach($f in ".\Goods", ".\Goods\w3api", ".\Goods\w3api\wwwroot", "$ENV:SYSTEM_ARTIFACTSDIRECTORY") {
-             Say "$f content"
-             ls $f | ft -autosize
-          }
+          Say ".\Goods content"
+          ls Goods | ft -autosize
+          Say ".\Goods\w3api content"
+          ls .\Goods\w3api | ft -autosize
+          Say ".\Goods\w3api\wwwroot content"
+          ls .\Goods\w3api\wwwroot | ft -autosize
+          Say "SYSTEM_ARTIFACTSDIRECTORY content ($ENV:SYSTEM_ARTIFACTSDIRECTORY)"
+          ls $ENV:SYSTEM_ARTIFACTSDIRECTORY | ft -autosize
 
       - name: 'Tune Docker'
         if: ${{ env.SQL_IMAGE_TAG != '' }}
