@@ -9,6 +9,7 @@ on:
         default: 'MINI'
         options:
         - MINI
+        - LOCALDB
         - FULL
   
   push:

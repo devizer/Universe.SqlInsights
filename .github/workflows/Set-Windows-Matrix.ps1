@@ -6,10 +6,14 @@ Enumerate-Plain-SQLServer-Downloads | % { [pscustomobject] $_ } | ft -autosize |
 $jobs=@()
 foreach($meta in Enumerate-Plain-SQLServer-Downloads) { 
   $sql = $meta.NormalizedKeywords
-  $isMini = [bool] ($sql -match "Core" -and $sql -notmatch "Update")
-  $x86_to_skip = "2008-x86 2008R2-x86 2012-x86 2014-x86".Split(" ")
-  foreach($skip in $x86_to_skip) { if ($sql -match $skip) { $isMini = $false; } }
-  if ($SqlSetSize -eq "MINI" -and (-not $isMini)) { continue; }
+  if ($SqlSetSize -eq "MINI") {
+      $isMini = [bool] ($sql -match "Core" -and $sql -notmatch "Update")
+      $x86_to_skip = "2008-x86 2008R2-x86 2012-x86 2014-x86".Split(" ")
+      foreach($skip in $x86_to_skip) { if ($sql -match $skip) { $isMini = $false; } }
+      if ($SqlSetSize -eq "MINI" -and (-not $isMini)) { continue; }
+  } elseif ($SqlSetSize -eq "LOCALDB") {
+      if ($sql -notmatch "LocalDB") { continue; }
+  }
   $run_on = '2025'
   $container_tag = $null
   if ($sql -like '2005*' -or $sql -like '2008*') { $container_tag = "2022" }
