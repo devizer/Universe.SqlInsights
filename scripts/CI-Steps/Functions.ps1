@@ -126,7 +126,8 @@ function Set-Var {
         $registryPath = "HKCU:\Environment"
         Set-ItemProperty -Path $registryPath -Name $Name -Value $Value -ErrorAction Stop
 
-        if (Is-GITHUB-ACTIONS -and ("$env:GITHUB_ENV" -ne "")) {
+        $has_github_env = [bool] ("$env:GITHUB_ENV".Trim().Length -ne 0)
+        if (Is-GITHUB-ACTIONS -and $has_github_env) {
            $utf8 = New-Object System.Text.UTF8Encoding($false)
            Write-Host "[Debug] env:GITHUB_ENV is [$env:GITHUB_ENV]"
            [System.IO.File]::AppendAllText("$env:GITHUB_ENV", "${Name}=${Value}$([Environment]::NewLine)", $utf8)
