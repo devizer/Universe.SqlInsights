@@ -6,6 +6,15 @@ function Is-AZURE_PIPELINE() { $ENV:TF_BUILD -eq "true" }
 
 function Get-FreePort { $listener = [System.Net.Sockets.TcpListener]0; $listener.Start(); $port = $listener.LocalEndpoint.Port; $listener.Stop(); return $port }
 
+function Mute-ReqootRequired-State() {
+        # 1. Component Based Servicing
+  $__ = Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootPending" -Recurse -Force -ErrorAction SilentlyContinue
+        # 2. Windows Update RebootRequired
+  $__ = Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired" -Recurse -Force -ErrorAction SilentlyContinue
+        # 3. PendingFileRenameOperations
+  $__ = Remove-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager" -Name "PendingFileRenameOperations" -Force -ErrorAction SilentlyContinue
+}
+
 function Smart-Start-Process([string] $exe, [string] $parameters, [int] $guard_timeout = 1500) {
    $psi = New-Object System.Diagnostics.ProcessStartInfo
    $psi.FileName = $exe
