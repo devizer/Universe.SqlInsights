@@ -1,6 +1,6 @@
 ﻿. "$PSScriptRoot\Functions.ps1"
 
-$instance="(local)"
+$instance="$ENV:SQL_INSTANCE_NAME"
 $connectionString="Data Source=$instance; Integrated Security=SSPI;Encrypt=False"
 if ("$($ENV:STRESS_CONNECTION_STRING)" -ne "") { $connectionString = "$($ENV:STRESS_CONNECTION_STRING)"; }
 Write-Host "Invoke a commands set on instance '$i'"

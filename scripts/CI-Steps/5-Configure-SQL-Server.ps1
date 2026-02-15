@@ -1,4 +1,4 @@
-Set-SQLServer-Options -Title "SQL Server (local)" -Instance "(local)" -Options @{ 
+Set-SQLServer-Options -Title "SQL Server $ENV:SQL_INSTANCE_NAME" -Instance "$ENV:SQL_INSTANCE_NAME" -Options @{ 
   xp_cmdshell = $true; 
   "clr enabled" = $false; 
   "server trigger recursion" = $true; 
