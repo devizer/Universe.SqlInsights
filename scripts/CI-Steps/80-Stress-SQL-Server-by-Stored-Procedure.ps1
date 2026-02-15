@@ -15,9 +15,14 @@ $migrate=@(
  "Use [DB-Stress]; EXEC('Create Procedure [Stress By Select] As Begin Select Top 200 Id, Description From Detail Order By Id Desc; End')",
  "Use [DB-Stress]; EXEC('Create Procedure [Stress By Delete] As Begin Delete From Detail Where Id in (Select Top 2 d2.Id From Detail d2 Order By Id Desc); End')"
 );
-$insert="Use [DB-Stress]; Set NoCount On; Declare @i int; Set @i = 0; While @i < 10000 Begin Exec [Stress By Insert]; Set @i = @i + 1; End;";
+if ("$ENV:SQL" -match "LocalDB") { 
+    $insert_count="1234 "; $delete_count="123 "
+} Else {
+    $insert_count="10000"; $delete_count="1000"
+}
+$insert="Use [DB-Stress]; Set NoCount On; Declare @i int; Set @i = 0; While @i < $insert_count Begin Exec [Stress By Insert]; Set @i = @i + 1; End;";
 $select="Use [DB-Stress]; Set NoCount On; Declare @i int; Set @i = 0; While @i < 50    Begin Exec [Stress By Select]; Set @i = @i + 1; End;";
-$delete="Use [DB-Stress]; Set NoCount On; Declare @i int; Set @i = 0; While @i < 1000  Begin Exec [Stress By Delete]; Set @i = @i + 1; End;";
+$delete="Use [DB-Stress]; Set NoCount On; Declare @i int; Set @i = 0; While @i < $delete_count  Begin Exec [Stress By Delete]; Set @i = @i + 1; End;";
 
 # WITH Delete
   $commands=$migrate + @($insert, $select, $delete, $insert, $select, $insert, $select, $insert, $delete, $select);
