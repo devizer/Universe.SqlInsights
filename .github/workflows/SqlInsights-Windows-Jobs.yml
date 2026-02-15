@@ -108,6 +108,77 @@ jobs:
           path: ${{ env.SYSTEM_ARTIFACTSDIRECTORY }}/SQL Setup Logs
           overwrite: true
 
+      - name: '3.1-Install-SQLCMD.ps1'
+        run: scripts\CI-Steps\Run-CI-Script.ps1 3.1-Install-SQLCMD.ps1
+        if: always()
+
+      - name: '4-Publish-Sql-Server-Setup-Logs.ps1'
+        run: scripts\CI-Steps\Run-CI-Script.ps1 4-Publish-Sql-Server-Setup-Logs.ps1
+        if: always()
+
+      - name: '5-Configure-SQL-Server.ps1'
+        run: scripts\CI-Steps\Run-CI-Script.ps1 5-Configure-SQL-Server.ps1
+        if: always()
+
+      - name: '6-ErgoFab-Tests.ps1'
+        run: scripts\CI-Steps\Run-CI-Script.ps1 6-ErgoFab-Tests.ps1
+        if: always()
+
+      - name: '7-SqlJam-Tests.ps1'
+        run: scripts\CI-Steps\Run-CI-Script.ps1 7-SqlJam-Tests.ps1
+        if: always()
+
+        # The Step is optional
+      - name: '8-Install-Chrome.ps1'
+        run: scripts\CI-Steps\Run-CI-Script.ps1 8-Install-Chrome.ps1
+        # if: always()
+        if: false
+      
+      - name: '9-Run-w3app.ps1'
+        run: scripts\CI-Steps\Run-CI-Script.ps1 9-Run-w3app.ps1
+        # if: always()
+        if: false
+
+        # Frontend always on Host
+      - name: 'RUN w3app on host'
+        run: |
+           & choco feature enable -n allowGlobalConfirmation
+           & choco feature disable -n showDownloadProgress
+           pwsh scripts\CI-Steps\8-Install-Chrome.ps1
+           pwsh scripts\CI-Steps\9-Run-w3app.ps1
+           . scripts\CI-Steps\Functions.ps1
+           Say "PROCESSES: chrome"
+           Sleep 13
+           Show-Chrome-Processes
+        if: always()
+        # if: false
+
+        # API on Container
+      - name: '10-Run-W3API.ps1'
+        run: scripts\CI-Steps\Run-CI-Script.ps1 10-Run-w3api.ps1
+        if: always()
+
+        # Warning! It kills all the dotnet processes
+      - name: '999-Stop-Apps.ps1'
+        run: scripts\CI-Steps\Run-CI-Script.ps1 999-Stop-Apps.ps1
+        if: always()
+
+      - name: '20-Storage-Tests-and-Benchmark.ps1'
+        run: scripts\CI-Steps\Run-CI-Script.ps1 20-Storage-Tests-and-Benchmark.ps1
+        if: always()
+
+      - name: '80-Stress-SQL-Server-by-Stored-Procedure.ps1'
+        run: scripts\CI-Steps\Run-CI-Script.ps1 80-Stress-SQL-Server-by-Stored-Procedure.ps1
+        if: always()
+
+      - name: '90-Administrative-Views-By-Tool.ps1'
+        run: scripts\CI-Steps\Run-CI-Script.ps1 90-Administrative-Views-By-Tool.ps1
+        if: always()
+
+      - name: '91-Administrative-Views-By-Tests.ps1'
+        run: scripts\CI-Steps\Run-CI-Script.ps1 91-Administrative-Views-By-Tests.ps1
+        if: always()
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         if: always()
