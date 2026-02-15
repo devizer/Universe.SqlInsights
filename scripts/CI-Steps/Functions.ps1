@@ -126,7 +126,7 @@ function Set-Var {
         $registryPath = "HKCU:\Environment"
         Set-ItemProperty -Path $registryPath -Name $Name -Value $Value -ErrorAction Stop
 
-        if (Is-GITHUB-ACTIONS -and ($env:GITHUB_ENV)) {
+        if (Is-GITHUB-ACTIONS -and ("$env:GITHUB_ENV" -ne "")) {
            $utf8 = New-Object System.Text.UTF8Encoding($false)
            [System.IO.File]::AppendAllText($env:GITHUB_ENV, "${Name}=${Value}$([Environment]::NewLine)", $utf8)
         }
