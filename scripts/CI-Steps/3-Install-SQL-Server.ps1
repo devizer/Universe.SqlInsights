@@ -12,7 +12,7 @@ if ("$ENV:SQL" -match "2005") {
   & net.exe start MSSQLSERVER
 }
 
-# Medium Version
+echo "Query SQL Server Medium Version"
 try { 
   $sql_ver = Query-SqlServer-Version -Title "Default Instance" -Instance "(local)"
   if ($sql_ver) { 
@@ -22,7 +22,7 @@ try {
 }
 catch {}
 
-# Title
+echo "Query SQL Server Title"
 try { 
   $sql_ver = Query-SqlServer-Version -Title "Default Instance" -Instance "(local)" -Kind "Title"
   if ($sql_ver) {
