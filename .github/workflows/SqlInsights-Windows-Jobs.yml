@@ -10,7 +10,7 @@ on:
 jobs:
   Windows-Job:
     name: ${{ matrix.SQL }}
-    runs-on: "windows-${{ matrix.OS }}"
+    runs-on: "windows-${{ matrix.HOST }}"
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(inputs.matrix) }}
@@ -33,6 +33,24 @@ jobs:
           name: Pre-Build
           path: "${{ github.workspace }}/Goods"
 
+      - name: Setup Variables
+        shell: bash
+        run: |
+          set -eu; set -o pipefil
+
+          SQL_IMAGE_TAG="";
+          if [[ -n "${{ matrix.SQL_CONTAINER_SUFFIX }}" ]]; then SQL_IMAGE_TAG="ltsc${{ matrix.SQL_CONTAINER_SUFFIX }}"; fi
+          Say "SQL_IMAGE_TAG = [$SQL_IMAGE_TAG]"
+          echo "SQL_IMAGE_TAG=$SQL_IMAGE_TAG" >> $GITHUB_ENV
+
+          SQL="${{ matrix.SQL }}"
+          Say "SQL = [$SQL]"
+          echo "SQL=$SQL" >> $GITHUB_ENV
+
+          SQL_IMAGE_ISOLATION=hyperv
+          Say "SQL_IMAGE_ISOLATION = [$SQL_IMAGE_ISOLATION]"
+          echo "SQL_IMAGE_ISOLATION=$SQL_IMAGE_ISOLATION" >> $GITHUB_ENV
+
       - name: Show Arguments and Pre-Build Content
         run: |
           Import-DevOps
@@ -48,7 +66,23 @@ jobs:
 
       - name: 'Tune Docker'
         run: Import-DevOps; Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Move-Docker-to-SSD-for-Windows-On-Microsoft-Hosted-Build-Agent.ps1
+      
+      - name: 'List Perfmormance Counters'
+        run: (Get-Counter -ListSet *).Paths | Where-Object { $_ -like "*Transfers*" }
 
+      - name: 'Show Transfer for 20 seconds'
+        run: Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 7
+
+      - name: Pull Docker Image
+        if: ${{ env.SQL_IMAGE_TAG != '' }}
+        shell: bash
+        run: . .\scripts\CI-Steps\0A-Pull-Docker-Image.sh
+
+      - name: RUN Container
+        if: ${{ env.SQL_IMAGE_TAG != '' }}
+        run: . .\scripts\CI-Steps\0B-SETUP-Windows-Container.ps1
+
+      
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         if: always()
