@@ -76,7 +76,7 @@ jobs:
       - name: Pull Docker Image
         if: ${{ env.SQL_IMAGE_TAG != '' }}
         shell: bash
-        run: . .\scripts\CI-Steps\0A-Pull-Docker-Image.sh
+        run: . '.\scripts\CI-Steps\0A-Pull-Docker-Image.sh'
 
       - name: RUN Container
         if: ${{ env.SQL_IMAGE_TAG != '' }}
