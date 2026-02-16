@@ -11,7 +11,7 @@ namespace ErgoFab.DataAccess.IntegrationTests;
 
 [NUnitPipelineAction]
 [TempTestAssemblyAction]
-public class TestSqlInsightExportSnapshot
+public class Z_TestSqlInsightExportSnapshot
 {
     [Test]
     [TestCase(CompressionLevel.Fastest)]

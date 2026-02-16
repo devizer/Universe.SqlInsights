@@ -126,11 +126,6 @@ jobs:
         run: scripts\CI-Steps\Run-CI-Script.ps1 5-Configure-SQL-Server.ps1
         if: ${{ !cancelled() }}
 
-      - name: '6-ErgoFab-Tests.ps1'
-        run: scripts\CI-Steps\Run-CI-Script.ps1 6-ErgoFab-Tests.ps1
-        if: ${{ !cancelled() && !contains(matrix.SQL, '2005') }}
-        # if: always()
-
       - name: '7-SqlJam-Tests.ps1'
         run: scripts\CI-Steps\Run-CI-Script.ps1 7-SqlJam-Tests.ps1
         if: ${{ !cancelled() }}
@@ -165,6 +160,12 @@ jobs:
       - name: '10-Run-W3API.ps1'
         run: scripts\CI-Steps\Run-CI-Script.ps1 10-Run-w3api.ps1
         if: ${{ !cancelled() }}
+
+        # It also dumps SqlInsights snapshot, so it is the last
+      - name: '6-ErgoFab-Tests.ps1'
+        run: scripts\CI-Steps\Run-CI-Script.ps1 6-ErgoFab-Tests.ps1
+        if: ${{ !cancelled() && !contains(matrix.SQL, '2005') }}
+        # if: always()
 
         # Warning! It kills all the dotnet processes
       - name: '999-Stop-Apps.ps1'
