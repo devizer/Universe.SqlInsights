@@ -5,12 +5,20 @@ on:
     inputs:
       SQL_SET_SIZE:
         type: choice
-        description: 'SQL Set Amount'
+        description: 'SQL Set'
         default: 'MINI'
         options:
         - MINI
         - LOCALDB
         - FULL
+
+      HOST_VERSION:
+        type: choice
+        description: 'Windows HOST'
+        default: '2022'
+        options:
+        - '2022'
+        - '2025'
   
   push:
       branches: [ "none" ]
@@ -44,7 +52,7 @@ jobs:
 
     - id: set-windows-matrix
       shell: pwsh
-      run: . .\.github\workflows\Set-Windows-Matrix.ps1 -SqlSetSize "${{ github.event.inputs.SQL_SET_SIZE }}"
+      run: . .\.github\workflows\Set-Windows-Matrix.ps1 -SqlSetSize "${{ github.event.inputs.SQL_SET_SIZE }}" -HostVersion "${{ github.event.inputs.HOST_VERSION }}"
 
     - name: build all parallel
       run: |
