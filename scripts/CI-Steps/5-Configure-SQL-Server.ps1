@@ -4,5 +4,14 @@ Set-SQLServer-Options -Title "SQL Server $ENV:SQL_INSTANCE_NAME" -Instance "$ENV
   "server trigger recursion" = $true; 
   "min server memory (MB)" = 7000; 
   "max server memory (MB)" = 16000; 
-  "fill factor (%)" = 70 
+  "fill factor (%)" = 70;
+  'user instance timeout' = 120; 
 }
+
+# Experimental
+if ($ENV:SQL -match "LocalDB") {
+Set-SQLServer-Options -Title "SQL Server $ENV:SQL_INSTANCE_NAME" -Instance "$ENV:SQL_INSTANCE_NAME" -Options @{ 
+  'user instance timeout' = 120; 
+}
+}
+
