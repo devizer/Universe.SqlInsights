@@ -1,0 +1,6 @@
+paths:
+  .github/workflows/**/*.{yml,yaml}:
+    # List of regular expressions to filter errors by the error messages.
+    ignore:
+      # Ignore the specific error from shellcheck
+      - 'constant.*condition'

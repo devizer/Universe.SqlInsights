@@ -105,19 +105,26 @@ jobs:
       uses: actions/download-artifact@v4
       with:
          # name: Pre-Build
-         path: artifacts
+         path: ${{ env.SYSTEM_ARTIFACTSDIRECTORY }}/RAW
 
-    - name: Pack 7z
+    - name: Combine Metrics and Pack 7z
       shell: bash
-      run: cd artifacts; rm -rf Pre-Build; 7z a -sdel -mx=9 -ms=on -mqs=on 'Combined SqlInsights Matrix ${{ needs.Pre-Build.outputs.SQL_SET_SIZE }} on ${{ needs.Pre-Build.outputs.HOST_VERSION }}.7z'; 
-      # Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Pack-each-Artifact-per-Archive.sh -9 -7z
+      run: | 
+        set -eu; set -o pipefail
+        bash -eu scripts/CI-Steps/Final-Combine-Metrics.sh
+        cd ${{ env.SYSTEM_ARTIFACTSDIRECTORY }}
+        cd $SYSTEM_ARTIFACTSDIRECTORY;
+        rm -rf Pre-Build;
+        cd RAW
+        7z a -sdel -mx=9 -ms=on -mqs=on "$SYSTEM_ARTIFACTSDIRECTORY/Combined SqlInsights Matrix ${{ needs.Pre-Build.outputs.SQL_SET_SIZE }} on ${{ needs.Pre-Build.outputs.HOST_VERSION }}.7z"; 
+        # Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Pack-each-Artifact-per-Archive.sh -9 -7z
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       if: always()
       with:
         name: 'Combined SqlInsights Matrix ${{ needs.Pre-Build.outputs.SQL_SET_SIZE }} on ${{ needs.Pre-Build.outputs.HOST_VERSION }}.7z'
-        path: artifacts
+        path: ${{ env.SYSTEM_ARTIFACTSDIRECTORY }}/RAW
         overwrite: true
         compression-level: 1
 
