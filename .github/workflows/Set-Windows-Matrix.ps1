@@ -54,8 +54,9 @@ foreach($meta in Enumerate-Plain-SQLServer-Downloads) {
 }
 
 if ($SqlSetSize -eq "FULL") {
+  # Update: Because of MINI Set was implemented, sorting is not required
   # 2012 and 2014 first if FULL Set
-  $jobs = @($jobs | Sort-Object @{Expression={$_.SQL -match "2012" -or $_.SQL -match "2014"}; Descending=$true}, @{Expression="SQL"; Descending=$true})
+  # $jobs = @($jobs | Sort-Object @{Expression={$_.SQL -match "2012" -or $_.SQL -match "2014"}; Descending=$true}, @{Expression="SQL"; Descending=$true})
 }
 
 
