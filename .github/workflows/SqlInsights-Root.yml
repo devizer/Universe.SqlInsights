@@ -124,7 +124,7 @@ jobs:
       if: always()
       with:
         name: 'Combined SqlInsights Matrix ${{ needs.Pre-Build.outputs.SQL_SET_SIZE }} on ${{ needs.Pre-Build.outputs.HOST_VERSION }}.7z'
-        path: ${{ env.SYSTEM_ARTIFACTSDIRECTORY }}/RAW
+        path: ${{ env.SYSTEM_ARTIFACTSDIRECTORY }}
         overwrite: true
         compression-level: 1
 
