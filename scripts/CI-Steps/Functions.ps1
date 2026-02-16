@@ -18,6 +18,20 @@ function Mute-ReqootRequired-State() {
   Write-Line -TextCyan "[Mute-ReqootRequired-State] Completed"
 }
 
+function Show-Last-Exit-Code([string] $Title) {
+  if ($Global:LASTEXITCODE) {
+    $msg="ERROR! '$Title' failed. Exit Code $($Global:LASTEXITCODE)"
+    Say $msg
+    Write-Line -TextRed $msg
+  } Else {
+    $msg="SUCCESS! '$Title' successfully completed wouthout any errors"
+    Say $msg
+    Write-Line -TextGreen $msg
+  }
+
+}
+
+
 function Smart-Start-Process([string] $exe, [string] $parameters, [int] $guard_timeout = 1500) {
    $psi = New-Object System.Diagnostics.ProcessStartInfo
    $psi.FileName = $exe
