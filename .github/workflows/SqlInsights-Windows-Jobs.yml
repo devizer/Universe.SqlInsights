@@ -6,6 +6,12 @@ on:
       matrix:
         required: true
         type: string
+      SQL_SET_SIZE:
+        required: true
+        type: string
+      HOST_VERSION:
+        required: true
+        type: string
 
 jobs:
   Windows-Job:
