@@ -86,7 +86,7 @@ jobs:
           max_attempts: 4
           shell: pwsh
           retry_wait_seconds: 2
-          command: . .\scripts\CI-Steps\0B-SETUP-Windows-Container.ps1
+          command: $ErrorActionPreference="Stop"; . .\scripts\CI-Steps\0B-SETUP-Windows-Container.ps1
       
       - name: '1.1-Install-Module.ps1 '
         run: . .\scripts\CI-Steps\Run-CI-Script.ps1 1.1-Install-Module.ps1
@@ -128,12 +128,13 @@ jobs:
         run: scripts\CI-Steps\Run-CI-Script.ps1 7-SqlJam-Tests.ps1
         if: always()
 
-        # The Step is optional
+        # The Step is optional (Frontend always on Host)
       - name: '8-Install-Chrome.ps1'
         run: scripts\CI-Steps\Run-CI-Script.ps1 8-Install-Chrome.ps1
         # if: always()
         if: false
       
+        # The Step is optional (Frontend always on Host)
       - name: '9-Run-w3app.ps1'
         run: scripts\CI-Steps\Run-CI-Script.ps1 9-Run-w3app.ps1
         # if: always()
