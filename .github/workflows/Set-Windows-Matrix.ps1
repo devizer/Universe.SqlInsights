@@ -18,7 +18,7 @@ foreach($meta in Enumerate-Plain-SQLServer-Downloads) {
       # LocalDB Only
       if ($sql -notmatch "LocalDB") { continue; }
   }
-  $run_on = '2025'
+  $run_on = '2022'
   $container_tag = $null
   if ($sql -like '2005*' -or $sql -like '2008*') { $container_tag = "2022" }
   elseif ($sql -like '2012*' -or $sql -like '2014*') { $container_tag = "2016" } 
