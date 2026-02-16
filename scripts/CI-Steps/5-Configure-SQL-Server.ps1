@@ -8,9 +8,10 @@ Set-SQLServer-Options -Title "SQL Server $ENV:SQL_INSTANCE_NAME" -Instance "$ENV
 }
 
 # Experimental
-if ($ENV:SQL -match "LocalDB" -and $ENV:SQL -notmatch "2012") {
+# if ($ENV:SQL -match "LocalDB" -and $ENV:SQL -notmatch "2012") {
+if ($ENV:SQL -match "LocalDB") {
 Set-SQLServer-Options -Title "SQL Server $ENV:SQL_INSTANCE_NAME" -Instance "$ENV:SQL_INSTANCE_NAME" -Options @{ 
-  'user instance timeout' = 120; 
+  'user instance timeout' = 600; 
 }
 }
 
