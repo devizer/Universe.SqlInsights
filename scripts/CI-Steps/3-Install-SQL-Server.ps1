@@ -19,7 +19,6 @@ if ("$ENV:SQL" -match "2017 LocalDB") {
   Write-Host "DELETING Custom Instances" -ForegroundColor Magenta
   $__ = Find-LocalDb-SqlServers |
        % { "$($_.Instance)" } |
-       ? { "$_" -match "LocalDB-" } |
        % { Write-Host "Deleting $_" -ForegroundColor Yellow; Delete-LocalDB-Instance "$_" }
   Update-SqlServer-LocalDB-and-Shared-Tools "2017" 
   $isDeleted = Delete-LocalDB-Instance "v11.0"
