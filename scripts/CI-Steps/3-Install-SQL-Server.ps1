@@ -26,7 +26,7 @@ if ("$ENV:SQL" -match "2017 LocalDB") {
   $isCreated = Create-LocalDB-Instance "MSSQLLocalDB"
 }
 
-# Reset Any Instance to MSSQLLocalDB
+# Reset Any Instance to MSSQLLocalDB (actual to v2012 only)
 if ("$ENV:SQL" -match "LocalDB") {
   $isDeleted = Delete-LocalDB-Instance "v11.0"
   $isCreated = Create-LocalDB-Instance "MSSQLLocalDB"
