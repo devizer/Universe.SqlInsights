@@ -3,7 +3,7 @@ name: SqlInsights Test MATRIX
 on:
   workflow_dispatch:
     inputs:
-      SQL_SET_SIZE:
+      ARG_SQL_SET_SIZE:
         type: choice
         description: 'SQL Set'
         default: 'MINI'
@@ -12,7 +12,7 @@ on:
         - LOCALDB
         - FULL
 
-      HOST_VERSION:
+      ARG_HOST_VERSION:
         type: choice
         description: 'Windows HOST'
         default: '2022'
@@ -36,6 +36,9 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
           matrix: ${{ steps.set-windows-matrix.outputs.matrix }}
+          SQL_SET_SIZE: ${{ steps.set-windows-matrix.outputs.SQL_SET_SIZE }}
+          HOST_VERSION: ${{ steps.set-windows-matrix.outputs.HOST_VERSION }}
+
     defaults:
       run:
         shell: bash
@@ -52,7 +55,7 @@ jobs:
 
     - id: set-windows-matrix
       shell: pwsh
-      run: . .\.github\workflows\Set-Windows-Matrix.ps1 -SqlSetSize "${{ github.event.inputs.SQL_SET_SIZE }}" -HostVersion "${{ github.event.inputs.HOST_VERSION }}"
+      run: . .\.github\workflows\Set-Windows-Matrix.ps1 -SqlSetSize "${{ github.event.inputs.ARG_SQL_SET_SIZE }}" -HostVersion "${{ github.event.inputs.ARG_HOST_VERSION }}"
 
     - name: build all parallel
       run: |
@@ -81,11 +84,13 @@ jobs:
 
   # Run Window Matrix
   Windows:
-    name: Windows ${{ github.event.inputs.SQL_SET_SIZE }} on ${{ github.event.inputs.HOST_VERSION }}
+    name: Windows ${{ needs.Pre-Build.outputs.SQL_SET_SIZE }} on ${{ needs.Pre-Build.outputs.HOST_VERSION }}
     needs: Pre-Build
     uses: ./.github/workflows/SqlInsights-Windows-Jobs.yml
     with:
       matrix: ${{ needs.Pre-Build.outputs.matrix }}
+      SQL_SET_SIZE: ${{ needs.Pre-Build.outputs.SQL_SET_SIZE }}
+      HOST_VERSION: ${{ needs.Pre-Build.outputs.HOST_VERSION }}
 
   Combine:
     runs-on: ubuntu-latest
@@ -104,14 +109,14 @@ jobs:
 
     - name: Pack 7z
       shell: bash
-      run: cd artifacts; rm -rf Pre-Build; 7z a -sdel -mx=9 -ms=on -mqs=on 'Combined SqlInsights Matrix ${{ github.event.inputs.SQL_SET_SIZE }} on ${{ github.event.inputs.HOST_VERSION }}.7z'; 
+      run: cd artifacts; rm -rf Pre-Build; 7z a -sdel -mx=9 -ms=on -mqs=on 'Combined SqlInsights Matrix ${{ needs.Pre-Build.outputs.SQL_SET_SIZE }} on ${{ needs.Pre-Build.outputs.HOST_VERSION }}.7z'; 
       # Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Pack-each-Artifact-per-Archive.sh -9 -7z
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: 'Combined SqlInsights Matrix ${{ github.event.inputs.SQL_SET_SIZE }} on ${{ github.event.inputs.HOST_VERSION }}.7z'
+        name: 'Combined SqlInsights Matrix ${{ needs.Pre-Build.outputs.SQL_SET_SIZE }} on ${{ needs.Pre-Build.outputs.HOST_VERSION }}.7z'
         path: artifacts
         overwrite: true
         compression-level: 1

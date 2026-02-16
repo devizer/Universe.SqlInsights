@@ -2,6 +2,22 @@ param([string] $SqlSetSize = "MINI", [string] $HostVersion = "2022")
 if (-not $SqlSetSize) { $SqlSetSize = "MINI" }
 if (-not $HostVersion) { $HostVersion = "2022" }
 
+function Create-GitHub-Output-Var([string] $Name, [string] $Value, [switch] $ShowValue) {
+  if ($env:GITHUB_OUTPUT) {
+     Write-Line -TextMagenta "[Size $SqlSetSize on $HostVersion] Generating GITHUB_OUTPUT variable '$Name'"
+     $utf8NoBom = New-Object System.Text.UTF8Encoding $false
+     $outputLine = "$Name=$Value" + [System.Environment]::NewLine
+     [System.IO.File]::AppendAllText($env:GITHUB_OUTPUT, $outputLine, $utf8NoBom)
+     if ($ShowValue) {
+        Write-Host "The '$Name' value is below"
+        Write-Host $Value
+        Write-Host " "
+     }
+  }
+  else { 
+    Write-Line -TextRed "[Size $SqlSetSize on $HostVersion] Error! Unable to generate GITHUB_OUTPUT variable '$Name'. Missing env variable GITHUB_OUTPUT"
+  }
+}
 
 Import-DevOps
 
@@ -52,9 +68,6 @@ $jobs | ft -autosize | out-string -width 222 | tee-object "$($ENV:SYSTEM_ARTIFAC
 Say "[Size $SqlSetSize on $HostVersion] Github Windows Matrix Mini-JSON"
 Write-Host $matrix_string_mini
 
-if ($env:GITHUB_OUTPUT) {
-  Say "[Size $SqlSetSize on $HostVersion] Generating GITHUB_OUTPUT variable 'matrix'"
-  $utf8NoBom = New-Object System.Text.UTF8Encoding $false
-  $outputLine = "matrix=$matrix_string_mini" + [System.Environment]::NewLine
-  [System.IO.File]::AppendAllText($env:GITHUB_OUTPUT, $outputLine, $utf8NoBom)
-}
+Create-GitHub-Output-Var "matrix" "$matrix_string_mini"
+Create-GitHub-Output-Var "SQL_SET_SIZE" "$SqlSetSize"
+Create-GitHub-Output-Var "HOST_VERSION" "$HostVersion"
