@@ -104,13 +104,14 @@ jobs:
 
     - name: Pack 7z
       shell: bash
-      run: cd artifacts; rm -rf Pre-Build; 7z a -sdel -mx=9 -ms=on -mqs=on 'Combined SqlInsights Matrix ${{ github.event.inputs.SQL_SET_SIZE }}.7z'; # Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Pack-each-Artifact-per-Archive.sh -9 -7z
+      run: cd artifacts; rm -rf Pre-Build; 7z a -sdel -mx=9 -ms=on -mqs=on 'Combined SqlInsights Matrix ${{ github.event.inputs.SQL_SET_SIZE }} on ${{ github.event.inputs.HOST_VERSION }}.7z'; 
+      # Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Pack-each-Artifact-per-Archive.sh -9 -7z
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: 'Combined SqlInsights Matrix ${{ github.event.inputs.SQL_SET_SIZE }}.7z'
+        name: 'Combined SqlInsights Matrix ${{ github.event.inputs.SQL_SET_SIZE }} on ${{ github.event.inputs.HOST_VERSION }}.7z'
         path: artifacts
         overwrite: true
         compression-level: 1
