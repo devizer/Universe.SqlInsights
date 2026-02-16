@@ -48,7 +48,8 @@ foreach($meta in Enumerate-Plain-SQLServer-Downloads) {
     $container_tag = if ($HostVersion -eq "2025") { "2016" } Else { $null }
   } 
   if ($sql -match 'LocalDB') { $container_tag=$null }
-  if ($sql -match '2017 LocalDB') { $container_tag="2022" }
+  # Probably we need container for '2017 LocalDB'
+  # if ($sql -match '2017 LocalDB') { $container_tag="2022" }
   $jobs += [pscustomobject] @{ SQL=$sql; HOST=$run_on; SQL_CONTAINER_SUFFIX=$container_tag }
 }
 
