@@ -1,4 +1,8 @@
 param([string] $SqlSetSize = "MINI", [string] $HostVersion = "2022")
+if (-not $SqlSetSize) { $SqlSetSize = "MINI" }
+if (-not $HostVersion) { $HostVersion = "2022" }
+
+
 Import-DevOps
 
 Enumerate-Plain-SQLServer-Downloads | % { [pscustomobject] $_ } | ft -autosize | out-string -width 222 | tee-object "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\Plain-SQLServer-Downloads.Table.txt"

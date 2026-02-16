@@ -19,18 +19,23 @@ if (-not (Test-Path C:\App)) {
 }
 
 
+$is_container = [bool]("$($ENV:SQL_IMAGE_TAG)" -ne "")
+$title_at = If ($is_container) { "CONTAINER" } Else { "HOST" }
+$script_pre="Write-Line -TextMagenta ('$title_at '+(Get-Memory-Info).Description); `$ErrorActionPreference='Stop';"
+$script_post = ('if ($Global:LASTEXITCODE) { Write-Line -TextRed "ERROR! STEP ' + $file + ' failed. Exit Code $($Global:LASTEXITCODE)"; exit 1; }')
+
 $relative_file = "scripts\CI-Steps\$file"
-if ("$($ENV:SQL_IMAGE_TAG)" -eq "") {
+if (-not $is_container) {
   Say "Invoking locally [$relative_file]"
   Write-Host "Current Directory: $(Get-Location)"
-  powershell -c "Write-Line -TextMagenta ('HOST '+(Get-Memory-Info).Description); `$ErrorActionPreference='Stop'; . `"$relative_file`""
+  powershell -c "$script_pre; . `"$relative_file`"; $script_post"
 }
 Else
 {
    Say "Invoking in container [$relative_file]"
    Write-Host "Current Directory: $(Get-Location)"
    # & docker exec sql-server powershell -f "$relative_file"
-   & docker exec sql-server powershell -c "Write-Line -TextMagenta ('CONTAINER '+(Get-Memory-Info).Description); `$ErrorActionPreference='Stop'; . `"$relative_file`""
+   & docker exec sql-server powershell -c "$script_pre; . `"$relative_file`"; $script_post"
 }
 $exitCode = $LASTEXITCODE
 show-mem "Finished on $kind, Exit Code: $exitCode"
