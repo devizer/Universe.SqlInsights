@@ -26,6 +26,13 @@ if ("$ENV:SQL" -match "2017 LocalDB") {
   $isCreated = Create-LocalDB-Instance "MSSQLLocalDB"
 }
 
+# Reset Any Instance to MSSQLLocalDB
+if ("$ENV:SQL" -match "LocalDB") {
+  $isDeleted = Delete-LocalDB-Instance "v11.0"
+  $isCreated = Create-LocalDB-Instance "MSSQLLocalDB"
+}
+
+
 echo "Query SQL Server '$ENV:SQL_INSTANCE_NAME' Medium Version"
 try { 
   $sql_ver = Query-SqlServer-Version -Title "Instance $ENV:SQL_INSTANCE_NAME" -Instance "$ENV:SQL_INSTANCE_NAME"

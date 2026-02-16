@@ -5,11 +5,10 @@ Set-SQLServer-Options -Title "SQL Server $ENV:SQL_INSTANCE_NAME" -Instance "$ENV
   "min server memory (MB)" = 7000; 
   "max server memory (MB)" = 16000; 
   "fill factor (%)" = 70;
-  'user instance timeout' = 120; 
 }
 
 # Experimental
-if ($ENV:SQL -match "LocalDB") {
+if ($ENV:SQL -match "LocalDB" -and $ENV:SQL -notmatch "2012") {
 Set-SQLServer-Options -Title "SQL Server $ENV:SQL_INSTANCE_NAME" -Instance "$ENV:SQL_INSTANCE_NAME" -Options @{ 
   'user instance timeout' = 120; 
 }
