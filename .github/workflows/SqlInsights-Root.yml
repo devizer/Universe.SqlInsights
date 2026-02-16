@@ -99,8 +99,8 @@ jobs:
     timeout-minutes: 20
     steps:
 
-    - name: Bootstrap
-      uses: devizer/devops-library@main
+    - uses: actions/checkout@v4
+    - uses: devizer/devops-library@main
     - name: Download all workflow run artifacts
       uses: actions/download-artifact@v4
       with:
