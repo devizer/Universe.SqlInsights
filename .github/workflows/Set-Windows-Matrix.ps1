@@ -51,8 +51,10 @@ foreach($meta in Enumerate-Plain-SQLServer-Downloads) {
   $jobs += [pscustomobject] @{ SQL=$sql; HOST=$run_on; SQL_CONTAINER_SUFFIX=$container_tag }
 }
 
-# 2012 and 2014 first
-$jobs = @($jobs | Sort-Object @{Expression={$_.SQL -match "2012" -or $_.SQL -match "2014"}; Descending=$true}, @{Expression="SQL"; Descending=$true})
+if ($SqlSetSize -eq "FULL") {
+  # 2012 and 2014 first if FULL Set
+  $jobs = @($jobs | Sort-Object @{Expression={$_.SQL -match "2012" -or $_.SQL -match "2014"}; Descending=$true}, @{Expression="SQL"; Descending=$true})
+}
 
 
 $matrix_object = @{ include = $jobs }
