@@ -12,20 +12,18 @@ if ("$ENV:SQL" -match "2005") {
   & net.exe start MSSQLSERVER
 }
 
+# LocalDB 2019 CU can upgrade without stopping instance
 if ("$ENV:SQL" -match "2019 LocalDB") { Update-SqlServer-LocalDB-and-Shared-Tools "2019" }
 
+# LocalDB 2017 CU needs empty instance list
 if ("$ENV:SQL" -match "2017 LocalDB") { 
   Mute-RebootRequired-State
-  Write-Host "DELETING Custom Instances" -ForegroundColor Magenta
+  Write-Host "DELETING ALL LocalDB Instances" -ForegroundColor Magenta
   $__ = Find-LocalDb-SqlServers |
        % { "$($_.Instance)" } |
-       % { Write-Host "Deleting $_" -ForegroundColor Yellow; Delete-LocalDB-Instance "$_" }
+       % { Say "Deleting $_"; Delete-LocalDB-Instance "$_" }
   Update-SqlServer-LocalDB-and-Shared-Tools "2017" 
-  $isDeleted = Delete-LocalDB-Instance "v11.0"
   $isCreated = Create-LocalDB-Instance "MSSQLLocalDB"
-}
-
-if ("$ENV:SQL" -match "LocalDB") {
 }
 
 echo "Query SQL Server '$ENV:SQL_INSTANCE_NAME' Medium Version"
