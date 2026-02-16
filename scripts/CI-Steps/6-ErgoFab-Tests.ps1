@@ -7,7 +7,7 @@ cd C:\App\Goods\ergofab.tests
 $ENV:ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING="Server=$ENV:SQL_INSTANCE_NAME;Encrypt=False;Initial Catalog=SqlInsights Local Warehouse;Integrated Security=SSPI"
 $ENV:ERGOFAB_TESTS_REPORT_FULLNAME="$SYSTEM_ARTIFACTSDIRECTORY\ErgFab Tests Report.txt"
 
-& dotnet test ErgoFab.DataAccess.IntegrationTests.dll
+& dotnet test ErgoFab.DataAccess.IntegrationTests.dll 2>&1 | Tee-Object "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\ErgoFab.DataAccess.IntegrationTests.dll.log"
 Say "Success Complete"
 
 echo "Copying .\TestsOutput to '$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\' ..."
