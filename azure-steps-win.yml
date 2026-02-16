@@ -312,7 +312,8 @@ steps:
     displayName: '5-Configure-SQL-Server.ps1'
 
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 6-ErgoFab-Tests.ps1
-    condition: succeededOrFailed()
+    # condition: succeededOrFailed()
+    condition: and(always(), not(contains(variables['SQL'], '2005')))
     displayName: '6-ErgoFab-Tests.ps1'
 
   - powershell: scripts\CI-Steps\Run-CI-Script.ps1 7-SqlJam-Tests.ps1

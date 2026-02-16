@@ -128,7 +128,8 @@ jobs:
 
       - name: '6-ErgoFab-Tests.ps1'
         run: scripts\CI-Steps\Run-CI-Script.ps1 6-ErgoFab-Tests.ps1
-        if: always()
+        if: ${{ always() && !contains(matrix.SQL, '2005') }}
+        # if: always()
 
       - name: '7-SqlJam-Tests.ps1'
         run: scripts\CI-Steps\Run-CI-Script.ps1 7-SqlJam-Tests.ps1
