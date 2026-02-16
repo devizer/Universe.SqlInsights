@@ -1,5 +1,6 @@
 ﻿Import-DevOps
 
+$ErrorActionPreference = "Stop"
 
 function Is-GITHUB-ACTIONS() { $ENV:GITHUB_ACTIONS -eq "true" }
 function Is-AZURE_PIPELINE() { $ENV:TF_BUILD -eq "true" }
