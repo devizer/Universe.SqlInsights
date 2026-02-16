@@ -81,7 +81,7 @@ jobs:
 
   # Run Window Matrix
   Windows:
-    name: Windows ${{ github.event.inputs.SQL_SET_SIZE }}
+    name: Windows ${{ github.event.inputs.SQL_SET_SIZE }} on ${{ github.event.inputs.HOST_VERSION }}
     needs: Pre-Build
     uses: ./.github/workflows/SqlInsights-Windows-Jobs.yml
     with:
