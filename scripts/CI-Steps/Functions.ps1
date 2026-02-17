@@ -287,10 +287,11 @@ Set-Var "SQLINSIGHTS_REPORT_FULLNAME" "$($ENV:SQLINSIGHTS_REPORT_FOLDER)\SqlInsi
   if ( "$env:RAM_DISK" -eq "" ) { $NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES="True" }
   Set-Var "NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES" "$NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES"
 
-  Set-Var "ERGOFAB_TESTS_DATA_FOLDER" "$($root_drive)\ergo-fab-tests"
+  $ERGOFAB_TESTS_DATA_FOLDER = If ((Get-OS-Platform) -eq "Windows") { "$($root_drive)\ergo-fab-tests" } Else { "/mnt/ergo-fab-tests" }
+  Set-Var "ERGOFAB_TESTS_DATA_FOLDER" "$ERGOFAB_TESTS_DATA_FOLDER"
   Set-Var "ERGOFAB_TESTS_MASTER_CONNECTIONSTRING" "TrustServerCertificate=True;Data Source=$sql_instance_name;$sql_security_parameters;Encrypt=False;"
   Set-Var "ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING" "Server=$sql_instance_name;Encrypt=False;Initial Catalog=SqlInsights Local Warehouse;$sql_security_parameters;"
-  Set-Var "ERGOFAB_TESTS_REPORT_FULLNAME" "$SYSTEM_ARTIFACTSDIRECTORY\ErgFab Tests Report.txt"
+  Set-Var "ERGOFAB_TESTS_REPORT_FULLNAME" "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\ErgFab Tests Report.txt"
 
   Say "Setup SQL Storage Tests"
   Set-Var "SQLINSIGHTS_CONNECTION_STRING" "TrustServerCertificate=True;Data Source=$sql_instance_name;$sql_security_parameters;Pooling = true; Encrypt=false"
