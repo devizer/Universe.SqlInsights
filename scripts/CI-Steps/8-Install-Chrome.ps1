@@ -1,4 +1,8 @@
 . "$PSScriptRoot\Functions.ps1"
+if ((Get-OS-Platform) -eq "Windows") {
+    & choco feature enable -n allowGlobalConfirmation
+    & choco feature disable -n showDownloadProgress
+}
 
 Say "Installing chrome ..."
 # choco install googlechrome --version 144.0.7559.97 --ignore-checksums
