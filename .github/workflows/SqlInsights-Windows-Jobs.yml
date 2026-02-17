@@ -135,8 +135,8 @@ jobs:
         run: . .\scripts\CI-Steps\Run-CI-Script.ps1 3-Install-SQL-Server.ps1
         if: ${{ env.OS == 'Windows' }}
 
-      - name: Publish SQL Setup Logs
-        if: always()
+      - name: Publish SQL Setup Logs (Windows only)
+        if: ${{ env.OS == 'Windows' }}
         uses: actions/upload-artifact@v4
         with:
           name: SQL Setup Logs ${{ matrix.SQL }} ${{ github.run_attempt }}
