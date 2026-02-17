@@ -8,8 +8,13 @@ Get-Content "index.html"
 # Either host or container
 dotnet tool install -g dotnet-serve
 
-Add-Folder-To-User-Path "$($ENV:USERPROFILE)\.dotnet\tools"
-$ENV:PATH="$($ENV:USERPROFILE)\.dotnet\tools;$($ENV:PATH)"
+if ((Get-Os-Platform) -eq "Windows") {
+  Add-Folder-To-User-Path "$($ENV:USERPROFILE)\.dotnet\tools"
+  $ENV:PATH="$($ENV:USERPROFILE)\.dotnet\tools;$($ENV:PATH)"
+}
+Else {
+  $ENV:PATH="$($ENV:USERPROFILE)/.dotnet/tools:$($ENV:PATH)"
+}
 
 Say "About dotnet serve"
 & dotnet serve --version 2>$null
