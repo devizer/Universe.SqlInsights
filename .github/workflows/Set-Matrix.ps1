@@ -22,6 +22,14 @@ function Create-GitHub-Output-Var([string] $Name, [string] $Value, [switch] $Sho
 Import-DevOps
 
 Enumerate-Plain-SQLServer-Downloads | % { [pscustomobject] $_ } | ft -autosize | out-string -width 222 | tee-object "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\Plain-SQLServer-Downloads.Table.txt"
+<# 
+  SQL_CONTAINER_SUFFIX
+
+  Windows: it means optional container "ltsc{value}"
+  Linux: it means mandatory sql server tag: "{value}-latest"
+
+  TODO: Move logic to Set-Matrix.ps1
+#>
 
 $jobs_linux=@()
 foreach($run_on in "24.04", "22.04") {
