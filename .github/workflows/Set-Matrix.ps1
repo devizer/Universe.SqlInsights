@@ -81,7 +81,7 @@ Say "[Size $SqlSetSize on $HostVersion] Github Windows Matrix Formatted-JSON"
 Write-Host $matrix_string_formatted
 
 Say "[Size $SqlSetSize on $HostVersion] Github Windows Jobs Table"
-$jobs_windows | ft -autosize | out-string -width 222 | tee-object "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\Windows-Jobs.Table.txt"
+$jobs | ft -autosize | out-string -width 222 | tee-object "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\Windows-Jobs.Table.txt"
 
 Say "[Size $SqlSetSize on $HostVersion] Github Windows Matrix Mini-JSON"
 Write-Host $matrix_string_mini
