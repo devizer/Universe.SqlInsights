@@ -17,7 +17,7 @@ jobs:
   The-Job:
     name: ${{ matrix.SQL }}
     # OS: Windows|Ubuntu, # HOST: 2022, 2025, 22.04, 24.04
-    runs-on: "windows-${{ matrix.HOST }}"
+    runs-on: "${{ matrix.RUNS_ON }}"
     strategy:
       max-parallel: 20
       fail-fast: false
