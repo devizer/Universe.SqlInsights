@@ -279,7 +279,6 @@ Set-Var "TEST_SQL_NET_DURATION_OF_Ping" "200"
 
 Set-Var "SQLINSIGHTS_REPORT_FOLDER" "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)"
 Set-Var "SQLINSIGHTS_REPORT_FULLNAME" "$($ENV:SQLINSIGHTS_REPORT_FOLDER)\SqlInsights Report.txt"
-$SQLINSIGHTS_DATA_DIR = If ((Get-OS-Platform) -eq "Windows") { "$root_drive\SQL-DATA" } Else { "/var/tmp" }
 
   Say "Setup ErgoFab Tests"
 
@@ -293,6 +292,9 @@ $SQLINSIGHTS_DATA_DIR = If ((Get-OS-Platform) -eq "Windows") { "$root_drive\SQL-
   Set-Var "ERGOFAB_TESTS_MASTER_CONNECTIONSTRING" "TrustServerCertificate=True;Data Source=$sql_instance_name;$sql_security_parameters;Encrypt=False;"
   Set-Var "ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING" "Server=$sql_instance_name;Encrypt=False;Initial Catalog=SqlInsights Local Warehouse;$sql_security_parameters;"
   Set-Var "ERGOFAB_TESTS_REPORT_FULLNAME" "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\ErgFab Tests Report.txt"
+
+  $SQLINSIGHTS_DATA_DIR = If ((Get-OS-Platform) -eq "Windows") { "$root_drive\SQL-DATA" } Else { "$ERGOFAB_TESTS_DATA_FOLDER" }
+  Set-Var "SQLINSIGHTS_DATA_DIR" "$SQLINSIGHTS_DATA_DIR"
 
   Say "Setup SQL Storage Tests"
   Set-Var "SQLINSIGHTS_CONNECTION_STRING" "TrustServerCertificate=True;Data Source=$sql_instance_name;$sql_security_parameters;Pooling = true; Encrypt=false"
