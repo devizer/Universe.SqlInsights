@@ -210,8 +210,13 @@ function Show-Dotnet-And-Chrome-Processes([string] $title) {
 }
 
 function Get-OS-Name() {
-  $osName = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -EA SilentlyContinue | Select-Object -ExpandProperty ProductName
-  "$osName".Trim()
+ if ((Get-OS-Platform) -eq "Windows") {
+     $osName = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -EA SilentlyContinue | Select-Object -ExpandProperty ProductName
+  } Else {
+     $cmd = '. /etc/os-release; echo "$PRETTY_NAME"'
+     $osName = "$(& bash -c $cmd)"
+  }
+  return "$osName".Trim()
 }
 
 function Show-OS() {
