@@ -6,6 +6,7 @@
       if (-not "$ENV:RAM_DISK") { $ENV:NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES = "True" } # for query cache
       $data_dir="C:\SQL-Data"
       if (Test-Path "D:\") { $data_dir="D:\SQL-Data" }
+      if ((Get-Os-Platform) -ne "Windows") { $data_dir = $null }
       $ENV:SQLINSIGHTS_DATA_DIR = "$data_dir"
       $ENV:TEST_CPU_NAME = "$(Get-Cpu-Name)"
       $ENV:TEST_CONFIGURATION = "DISK";

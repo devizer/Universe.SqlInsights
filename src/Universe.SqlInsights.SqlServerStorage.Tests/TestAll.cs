@@ -53,6 +53,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
 
 
                 Console.WriteLine($"CreateStorage::CreateDbIfNotExists[{connectionString}]");
+                Console.Write($"[Debug] TestEnv.OptionalDbDataDir = '{TestEnv.OptionalDbDataDir}'");
                 SqlServerDbExtensions.CreateDbIfNotExists(connectionString, TestEnv.OptionalDbDataDir, initialDataSize: 64);
                 var migrations = new SqlServerSqlInsightsMigrations(provider, connectionString)
                 {
