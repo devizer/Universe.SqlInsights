@@ -14,7 +14,7 @@ $ENV:ConnectionStrings__SqlInsights="TrustServerCertificate=True;Data Source=$($
 
 Smart-Start-Process "dotnet" "Universe.SqlInsights.W3Api.dll"
 
-Sleep 60
+Start-Sleep -Seconds 60
 Show-Chrome-Program-List
 
 Show-Dotnet-And-Chrome-Processes "ALL is Started"

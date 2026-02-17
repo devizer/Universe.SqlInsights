@@ -180,7 +180,7 @@ jobs:
            pwsh .\scripts\CI-Steps\9-Run-w3app.ps1
            . .\scripts\CI-Steps\Functions.ps1
            Say "PROCESSES: chrome"
-           Sleep 13
+           Start-Sleep -Seconds 13
            Show-Chrome-Processes
         if: ${{ !cancelled() }}
         # if: false
