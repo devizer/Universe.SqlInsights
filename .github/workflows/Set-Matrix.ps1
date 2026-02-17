@@ -71,7 +71,7 @@ if ($SqlSetSize -eq "FULL") {
 
 $jobs = @( @($jobs_linux) + @($jobs_windows) )
 foreach($job in $jobs) {
-  Add-Member -InputObject $job -MemberType NoteProperty -Name 'RUNS_ON' -Value "$($job.OS)-$($job.HOST)".ToLowerCase()
+  Add-Member -InputObject $job -MemberType NoteProperty -Name 'RUNS_ON' -Value "$($job.OS)-$($job.HOST)".ToLower()
 }
 $matrix_object = @{ include = $jobs }
 $matrix_string_mini = $matrix_object | ConvertTo-Json -Depth 64 -Compress
