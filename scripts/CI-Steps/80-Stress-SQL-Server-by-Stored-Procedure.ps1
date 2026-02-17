@@ -2,6 +2,7 @@
 
 $instance="$ENV:SQL_INSTANCE_NAME"
 $connectionString="Data Source=$instance; Integrated Security=SSPI;Encrypt=False"
+$connectionString="$ENV:SQLINSIGHTS_CONNECTION_STRING"
 if ("$($ENV:STRESS_CONNECTION_STRING)" -ne "") { $connectionString = "$($ENV:STRESS_CONNECTION_STRING)"; }
 Write-Host "Invoke a commands set on instance '$i'"
 Say "SQL Server for Stress: [$connectionString]"

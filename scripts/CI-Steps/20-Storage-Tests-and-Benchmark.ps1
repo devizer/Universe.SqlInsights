@@ -1,6 +1,6 @@
 . "$PSScriptRoot\Functions.ps1"
 
-      cd C:\App\Goods\w3api.tests
+      cd Goods\w3api.tests
 
       Say "Full Storage Test With Coverage"
       if (-not "$ENV:RAM_DISK") { $ENV:NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES = "True" } # for query cache
