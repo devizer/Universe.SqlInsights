@@ -249,6 +249,8 @@ if (Test-Path "D:\") {
   $sqlMediaFolder = "C:\SQL-Media"; $sqlSetupFolder = "C:\SQL-Setup"; $sqlInstallTo = "C:\SQL"; $root_drive="C:"
 }
 
+Set-Var "SQL_PASSWORD" 'p@assw0rd!'
+
 Set-Var "SQLSERVERS_SETUP_FOLDER" "$sqlSetupFolder"
 Set-Var "SQLSERVERS_MEDIA_FOLDER" "$sqlMediaFolder"
 Set-Var "SQLSERVERS_INSTALL_TO" "$sqlInstallTo"
@@ -256,6 +258,7 @@ Set-Var "PS1_REPO_DOWNLOAD_FOLDER" "C:\Temp-DevOps"
 Set-Var "DOTNET_CLI_TELEMETRY_OPTOUT" "1"
 
 $sql_instance_name=if ("$($ENV:SQL_INSTANCE_NAME)") { $ENV:SQL_INSTANCE_NAME } Else { "(local)" }
+if ((Get-OS-Platform) -ne "Windows") { $sql_instance_name="127.0.0.1,1433" }
 Set-Var "SQL_INSTANCE_NAME" "$sql_instance_name"
 
 Set-Var "SQL_ADMINISTRATIVE_VIEWS_SUMMARY_1_Cpu_Title" "CPU"
@@ -278,17 +281,19 @@ Set-Var "SQLINSIGHTS_REPORT_FOLDER" "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)"
 Set-Var "SQLINSIGHTS_REPORT_FULLNAME" "$($ENV:SQLINSIGHTS_REPORT_FOLDER)\SqlInsights Report.txt"
 
   Say "Setup ErgoFab Tests"
+
+  $sql_security_parameters=if ((Get-OS-Platform) -eq "Windows") { "Integrated Security=SSPI" } Else { "User ID=sa; Passwrd=$($ENV:SQL_PASSWORD)" }
   $NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES=""
   if ( "$env:RAM_DISK" -eq "" ) { $NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES="True" }
   Set-Var "NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES" "$NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES"
 
   Set-Var "ERGOFAB_TESTS_DATA_FOLDER" "$($root_drive)\ergo-fab-tests"
-  Set-Var "ERGOFAB_TESTS_MASTER_CONNECTIONSTRING" "TrustServerCertificate=True;Data Source=$sql_instance_name;Integrated Security=SSPI;Encrypt=False;"
-  Set-Var "ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING" "Server=$sql_instance_name;Encrypt=False;Initial Catalog=SqlInsights Local Warehouse;Integrated Security=SSPI;"
+  Set-Var "ERGOFAB_TESTS_MASTER_CONNECTIONSTRING" "TrustServerCertificate=True;Data Source=$sql_instance_name;$sql_security_parameters;Encrypt=False;"
+  Set-Var "ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING" "Server=$sql_instance_name;Encrypt=False;Initial Catalog=SqlInsights Local Warehouse;$sql_security_parameters;"
   Set-Var "ERGOFAB_TESTS_REPORT_FULLNAME" "$SYSTEM_ARTIFACTSDIRECTORY\ErgFab Tests Report.txt"
 
   Say "Setup SQL Storage Tests"
-  Set-Var "SQLINSIGHTS_CONNECTION_STRING" "TrustServerCertificate=True;Data Source=$sql_instance_name;Integrated Security=SSPI;Pooling = true; Encrypt=false"
+  Set-Var "SQLINSIGHTS_CONNECTION_STRING" "TrustServerCertificate=True;Data Source=$sql_instance_name;$sql_security_parameters;Pooling = true; Encrypt=false"
   Set-Var "TEST_CONFIGURATION" "DISK";
   Set-Var "TEST_CPU_NAME" "$(Get-Cpu-Name -IncludeCoreCount)"
   Set-Var "OS" "$(Get-OS-Name)"

@@ -10,7 +10,8 @@ $ENV:ASPNETCORE_URLS="http://*:50420"
 $logsFolder = "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\SqlInsights Dashboard Logs"
 $ENV:LocalLogsFolder__Windows = "$logsFolder"
 $ENV:LocalLogsFolder__Enable = "True"
-$ENV:ConnectionStrings__SqlInsights="TrustServerCertificate=True;Data Source=$($ENV:SQL_INSTANCE_NAME);Integrated Security=SSPI;Initial Catalog=SqlInsights Local Warehouse;Encrypt=False"
+$sql_security_parameters=if ((Get-OS-Platform) -eq "Windows") { "Integrated Security=SSPI" } Else { "User ID=sa; Passwrd=$($ENV:SQL_PASSWORD)" }
+$ENV:ConnectionStrings__SqlInsights="TrustServerCertificate=True;Data Source=$($ENV:SQL_INSTANCE_NAME);$sql_security_parameters;Initial Catalog=SqlInsights Local Warehouse;Encrypt=False"
 
 Smart-Start-Process "dotnet" "Universe.SqlInsights.W3Api.dll"
 
