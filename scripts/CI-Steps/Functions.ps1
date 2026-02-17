@@ -300,7 +300,7 @@ Set-Var "SQLINSIGHTS_REPORT_FULLNAME" "$($ENV:SQLINSIGHTS_REPORT_FOLDER)\SqlInsi
   Set-Var "SQLINSIGHTS_CONNECTION_STRING" "TrustServerCertificate=True;Data Source=$sql_instance_name;$sql_security_parameters;Pooling = true; Encrypt=false"
   Set-Var "TEST_CONFIGURATION" "DISK";
   Set-Var "TEST_CPU_NAME" "$(Get-Cpu-Name -IncludeCoreCount)"
-  Set-Var "OS" "$(Get-OS-Name)"
+  Set-Var "OS_TITLE" "$(Get-OS-Name)"
   Set-Var "TESTS_FOR_MOT_DISABLED" "False"
 
   # Say "Setup W3API"
