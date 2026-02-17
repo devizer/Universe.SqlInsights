@@ -64,7 +64,7 @@ jobs:
           Set-Var "RUNS_ON" "${{ matrix.RUNS_ON }}"
           Set-Var "OS" "${{ matrix.OS }}"
 
-          $docker_image_full = if ($ENV:OS -eq "Windows") { "devizervlad/iis-net4x-net35:($ENV:SQL_IMAGE_TAG)" } Else { "mcr.microsoft.com/mssql/server:${$ENV:SQL_IMAGE_TAG}" }
+          $docker_image_full = if ($ENV:OS -eq "Windows") { "devizervlad/iis-net4x-net35:$($ENV:SQL_IMAGE_TAG)" } Else { "mcr.microsoft.com/mssql/server:$($ENV:SQL_IMAGE_TAG)" }
           Set-Var "DOCKER_IMAGE_FULL" "$docker_image_full"
 
 
