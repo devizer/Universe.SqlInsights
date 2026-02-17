@@ -62,7 +62,40 @@ function Smart-Start-Process([string] $exe, [string] $parameters, [int] $guard_t
 
 function Find-Chrome-Program-List() {
    $ret = @()
-   foreach($candidate in @("C:\Program Files (x86)\Chromium\Application\chrome.exe", "C:\Program Files\Chromium\Application\chrome.exe", "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", "C:\Program Files\Google\Chrome\Application\chrome.exe")) {
+   # Any OS, but search in the PATH only
+   foreach($cmd_name in @("chromium", "google-chrome")) { 
+     $commands = @(Get-Command "$cmd_name" -CommandType Application -EA SilentlyContinue)
+     foreach($cmd in $commands) {
+        $cmd_source = "$($cmd.Source)"
+        $raw_version_output=$(& "$cmd_source" --version)
+        # Write-Host "[Debug] Version for '"$cmd_source"': [$raw_version_output]"
+        $raw_version = $null;
+        if ($raw_version_output -match '\d+\.\d+\.\d+\.\d+') {
+            $raw_version = $matches[0]
+            # Write-Host "[Debug]      raw_version = [$raw_version]"
+            if ($raw_version_output -match '^(.*?)\s*(\d+\.\d+\.\d+\.\d+)') {
+                $raw_product_name = $matches[1].Trim()
+                # $version = $matches[2]
+            }
+        }
+        $ver = $raw_version
+        $product = $raw_product_name
+        $description = "Browser '$product' v$($ver) location is '$cmd_source'"
+        if (($ver) -and ($product)) {
+            $ret += [pscustomobject] @{ FullPath = $cmd_source; Version = $ver; Product = $product; Description = $description}
+        }
+     }
+   }
+ 
+   # Windows Only, search by hardcoded location
+   $candidates = @()
+   $exe_list = @("Google\Chrome\Application\chrome.exe", "Chromium\Application\chrome.exe")
+   foreach($pf in Find-ProgramFiles-Folders) { foreach ($exe_part in $exe_list) {
+     $exe = Combine-Path $pf $exe_part;
+     if (Test-Path $exe) { $candidates += $exe }
+   }}
+   # $candidates = @("C:\Program Files (x86)\Chromium\Application\chrome.exe", "C:\Program Files\Chromium\Application\chrome.exe", "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", "C:\Program Files\Google\Chrome\Application\chrome.exe")
+   foreach($candidate in $candidates) {
      if (Test-Path $candidate) { 
          try { 
             $info = (Get-Item "$candidate").VersionInfo; 
@@ -74,6 +107,12 @@ function Find-Chrome-Program-List() {
      }
    }
    @($ret | Sort-Object -Property @{ Expression = { To-Sortable-Version-String $_.Version }; Ascending = $true })
+}
+
+function Find-ProgramFiles-Folders() {
+  $candidates = @("${Env:ProgramFiles}", "${Env:ProgramFiles(x86)}", "C:\Program Files", "C:\Program Files (x86)", "$ENV:SystemDrive\Program Files", "$ENV:SystemDrive\Program Files (x86)")
+  $candidates = @($candidates | Sort-Object | Get-Unique)
+  return $candidates
 }
 
 function Find-Chrome-Program() {
@@ -92,7 +131,7 @@ function Show-Chrome-Program-List() {
      Write-Line -TextMagenta "Pre-installed $($chrome_list.Count) chrome or chromium:"; 
      foreach($chrome in $chrome_list) { Write-Line -TextMagenta "  $($chrome.Description)" }
   } Else { 
-     Write-Line -TextMagenta "Missing any Chrome and Chromium (Not Found)" 
+     Write-Line -TextMagenta "[Show-Chrome-Program-List] Missing any Chrome and Chromium (Not Found)" 
   }
 }
 
