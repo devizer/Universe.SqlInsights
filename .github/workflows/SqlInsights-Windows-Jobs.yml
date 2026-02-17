@@ -57,9 +57,11 @@ jobs:
           }
           Set-Var "SQL_IMAGE_TAG" "$SQL_IMAGE_TAG"
 
-          $SQL="${{ matrix.SQL }}: MSSQLSERVER"
+          $SQL="${{ matrix.SQL }}"
+          if ($SQL -notmatch "LocalDB" -and "${{ matrix.OS }}" -eq "Windows") { $SQL="${{ matrix.SQL }}: MSSQLSERVER" }
           Set-Var "SQL" "$SQL"
 
+          # Windows Only
           $SQL_IMAGE_ISOLATION="hyperv"
           Set-Var "SQL_IMAGE_ISOLATION" "$SQL_IMAGE_ISOLATION"
 
