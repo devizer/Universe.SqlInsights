@@ -21,7 +21,14 @@ function Create-GitHub-Output-Var([string] $Name, [string] $Value, [switch] $Sho
 
 Import-DevOps
 
-Enumerate-Plain-SQLServer-Downloads | % { [pscustomobject] $_ } | ft -autosize | out-string -width 222 | tee-object "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\Plain-SQLServer-Downloads.Table.txt"
+Enumerate-Plain-SQLServer-Downloads | 
+   % { [pscustomobject] $_ } | 
+   Select-Object -Property MediaType, Version, UpdateId, NormalizedKeywords, Keywords |
+   Format-Table -autosize | 
+   out-string -width 110 | 
+   tee-object "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\Plain-SQLServer-Downloads.Table.txt"
+
+
 <# 
   SQL_CONTAINER_SUFFIX
 
