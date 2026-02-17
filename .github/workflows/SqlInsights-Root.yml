@@ -82,12 +82,12 @@ jobs:
         overwrite: true
         compression-level: 1
 
-  # Run Window Matrix
-  Windows:
+  # Run Window and Linux Matrix
+  TheJobsMatrix:
     # on ${{ needs.Pre-Build.outputs.HOST_VERSION }}
     name: ${{ needs.Pre-Build.outputs.SQL_SET_SIZE }} Set
     needs: Pre-Build
-    uses: ./.github/workflows/SqlInsights-Windows-Jobs.yml
+    uses: ./.github/workflows/SqlInsights-TheJobsMatrix.yml
     with:
       matrix: ${{ needs.Pre-Build.outputs.matrix }}
       SQL_SET_SIZE: ${{ needs.Pre-Build.outputs.SQL_SET_SIZE }}
@@ -95,7 +95,7 @@ jobs:
 
   Combine:
     runs-on: ubuntu-latest
-    needs: [Pre-Build, Windows]
+    needs: [Pre-Build, TheJobsMatrix]
     if: always()
     timeout-minutes: 20
     steps:
