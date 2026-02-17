@@ -224,17 +224,17 @@ function Set-Var {
 Function BroadCast-Variables() {
     if ((Get-OS-Platform) -ne "Windows") { return; }
     try {
-        # Сигнатура Win32 API
+        # Win32 API Signature
         $signature = '[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
                       public static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint Msg, UIntPtr wParam, string lParam, uint fuFlags, uint uTimeout, out UIntPtr lpdwResult);'
 
-        # Добавляем тип (с проверкой, чтобы избежать ошибок при повторном вызове)
+        # Add type once
         if (-not ([System.Management.Automation.PSTypeName]"Win32.NativeMethods").Type) {
             Add-Type -MemberDefinition $signature -Name "NativeMethods" -Namespace "Win32"
         }
 
         $result = [UIntPtr]::Zero
-        # Используем [ref] вместо out
+        # Ref instead of [out]
         $ret = [Win32.NativeMethods]::SendMessageTimeout([IntPtr]0xffff, 0x001A, [UIntPtr]::Zero, "Environment", 0x02, 1000, [ref]$result)
         
         Write-Line -TextGreen "Broadcast variables success, SendMessageTimeout() --> $ret, [ref] result = $result"
