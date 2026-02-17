@@ -25,7 +25,7 @@ $script_pre="Write-Line -TextMagenta ('$title_at '+(Get-Memory-Info).Description
 $script_post = ('if ($Global:LASTEXITCODE) { Write-Line -TextRed "ERROR! STEP ' + $file + ' failed. Exit Code $($Global:LASTEXITCODE)"; exit 1; }')
 
 $relative_file = "scripts\CI-Steps\$file"
-if (-not $is_container) {
+if (-not $is_container -or (Get-OS-Platform) -eq "Linux") {
   Say "Invoking locally [$relative_file]"
   Write-Host "Current Directory: $(Get-Location)"
   powershell -c "$script_pre; . `"$relative_file`"; $script_post"
