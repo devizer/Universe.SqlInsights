@@ -149,8 +149,9 @@ function Set-Var {
     try {
         $prev_value = [Environment]::GetEnvironmentVariable($Name)
         Set-Content -Path "Env:$Name" -Value $Value
-        $registryPath = "HKCU:\Environment"
-        Set-ItemProperty -Path $registryPath -Name $Name -Value $Value -ErrorAction Stop
+        if ((Get-Os-Platform) -eq "Windows" ) {
+           Set-ItemProperty -Path "HKCU:\Environment" -Name $Name -Value $Value -ErrorAction Stop
+        }
 
         $has_github_env = [bool] ("$env:GITHUB_ENV".Trim().Length -ne 0)
         if ((Is-GITHUB-ACTIONS) -and $has_github_env) {
@@ -167,10 +168,11 @@ function Set-Var {
 
         if ("$prev_value" -ne $Value) {
            Write-Line "Env Variable " -TextMagenta "'$Name'" -Reset " set to " -TextGreen "'$Value'"
-           $PSNativeCommandArgumentPassing = "Legacy" # does not affect Start-Process
-           # Start-Process "setx" -ArgumentList @("`"$Name`"", "`"$Value`"") -WindowStyle Hidden # supported by powershell 2.0
-           & setx "$Name" "$Value" >$null
-           # Write-Host "Variable '$Name' set to '$Value'." -ForegroundColor Green
+           if ((Get-Os-Platform) -eq "Windows" ) {
+               $PSNativeCommandArgumentPassing = "Legacy" # does not affect Start-Process
+               # Start-Process "setx" -ArgumentList @("`"$Name`"", "`"$Value`"") -WindowStyle Hidden # supported by powershell 2.0
+               & setx "$Name" "$Value" >$null
+           }
         }
     }
     catch {
