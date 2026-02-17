@@ -1,13 +1,12 @@
 . "$PSScriptRoot\Functions.ps1"
 
-cd C:\App\Goods\w3api
+cd Goods\w3api
 $ENV:ASPNETCORE_URLS="http://*:50420"
-
 
 
 # Start-Process "dotnet" -ArgumentList "Universe.SqlInsights.W3Api.dll".Split(" ") -NoNewWindow
 # & { dotnet Universe.SqlInsights.W3Api.dll } &
-$logsFolder = "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\SqlInsights Dashboard Logs"
+$logsFolder = Combine-Path "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)" "SqlInsights Dashboard Logs"
 $ENV:LocalLogsFolder__Windows = "$logsFolder"
 $ENV:LocalLogsFolder__Enable = "True"
 $sql_security_parameters=if ((Get-OS-Platform) -eq "Windows") { "Integrated Security=SSPI" } Else { "User ID=sa; Password=$($ENV:SQL_PASSWORD)" }
