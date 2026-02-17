@@ -25,6 +25,7 @@ $script_pre="Write-Line -TextMagenta ('$title_at '+(Get-Memory-Info).Description
 $script_post = ('if ($Global:LASTEXITCODE) { Write-Line -TextRed "ERROR! STEP ' + $file + ' failed. Exit Code $($Global:LASTEXITCODE)"; exit 1; }')
 
 $relative_file = "scripts\CI-Steps\$file"
+$relative_file = Combine-Path "scripts" "CI-Steps" "$file"
 if (-not $is_container -or (Get-OS-Platform) -eq "Linux") {
   $ps=if ((Get-OS-Platform) -eq "Windows") { "powershell"} Else { "pwsh" }
   Say "Invoking locally [$relative_file] using '$ps'"
