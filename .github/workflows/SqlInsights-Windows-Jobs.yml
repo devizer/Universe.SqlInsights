@@ -110,7 +110,7 @@ jobs:
       
       - name: RUN Linux Container
         shell: bash
-        if: ${{ env.SQL_IMAGE_TAG != '' && env.OS == 'Windows' }}
+        if: ${{ env.SQL_IMAGE_TAG != '' && env.OS == 'Ubuntu' }}
         run: bash -eu scripts/CI-Steps/0B-SETUP-Linux-Container.sh
 
       - name: '1.1-Install-Module.ps1 '
