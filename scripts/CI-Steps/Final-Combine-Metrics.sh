@@ -8,7 +8,7 @@
 
        Say "BUILDING COMBINED REPORT '$combined_report_file' using pattern [$pattern_file]"
 
-       found_success_jobs_file=$(mkdtemp)
+       found_success_jobs_file=$(mktemp)
        find "${SYSTEM_ARTIFACTSDIRECTORY}" -name "$pattern_file" > "$found_success_jobs_file"
        count="$(cat "$found_success_jobs_file" | wc -l)"
        index=0;
