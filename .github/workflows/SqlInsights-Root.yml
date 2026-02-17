@@ -55,7 +55,7 @@ jobs:
 
     - id: set-windows-matrix
       shell: pwsh
-      run: . .\.github\workflows\Set-Windows-Matrix.ps1 -SqlSetSize "${{ github.event.inputs.ARG_SQL_SET_SIZE }}" -HostVersion "${{ github.event.inputs.ARG_HOST_VERSION }}"
+      run: . .\.github\workflows\Set-Matrix.ps1 -SqlSetSize "${{ github.event.inputs.ARG_SQL_SET_SIZE }}" -HostVersion "${{ github.event.inputs.ARG_HOST_VERSION }}"
 
     - name: build all parallel
       run: |
