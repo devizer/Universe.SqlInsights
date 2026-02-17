@@ -26,14 +26,15 @@ $script_post = ('if ($Global:LASTEXITCODE) { Write-Line -TextRed "ERROR! STEP ' 
 
 $relative_file = "scripts\CI-Steps\$file"
 if (-not $is_container -or (Get-OS-Platform) -eq "Linux") {
-  Say "Invoking locally [$relative_file]"
-  Write-Host "Current Directory: $(Get-Location)"
-  powershell -c "$script_pre; . `"$relative_file`"; $script_post"
+  $ps=if ((Get-OS-Platform) -eq "Windows") { "powershell"} Else { "pwsh" }
+  Say "Invoking locally [$relative_file] using '$ps'"
+  Write-Host "Current HOST Directory: $(Get-Location)"
+  & "$ps" -c "$script_pre; . `"$relative_file`"; $script_post"
 }
 Else
 {
    Say "Invoking in container [$relative_file]"
-   Write-Host "Current Directory: $(Get-Location)"
+   Write-Host "Current HOST Directory: $(Get-Location)"
    # & docker exec sql-server powershell -f "$relative_file"
    & docker exec sql-server powershell -c "$script_pre; . `"$relative_file`"; $script_post"
 }
