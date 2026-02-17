@@ -2,6 +2,8 @@
 
 cd Goods\w3api\wwwroot
 
+Show-Chrome-Program-List
+
 Say "index.html as file"
 Get-Content "index.html"
 
