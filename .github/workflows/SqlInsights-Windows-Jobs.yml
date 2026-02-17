@@ -77,11 +77,13 @@ jobs:
       - name: Show Arguments and Pre-Build Content
         run: |
           Import-DevOps
-          Say "SQL:     [${{ matrix.SQL }}]"
-          Say "RUNS_ON: [${{ matrix.RUNS_ON }}]"
-          Say "OS:      [${{ matrix.OS }}]"
-          Say "HOST:    [${{ matrix.HOST }}]"
-          Say "SQL_CONTAINER_SUFFIX: [${{ matrix.SQL_CONTAINER_SUFFIX }}]"
+          Write-Line -TextGreen "SQL:                  [${{ matrix.SQL }}]"
+          Write-Line -TextGreen "RUNS_ON:              [${{ matrix.RUNS_ON }}]"
+          Write-Line -TextGreen "OS:                   [${{ matrix.OS }}]"
+          Write-Line -TextGreen "HOST:                 [${{ matrix.HOST }}]"
+          Write-Line -TextGreen "DOCKER_IMAGE_FULL:    [$ENV:DOCKER_IMAGE_FULL]"
+          Write-Line -TextGreen "SQL_CONTAINER_SUFFIX: [${{ matrix.SQL_CONTAINER_SUFFIX }}]"
+          
           foreach($f in ".\Goods", ".\Goods\w3api", ".\Goods\w3api\wwwroot", "$ENV:SYSTEM_ARTIFACTSDIRECTORY") {
              Say "$f content"
              ls $f | ft -autosize
