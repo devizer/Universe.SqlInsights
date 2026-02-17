@@ -22,16 +22,16 @@ foreach($ver in @("6.0", "8.0", "10.0")) {
   }
 }
 
-Add-Folder-To-System-Path "C:\Program Files\dotnet"
 
-$tools_folder="$($ENV:USERPROFILE)\.dotnet\tools"
-New-item "$tools_folder" -ItemType Directory -Force -EA SilentlyContinue | Out-Null
-Add-Folder-To-User-Path "$tools_folder"
-
-& "C:\Program Files\dotnet\dotnet" --info
-
-Say "Installing dotnet serve ..."
-& "C:\Program Files\dotnet\dotnet" tool install --global dotnet-serve
-
-
-# popd
+If ((Get-OS-Platform) -eq "Windows") {
+   Add-Folder-To-System-Path "C:\Program Files\dotnet"
+   $tools_folder="$($ENV:USERPROFILE)\.dotnet\tools"
+   New-item "$tools_folder" -ItemType Directory -Force -EA SilentlyContinue | Out-Null
+   Add-Folder-To-User-Path "$tools_folder"
+   & "C:\Program Files\dotnet\dotnet" --info
+   Say "Installing dotnet serve (windows) ..."
+   & "C:\Program Files\dotnet\dotnet" tool install --global dotnet-serve
+} Else {
+   Say "Installing dotnet serve (linux) ..."
+   & dotnet tool install --global dotnet-serve
+}
