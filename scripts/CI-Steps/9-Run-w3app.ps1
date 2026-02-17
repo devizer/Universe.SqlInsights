@@ -41,9 +41,10 @@ Start-Sleep -Seconds 9
 Show-Chrome-Processes
 
 
+# --no-progress-meter was introduced in version 7.67, 2019
 Say "Validate http connection to http://localhost:6060"
-& (Get-Command curl -CommandType Application | Select-Object -First 1).Source -I http://localhost:6060
+& (Get-Command curl -CommandType Application | Select-Object -First 1).Source --no-progress-meter -I http://localhost:6060
 Say "curl http://localhost:6060"
-& (Get-Command curl -CommandType Application | Select-Object -First 1).Source http://localhost:6060
+& (Get-Command curl -CommandType Application | Select-Object -First 1).Source --no-progress-meter http://localhost:6060
 
 Say "Frontend launch completed"
