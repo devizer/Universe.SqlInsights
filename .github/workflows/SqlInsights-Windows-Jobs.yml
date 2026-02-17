@@ -164,6 +164,11 @@ jobs:
         run: . .\scripts\CI-Steps\Run-CI-Script.ps1 8-Install-Chrome.ps1
         # if: always()
         if: false
+
+      - name: '8-Install-Chrome-on-Linux.sh'
+        shell: bash
+        run: . ./scripts/CI-Steps/8-Install-Chrome-on-Linux.sh
+        if: ${{ env.OS != 'Windows' }}
       
         # The Step is optional (Frontend always on Host)
       - name: '9-Run-w3app.ps1'
