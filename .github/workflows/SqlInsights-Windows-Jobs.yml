@@ -14,8 +14,9 @@ on:
         type: string
 
 jobs:
-  Windows-Job:
+  The-Job:
     name: ${{ matrix.SQL }}
+    # OS: Windows|Ubuntu, # HOST: 2022, 2025, 22.04, 24.04
     runs-on: "windows-${{ matrix.HOST }}"
     strategy:
       max-parallel: 20
@@ -33,7 +34,7 @@ jobs:
         uses: devizer/devops-library@main
       - name: 'Store Job Name'
         shell: bash
-        run: 'echo ${{ matrix.SQL }} | tee $SYSTEM_ARTIFACTSDIRECTORY/JOB-NAME.TXT'
+        run: 'echo ${{ matrix.SQL }} | tee $SYSTEM_ARTIFACTSDIRECTORY/JOB-NAME.TXT; printenv | sort'
       - name: Download Pre-Build Artifacts
         uses: actions/download-artifact@v4
         with:
@@ -60,23 +61,36 @@ jobs:
           if ("$SQL" -match "LocalDB") { $SQL_INSTANCE_NAME='(LocalDB)\MSSQLLocalDB'; }
           Set-Var "SQL_INSTANCE_NAME" "$SQL_INSTANCE_NAME"
 
+          Set-Var "RUNS_ON" "${{ matrix.RUNS_ON }}"
+          Set-Var "OS" "${{ matrix.OS }}"
+
+          $docker_image_full = if ($ENV:OS -eq "Windows") { "devizervlad/iis-net4x-net35:($ENV:SQL_IMAGE_TAG)" } Else { "mcr.microsoft.com/mssql/server:${$ENV:SQL_IMAGE_TAG}" }
+          Set-Var "DOCKER_IMAGE_FULL" "$docker_image_full"
+
+
       - name: Show Arguments and Pre-Build Content
         run: |
           Import-DevOps
-          Say "SQL: [${{ matrix.SQL }}]"
+          Say "SQL:     [${{ matrix.SQL }}]"
+          Say "RUNS_ON: [${{ matrix.RUNS_ON }}]"
+          Say "OS:      [${{ matrix.OS }}]"
+          Say "HOST:    [${{ matrix.HOST }}]"
+          Say "SQL_CONTAINER_SUFFIX: [${{ matrix.SQL_CONTAINER_SUFFIX }}]"
           foreach($f in ".\Goods", ".\Goods\w3api", ".\Goods\w3api\wwwroot", "$ENV:SYSTEM_ARTIFACTSDIRECTORY") {
              Say "$f content"
              ls $f | ft -autosize
           }
 
-      - name: 'Tune Docker'
-        if: ${{ env.SQL_IMAGE_TAG != '' }}
+      - name: 'Tune Windows Docker'
+        if: ${{ env.SQL_IMAGE_TAG != '' && env.OS == 'Windows' }}
         run: Import-DevOps; Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Move-Docker-to-SSD-for-Windows-On-Microsoft-Hosted-Build-Agent.ps1
       
       - name: 'List Perfmormance Counters'
+        if: ${{ env.OS == 'Windows' }}
         run: (Get-Counter -ListSet *).Paths | Where-Object { $_ -like "*Transfers*" }
 
       - name: 'Show Transfer for 20 seconds'
+        if: ${{ env.OS == 'Windows' }}
         run: Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 7
 
       - name: Pull Docker Image
@@ -84,9 +98,9 @@ jobs:
         shell: bash
         run: . '.\scripts\CI-Steps\0A-Pull-Docker-Image.sh'
 
-      - name: RUN Container
+      - name: RUN Windows Container
         uses: nick-fields/retry@v3
-        if: ${{ env.SQL_IMAGE_TAG != '' }}
+        if: ${{ env.SQL_IMAGE_TAG != '' && env.OS == 'Windows' }}
         with:
           timeout_minutes: 10
           max_attempts: 4
@@ -94,17 +108,22 @@ jobs:
           retry_wait_seconds: 2
           command: $ErrorActionPreference="Stop"; . .\scripts\CI-Steps\0B-SETUP-Windows-Container.ps1
       
+      - name: RUN Linux Container
+        shell: bash
+        if: ${{ env.SQL_IMAGE_TAG != '' && env.OS == 'Windows' }}
+        run: bash -eu scripts/CI-Steps/0B-SETUP-Linux-Container.sh
+
       - name: '1.1-Install-Module.ps1 '
         run: . .\scripts\CI-Steps\Run-CI-Script.ps1 1.1-Install-Module.ps1
-        if: '!cancelled()'
+        if: ${{ !cancelled() }}
 
       - name: '2-Install-DotNet.ps1'
         run: . .\scripts\CI-Steps\Run-CI-Script.ps1 2-Install-DotNet.ps1
-        if: '!cancelled()'
+        if: ${{ !cancelled() }}
 
       - name: '3-Install-SQL-Server.ps1'
         run: . .\scripts\CI-Steps\Run-CI-Script.ps1 3-Install-SQL-Server.ps1
-        if: '!cancelled()'
+        if: ${{ !cancelled() }}
 
       - name: Publish SQL Setup Logs
         if: always()

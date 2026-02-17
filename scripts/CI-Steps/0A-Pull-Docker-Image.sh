@@ -1,3 +1,3 @@
-        image="devizervlad/iis-net4x-net35:$SQL_IMAGE_TAG"
+        image="$DOCKER_IMAGE_FULL"
         Say "Pull $image ..."
         try-and-retry docker pull $image || true
