@@ -21,7 +21,7 @@ if (-not (Test-Path C:\App) -and (Get-OS-Platform) -eq "Windows") {
 
 $is_container = [bool]("$($ENV:SQL_IMAGE_TAG)" -ne "")
 $title_at = If ($is_container) { "CONTAINER" } Else { "HOST" }
-$script_pre="Write-Line -TextMagenta ('$title_at '+(Get-Memory-Info).Description); `$ErrorActionPreference='Stop';"
+$script_pre="Write-Line -TextMagenta ('$title_at '+(Get-Memory-Info).Description); Write-Host ('LOCATION: ' + (Get-Location).ToString()); `$ErrorActionPreference='Stop';"
 $script_post = ('if ($Global:LASTEXITCODE) { Write-Line -TextRed "ERROR! STEP ' + $file + ' failed. Exit Code $($Global:LASTEXITCODE)"; exit 1; }')
 
 $relative_file = "scripts\CI-Steps\$file"
