@@ -2,8 +2,10 @@
 
 Write-Host "Location: $(Get-Location)"
 echo "`$PSNativeCommandArgumentPassing = [$PSNativeCommandArgumentPassing]"
-& choco feature enable -n allowGlobalConfirmation
-& choco feature disable -n showDownloadProgress
+if ((Get-OS-Platform) -eq "Windows") {
+    & choco feature enable -n allowGlobalConfirmation
+    & choco feature disable -n showDownloadProgress
+}
 
 
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
