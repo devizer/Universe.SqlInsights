@@ -1,4 +1,7 @@
-Set-SQLServer-Options -Title "SQL Server $ENV:SQL_INSTANCE_NAME" -Instance "$ENV:SQL_INSTANCE_NAME" -Options @{ 
+$connectionString="$ENV:SQLINSIGHTS_CONNECTION_STRING"
+
+# Set-SQLServer-Options -Title "SQL Server $ENV:SQL_INSTANCE_NAME" -Instance "$ENV:SQL_INSTANCE_NAME" -Options @{ 
+Set-SQLServer-Options -Title "SQL Server $ENV:SQL_INSTANCE_NAME" -ConnectionString "$connectionString" -Options @{ 
   xp_cmdshell = $true; 
   "clr enabled" = $false; 
   "server trigger recursion" = $true; 
