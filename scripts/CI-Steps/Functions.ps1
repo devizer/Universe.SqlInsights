@@ -282,7 +282,7 @@ Set-Var "SQLINSIGHTS_REPORT_FULLNAME" "$($ENV:SQLINSIGHTS_REPORT_FOLDER)\SqlInsi
 
   Say "Setup ErgoFab Tests"
 
-  $sql_security_parameters=if ((Get-OS-Platform) -eq "Windows") { "Integrated Security=SSPI" } Else { "User ID=sa; Passwrd=$($ENV:SQL_PASSWORD)" }
+  $sql_security_parameters=if ((Get-OS-Platform) -eq "Windows") { "Integrated Security=SSPI" } Else { "User ID=sa; Password=$($ENV:SQL_PASSWORD)" }
   $NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES=""
   if ( "$env:RAM_DISK" -eq "" ) { $NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES="True" }
   Set-Var "NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES" "$NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES"
