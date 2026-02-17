@@ -159,11 +159,9 @@ jobs:
         run: . .\scripts\CI-Steps\Run-CI-Script.ps1 7-SqlJam-Tests.ps1
         if: ${{ !cancelled() }}
 
-        # The Step is optional (Frontend always on Host)
-      - name: '8-Install-Chrome.ps1'
-        run: . .\scripts\CI-Steps\Run-CI-Script.ps1 8-Install-Chrome.ps1
-        # if: always()
-        if: false
+      - name: '8-Install-Chrome-on-Windows.ps1'
+        run: . .\scripts\CI-Steps\Run-CI-Script.ps1 8-Install-Chrome-on-Windows.ps1
+        if: ${{ matrix.OS == 'Windows' }}
 
       - name: '8-Install-Chrome-on-Linux.sh'
         shell: bash
@@ -179,7 +177,6 @@ jobs:
         # Frontend always on Host
       - name: 'RUN w3app on host'
         run: |
-           pwsh .\scripts\CI-Steps\8-Install-Chrome.ps1
            pwsh .\scripts\CI-Steps\9-Run-w3app.ps1
            . .\scripts\CI-Steps\Functions.ps1
            Say "PROCESSES: chrome"
