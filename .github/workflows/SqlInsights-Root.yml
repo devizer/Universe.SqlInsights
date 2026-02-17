@@ -84,7 +84,8 @@ jobs:
 
   # Run Window Matrix
   Windows:
-    name: ${{ needs.Pre-Build.outputs.SQL_SET_SIZE }} Set on ${{ needs.Pre-Build.outputs.HOST_VERSION }}
+    # on ${{ needs.Pre-Build.outputs.HOST_VERSION }}
+    name: ${{ needs.Pre-Build.outputs.SQL_SET_SIZE }} Set
     needs: Pre-Build
     uses: ./.github/workflows/SqlInsights-Windows-Jobs.yml
     with:
