@@ -51,7 +51,7 @@ jobs:
           if ("${{ matrix.SQL_CONTAINER_SUFFIX }}") { 
             if ((Get-Os-Platform) -eq "Windows") {
                $SQL_IMAGE_TAG="ltsc${{ matrix.SQL_CONTAINER_SUFFIX }}"; 
-            Else {
+            } Else {
                $SQL_IMAGE_TAG="${{ matrix.SQL_CONTAINER_SUFFIX }}-latest"; 
             }
           }
