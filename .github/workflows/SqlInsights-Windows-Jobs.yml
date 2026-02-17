@@ -96,7 +96,7 @@ jobs:
       - name: Pull Docker Image
         if: ${{ env.SQL_IMAGE_TAG != '' }}
         shell: bash
-        run: . '.\scripts\CI-Steps\0A-Pull-Docker-Image.sh'
+        run: . './scripts/CI-Steps/0A-Pull-Docker-Image.sh'
 
       - name: RUN Windows Container
         uses: nick-fields/retry@v3
