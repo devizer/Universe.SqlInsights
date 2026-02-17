@@ -52,3 +52,5 @@
         Say "Starting Setup in Container"
         & docker exec sql-server powershell -Command "cd C:\App; Write-Line -TextGreen 'Success: Container is Running and Has C:\App';" |
           tee-object "$ENV:SYSTEM_ARTIFACTSDIRECTORY/OUTPUT from CONTAINER.txt"
+
+        if ($Global:LASTEXITCODE) { Write-Line -TextRed "ERROR! RUN CONTAINER (0B-SETUP-Windows-Container.ps1) failed. Exit Code $($Global:LASTEXITCODE)"; exit 1; }
