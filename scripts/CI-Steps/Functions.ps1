@@ -279,6 +279,7 @@ Set-Var "TEST_SQL_NET_DURATION_OF_Ping" "200"
 
 Set-Var "SQLINSIGHTS_REPORT_FOLDER" "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)"
 Set-Var "SQLINSIGHTS_REPORT_FULLNAME" "$($ENV:SQLINSIGHTS_REPORT_FOLDER)\SqlInsights Report.txt"
+$SQLINSIGHTS_DATA_DIR = If ((Get-OS-Platform) -eq "Windows") { "$root_drive\SQL-DATA" } Else { "/var/tmp" }
 
   Say "Setup ErgoFab Tests"
 
