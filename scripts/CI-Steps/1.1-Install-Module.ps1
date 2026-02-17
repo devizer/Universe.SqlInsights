@@ -21,6 +21,3 @@ Write-Artifact-Info "OS-NAME.TXT" "$(Get-OS-Name)"
 Write-Artifact-Info "CPU-NAME.TXT" "$(Get-Cpu-Name -includeCoreCount)"
 Write-Artifact-Info "MEMORY-INFO.TXT" "$((Get-Memory-Info).Description)"
 # TODO: Write SQL Version to SQL-VERSION.TXT
-
-
-

@@ -1,4 +1,5 @@
-﻿Import-DevOps
+﻿Write-Host "[DEBUG] Starting 'Functions.ps1'"
+Import-DevOps
 
 $ErrorActionPreference = "Stop"
 
@@ -8,6 +9,7 @@ function Is-AZURE_PIPELINE() { $ENV:TF_BUILD -eq "true" }
 function Get-FreePort { $listener = [System.Net.Sockets.TcpListener]0; $listener.Start(); $port = $listener.LocalEndpoint.Port; $listener.Stop(); return $port }
 
 function Mute-RebootRequired-State() {
+  if ((Get-OS-Platform) -ne "Windows") { return; }
   Write-Line -TextCyan "[Mute-RebootRequired-State] Starting ..."
         # 1. Component Based Servicing
   $__ = Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootPending" -Recurse -Force -ErrorAction SilentlyContinue
@@ -168,8 +170,8 @@ function Set-Var {
 
         if ("$prev_value" -ne $Value) {
            Write-Line "Env Variable " -TextMagenta "'$Name'" -Reset " set to " -TextGreen "'$Value'"
+           $PSNativeCommandArgumentPassing = "Legacy" # does not affect Start-Process
            if ((Get-Os-Platform) -eq "Windows" ) {
-               $PSNativeCommandArgumentPassing = "Legacy" # does not affect Start-Process
                # Start-Process "setx" -ArgumentList @("`"$Name`"", "`"$Value`"") -WindowStyle Hidden # supported by powershell 2.0
                & setx "$Name" "$Value" >$null
            }
@@ -181,6 +183,7 @@ function Set-Var {
 }
 
 Function BroadCast-Variables() {
+    if ((Get-OS-Platform) -ne "Windows") { return; }
     try {
         # Сигнатура Win32 API
         $signature = '[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
@@ -206,7 +209,9 @@ Function BroadCast-Variables() {
 
 function Show-Dotnet-And-Chrome-Processes([string] $title) {
   Say "[$title]: DOTNET and CHROME Processes"
-  Select-WMI-Objects Win32_Process | Select-Object ProcessId, Name, @{Name="WS(MB)"; Expression={[math]::Round($_.WorkingSetSize / 1MB, 1)}}, CommandLine | ? { $_.Name -match "chrome" -or $_.Name -match "dotnet" } | Sort-Object Name | ft -AutoSize | Out-String -width 200
+  try { 
+     Select-WMI-Objects Win32_Process | Select-Object ProcessId, Name, @{Name="WS(MB)"; Expression={[math]::Round($_.WorkingSetSize / 1MB, 1)}}, CommandLine | ? { $_.Name -match "chrome" -or $_.Name -match "dotnet" } | Sort-Object Name | ft -AutoSize | Out-String -width 200
+  } catch { Write-Line -TextRed "[Select-WMI-Objects Win32_Process] ERROR: $($_.Exception.Message)" }
 }
 
 function Get-OS-Name() {
