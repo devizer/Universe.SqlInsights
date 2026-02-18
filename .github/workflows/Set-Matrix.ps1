@@ -50,7 +50,7 @@ foreach($SQL_IMAGE_TAG in "2025", "2022", "2019", "2017") {
      $sql = "$SQL_IMAGE_TAG"
      $job_title = "$SQL_IMAGE_TAG $LINUX_MSSQL_PID (Linux)"
      $container_tag = "$SQL_IMAGE_TAG"
-     $jobs_linux += [pscustomobject] @{ JOB_TITLE=$job_title; SQL=$sql; OS="Ubuntu"; HOST=$run_on; SQL_CONTAINER_SUFFIX=$container_tag }
+     $jobs_linux += [pscustomobject] @{ JOB_TITLE=$job_title; SQL=$sql; OS="Ubuntu"; HOST=$run_on; SQL_CONTAINER_SUFFIX=$container_tag; LINUX_MSSQL_PID="$LINUX_MSSQL_PID" }
 }
 }
 }
@@ -83,7 +83,7 @@ foreach($meta in Enumerate-Plain-SQLServer-Downloads) {
   if ($sql -match 'LocalDB') { $container_tag=$null }
   # Probably we need container for '2017 LocalDB'
   # if ($sql -match '2017 LocalDB') { $container_tag="2022" }
-  $jobs_windows += [pscustomobject] @{ JOB_TITLE=$sql; SQL=$sql; OS="Windows"; HOST=$run_on; SQL_CONTAINER_SUFFIX=$container_tag }
+  $jobs_windows += [pscustomobject] @{ JOB_TITLE=$sql; SQL=$sql; OS="Windows"; HOST=$run_on; SQL_CONTAINER_SUFFIX=$container_tag;; LINUX_MSSQL_PID=$null }
 }
 
 if ($SqlSetSize -eq "FULL") {
