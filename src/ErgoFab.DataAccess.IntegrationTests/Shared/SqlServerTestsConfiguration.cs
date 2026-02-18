@@ -11,8 +11,10 @@ public class SqlServerTestsConfiguration : ISqlServerTestsConfiguration
 
     // Microsoft (Trust Server Certificate=True;Encrypt=False)
     // public string MasterConnectionString { get; } = "Data Source=tcp:(local)\\dev_2019;Integrated Security=True;Pooling=true;Timeout=30;Trust Server Certificate=True;";
-    public string Provider { get; } = "System";
+    public string Provider { get; } = GetEnvProvider();
 
+    static string GetEnvProvider() => 
+        Environment.GetEnvironmentVariable("ERGOFAB_SQL_PROVIDER") ?? "System";
 
     public string DbNamePrefix { get; } = "Ergo Fab";
     public string BackupFolder { get; } = GetDbDataSubFolder("Integration Tests", "Backup");

@@ -1,13 +1,15 @@
-﻿using System.Reflection;
-using System.Runtime.Versioning;
-using ErgoFab.DataAccess.IntegrationTests.Shared;
+﻿using ErgoFab.DataAccess.IntegrationTests.Shared;
 using NUnit.Framework.Interfaces;
+using System.Reflection;
+using System.Runtime.Versioning;
 using Tracking;
 using Universe.NUnitPipeline;
 using Universe.NUnitPipeline.SqlServerDatabaseFactory;
 using Universe.SqlInsights.NUnit;
 using Universe.SqlInsights.Shared;
 using Universe.SqlInsights.SqlServerStorage;
+using Universe.SqlServerJam;
+using Universe.SqlTrace;
 
 
 // Single shared configuration for all the test assemblies
@@ -15,6 +17,14 @@ public class OrderedPipelineConfiguration
 {
     public static void Configure()
     {
+        // As of now it depends on Env VAR "ERGO_FAB_SQL_PROVIDER", default is "Microsoft"
+        if (SqlServerTestsConfiguration.Instance.Provider == "Microsoft")
+        {
+            var microsoftProvider = Microsoft.Data.SqlClient.SqlClientFactory.Instance;
+            SqlServerJamConfiguration.SqlProviderFactory = microsoftProvider;
+            SqlTraceConfiguration.DbProvider = microsoftProvider;
+        }
+
         PipelineLog.LogTrace($"[{typeof(OrderedPipelineConfiguration)}]::Configure()");
 
         var reportConfiguration = NUnitPipelineConfiguration.GetService<NUnitReportConfiguration>();

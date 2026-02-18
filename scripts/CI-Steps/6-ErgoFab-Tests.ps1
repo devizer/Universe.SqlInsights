@@ -7,6 +7,9 @@ cd Goods\ergofab.tests
 $ENV:ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING="Server=$ENV:SQL_INSTANCE_NAME;Encrypt=False;Initial Catalog=SqlInsights Local Warehouse;Integrated Security=SSPI"
 $ENV:ERGOFAB_TESTS_REPORT_FULLNAME="$SYSTEM_ARTIFACTSDIRECTORY\ErgFab Tests Report.txt"
 
+$ENV:ERGOFAB_SQL_PROVIDER = if ((Get-OS-Platform) -ne "Windows") { "Microsoft" } Else { "System" }
+Say "ERGOFAB_SQL_PROVIDER = [$ERGOFAB_SQL_PROVIDER]"
+
 & dotnet test ErgoFab.DataAccess.IntegrationTests.dll 2>&1 | Tee-Object "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\ErgoFab.DataAccess.IntegrationTests.dll.log"
 Show-Last-Exit-Code "TEST ErgoFab.DataAccess.IntegrationTests.dll"
 
