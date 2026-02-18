@@ -21,6 +21,7 @@ function Create-GitHub-Output-Var([string] $Name, [string] $Value, [switch] $Sho
 
 Import-DevOps
 
+Say "Enumerate-Plain-SQLServer-Downloads"
 Enumerate-Plain-SQLServer-Downloads | 
    % { [pscustomobject] $_ } | 
    Select-Object -Property MediaType, Version, UpdateId, NormalizedKeywords, Keywords |
@@ -46,8 +47,8 @@ foreach($LINUX_MSSQL_PID in "Developer", "Express") {
 foreach($SQL_IMAGE_TAG in "2025", "2022", "2019", "2017") { 
      # on linux SQL is just a title
      $sql = "$SQL_IMAGE_TAG on Ubuntu $run_on"
-     $sql = "$SQL_IMAGE_TAG on Ubuntu"
-     $job_title = "$SQL_IMAGE_TAG $LINUX_MSSQL_PID on Ubuntu"
+     $sql = "$SQL_IMAGE_TAG"
+     $job_title = "$SQL_IMAGE_TAG $LINUX_MSSQL_PID (Linux)"
      $container_tag = "$SQL_IMAGE_TAG"
      $jobs_linux += [pscustomobject] @{ JOB_TITLE=$job_title; SQL=$sql; OS="Ubuntu"; HOST=$run_on; SQL_CONTAINER_SUFFIX=$container_tag }
 }
