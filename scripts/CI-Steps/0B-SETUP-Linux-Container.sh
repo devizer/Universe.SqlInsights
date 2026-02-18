@@ -6,10 +6,10 @@
   sudo apt-get update -qq; sudo apt-get install libkrb5-3 zlib1g libunwind8 libuuid1 -y
 
   Say "Kerberos (libgss,libkrb) binaries: "
-  ldconfig -p | { grep "libgss\|libkrb" || true; }
+  ldconfig -p | { grep "libgss\|libkrb\|libk5crypto\|libcom" || true; }
 
   Say "Kerberos (libgss,libkrb) packages: "
-  list-packages | { grep "libkrb\|gss" || true; }
+  list-packages | { grep "libkrb\|libgss\|libcom\|libk5crypto\|krb5" || true; }
 
   Say "Existing Lib SSL binaries"
   ldconfig -p | { grep "libssl\|libcrypto" || true; }
