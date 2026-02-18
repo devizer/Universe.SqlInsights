@@ -115,8 +115,8 @@ jobs:
         bash -eu scripts/CI-Steps/Final-Combine-Metrics.sh
         cd ${{ env.SYSTEM_ARTIFACTSDIRECTORY }}
         cd $SYSTEM_ARTIFACTSDIRECTORY;
-        rm -rf Pre-Build;
         cd RAW
+        rm -rf Pre-Build
         7z a -sdel -mx=9 -ms=on -mqs=on "$SYSTEM_ARTIFACTSDIRECTORY/Combined SqlInsights Matrix ${{ needs.Pre-Build.outputs.SQL_SET_SIZE }} on ${{ needs.Pre-Build.outputs.HOST_VERSION }}.7z"; 
         # Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Pack-each-Artifact-per-Archive.sh -9 -7z
 
