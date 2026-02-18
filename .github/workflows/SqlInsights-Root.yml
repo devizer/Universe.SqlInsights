@@ -117,7 +117,7 @@ jobs:
         cd $SYSTEM_ARTIFACTSDIRECTORY;
         cd RAW
         rm -rf Pre-Build
-        7z a -sdel -mx=9 -ms=on -mqs=on "$SYSTEM_ARTIFACTSDIRECTORY/Combined SqlInsights Matrix ${{ needs.Pre-Build.outputs.SQL_SET_SIZE }} on ${{ needs.Pre-Build.outputs.HOST_VERSION }}.7z"; 
+        time 7z a -md=2048m -sdel -mx=9 -ms=on -mqs=on "$SYSTEM_ARTIFACTSDIRECTORY/Combined SqlInsights Matrix ${{ needs.Pre-Build.outputs.SQL_SET_SIZE }} on ${{ needs.Pre-Build.outputs.HOST_VERSION }}.7z"; 
         # Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Pack-each-Artifact-per-Archive.sh -9 -7z
 
     - name: Upload artifacts
