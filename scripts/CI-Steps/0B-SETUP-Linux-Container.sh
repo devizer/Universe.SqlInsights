@@ -21,7 +21,7 @@
          -v /mnt/ergo-fab-tests:/mnt/ergo-fab-tests \
          -e "ACCEPT_EULA=Y" \
          -e "MSSQL_SA_PASSWORD=$password" \
-         -e "MSSQL_PID=$edition"
+         -e "MSSQL_PID=$edition" \
          -p 1433:1433 -d "$img"
       docker exec -t sqlserver ls -la /tmp
 
