@@ -4,8 +4,8 @@ $ENV:NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES = "True"
 # if [[ "${RAM_DISK:-}" == "" ]]; then export NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES=True; fi # for query cache
 cd Goods\ergofab.tests
 # export ERGOFAB_TESTS_DATA_FOLDER="D:\\ErgFab-Tests"
-$ENV:ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING="Server=$ENV:SQL_INSTANCE_NAME;Encrypt=False;Initial Catalog=SqlInsights Local Warehouse;Integrated Security=SSPI"
-$ENV:ERGOFAB_TESTS_REPORT_FULLNAME="$SYSTEM_ARTIFACTSDIRECTORY\ErgFab Tests Report.txt"
+
+# TODO: Authentication=SqlPassword
 
 $ENV:ERGOFAB_SQL_PROVIDER = if ((Get-OS-Platform) -ne "Windows") { "Microsoft" } Else { "System" }
 Say "ERGOFAB_SQL_PROVIDER = [$ERGOFAB_SQL_PROVIDER]"
