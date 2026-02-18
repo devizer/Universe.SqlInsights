@@ -39,10 +39,13 @@ Enumerate-Plain-SQLServer-Downloads |
 #>
 
 $jobs_linux=@()
-foreach($run_on in "24.04", "22.04") {
+$ubuntu_list=@("24.04", "22.04")
+$ubuntu_list=@("24.04")
+foreach($run_on in $ubuntu_list) {
 foreach($SQL_IMAGE_TAG in "2025", "2022", "2019", "2017") { 
      # on linux SQL is just a title
      $sql = "$SQL_IMAGE_TAG on Ubuntu $run_on"
+     $sql = "$SQL_IMAGE_TAG on Ubuntu"
      $container_tag = "$SQL_IMAGE_TAG"
      $jobs_linux += [pscustomobject] @{ SQL=$sql; OS="Ubuntu"; HOST=$run_on; SQL_CONTAINER_SUFFIX=$container_tag }
 }
