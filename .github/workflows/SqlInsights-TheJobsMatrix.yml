@@ -18,6 +18,7 @@ jobs:
     name: ${{ matrix.SQL }}
     # OS: Windows|Ubuntu, # HOST: 2022, 2025, 22.04, 24.04
     runs-on: "${{ matrix.RUNS_ON }}"
+    timeout-minutes: 70
     strategy:
       max-parallel: 20
       fail-fast: false
@@ -132,6 +133,7 @@ jobs:
         if: ${{ !cancelled() }}
 
       - name: '3-Install-SQL-Server.ps1 (Windows only)'
+        timeout-minutes: 30
         run: . .\scripts\CI-Steps\Run-CI-Script.ps1 3-Install-SQL-Server.ps1
         if: ${{ matrix.OS == 'Windows' }}
 
