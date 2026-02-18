@@ -3,7 +3,13 @@
 
   Say "Install .net dependencies"
   Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/install-dotnet-dependencies.sh
-  sudo apt-get update -qq; sudo apt-get install libkrb5-3 zlib1g libunwind8 libuuid1 -y -qq
+  sudo apt-get update -qq; sudo apt-get install libkrb5-3 zlib1g libunwind8 libuuid1 -y
+
+  Say "Kerberos (libgss,libkrb) binaries: "
+  ldconfig -p | { grep "libgss\|libkrb" || true; }
+
+  Say "Kerberos (libgss,libkrb) packages: "
+  list-packages | { grep "libkrb\|gss" || true; }
 
   Say "Existing Lib SSL binaries"
   ldconfig -p | { grep "libssl\|libcrypto" || true; }
