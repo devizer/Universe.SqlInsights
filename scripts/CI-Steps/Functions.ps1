@@ -343,6 +343,11 @@ Set-Var "SQLINSIGHTS_REPORT_FULLNAME" "$SQLINSIGHTS_REPORT_FULLNAME"
   Set-Var "OS_TITLE" "$(Get-OS-Name)"
   Set-Var "TESTS_FOR_MOT_DISABLED" "False"
 
+  if ((Get-Os-Platform) -eq "Windows") {
+     Say "Setup Jam Tests on Linux"
+     Set-Var "SQLSERVER_WELLKNOWN_Linux" "$ENV:SQLINSIGHTS_CONNECTION_STRING"
+  }
+
   # Say "Setup W3API"
 
 
