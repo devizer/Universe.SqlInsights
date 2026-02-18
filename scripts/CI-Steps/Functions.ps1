@@ -333,7 +333,7 @@ Set-Var "SQLINSIGHTS_REPORT_FULLNAME" "$SQLINSIGHTS_REPORT_FULLNAME"
   Set-Var "ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING" "Server=$sql_instance_name;Encrypt=False;Initial Catalog=SqlInsights Local Warehouse;$sql_security_parameters;"
   Set-Var "ERGOFAB_TESTS_REPORT_FULLNAME" "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\ErgFab Tests Report.txt"
   $ERGOFAB_SQL_PROVIDER = if ((Get-OS-Platform) -ne "Windows") { "Microsoft" } Else { "System" }
-  Set-Var "ERGOFAB_SQL_PROVIDER" "System"
+  Set-Var "ERGOFAB_SQL_PROVIDER" "Microsoft"
 
 
 
