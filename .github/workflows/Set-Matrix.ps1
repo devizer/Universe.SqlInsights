@@ -41,8 +41,8 @@ Enumerate-Plain-SQLServer-Downloads |
 
 $jobs_linux=@()
 $ubuntu_list=@("24.04", "22.04")
-$ubuntu_list=@("24.04")
 $ubuntu_list=@("22.04")
+$ubuntu_list=@("24.04")
 foreach($run_on in $ubuntu_list) {
 foreach($LINUX_MSSQL_PID in "Developer", "Express") { 
 foreach($SQL_IMAGE_TAG in "2025", "2022", "2019", "2017") { 
