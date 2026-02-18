@@ -33,7 +33,7 @@ defaults:
 jobs:
 
   Pre-Build:
-    name: Pre-Build for ${{ needs.Pre-Build.outputs.SQL_SET_SIZE }} Set
+    name: Pre-Build for ${{ github.event.inputs.ARG_SQL_SET_SIZE }} Set
     runs-on: ubuntu-latest
     outputs:
           matrix: ${{ steps.set-windows-matrix.outputs.matrix }}
