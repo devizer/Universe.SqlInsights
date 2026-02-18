@@ -1,5 +1,19 @@
       set -eu; set -o pipefail;
       Say "CPU: $(Get-CpuName)"
+
+
+  Say "Existing Lib SSL binaries"
+  ldconfig -p | { grep "libssl\|libcrypto" || true; }
+  Say "Install Lib SSL 1.1 if required"
+  export INSTALL_DIR=/usr/local/libssl-1.1
+  mkdir -p $INSTALL_DIR
+  printf "\n$INSTALL_DIR\n" | sudo tee -a /etc/ld.so.conf >/dev/null || true
+  Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/install-libssl-1.1.sh
+  ldconfig || true
+  ldconfig -p | { grep "libssl\|libcrypto" || true; }
+  export INSTALL_DIR=
+
+      Say "Starting LINUX Container"
       v="";
       test -n "${RAM_DISK:-}" && v="-v ${RAM_DISK}:${RAM_DISK} -e MSSQL_DATA_DIR=${RAM_DISK}"
       echo "SQL Server Container Volume Options: [$v]"
