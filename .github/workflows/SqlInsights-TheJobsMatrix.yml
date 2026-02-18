@@ -15,7 +15,7 @@ on:
 
 jobs:
   The-Job:
-    name: ${{ matrix.SQL }}
+    name: ${{ matrix.JOB_TITLE }}
     # OS: Windows|Ubuntu, # HOST: 2022, 2025, 22.04, 24.04
     runs-on: "${{ matrix.RUNS_ON }}"
     timeout-minutes: 70
@@ -122,7 +122,7 @@ jobs:
           retry_wait_seconds: 2
           command: $ErrorActionPreference="Stop"; . .\scripts\CI-Steps\0B-SETUP-Windows-Container.ps1
       
-      - name: RUN Linux Container
+      - name: RUN SQL Server ${{ matrix.JOB_TITLE }} Linux Container
         shell: bash
         if: ${{ env.SQL_IMAGE_TAG != '' && env.OS == 'Ubuntu' }}
         run: bash -eu scripts/CI-Steps/0B-SETUP-Linux-Container.sh

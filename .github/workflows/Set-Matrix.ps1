@@ -42,12 +42,15 @@ $jobs_linux=@()
 $ubuntu_list=@("24.04", "22.04")
 $ubuntu_list=@("24.04")
 foreach($run_on in $ubuntu_list) {
+foreach($LINUX_MSSQL_PID in "Developer", "Express") { 
 foreach($SQL_IMAGE_TAG in "2025", "2022", "2019", "2017") { 
      # on linux SQL is just a title
      $sql = "$SQL_IMAGE_TAG on Ubuntu $run_on"
      $sql = "$SQL_IMAGE_TAG on Ubuntu"
+     $job_title = "$SQL_IMAGE_TAG $LINUX_MSSQL_PID on Ubuntu"
      $container_tag = "$SQL_IMAGE_TAG"
-     $jobs_linux += [pscustomobject] @{ SQL=$sql; OS="Ubuntu"; HOST=$run_on; SQL_CONTAINER_SUFFIX=$container_tag }
+     $jobs_linux += [pscustomobject] @{ JOB_TITLE=$job_title; SQL=$sql; OS="Ubuntu"; HOST=$run_on; SQL_CONTAINER_SUFFIX=$container_tag }
+}
 }
 }
 
@@ -63,6 +66,7 @@ foreach($meta in Enumerate-Plain-SQLServer-Downloads) {
       $isMini = [bool] ($sql -match "Core" -and $sql -notmatch "Update")
       $x86_to_skip = "2008-x86 2008R2-x86 2012-x86 2014-x86".Split(" ")
       foreach($skip in $x86_to_skip) { if ($sql -match $skip) { $isMini = $false; } }
+      if ($meta.Keywords -match "2022 LocalDB") { $isMini = $true }
       if ($SqlSetSize -eq "MINI" -and (-not $isMini)) { continue; }
   } elseif ($SqlSetSize -eq "LOCALDB") {
       # LocalDB Set
@@ -78,7 +82,7 @@ foreach($meta in Enumerate-Plain-SQLServer-Downloads) {
   if ($sql -match 'LocalDB') { $container_tag=$null }
   # Probably we need container for '2017 LocalDB'
   # if ($sql -match '2017 LocalDB') { $container_tag="2022" }
-  $jobs_windows += [pscustomobject] @{ SQL=$sql; OS="Windows"; HOST=$run_on; SQL_CONTAINER_SUFFIX=$container_tag }
+  $jobs_windows += [pscustomobject] @{ JOB_TITLE=$sql; SQL=$sql; OS="Windows"; HOST=$run_on; SQL_CONTAINER_SUFFIX=$container_tag }
 }
 
 if ($SqlSetSize -eq "FULL") {
