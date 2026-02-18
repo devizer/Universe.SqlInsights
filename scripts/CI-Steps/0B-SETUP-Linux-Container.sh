@@ -1,6 +1,8 @@
       set -eu; set -o pipefail;
       Say "CPU: $(Get-CpuName)"
 
+  Say "Install .net dependencies"
+  Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/install-dotnet-dependencies.sh
 
   Say "Existing Lib SSL binaries"
   ldconfig -p | { grep "libssl\|libcrypto" || true; }
