@@ -3,6 +3,7 @@
 
   Say "Install .net dependencies"
   Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/install-dotnet-dependencies.sh
+  sudo apt-get update -qq; sudo apt-get install libkrb5-3 zlib1g libunwind8 libuuid1 -y -qq
 
   Say "Existing Lib SSL binaries"
   ldconfig -p | { grep "libssl\|libcrypto" || true; }
