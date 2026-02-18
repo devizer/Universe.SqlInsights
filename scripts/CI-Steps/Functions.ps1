@@ -1,7 +1,7 @@
-﻿Write-Host "[DEBUG] Starting 'Functions.ps1'"
+﻿# Write-Host "[DEBUG] Starting 'Functions.ps1'"
+$ErrorActionPreference = "Stop"
 Import-DevOps
 
-$ErrorActionPreference = "Stop"
 
 function Is-GITHUB-ACTIONS() { $ENV:GITHUB_ACTIONS -eq "true" }
 function Is-AZURE_PIPELINE() { $ENV:TF_BUILD -eq "true" }
@@ -63,17 +63,17 @@ function Smart-Start-Process([string] $exe, [string] $parameters, [int] $guard_t
 function Find-Chrome-Program-List() {
    $ret = @()
    # Any OS, but search in the PATH only
-   foreach($cmd_name in @("chromium", "google-chrome")) { 
+   foreach($cmd_name in @("chromium", "google-chrome", "firefox")) { 
      $commands = @(Get-Command "$cmd_name" -CommandType Application -EA SilentlyContinue)
      foreach($cmd in $commands) {
         $cmd_source = "$($cmd.Source)"
         $raw_version_output=$(& "$cmd_source" --version)
         # Write-Host "[Debug] Version for '"$cmd_source"': [$raw_version_output]"
         $raw_version = $null;
-        if ($raw_version_output -match '\d+\.\d+\.\d+\.\d+') {
+        if ($raw_version_output -match '\d+\.\d+\.\d+') {
             $raw_version = $matches[0]
             # Write-Host "[Debug]      raw_version = [$raw_version]"
-            if ($raw_version_output -match '^(.*?)\s*(\d+\.\d+\.\d+\.\d+)') {
+            if ($raw_version_output -match '^(.*?)\s*(\d+\.\d+\.\d+)') {
                 $raw_product_name = $matches[1].Trim()
                 # $version = $matches[2]
             }
