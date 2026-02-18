@@ -103,9 +103,9 @@ jobs:
         if: ${{ matrix.OS == 'Windows' }}
         run: (Get-Counter -ListSet *).Paths | Where-Object { $_ -like "*Transfers*" }
 
-      - name: 'Show Transfer for 20 seconds'
+      - name: 'Show DISK IO for 20 seconds'
         if: ${{ matrix.OS == 'Windows' }}
-        run: Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 7
+        run: Get-Counter -Counter "\PhysicalDisk(_total)\Disk Transfers/sec" -SampleInterval 1 -MaxSamples 7 -EA SilentlyContinue
 
       - name: Pull Docker Image
         if: ${{ env.SQL_IMAGE_TAG != '' }}
