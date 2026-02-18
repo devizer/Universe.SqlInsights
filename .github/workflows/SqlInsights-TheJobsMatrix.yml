@@ -76,6 +76,8 @@ jobs:
           $docker_image_full = if ($ENV:OS -eq "Windows") { "devizervlad/iis-net4x-net35:$($ENV:SQL_IMAGE_TAG)" } Else { "mcr.microsoft.com/mssql/server:$($ENV:SQL_IMAGE_TAG)" }
           Set-Var "DOCKER_IMAGE_FULL" "$docker_image_full"
 
+          Set-Var "LINUX_MSSQL_PID" "${{ matrix.LINUX_MSSQL_PID }}"
+
 
       - name: Show Arguments and Pre-Build Content
         run: |
@@ -84,6 +86,7 @@ jobs:
           Write-Line -TextGreen "RUNS_ON:              [${{ matrix.RUNS_ON }}]"
           Write-Line -TextGreen "OS:                   [${{ matrix.OS }}]"
           Write-Line -TextGreen "HOST:                 [${{ matrix.HOST }}]"
+          Write-Line -TextGreen "LINUX_MSSQL_PID:      [${{ matrix.LINUX_MSSQL_PID }}]"
           Write-Line -TextGreen "DOCKER_IMAGE_FULL:    [$ENV:DOCKER_IMAGE_FULL]"
           Write-Line -TextGreen "SQL_CONTAINER_SUFFIX: [${{ matrix.SQL_CONTAINER_SUFFIX }}]"
           

@@ -15,10 +15,13 @@
       sudo chmod 777 -R /tmp/SqlInsights-Traces
       docker rm -f sqlserver 2>/dev/null
       password='p@assw0rd!'
+      edition="${LINUX_MSSQL_PID:-Express}"
       docker run --privileged --pull never --restart on-failure:666 --name sqlserver \
          $v \
          -v /mnt/ergo-fab-tests:/mnt/ergo-fab-tests \
-         -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$password" \
+         -e "ACCEPT_EULA=Y" \
+         -e "MSSQL_SA_PASSWORD=$password" \
+         -e "MSSQL_PID=$edition"
          -p 1433:1433 -d "$img"
       docker exec -t sqlserver ls -la /tmp
 
