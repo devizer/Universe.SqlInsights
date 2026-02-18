@@ -13,7 +13,7 @@ namespace ErgoFab.DataAccess.IntegrationTests;
 public class BackupRestoreTests
 {
     [Test]
-    public void ShowInfo()
+    public void _ShowInfo()
     {
         Console.WriteLine($"SqlServerTestsConfiguration.Instance.Provider: [{SqlServerTestsConfiguration.Instance.Provider}]");
         Console.WriteLine($"SqlServerTestsConfiguration.Instance.MasterConnectionString: [{SqlServerTestsConfiguration.Instance.MasterConnectionString}]");
