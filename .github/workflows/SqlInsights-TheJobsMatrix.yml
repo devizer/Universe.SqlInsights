@@ -35,7 +35,7 @@ jobs:
         uses: devizer/devops-library@main
       - name: 'Store Job Name'
         shell: bash
-        run: 'echo ${{ matrix.JOB_TITLE }} | tee $SYSTEM_ARTIFACTSDIRECTORY/JOB-NAME.TXT; printenv | sort'
+        run: 'echo "${{ matrix.JOB_TITLE }}" | tee $SYSTEM_ARTIFACTSDIRECTORY/JOB-NAME.TXT; printenv | sort'
       - name: Download Pre-Build Artifacts
         uses: actions/download-artifact@v4
         with:
