@@ -171,7 +171,7 @@ function Show-Chrome-Processes() {
       $chromes | Format-Table -autosize | Out-String -width 123 | Out-Host
     }
   } Else {
-    & bash -c "ps -aux | awk '`$6 != 0'"
+    & bash -c "ps -aux | awk '`$6 != 0' | grep 'chrome\|chromium\|firefox' | grep -vF 'chrome\|chromium\|firefox'"
   }
 }
 
