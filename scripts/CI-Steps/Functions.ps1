@@ -158,7 +158,7 @@ function Open-Url-By-Chrome-On-Windows([string] $url) {
 }
 
 function Show-Chrome-Processes() {
-  if ((Get-Os-Platofrm) -eq "Windows") {
+  if ((Get-Os-Platform) -eq "Windows") {
     $chromes = @(Get-Process | Where-Object { $_.ProcessName -match "chrome" })
 
     if (-not $chromes) {
@@ -175,7 +175,7 @@ function Show-Chrome-Processes() {
 }
 
 function Kill-Chrome() {
-  if ((Get-Os-Platofrm) -eq "Windows") {
+  if ((Get-Os-Platform) -eq "Windows") {
     & taskkill /f /t /im chrome.exe 2>$null
   } Else {
     foreach($cmd_name in @("chromium", "google-chrome", "firefox")) { 
