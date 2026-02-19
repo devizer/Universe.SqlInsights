@@ -179,7 +179,7 @@ function Kill-Chrome() {
     & taskkill /f /t /im chrome.exe 2>$null
   } Else {
     foreach($cmd_name in @("chromium", "google-chrome", "firefox")) { 
-      & pkill "$cmd_name"
+      & bash -c "pkill '$cmd_name' || true"
     }
   }
 }
