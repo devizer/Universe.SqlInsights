@@ -158,20 +158,30 @@ function Open-Url-By-Chrome-On-Windows([string] $url) {
 }
 
 function Show-Chrome-Processes() {
-  $chromes = @(Get-Process | Where-Object { $_.ProcessName -match "chrome" })
+  if (Is-Windows) {
+    $chromes = @(Get-Process | Where-Object { $_.ProcessName -match "chrome" })
 
-  if (-not $chromes) {
-    Write-Line -TextRed "No any chrome processes are running";
-  } else {
-    $megabytes = ($chromes | Measure-Object WorkingSet64 -Sum).Sum / 1MB
-    $megabytes = [Math]::Round($megabytes,1)
-    Say "Total $($chromes.Count) Chrome Processes are running, total $megabytes MB"
-    $chromes | Format-Table -autosize | Out-String -width 123 | Out-Host
+    if (-not $chromes) {
+      Write-Line -TextRed "No any chrome processes are running";
+    } else {
+      $megabytes = ($chromes | Measure-Object WorkingSet64 -Sum).Sum / 1MB
+      $megabytes = [Math]::Round($megabytes,1)
+      Say "Total $($chromes.Count) Chrome Processes are running, total $megabytes MB"
+      $chromes | Format-Table -autosize | Out-String -width 123 | Out-Host
+    }
+  } Else {
+    & bash -c "ps -aux | awk '$6 != 0'"
   }
 }
 
 function Kill-Chrome() {
-  & taskkill /f /t /im chrome.exe 2>$null
+  if (Is-Windows) {
+    & taskkill /f /t /im chrome.exe 2>$null
+  } Else {
+    foreach($cmd_name in @("chromium", "google-chrome", "firefox")) { 
+      & pkill "$cmd_name"
+    }
+  }
 }
 
 function show-mem() {
