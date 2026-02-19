@@ -53,7 +53,7 @@ function Smart-Start-Process([string] $exe, [string] $parameters, [int] $guard_t
            Write-Line -TextRed $msg
            throw $msg
        } Else {
-           $msg = "SICCESS: `"$exe`" $parameters successfully completed"
+           $msg = "SUCCESS: `"$exe`" $parameters successfully completed"
            Write-Line -TextGreen $msg
        }
    }
@@ -272,7 +272,7 @@ function Show-OS() {
 }
 
 function Write-Artifact-Info([string] $file, [string] $content) {
-  $fullName="$Env:SYSTEM_ARTIFACTSDIRECTORY\$file"
+  $fullName = Combine-Path "$Env:SYSTEM_ARTIFACTSDIRECTORY" "$file"
   $trimmed="$content".Trim()
   Say "Writing [$trimmed] to [$fullName]"
   [System.IO.File]::WriteAllText($fullName, $trimmed)
@@ -336,7 +336,6 @@ Set-Var "SQLINSIGHTS_REPORT_FULLNAME" "$SQLINSIGHTS_REPORT_FULLNAME"
   Set-Var "ERGOFAB_TESTS_REPORT_FULLNAME" "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\ErgFab Tests Report.txt"
   $ERGOFAB_SQL_PROVIDER = if ((Get-OS-Platform) -ne "Windows") { "Microsoft" } Else { "System" }
   Set-Var "ERGOFAB_SQL_PROVIDER" "Microsoft"
-
 
 
   $SQLINSIGHTS_DATA_DIR = If ((Get-OS-Platform) -eq "Windows") { "$root_drive\SQL-DATA" } Else { "$ERGOFAB_TESTS_DATA_FOLDER" }
