@@ -35,7 +35,7 @@ jobs:
         uses: devizer/devops-library@main
       - name: 'Store Job Name'
         shell: bash
-        run: 'echo ${{ matrix.SQL }} | tee $SYSTEM_ARTIFACTSDIRECTORY/JOB-NAME.TXT; printenv | sort'
+        run: 'echo ${{ matrix.JOB_TITLE }} | tee $SYSTEM_ARTIFACTSDIRECTORY/JOB-NAME.TXT; printenv | sort'
       - name: Download Pre-Build Artifacts
         uses: actions/download-artifact@v4
         with:
@@ -226,7 +226,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: 'If ${{ matrix.SQL }}'
+          name: 'If ${{ matrix.JOB_TITLE }}
           path: ${{ env.SYSTEM_ARTIFACTSDIRECTORY }}
           overwrite: true
           compression-level: 9
