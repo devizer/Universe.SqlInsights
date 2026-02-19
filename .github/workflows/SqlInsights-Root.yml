@@ -36,9 +36,9 @@ jobs:
     name: Pre-Build for ${{ github.event.inputs.ARG_SQL_SET_SIZE }} Set
     runs-on: ubuntu-latest
     outputs:
-          matrix: ${{ steps.set-windows-matrix.outputs.matrix }}
-          SQL_SET_SIZE: ${{ steps.set-windows-matrix.outputs.SQL_SET_SIZE }}
-          HOST_VERSION: ${{ steps.set-windows-matrix.outputs.HOST_VERSION }}
+          matrix: ${{ steps.set-matrix.outputs.matrix }}
+          SQL_SET_SIZE: ${{ steps.set-matrix.outputs.SQL_SET_SIZE }}
+          HOST_VERSION: ${{ steps.set-matrix.outputs.HOST_VERSION }}
 
     defaults:
       run:
@@ -54,13 +54,14 @@ jobs:
     - name: Install GNU Parallel
       run: Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Install-GNU-Parallel.sh
 
-    - id: set-windows-matrix
+    - name: PRODUCE job matrix
+      id: set-matrix
       shell: pwsh
       run: . .\.github\workflows\Set-Matrix.ps1 -SqlSetSize "${{ github.event.inputs.ARG_SQL_SET_SIZE }}" -HostVersion "${{ github.event.inputs.ARG_HOST_VERSION }}"
 
-    - name: build all parallel
+    - name: BUILD all in parallel
       run: |
-        parallel --group --halt 0 "bash -eu -o pipefail scripts/CI-Pre-Build/{}.sh 2>&1" ::: "Pre-Build-w3app" "Pre-Build-FX-Dependent"
+        parallel --group --halt 0 "bash -eu -o pipefail scripts/CI-Pre-Build/{} 2>&1" ::: "Pre-Build-w3app.sh" "Pre-Build-FX-Dependent.sh"
 
     - name: build w3app (if parallel fail)
       if: failure()
