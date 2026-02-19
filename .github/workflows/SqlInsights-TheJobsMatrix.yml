@@ -226,7 +226,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: 'If ${{ matrix.JOB_TITLE }}
+          name: 'If ${{ matrix.JOB_TITLE }}'
           path: ${{ env.SYSTEM_ARTIFACTSDIRECTORY }}
           overwrite: true
           compression-level: 9
