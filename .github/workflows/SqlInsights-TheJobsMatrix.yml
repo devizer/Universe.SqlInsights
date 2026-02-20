@@ -14,7 +14,7 @@ on:
         type: string
 
 jobs:
-  Tests:
+  Test:
     name: ${{ matrix.JOB_TITLE }}
     # OS: Windows|Ubuntu, # HOST: 2022, 2025, 22.04, 24.04
     runs-on: "${{ matrix.RUNS_ON }}"

@@ -85,7 +85,7 @@ jobs:
         compression-level: 1
 
   # Run Window and Linux Matrix
-  Matrix:
+  SQL:
     # on ${{ needs.Pre-Build.outputs.HOST_VERSION }}
     name: ${{ needs.Pre-Build.outputs.SQL_SET_SIZE }} Set
     needs: Pre-Build
@@ -97,7 +97,7 @@ jobs:
 
   Combine:
     runs-on: ubuntu-latest
-    needs: [Pre-Build, Matrix]
+    needs: [Pre-Build, SQL]
     if: always()
     timeout-minutes: 45
     steps:
