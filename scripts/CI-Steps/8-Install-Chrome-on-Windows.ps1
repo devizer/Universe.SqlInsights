@@ -7,6 +7,9 @@ if ((Get-OS-Platform) -eq "Windows") {
 Say "Installing chrome ..."
 # choco install googlechrome --version 144.0.7559.97 --ignore-checksums
 choco install chromium --version 74.0.3729.157 --ignore-checksums
+Show-Last-Exit-Code "Optional chromium 74.0.3729.157"
+$LastExitCode = 0
+
 # choco install chromium --version 144.0.7559.133 --ignore-checksums
 
 Show-Chrome-Program-List
