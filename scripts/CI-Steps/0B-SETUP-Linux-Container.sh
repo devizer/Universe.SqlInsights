@@ -2,8 +2,8 @@
       Say "CPU: $(Get-CpuName)"
 
   Say "Install .net dependencies"
-  Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/install-dotnet-dependencies.sh
-  sudo apt-get update -qq; sudo apt-get install libkrb5-3 zlib1g libunwind8 libuuid1 -y
+  Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/install-dotnet-dependencies.sh --update-repos
+  # sudo apt-get update -qq; sudo apt-get install libkrb5-3 zlib1g libunwind8 libuuid1 -y
 
   Say "Kerberos (libgss,libkrb) binaries: "
   ldconfig -p | { grep "libgss\|libkrb\|libk5crypto\|libcom" || true; }
