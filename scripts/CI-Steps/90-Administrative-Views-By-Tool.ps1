@@ -9,6 +9,7 @@
       } Else {
         & SqlServer.AdministrativeViews -cs "$ENV:SQLINSIGHTS_CONNECTION_STRING" -o "$output_file"
       }
+      Show-Last-Exit-Code "TOOL SqlServer.AdministrativeViews" -Throw
 
       Say "Report Files at [$output_folder]"
       Get-ChildItem "$output_folder" -EA SilentlyContinue | Format-Table -AutoSize | Out-Host

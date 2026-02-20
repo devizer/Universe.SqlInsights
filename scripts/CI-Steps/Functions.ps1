@@ -21,11 +21,12 @@ function Mute-RebootRequired-State() {
   Write-Line -TextCyan "[Mute-RebootRequired-State] Completed"
 }
 
-function Show-Last-Exit-Code([string] $Title) {
+function Show-Last-Exit-Code([string] $Title, [switch] $Throw) {
   if ($Global:LASTEXITCODE) {
     $msg="ERROR! '$Title' failed. Exit Code $($Global:LASTEXITCODE)"
     Say $msg
     Write-Line -TextRed $msg
+    if ($Throw) { throw $msg }
   } Else {
     $msg="SUCCESS! '$Title' successfully completed wouthout any errors"
     Say $msg

@@ -22,3 +22,4 @@
       Remove-Item -Path "$Env:SYSTEM_ARTIFACTSDIRECTORY/AddAction.log" -ErrorAction SilentlyContinue -Force
       $ENV:TEST_UNDER_COVERAGE = "False"
       & dotnet test --filter "Name~Test1_Seed" Universe.SqlInsights.SqlServerStorage.Tests.dll
+      Show-Last-Exit-Code "BENCHMARK Universe.SqlInsights.SqlServerStorage.Tests.dll" -Throw
