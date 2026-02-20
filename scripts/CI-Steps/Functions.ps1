@@ -378,8 +378,9 @@ Set-Var "SQLINSIGHTS_REPORT_FULLNAME" "$SQLINSIGHTS_REPORT_FULLNAME"
   $ERGOFAB_TESTS_DATA_FOLDER = If ((Get-OS-Platform) -eq "Windows") { "$($root_drive)\ergo-fab-tests" } Else { "/mnt/ergo-fab-tests" }
   Set-Var "ERGOFAB_TESTS_DATA_FOLDER" "$ERGOFAB_TESTS_DATA_FOLDER"
   Set-Var "ERGOFAB_TESTS_MASTER_CONNECTIONSTRING" "TrustServerCertificate=True;Data Source=$sql_instance_name;$sql_security_parameters;Encrypt=False;"
-  Set-Var "ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING" "Server=$sql_instance_name;Encrypt=False;Initial Catalog=SqlInsights Local Warehouse;$sql_security_parameters;"
-  Set-Var "ERGOFAB_TESTS_REPORT_FULLNAME" "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\ErgFab Tests Report.txt"
+  Set-Var "ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING" "Server=$sql_instance_name;Encrypt=False;Initial Catalog=SqlInsights Local Warehouse;Pooling = true;$sql_security_parameters;"
+  $ERGOFAB_TESTS_REPORT_FULLNAME = Combine-Path "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)" "ErgFab Tests Report.txt"
+  Set-Var "ERGOFAB_TESTS_REPORT_FULLNAME" "$ERGOFAB_TESTS_REPORT_FULLNAME"
   $ERGOFAB_SQL_PROVIDER = if ((Get-OS-Platform) -ne "Windows") { "Microsoft" } Else { "System" }
   Set-Var "ERGOFAB_SQL_PROVIDER" "Microsoft"
 
