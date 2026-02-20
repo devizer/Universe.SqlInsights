@@ -137,7 +137,7 @@ function Show-Chrome-Program-List() {
 }
 
 function Open-Url-By-Chrome-On-Windows([string] $url) {
-   $chrome = Find-Chrome-Program-List | Select -Last 1;
+   $chrome = Find-Chrome-Program-List | Select -First 1;
    if (-not $chrome.FullPath) {
       Write-Line -TextRed "[Open-Url-By-Chrome] WARNING! Chromium is missing";
       return $false;
