@@ -144,6 +144,7 @@ function Open-Url-By-Chrome-On-Windows([string] $url) {
    }
    Write-Line -TextCyan "OPENING $url By [$($chrome.Description)] ..."
 
+   # firefox --headless --disable-gpu --no-first-run --no-sandbox https://google.com
    $chromeArgs = @(
        "--headless",
        "--disable-gpu",
@@ -171,7 +172,18 @@ function Show-Chrome-Processes() {
       $chromes | Format-Table -autosize | Out-String -width 123 | Out-Host
     }
   } Else {
-    & bash -c "ps -aux | awk '`$6 != 0' | grep 'chrome\|chromium\|firefox' | grep -vF 'chrome\|chromium\|firefox'"
+    $bash_cmd="ps -aux | awk '`$6 != 0' | grep 'chrome\|chromium\|firefox' | grep -vF 'chrome\|chromium\|firefox'"
+    $bash_cmd=@'
+          tmp=$(mktemp); 
+          ps -aux | awk '$6 != 0' > "$tmp"; 
+          cat "$tmp" | grep 'chrome\|chromium\|firefox' | grep -vF 'chrome\|chromium\|firefox' > "${tmp}2"
+          total_memory=$(cat "${tmp}2" | awk 'BEGIN {sum = 0} {if ($6 ~ /^[0-9]+(\.[0-9]+)?$/) sum += $6} END {print sum}')
+          echo "TOTAL BROWSERS MEMORY: $total_memory KB"
+          cat "$tmp" | head -1
+          cat "${tmp}2" | cut -c 1-140
+          rm -f "$tmp"* 2>/dev/null
+'@
+    & bash -c "$bash_cmd"
   }
 }
 
