@@ -177,8 +177,8 @@ function Show-Chrome-Processes() {
           tmp=$(mktemp);
           ps -aux | awk '$6 != 0' > "$tmp";
           cat "$tmp" | grep 'chrome\|chromium\|firefox' | grep -vF 'chrome\|chromium\|firefox' > "${tmp}2"
-          total_memory=$(cat "${tmp}2" | awk 'BEGIN {sum = 0} {if ($6 ~ /^[0-9]+(\.[0-9]+)?$/) sum += $6} END {printf "%'\''d\n", sum}')
-          echo "TOTAL BROWSERS MEMORY: $total_memory KB"
+          total_memory=$(cat "${tmp}2" | awk 'BEGIN {sum = 0} {if ($6 ~ /^[0-9]+(\.[0-9]+)?$/) sum += $6} END {print sum}')
+          echo "TOTAL BROWSERS MEMORY: $(Format-Thousand "$total_memory") KB"
           # needs column 2.32+
           (cat "$tmp" | head -1; cat "${tmp}2") | cut -c 1-170
           rm -f "$tmp"* 2>/dev/null
