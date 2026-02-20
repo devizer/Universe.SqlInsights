@@ -297,7 +297,7 @@ function Show-OS() {
 function Write-Artifact-Info([string] $file, [string] $content) {
   $fullName = Combine-Path "$Env:SYSTEM_ARTIFACTSDIRECTORY" "$file"
   $trimmed="$content".Trim()
-  Say "Writing [$trimmed] to [$fullName]"
+  Write-Line -TextCyan "Writing " -TextGreen "[$trimmed]" -TextCyan " to " -TextWhite "[$fullName]"
   [System.IO.File]::WriteAllText($fullName, $trimmed)
 }
 
