@@ -61,6 +61,8 @@ foreach($meta in Enumerate-Plain-SQLServer-Downloads) {
   $sql = $meta.NormalizedKeywords
   # LocalDB x86 is not supported on 64-bit windows
   if ($sql -match "LocalDB" -and $sql -match "x86") { continue; }
+  # upgrade SP4 fails in container
+  if ($sql -match "2005-x86 Advanced Update") { continue; }
   # x86 v2012 and x86 v2014 are not supported on Windows 2025 Host
   if ($HostVersion -eq "2025" -and ($sql -like '2012*' -or $sql -like '2014*') -and $sql -match 'x86') { continue; }
   # MINI Set
