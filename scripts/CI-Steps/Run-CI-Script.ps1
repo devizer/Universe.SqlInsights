@@ -37,7 +37,7 @@ Else
    Say "Invoking in container [$relative_file]"
    Write-Host "Current HOST Directory: $(Get-Location)"
    # & docker exec sql-server powershell -f "$relative_file"
-   & docker exec sql-server powershell -c "$script_pre; . `"$relative_file`"; $script_post"
+   & docker exec sql-server powershell -c "$script_pre; . '$relative_file'; $script_post"
 }
 $exitCode = $LASTEXITCODE
 show-mem "Finished on $kind, Exit Code: $exitCode"
