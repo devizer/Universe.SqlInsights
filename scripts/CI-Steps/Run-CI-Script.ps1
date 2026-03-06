@@ -32,6 +32,7 @@ if (-not $is_container -or (Get-OS-Platform) -eq "Linux") {
   $relative_file = Combine-Path "$(Get-Location)" "scripts" "CI-Steps" "$file"
   $ps=if ((Get-OS-Platform) -eq "Windows") { "powershell"} Else { "pwsh" }
   Say "Invoking locally [$relative_file] using '$ps'"
+  Get-ChildItem | format-table -autosize
   $existsInfo = If ([System.IO.File]::Exists($relative_file)) { "Exists" } Else { "NOT FOUND" }
   Write-Host "Current HOST Directory: $(Get-Location)"
   Write-Line -TextCyan "File $($existsInfo) on the HOST: '$relative_file'"
