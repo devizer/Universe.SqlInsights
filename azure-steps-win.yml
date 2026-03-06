@@ -315,7 +315,7 @@ steps:
     condition: and(always(), not(contains(variables['SQL'], '2005')))
     displayName: '6-ErgoFab-Tests.ps1'
 
-  - powershell: scripts/CI-Steps\Run-CI-Script.ps1' 7-SqlJam-Tests.ps1
+  - powershell: powershell -f scripts\CI-Steps\Run-CI-Script.ps1' 7-SqlJam-Tests.ps1
     condition: succeededOrFailed()
     retryCountOnTaskFailure: 3
     displayName: '7-SqlJam-Tests.ps1'
@@ -326,7 +326,7 @@ steps:
     condition: false
     displayName: '8-Install-Chrome.ps1'
   
-  - powershell: scripts/CI-Steps\Run-CI-Script.ps1' 9-Run-w3app.ps1
+  - powershell: powershell -f scripts\CI-Steps\Run-CI-Script.ps1' 9-Run-w3app.ps1
     # condition: succeededOrFailed()
     condition: false
     displayName: '9-Run-w3app.ps1'
