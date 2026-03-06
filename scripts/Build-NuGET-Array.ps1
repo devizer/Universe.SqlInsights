@@ -95,11 +95,11 @@ foreach($NUnit_Version in $nunit_versions) {
     & dotnet add package Universe.NUnitPipeline -v "$nunit_Version.$NUnit_Pipeline_Revision" --no-restore
     Set-CS-Project-Version "$PWD$($DS)$($project).csproj" "$This_NUnit_Version"
     # Try-And-Retry "Build $project $This_NUnit_Version" { & { dotnet @("build", "-c", "Release") 2>&1 } *| tee "$logFolder$($DS)$nunit_Version-$($project)-build.log" }
-    & { dotnet @("build", "-c", "Release") 2>&1 } *| tee "$logFolder$($DS)$nunit_Version-$($project)-build.log"
+    & { dotnet @("build", "-c", "Release") 2>&1 } | tee "$logFolder$($DS)$nunit_Version-$($project)-build.log"
     Write-Host "Exit Code for dotnet build: $LASTEXITCODE"
     if ($nunit_Version -eq $Full_NUnit_Version) {
       cd ..
-      & { dotnet @("build", "-c", "Release") 2>&1 } *| tee "$logFolder$($DS)ALL-build.log" 
+      & { dotnet @("build", "-c", "Release") 2>&1 } | tee "$logFolder$($DS)ALL-build.log" 
     }
     popd
     Write-Host ""
