@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Concurrent;
 using System.Data.Common;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
-using Dapper;
 using Universe.SqlServerJam;
 
 namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
@@ -14,6 +16,7 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
         public readonly ISqlServerTestsConfiguration SqlServerTestsConfiguration;
 
         private static readonly ConcurrentDictionary<string, SqlBackupDescription> Cache = new();
+        private static readonly ConcurrentDictionary<string, object> SyncForCreateDb = new();
 
 
         public SeededDatabaseFactory(ISqlServerTestsConfiguration sqlServerTestsConfiguration)
@@ -50,30 +53,45 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
                 }
             }
 
-            PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Creating new test DB '{newDbName}' (Caching key is '{cacheKey}')");
-            await sqlServerTestDbManager.CreateEmptyDatabase(newDbName);
-            PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Populating DB '{newDbName}' by Migrate and Seed");
-            actionMigrateAndSeed(testDbConnectionString);
-
-            if (cacheKey != null)
+            var syncObject = cacheKey != null ? SyncForCreateDb.GetOrAdd(cacheKey, new object()) : null;
+            RuntimeHelpers.PrepareConstrainedRegions();
+            try // lock
             {
-                databaseBackupInfo = await sqlServerTestDbManager.CreateBackup(cacheKey, newDbName);
-                PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Created Backup for test DB '{newDbName}' as '{databaseBackupInfo.BackupPoint}' (Caching key is '{cacheKey}')");
-                // TODO: Skip playgroundDatabaseName?
-                if (playgroundDatabaseName != null && InternalDbFactoryTuningConfiguration.SkipTestSqlFactoryPlaygroundDatabase == false)
-                {
-                    // First. Force Drop playgroundDatabaseName ...
-                    var savedDbConnectionString = sqlServerTestDbManager.BuildConnectionString(playgroundDatabaseName);
-                    ResilientDbKiller.Kill(savedDbConnectionString, false, 3);
-                    // .. And Restore it from newly created backup
-                    await sqlServerTestDbManager.RestoreBackup(databaseBackupInfo, playgroundDatabaseName);
-                    PipelineLog.LogTrace(
-                        $"[SeededDatabaseFactory.BuildDatabase] Restored Reference Test DB '{playgroundDatabaseName}' from '{databaseBackupInfo.BackupPoint}' (Caching key is '{cacheKey}')");
-                }
+                if (syncObject != null) Monitor.Enter(syncObject);
+                PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Creating new test DB '{newDbName}' (Caching key is '{cacheKey}')");
+                // await sqlServerTestDbManager.CreateEmptyDatabase(newDbName);
+                sqlServerTestDbManager.CreateEmptyDatabase(newDbName).SafeWait();
+                PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Populating DB '{newDbName}' by Migrate and Seed");
+                actionMigrateAndSeed(testDbConnectionString);
 
-                // Dispose the Backup
-                TestCleaner.OnDispose($"Drop Backup {databaseBackupInfo.BackupPoint}", () => File.Delete(databaseBackupInfo.BackupPoint), TestDisposeOptions.AsyncGlobal);
-                Cache[cacheKey] = databaseBackupInfo;
+                if (cacheKey != null)
+                {
+                    // databaseBackupInfo = await sqlServerTestDbManager.CreateBackup(cacheKey, newDbName);
+                    databaseBackupInfo = sqlServerTestDbManager.CreateBackup(cacheKey, newDbName).GetSafeResult();
+                    PipelineLog.LogTrace(
+                        $"[SeededDatabaseFactory.BuildDatabase] Created Backup for test DB '{newDbName}' as '{databaseBackupInfo.BackupPoint}' (Caching key is '{cacheKey}')");
+                    // TODO: Skip playgroundDatabaseName?
+                    if (playgroundDatabaseName != null && InternalDbFactoryTuningConfiguration.SkipTestSqlFactoryPlaygroundDatabase == false)
+                    {
+                        // First. Force Drop playgroundDatabaseName ...
+                        var savedDbConnectionString = sqlServerTestDbManager.BuildConnectionString(playgroundDatabaseName);
+                        ResilientDbKiller.Kill(savedDbConnectionString, false, 3);
+                        // .. And Restore it from newly created backup
+                        // await sqlServerTestDbManager.RestoreBackup(databaseBackupInfo, playgroundDatabaseName);
+                        sqlServerTestDbManager.RestoreBackup(databaseBackupInfo, playgroundDatabaseName).SafeWait();
+
+                        PipelineLog.LogTrace(
+                            $"[SeededDatabaseFactory.BuildDatabase] Restored Reference Test DB '{playgroundDatabaseName}' from '{databaseBackupInfo.BackupPoint}' (Caching key is '{cacheKey}')");
+                    }
+
+                    // Dispose the Backup
+                    TestCleaner.OnDispose($"Drop Backup {databaseBackupInfo.BackupPoint}", () => File.Delete(databaseBackupInfo.BackupPoint), TestDisposeOptions.AsyncGlobal);
+                    Cache[cacheKey] = databaseBackupInfo;
+                }
+            }
+            finally
+            {
+                if (syncObject != null) Monitor.Exit(syncObject);
             }
 
             return testDbConnectionString;

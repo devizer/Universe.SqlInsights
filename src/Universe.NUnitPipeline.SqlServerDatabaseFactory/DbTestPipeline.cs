@@ -13,7 +13,7 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
         {
             if (stage.NUnitActionAppliedTo == NUnitActionAppliedTo.Test)
             {
-                // var dbDefinishion = test.GetPropertyOrAdd<IDatabaseDefinition>("DatabaseDefinition", null);
+                // var dbDefinition = test.GetPropertyOrAdd<IDatabaseDefinition>("DatabaseDefinition", null);
                 List<TestDbConnectionString> found = TestArgumentReflection.FindTestDbConnectionStrings(test.Arguments);
                 PipelineLog.LogTrace($"[DbTestPipeline.OnStart] Test='{test.Name}' TestDbConnectionString Count: {found.Count}, PostponedCount: {found.Count(x => x.Postponed)}{Environment.NewLine}");
                 TestDbConnectionString testDbConnectionString = found.FirstOrDefault();
