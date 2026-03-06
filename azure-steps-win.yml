@@ -310,7 +310,7 @@ steps:
     condition: succeededOrFailed()
     displayName: '3.1-Install-SQLCMD.ps1'
 
-  - powershell: 'scripts/CI-Steps\Run-CI-Script.ps1' 4-Publish-Sql-Server-Setup-Logs.ps1
+  - powershell: scripts/CI-Steps\Run-CI-Script.ps1 4-Publish-Sql-Server-Setup-Logs.ps1
     condition: succeededOrFailed()
     displayName: '4-Publish-Sql-Server-Setup-Logs.ps1'
 
