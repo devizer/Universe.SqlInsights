@@ -29,7 +29,9 @@ $relative_file = Combine-Path "$(Get-Location)" "scripts" "CI-Steps" "$file"
 if (-not $is_container -or (Get-OS-Platform) -eq "Linux") {
   $ps=if ((Get-OS-Platform) -eq "Windows") { "powershell"} Else { "pwsh" }
   Say "Invoking locally [$relative_file] using '$ps'"
+  $existsInfo = If ([System.IO.File]::Exists($relative_file)) { "Exists" } Else { "NOT FOUND" }
   Write-Host "Current HOST Directory: $(Get-Location)"
+  Write-Line -TextCyan "File $($existsInfo): '$relative_file'"
   & "$ps" -c "$script_pre; . '$relative_file'; $script_post"
 }
 Else
