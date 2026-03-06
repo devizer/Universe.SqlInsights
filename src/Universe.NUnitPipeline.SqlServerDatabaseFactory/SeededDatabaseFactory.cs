@@ -4,7 +4,6 @@ using System.Collections.Concurrent;
 using System.Data.Common;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Universe.SqlServerJam;
@@ -54,7 +53,9 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
             }
 
             var syncObject = cacheKey != null ? SyncForCreateDb.GetOrAdd(cacheKey, new object()) : null;
-            RuntimeHelpers.PrepareConstrainedRegions();
+#if NET35
+            System.Runtime.CompilerServices.RuntimeHelpers.PrepareConstrainedRegions();
+#endif
             try // lock
             {
                 if (syncObject != null) Monitor.Enter(syncObject);
@@ -68,9 +69,8 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
                 {
                     // databaseBackupInfo = await sqlServerTestDbManager.CreateBackup(cacheKey, newDbName);
                     databaseBackupInfo = sqlServerTestDbManager.CreateBackup(cacheKey, newDbName).GetSafeResult();
-                    PipelineLog.LogTrace(
-                        $"[SeededDatabaseFactory.BuildDatabase] Created Backup for test DB '{newDbName}' as '{databaseBackupInfo.BackupPoint}' (Caching key is '{cacheKey}')");
-                    // TODO: Skip playgroundDatabaseName?
+                    PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Created Backup for test DB '{newDbName}' as '{databaseBackupInfo.BackupPoint}' (Caching key is '{cacheKey}')");
+                    // DONE: Skip playgroundDatabaseName?
                     if (playgroundDatabaseName != null && InternalDbFactoryTuningConfiguration.SkipTestSqlFactoryPlaygroundDatabase == false)
                     {
                         // First. Force Drop playgroundDatabaseName ...
