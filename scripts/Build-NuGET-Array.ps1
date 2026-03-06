@@ -96,7 +96,8 @@ foreach($NUnit_Version in $nunit_versions) {
     Set-CS-Project-Version "$PWD$($DS)$($project).csproj" "$This_NUnit_Version"
     # Try-And-Retry "Build $project $This_NUnit_Version" { & { dotnet @("build", "-c", "Release") 2>&1 } | tee-object "$logFolder$($DS)$nunit_Version-$($project)-build.log" }
     dotnet "build" "-c" "Release" 2>&1 | tee-object "$logFolder$($DS)$nunit_Version-$($project)-build.log"
-    Write-Host "Exit Code for dotnet build: $LASTEXITCODE"
+    Write-Line -TextMagenta "Exit Code for dotnet build $($project): $LASTEXITCODE"
+    if ($LASTEXITCODE -ne 0) { throw "BUILD $project ERROR"; }
     if ($nunit_Version -eq $Full_NUnit_Version) {
       cd ..
       & { dotnet @("build", "-c", "Release") 2>&1 } | tee "$logFolder$($DS)ALL-build.log" 
