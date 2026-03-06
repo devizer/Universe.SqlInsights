@@ -27,23 +27,19 @@ $script_post = ('if ($Global:LASTEXITCODE) { Write-Line -TextRed "ERROR! STEP ' 
 
 $relative_file = "scripts/CI-Steps/$file"
 $relative_file = Combine-Path "scripts" "CI-Steps" "$file"
-[System.IO.Directory]::SetCurrentDirectory("$(Get-Location)")
+# [System.IO.Directory]::SetCurrentDirectory("$(Get-Location)")
+$scriptExistsInfo = If ([System.IO.File]::Exists($relative_file)) { "Exists" } Else { "NOT FOUND" }
+Write-Line -TextCyan "File $($scriptExistsInfo) on the HOST: '$relative_file'"
 if (-not $is_container -or (Get-OS-Platform) -eq "Linux") {
-  $relative_file = Combine-Path "$(Get-Location)" "scripts" "CI-Steps" "$file"
   $ps=if ((Get-OS-Platform) -eq "Windows") { "powershell"} Else { "pwsh" }
   Say "Invoking locally [$relative_file] using '$ps'"
-  Get-ChildItem | format-table -autosize
-  $existsInfo = If ([System.IO.File]::Exists($relative_file)) { "Exists" } Else { "NOT FOUND" }
   Write-Host "Current HOST Directory: $(Get-Location)"
-  Write-Line -TextCyan "File $($existsInfo) on the HOST: '$relative_file'"
   & "$ps" -c "$script_pre; . '$relative_file'; $script_post"
 }
 Else
 {
-   $relative_file = Combine-Path "C:\App" "scripts" "CI-Steps" "$file"
    Say "Invoking in container [$relative_file]"
    Write-Host "Current HOST Directory: $(Get-Location)"
-   # & docker exec sql-server powershell -f "$relative_file"
    & docker exec sql-server powershell -c "$script_pre; . '$relative_file'; $script_post"
 }
 $exitCode = $LASTEXITCODE
