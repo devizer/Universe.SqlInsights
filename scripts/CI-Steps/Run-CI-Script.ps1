@@ -24,18 +24,22 @@ $title_at = If ($is_container) { "CONTAINER" } Else { "HOST" }
 $script_pre="Write-Line -TextMagenta ('$title_at '+(Get-Memory-Info).Description); Write-Host ('LOCATION: ' + (Get-Location).ToString()); `$ErrorActionPreference='Stop';"
 $script_post = ('if ($Global:LASTEXITCODE) { Write-Line -TextRed "ERROR! STEP ' + $file + ' failed. Exit Code $($Global:LASTEXITCODE)"; exit 1; }')
 
+
 $relative_file = "scripts/CI-Steps/$file"
-$relative_file = Combine-Path "$(Get-Location)" "scripts" "CI-Steps" "$file"
+$relative_file = Combine-Path "scripts" "CI-Steps" "$file"
+[System.IO.Directory]::SetCurrentDirectory("$(Get-Location)")
 if (-not $is_container -or (Get-OS-Platform) -eq "Linux") {
+  $relative_file = Combine-Path "$(Get-Location)" "scripts" "CI-Steps" "$file"
   $ps=if ((Get-OS-Platform) -eq "Windows") { "powershell"} Else { "pwsh" }
   Say "Invoking locally [$relative_file] using '$ps'"
   $existsInfo = If ([System.IO.File]::Exists($relative_file)) { "Exists" } Else { "NOT FOUND" }
   Write-Host "Current HOST Directory: $(Get-Location)"
-  Write-Line -TextCyan "File $($existsInfo): '$relative_file'"
+  Write-Line -TextCyan "File $($existsInfo) on the HOST: '$relative_file'"
   & "$ps" -c "$script_pre; . '$relative_file'; $script_post"
 }
 Else
 {
+   $relative_file = Combine-Path "C:\App" "scripts" "CI-Steps" "$file"
    Say "Invoking in container [$relative_file]"
    Write-Host "Current HOST Directory: $(Get-Location)"
    # & docker exec sql-server powershell -f "$relative_file"
