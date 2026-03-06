@@ -30,7 +30,7 @@ if (-not $is_container -or (Get-OS-Platform) -eq "Linux") {
   $ps=if ((Get-OS-Platform) -eq "Windows") { "powershell"} Else { "pwsh" }
   Say "Invoking locally [$relative_file] using '$ps'"
   Write-Host "Current HOST Directory: $(Get-Location)"
-  & "$ps" -c "$script_pre; . `"$relative_file`"; $script_post"
+  & "$ps" -c "$script_pre; . '$relative_file'; $script_post"
 }
 Else
 {
