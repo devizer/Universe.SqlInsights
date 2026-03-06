@@ -24,7 +24,7 @@ $title_at = If ($is_container) { "CONTAINER" } Else { "HOST" }
 $script_pre="Write-Line -TextMagenta ('$title_at '+(Get-Memory-Info).Description); Write-Host ('LOCATION: ' + (Get-Location).ToString()); `$ErrorActionPreference='Stop';"
 $script_post = ('if ($Global:LASTEXITCODE) { Write-Line -TextRed "ERROR! STEP ' + $file + ' failed. Exit Code $($Global:LASTEXITCODE)"; exit 1; }')
 
-$relative_file = "scripts\CI-Steps\$file"
+$relative_file = "scripts/CI-Steps/$file"
 $relative_file = Combine-Path "scripts" "CI-Steps" "$file"
 if (-not $is_container -or (Get-OS-Platform) -eq "Linux") {
   $ps=if ((Get-OS-Platform) -eq "Windows") { "powershell"} Else { "pwsh" }
