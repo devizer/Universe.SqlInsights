@@ -334,6 +334,10 @@ if (Test-Path "D:\") {
   $sqlMediaFolder = "C:\SQL-Media"; $sqlSetupFolder = "C:\SQL-Setup"; $sqlInstallTo = "C:\SQL"; $root_drive="C:"
 }
 
+if (-not (Is-Microsoft-Hosted-Build-Agent)) {
+   Write-Host "Skip Variables"
+} Else {
+
 Set-Var "SQL_PASSWORD" 'p@assw0rd!'
 
 Set-Var "SQLSERVERS_SETUP_FOLDER" "$sqlSetupFolder"
@@ -403,3 +407,4 @@ Set-Var "SQLINSIGHTS_REPORT_FULLNAME" "$SQLINSIGHTS_REPORT_FULLNAME"
 
 
 BroadCast-Variables
+}
