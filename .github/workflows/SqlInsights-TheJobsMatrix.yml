@@ -228,7 +228,8 @@ jobs:
 
       - name: '2ND TEST ErgoFab (SQL) via NuGet'
         shell: bash
-        if: ${{ !cancelled() && !contains(matrix.SQL, '2005') }}
+        # Works on Windows Host, On Ubuntu, does not work in windows container
+        if: ${{ !cancelled() && !contains(matrix.SQL, '2005') && (matrix.SQL == 'Ubuntu' || matrix.SQL_CONTAINER_SUFFIX == '') }}
         run: |
            set -eu; set -o pipefail;
            Say "CPU: $(Get-CpuName)"
