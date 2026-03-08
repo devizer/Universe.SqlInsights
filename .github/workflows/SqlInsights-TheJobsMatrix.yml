@@ -226,6 +226,18 @@ jobs:
         run: . .\scripts\CI-Steps\Run-CI-Script.ps1 91-Administrative-Views-By-Tests.ps1
         if: ${{ !cancelled() }}
 
+      - name: '2ND TEST ErgoFab (SQL) via NuGet'
+        shell: bash
+        if: ${{ !cancelled() && !contains(matrix.SQL, '2005') }}
+        run: |
+           set -eu; set -o pipefail;
+           Say "CPU: $(Get-CpuName)"
+           printenv | { grep ERGOFAB || true; }
+
+           cd src/ErgoFab.DataAccess.IntegrationTests
+           bash -e -u Test-via-NuGET.sh
+           Say "Success Complete"
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         if: always()
