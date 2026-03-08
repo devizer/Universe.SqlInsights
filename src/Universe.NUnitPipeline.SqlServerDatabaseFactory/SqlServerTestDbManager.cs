@@ -13,7 +13,7 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
     // TODO: Move to DI
     public class SqlServerTestDbManager
     {
-        public virtual ISqlServerTestsConfiguration SqlTestsConfiguration { get;  }
+        public virtual ISqlServerTestsConfiguration SqlTestsConfiguration { get; }
 
         public SqlServerTestDbManager(ISqlServerTestsConfiguration sqlTestsConfiguration)
         {

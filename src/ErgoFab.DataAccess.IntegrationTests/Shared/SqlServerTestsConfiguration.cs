@@ -23,8 +23,8 @@ public class SqlServerTestsConfiguration : ISqlServerTestsConfiguration
 
     static string GetMasterConnectionString()
     {
-        // TrustServerCertificate=True;?
         var raw = Environment.GetEnvironmentVariable("ERGOFAB_TESTS_MASTER_CONNECTIONSTRING");
+        // TrustServerCertificate=True;?
         return
             string.IsNullOrEmpty(raw)
                 ? "Data Source=(local);Integrated Security = SSPI;Pooling=true;Timeout=30;Encrypt=False;"

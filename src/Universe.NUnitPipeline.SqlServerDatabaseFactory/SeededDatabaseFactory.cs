@@ -80,8 +80,7 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
                         // await sqlServerTestDbManager.RestoreBackup(databaseBackupInfo, playgroundDatabaseName);
                         sqlServerTestDbManager.RestoreBackup(databaseBackupInfo, playgroundDatabaseName).SafeWait();
 
-                        PipelineLog.LogTrace(
-                            $"[SeededDatabaseFactory.BuildDatabase] Restored Reference Test DB '{playgroundDatabaseName}' from '{databaseBackupInfo.BackupPoint}' (Caching key is '{cacheKey}')");
+                        PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Restored Reference Test DB '{playgroundDatabaseName}' from '{databaseBackupInfo.BackupPoint}' (Caching key is '{cacheKey}')");
                     }
 
                     // Dispose the Backup

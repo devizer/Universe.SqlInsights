@@ -1,5 +1,4 @@
-﻿
-namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
+﻿namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
 {
     // TODO: Move to DataAccess assembly. Inject into DI on Main/Startup
     public interface IDbConnectionString
