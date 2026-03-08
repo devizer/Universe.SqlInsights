@@ -30,33 +30,41 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
             await CreateEmptyDatabase(dbName);
         }
 
+        // TODO: Support for default folders and other parameters (size, growth, etc.)
         public virtual async Task CreateEmptyDatabase(string name)
         {
+            var masterConnection = CreateMasterConnection();
+            Console.WriteLine($"[Debug] MASTER CONNECTION: {masterConnection.ConnectionString}");
+
+            if (string.IsNullOrEmpty(this.SqlTestsConfiguration.DatabaseDataFolder))
+            {
+                var sqlCreate = $@"Create Database [{name}]";
+                var sqlConfigure = $@"Alter Database [{name}] Set Recovery Simple";
+                masterConnection.Execute(sqlCreate);
+                masterConnection.Execute(sqlConfigure);
+                return;
+            }
+
             var mdf = Path.Combine(this.SqlTestsConfiguration.DatabaseDataFolder, $"{name}.mdf");
             var ldf = Path.Combine(this.SqlTestsConfiguration.DatabaseLogFolder, $"{name}.ldf");
 
+            // TODO: Check up model siz and growth and use it if possible
             var sql1 = $@"Create Database [{name}] 
 On (NAME = {EscapeSqlString($"{name} mdf")}, FILENAME = {EscapeSqlString(mdf)} /*, SIZE = 8192KB, FILEGROWTH = 8192KB */) 
 LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ldf)} /*, SIZE = 8192KB, FILEGROWTH = 8192KB */)";
 
             var sql2 = $@"Alter Database [{name}] Set Recovery Simple";
 
-            var masterConnection = CreateMasterConnection();
 
             TryAndForget.Execute(() => Directory.CreateDirectory(Path.GetDirectoryName(mdf)));
             TryAndForget.Execute(() => Directory.CreateDirectory(Path.GetDirectoryName(ldf)));
 
-            /*
-            await masterConnection.ExecuteAsync(sql1, new { mdfName = $"{name} mdf", mdfFullName = mdf, ldfName = $"{name} ldf", ldfFullName = ldf, });
-            await masterConnection.ExecuteAsync(sql2);
-            */
-            Console.WriteLine(@$"[DEBUG] Creating DB [{name}]
-MDF: {mdf}
-LDF: {ldf}
-MDF FOLDER EXISTS: {Directory.Exists(Path.GetDirectoryName(mdf))}
-LDF FOLDER EXISTS: {Directory.Exists(Path.GetDirectoryName(ldf))}
-MASTER CONNECTION: {masterConnection.ConnectionString}
-");
+            if (!Directory.Exists(Path.GetDirectoryName(mdf)))
+                Console.WriteLine($"[Warning] Folder for MDF file '{mdf}' does not exist and could not be created");
+            
+            if (!Directory.Exists(Path.GetDirectoryName(ldf)))
+                Console.WriteLine($"[Warning] Folder for LDF file '{ldf}' does not exist and could not be created");
+
             masterConnection.Execute(sql1, new { mdfName = $"{name} mdf", mdfFullName = mdf, ldfName = $"{name} ldf", ldfFullName = ldf, });
             masterConnection.Execute(sql2);
         }
