@@ -13,12 +13,36 @@ namespace ErgoFab.DataAccess.IntegrationTests.Shared
         private static volatile int TestCounter = 0;
         public async Task<string> GetNextTestDatabaseName()
         {
-            // TODO: Move it to Universe.SqlInsights.NUnit project
             ISqlServerTestsConfiguration sqlTestsConfiguration = NUnitPipelineConfiguration.GetService<ISqlServerTestsConfiguration>();
             var counter = Interlocked.Increment(ref TestCounter);
             string dbPrefix = $"{sqlTestsConfiguration.DbNamePrefix} Test {DateTime.Now.ToString("yyyy-MM-dd")}";
-            return $"{dbPrefix} {counter:00000} {Guid.NewGuid():N}";
-            
+
+            var testInformation = TestContext.CurrentContext.Test?.GetTestInformation();
+            var structuredFullName = testInformation?.StructuredFullName;
+            if (structuredFullName?.Length > 0)
+            {
+                // Version 2
+                string title = string.Join("-", structuredFullName.Reverse().Take(1).Reverse());
+                string result = $"{dbPrefix}";
+                if (testInformation.FormattedIndex?.Length > 0) 
+                    result = $"{result} {testInformation.FormattedIndex}";
+                else
+                    result = $"{result} {counter:00000}";
+
+                result = $"{result} {title}";
+                result = result.Replace("\"", "");
+                if (result.Length > 126) result = result.Substring(0, 126) + "…";
+                return result;
+            }
+            else
+            {
+                // Version 1: + Guid
+                return $"{dbPrefix} {counter:00000} {Guid.NewGuid():N}";
+            }
+
+
+
+
             SqlServerTestDbManager testManager = NUnitPipelineConfiguration.GetService<SqlServerTestDbManager>();
             var allNames = await testManager.GetDatabaseNames();
             var setNames = allNames.ToHashSet();

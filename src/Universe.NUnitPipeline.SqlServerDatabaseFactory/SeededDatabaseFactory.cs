@@ -60,6 +60,8 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
             {
                 if (syncObject != null) Monitor.Enter(syncObject);
                 PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Creating new test DB '{newDbName}' (Caching key is '{cacheKey}')");
+                // Done: Delete Database if exists before create new one
+                ResilientDbKiller.Kill(sqlServerTestDbManager.SqlTestsConfiguration.MasterConnectionString, newDbName, false, 3);
                 // await sqlServerTestDbManager.CreateEmptyDatabase(newDbName);
                 sqlServerTestDbManager.CreateEmptyDatabase(newDbName).SafeWait();
                 PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Populating DB '{newDbName}' by Migrate and Seed");
