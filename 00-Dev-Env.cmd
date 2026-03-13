@@ -5,5 +5,5 @@ set SQLINSIGHTS_CONNECTION_STRING=Data Source=(local);Integrated Security=SSPI;T
 setx SQLINSIGHTS_CONNECTION_STRING "Data Source=(local);Integrated Security=SSPI;TrustServerCertificate=True"
 
 
-set "ERGOFAB_TESTS_DATA_FOLDER=P:\Temp\Ergo Fab Tests Data"
-setx ERGOFAB_TESTS_DATA_FOLDER "P:\Temp\Ergo Fab Tests Data"
+set "ERGOFAB_TESTS_DATA_FOLDER=C:\Temp\Ergo Fab Tests Data"
+setx ERGOFAB_TESTS_DATA_FOLDER "C:\Temp\Ergo Fab Tests Data"

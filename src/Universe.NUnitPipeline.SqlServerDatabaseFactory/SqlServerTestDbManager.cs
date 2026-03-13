@@ -48,7 +48,7 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
             var mdf = Path.Combine(this.SqlTestsConfiguration.DatabaseDataFolder, $"{name}.mdf");
             var ldf = Path.Combine(this.SqlTestsConfiguration.DatabaseLogFolder, $"{name}.ldf");
 
-            // TODO: Check up model siz and growth and use it if possible
+            // TODO: Check up model size and growth and use it if possible
             var sql1 = $@"Create Database [{name}] 
 On (NAME = {EscapeSqlString($"{name} mdf")}, FILENAME = {EscapeSqlString(mdf)} /*, SIZE = 8192KB, FILEGROWTH = 8192KB */) 
 LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ldf)} /*, SIZE = 8192KB, FILEGROWTH = 8192KB */)";
