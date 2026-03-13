@@ -15,7 +15,7 @@
 
         public TestDbConnectionString(string connectionString, string title)
         {
-            // Warning! this database always created by migration+seeder
+            // Info! this database always created by migration+seeder
             ConnectionString = connectionString;
             Title = title;
             Postponed = false;
