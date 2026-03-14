@@ -14,28 +14,30 @@ namespace ErgoFab.DataAccess.IntegrationTests
     [TempTestAssemblyAction]
     public class OrganizationTests
     {
+        private const int OrganizationsCount = 100_000;
+
         [Test]
-        [ErgoFabTestCaseSource(7777)]
+        [ErgoFabTestCaseSource(OrganizationsCount)]
         public async Task OrganizationAnotherTest1st(ErgoFabTestCase testCase)
         {
             await using var dbAccess = testCase.CreateErgoFabDbContext();
             var organizationsCount = await dbAccess.Organization.AsNoTracking().CountAsync();
-            Assert.That(organizationsCount, Is.EqualTo(7777));
+            Assert.That(organizationsCount, Is.EqualTo(OrganizationsCount));
 
             var organizationsCount2 = await testCase.CreateErgoFabDbContext().Organization.AsNoTracking().CountAsync();
         }
 
         [Test]
-        [ErgoFabTestCaseSource(7777)]
+        [ErgoFabTestCaseSource(OrganizationsCount)]
         public async Task OrganizationAnotherTest2nd(ErgoFabTestCase testCase)
         {
             var organizationsCount = await testCase.CreateErgoFabDbContext().Organization.TagWith("1st query").AsNoTracking().Select(x => x.Id).CountAsync();
-            Assert.That(organizationsCount, Is.EqualTo(7777));
+            Assert.That(organizationsCount, Is.EqualTo(OrganizationsCount));
             var organizationsCount2 = await testCase.CreateErgoFabDbContext().Organization.TagWith("2nd query").AsNoTracking().Select(x => x.Id).CountAsync();
         }
 
         [Test]
-        [ErgoFabTestCaseSource(7777)]
+        [ErgoFabTestCaseSource(OrganizationsCount)]
         public async Task Organization3rdTest(ErgoFabTestCase testCase)
         {
             Console.WriteLine($"CS: [{testCase.ConnectionOptions.ConnectionString}]");
@@ -45,13 +47,13 @@ namespace ErgoFab.DataAccess.IntegrationTests
                 .Include(o => o.TheDepartments)
                 .ToListAsync();
 
-            Assert.That(organizations.Count, Is.EqualTo(7777));
+            Assert.That(organizations.Count, Is.EqualTo(OrganizationsCount));
         }
 
 
 
         [Test]
-        [ErgoFabTestCaseSource(7777)]
+        [ErgoFabTestCaseSource(OrganizationsCount)]
         public async Task OrganizationTest(ErgoFabTestCase testCase)
         {
             Console.WriteLine(testCase.ConnectionOptions.ConnectionString);

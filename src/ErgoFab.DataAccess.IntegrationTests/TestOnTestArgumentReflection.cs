@@ -73,15 +73,13 @@ public class TestOnTestArgumentReflection
     {
         TestDbConnectionString asIs = TestDbConnectionString.CreatePostponed(EmptyDatabase.Instance);
 
-        var next2 = new { InnerInner = new { Db = (object)asIs }  };
+        var next1 = new { InnerInner = new { Db = (object)asIs }  };
+        ExpectFound(next1, 1, 1);
+
+        var next2 = new { InnerInner = new { Db = asIs } };
         ExpectFound(next2, 1, 1);
 
-        var next = new { InnerInner = new { Db = asIs } };
-        ExpectFound(next, 1, 1);
-
     }
-
-
 
 
     void ExpectFound(object arg, int count, int countPostponed)
@@ -97,6 +95,5 @@ public class TestOnTestArgumentReflection
         List<TestDbConnectionString> found = TestArgumentReflection.FindTestDbConnectionStrings(arg);
         if (found.Count > 0) Assert.Fail($"Expected zero found TestDbConnectionString instances for [{arg?.GetType()}] = {arg}");
     }
-
 
 }

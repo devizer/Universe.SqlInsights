@@ -32,7 +32,7 @@ namespace ErgoFab.Model
         public Department TheDepartment { get; set; }
 
         [ForeignKey(nameof(TheCountry))]
-        public short? CountryId { get; set; }
+        public int? CountryId { get; set; }
         public Country TheCountry { get; set; }
 
 

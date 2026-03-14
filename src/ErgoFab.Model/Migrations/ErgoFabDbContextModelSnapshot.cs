@@ -24,21 +24,19 @@ namespace ErgoFab.Model.Migrations
 
             modelBuilder.Entity("ErgoFab.Model.Country", b =>
                 {
-                    b.Property<short>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("smallint");
+                        .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("EnglishName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("Flag")
                         .HasColumnType("varbinary(max)");
 
                     b.Property<string>("LocalName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -109,8 +107,8 @@ namespace ErgoFab.Model.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmpId"));
 
-                    b.Property<short?>("CountryId")
-                        .HasColumnType("smallint");
+                    b.Property<int?>("CountryId")
+                        .HasColumnType("int");
 
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
@@ -148,17 +146,14 @@ namespace ErgoFab.Model.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("Surname")
-                        .IsRequired()
                         .HasMaxLength(400)
                         .HasColumnType("nvarchar(400)");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasMaxLength(5)
                         .HasColumnType("nvarchar(5)");
 
@@ -176,12 +171,10 @@ namespace ErgoFab.Model.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(1024)
                         .HasColumnType("nvarchar(1024)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
@@ -205,7 +198,6 @@ namespace ErgoFab.Model.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Role")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -225,8 +217,8 @@ namespace ErgoFab.Model.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<short?>("CountryId")
-                        .HasColumnType("smallint");
+                    b.Property<int?>("CountryId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("DirectorId")
                         .HasColumnType("int");
@@ -243,9 +235,7 @@ namespace ErgoFab.Model.Migrations
 
                     b.ToTable("Organization");
 
-#if NET7_0_OR_GREATER
                     b.UseTptMappingStrategy();
-#endif
                 });
 
             modelBuilder.Entity("ErgoFab.Model.Project", b =>
@@ -260,7 +250,6 @@ namespace ErgoFab.Model.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ProjectName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -293,7 +282,6 @@ namespace ErgoFab.Model.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("RegionDescription")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasIndex("IdParent");
@@ -365,8 +353,7 @@ namespace ErgoFab.Model.Migrations
 
                     b.Navigation("TheDepartment");
 
-                    b.Navigation("TheEnrollment")
-                        .IsRequired();
+                    b.Navigation("TheEnrollment");
 
                     b.Navigation("TheOrganization");
                 });
@@ -434,8 +421,7 @@ namespace ErgoFab.Model.Migrations
 
                     b.Navigation("TheCustomer");
 
-                    b.Navigation("TheProjectDuration")
-                        .IsRequired();
+                    b.Navigation("TheProjectDuration");
                 });
 
             modelBuilder.Entity("ExpertIndustry", b =>

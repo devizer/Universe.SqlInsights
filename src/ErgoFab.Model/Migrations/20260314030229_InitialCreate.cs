@@ -15,10 +15,10 @@ namespace ErgoFab.Model.Migrations
                 name: "Country",
                 columns: table => new
                 {
-                    Id = table.Column<short>(type: "smallint", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    LocalName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EnglishName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LocalName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EnglishName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Flag = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
                 },
                 constraints: table =>
@@ -32,9 +32,9 @@ namespace ErgoFab.Model.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    Surname = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false)
+                    Title = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
+                    Surname = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -47,8 +47,8 @@ namespace ErgoFab.Model.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -99,8 +99,8 @@ namespace ErgoFab.Model.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProjectName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TheProjectDuration_Start = table.Column<DateTimeOffset>(type: "datetimeoffset(2)", nullable: false),
+                    ProjectName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TheProjectDuration_Start = table.Column<DateTimeOffset>(type: "datetimeoffset(2)", nullable: true),
                     TheProjectDuration_Finish = table.Column<DateTimeOffset>(type: "datetimeoffset(2)", nullable: true),
                     IdCustomer = table.Column<int>(type: "int", nullable: false)
                 },
@@ -145,10 +145,10 @@ namespace ErgoFab.Model.Migrations
                     OrganizationId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     SurName = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
-                    TheEnrollment_Start = table.Column<DateTimeOffset>(type: "datetimeoffset(2)", nullable: false),
+                    TheEnrollment_Start = table.Column<DateTimeOffset>(type: "datetimeoffset(2)", nullable: true),
                     TheEnrollment_Finish = table.Column<DateTimeOffset>(type: "datetimeoffset(2)", nullable: true),
                     DepartmentId = table.Column<int>(type: "int", nullable: false),
-                    CountryId = table.Column<short>(type: "smallint", nullable: true)
+                    CountryId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -174,7 +174,7 @@ namespace ErgoFab.Model.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EmployeeId = table.Column<int>(type: "int", nullable: false),
                     ProjectId = table.Column<int>(type: "int", nullable: false),
-                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -201,7 +201,7 @@ namespace ErgoFab.Model.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DirectorId = table.Column<int>(type: "int", nullable: true),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CountryId = table.Column<short>(type: "smallint", nullable: true)
+                    CountryId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -224,7 +224,7 @@ namespace ErgoFab.Model.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
                     IdParent = table.Column<int>(type: "int", nullable: false),
-                    RegionDescription = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    RegionDescription = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

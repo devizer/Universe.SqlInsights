@@ -64,8 +64,6 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
                     TestCleaner.OnDispose($"Drop DB '{testDbName}' for Test {test.Name}", () => man.DropDatabase(testDbName).SafeWait(), TestDisposeOptions.Global);
 
                     PipelineLog.LogTrace($"[DbTestPipeline.OnStart] Test='{test.Name}' Connection String is \"{connectionString}\"");
-
-
                 }
 
             }

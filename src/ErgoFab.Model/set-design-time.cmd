@@ -1,0 +1,2 @@
+set ERGOFAB_DESIGN_TIME_CONNECTION_STRING="Server=(local);Initial Catalog=Ergo Fab Design;Integrated Security=SSPI;Encrypt=False;TrustServerCertificate=True;"
+dotnet ef migrations add InitialCreate --framework net8.0

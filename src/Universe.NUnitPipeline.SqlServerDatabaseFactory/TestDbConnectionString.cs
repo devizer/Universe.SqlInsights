@@ -5,8 +5,11 @@
         public bool Postponed { get; set; } = false;
         public IDatabaseDefinition ManagedBy { get; protected set; }
 
-        // Setter for Test Framework
+        // Setter for the Test Framework (DbTestPipeline)
+        // Getter for Test Case
         public string ConnectionString { get; set; }
+
+        // Title is a copy of ManagedBy.Title
         public string Title { get; protected set; }
 
         protected TestDbConnectionString()
@@ -21,23 +24,22 @@
             Postponed = false;
         }
 
-    
-        // Connection string is assigned by pipeline
-        public static TestDbConnectionString CreatePostponed(IDatabaseDefinition dbDefinition)
+        public TestDbConnectionString(IDatabaseDefinition managedBy)
         {
-            return new TestDbConnectionString()
-            {
-                Postponed = true,
-                ManagedBy = dbDefinition,
-                Title = dbDefinition.Title,
-                ConnectionString = null
-            };
+            ManagedBy = managedBy;
+            Postponed = true;
+            Title = managedBy.Title;
+            ConnectionString = null;
         }
 
 
+        // Connection string will be assigned by DbTestPipeline
+        public static TestDbConnectionString CreatePostponed(IDatabaseDefinition dbDefinition)
+        {
+            return new TestDbConnectionString(dbDefinition);
+        }
+
         // Parameter value for Test Explorer
         public override string ToString() => Title;
-
-
     }
 }

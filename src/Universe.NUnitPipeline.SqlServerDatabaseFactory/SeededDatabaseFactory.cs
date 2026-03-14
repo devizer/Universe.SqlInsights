@@ -36,16 +36,18 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
             {
                 if (Cache.TryGetValue(cacheKey, out databaseBackupInfo))
                 {
-                    Stopwatch restoreAt = Stopwatch.StartNew();
                     PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Restoring DB '{newDbName}' from Backup '{databaseBackupInfo.BackupPoint}'");
+                    Stopwatch restoreAt = Stopwatch.StartNew();
                     await sqlServerTestDbManager.RestoreBackup(databaseBackupInfo, newDbName);
-                    PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] DB '{newDbName}' Successfully Restored in {restoreAt.Elapsed.TotalSeconds:n3} seconds from Backup '{databaseBackupInfo.BackupPoint}'");
+                    PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] DB '{newDbName}' Successfully Restored in {restoreAt.AsString()} from Backup '{databaseBackupInfo.BackupPoint}'");
 
                     // After restore we need to check up integrity. it takes a while on demand
                     using (var newConnection = sqlServerTestDbManager.CreateDbProviderFactory().CreateConnection(connectionString))
                     {
                         var dummy = newConnection.Manage().ShortServerVersion;
+                        Stopwatch startWarmupAt = Stopwatch.StartNew();
                         WarmUpDbAfterRestore(newConnection);
+                        PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] DB '{newDbName}' Warmed up in {startWarmupAt.AsString()}");
                     }
 
                     return testDbConnectionString;
@@ -60,18 +62,26 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
             {
                 if (syncObject != null) Monitor.Enter(syncObject);
                 PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Creating new test DB '{newDbName}' (Caching key is '{cacheKey}')");
-                // Done: Delete Database if exists before create new one
+
+                // Delete if exists
+                Stopwatch startDeleteAt = Stopwatch.StartNew();
                 ResilientDbKiller.Kill(sqlServerTestDbManager.SqlTestsConfiguration.MasterConnectionString, newDbName, false, 3);
-                // await sqlServerTestDbManager.CreateEmptyDatabase(newDbName);
+                PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] DB '{newDbName}' optionally deleted in {startDeleteAt.AsString()}");
+
+                // Create Empty
                 sqlServerTestDbManager.CreateEmptyDatabase(newDbName).SafeWait();
+
+                // Migrate and Seed
                 PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Populating DB '{newDbName}' by Migrate and Seed");
+                Stopwatch startMigrateAndSeedAt = Stopwatch.StartNew();
                 actionMigrateAndSeed(testDbConnectionString);
+                PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Migrate and Seed for DB '{newDbName}' completed in {startMigrateAndSeedAt.AsString()}");
 
                 if (cacheKey != null)
                 {
-                    // databaseBackupInfo = await sqlServerTestDbManager.CreateBackup(cacheKey, newDbName);
+                    Stopwatch startCreateBackupAt = Stopwatch.StartNew();
                     databaseBackupInfo = sqlServerTestDbManager.CreateBackup(cacheKey, newDbName).GetSafeResult();
-                    PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Created Backup for test DB '{newDbName}' as '{databaseBackupInfo.BackupPoint}' (Caching key is '{cacheKey}')");
+                    PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Backup for test DB '{newDbName}' created in {startCreateBackupAt.AsString()} as '{databaseBackupInfo.BackupPoint}' (Caching key is '{cacheKey}')");
                     // DONE: Skip playgroundDatabaseName?
                     if (playgroundDatabaseName != null && InternalDbFactoryTuningConfiguration.SkipTestSqlFactoryPlaygroundDatabase == false)
                     {
@@ -81,7 +91,6 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
                         // .. And Restore it from newly created backup
                         // await sqlServerTestDbManager.RestoreBackup(databaseBackupInfo, playgroundDatabaseName);
                         sqlServerTestDbManager.RestoreBackup(databaseBackupInfo, playgroundDatabaseName).SafeWait();
-
                         PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Restored Reference Test DB '{playgroundDatabaseName}' from '{databaseBackupInfo.BackupPoint}' (Caching key is '{cacheKey}')");
                     }
 
@@ -120,6 +129,24 @@ Deallocate tableList
 ";
 
             newConnection.Query<int>(sql);
+        }
+    }
+}
+
+namespace Universe
+{
+    public static class StopwatchExtensions
+    {
+        public static string AsString(this Stopwatch stopwatch)
+        {
+            var ticks = stopwatch.ElapsedTicks;
+            double seconds = ticks / (double)Stopwatch.Frequency;
+            if (seconds < 0.2) return $"{seconds:f3}s";
+            else if (seconds < 1) return $"{seconds:f2}s";
+            else if (seconds < 60) return $"{seconds:f1}s";
+            else if (seconds < 3600) return new DateTime(0).AddSeconds(seconds).ToString("mm:ss.f");
+            else if (seconds < 24 * 3600) return new DateTime(0).AddSeconds(seconds).ToString("HH:mm:ss.f");
+            else return TimeSpan.FromSeconds(seconds).ToString();
         }
     }
 }

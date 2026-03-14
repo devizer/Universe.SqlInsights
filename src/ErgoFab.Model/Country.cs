@@ -5,7 +5,7 @@ namespace ErgoFab.Model
 {
     public class Country
     {
-        public short Id { get; set; }
+        public int Id { get; set; }
 
         public string LocalName { get; set; }
 

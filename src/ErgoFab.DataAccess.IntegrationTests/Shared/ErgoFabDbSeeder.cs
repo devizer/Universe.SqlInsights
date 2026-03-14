@@ -15,18 +15,22 @@ namespace ErgoFab.DataAccess.IntegrationTests.Shared
         {
             ErgoFabDbContext db = dbConnectionString.CreateErgoFabDbContext();
 
+            Random random = new Random(1);
+
+            List<Country> countries = Enumerable.Range(1, 200).Select(x => new Country()
+            {
+                EnglishName = "Great Britain",
+                LocalName = "Great Britain",
+                Flag = UTF8Encoding.UTF8.GetBytes("Great Britain"),
+            }).ToList();
+
             for (int i = 0; i < organizationsCount; i++)
             {
                 var title = (char)((i / 26) + 48 + 6) + ((char)((i%26)+65)).ToString();
                 var org = new Organization()
                 {
                     Title = $"MI-{title}",
-                    TheCountry = new Country()
-                    {
-                        EnglishName = "Great Britain",
-                        LocalName = "Great Britain",
-                        Flag = UTF8Encoding.UTF8.GetBytes("Great Britain"),
-                    },
+                    TheCountry = countries[random.Next(countries.Count)]
                 };
 
                 db.Organization.Add(org);
