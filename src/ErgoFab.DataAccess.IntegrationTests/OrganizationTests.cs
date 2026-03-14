@@ -18,18 +18,19 @@ namespace ErgoFab.DataAccess.IntegrationTests
 
         [Test]
         [ErgoFabTestCaseSource(OrganizationsCount)]
-        public async Task OrganizationAnotherTest1st(ErgoFabTestCase testCase)
+        public async Task OrganizationTest1st(ErgoFabTestCase testCase)
         {
             await using var dbAccess = testCase.CreateErgoFabDbContext();
             var organizationsCount = await dbAccess.Organization.AsNoTracking().CountAsync();
             Assert.That(organizationsCount, Is.EqualTo(OrganizationsCount));
 
             var organizationsCount2 = await testCase.CreateErgoFabDbContext().Organization.AsNoTracking().CountAsync();
+            Console.WriteLine($"Organization Count: {organizationsCount2}");
         }
 
         [Test]
         [ErgoFabTestCaseSource(OrganizationsCount)]
-        public async Task OrganizationAnotherTest2nd(ErgoFabTestCase testCase)
+        public async Task OrganizationTest2nd(ErgoFabTestCase testCase)
         {
             var organizationsCount = await testCase.CreateErgoFabDbContext().Organization.TagWith("1st query").AsNoTracking().Select(x => x.Id).CountAsync();
             Assert.That(organizationsCount, Is.EqualTo(OrganizationsCount));
@@ -38,7 +39,7 @@ namespace ErgoFab.DataAccess.IntegrationTests
 
         [Test]
         [ErgoFabTestCaseSource(OrganizationsCount)]
-        public async Task Organization3rdTest(ErgoFabTestCase testCase)
+        public async Task OrganizationTest3rd(ErgoFabTestCase testCase)
         {
             Console.WriteLine($"CS: [{testCase.ConnectionOptions.ConnectionString}]");
             using var db = testCase.CreateErgoFabDbContext();
@@ -54,7 +55,7 @@ namespace ErgoFab.DataAccess.IntegrationTests
 
         [Test]
         [ErgoFabTestCaseSource(OrganizationsCount)]
-        public async Task OrganizationTest(ErgoFabTestCase testCase)
+        public async Task OrganizationTest4th(ErgoFabTestCase testCase)
         {
             Console.WriteLine(testCase.ConnectionOptions.ConnectionString);
 
@@ -81,8 +82,6 @@ namespace ErgoFab.DataAccess.IntegrationTests
             
             using var db2 = testCase.CreateErgoFabDbContext();
             var existingOrg = db2.Organization.FirstOrDefault(x => x.Title == orgNames.First());
-
-
 
             Console.WriteLine($"ORGANIZATIONS:{Environment.NewLine}{string.Join(Environment.NewLine, orgNames).Take(44)}");
         }

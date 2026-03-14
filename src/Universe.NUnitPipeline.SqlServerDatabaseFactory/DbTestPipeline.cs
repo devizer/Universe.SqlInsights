@@ -15,8 +15,14 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
             {
                 // var dbDefinition = test.GetPropertyOrAdd<IDatabaseDefinition>("DatabaseDefinition", null);
                 List<TestDbConnectionString> found = TestArgumentReflection.FindTestDbConnectionStrings(test.Arguments);
-                PipelineLog.LogTrace($"[DbTestPipeline.OnStart] Test='{test.Name}' TestDbConnectionString Count: {found.Count}, PostponedCount: {found.Count(x => x.Postponed)}{Environment.NewLine}");
-                TestDbConnectionString testDbConnectionString = found.FirstOrDefault();
+
+                var countPostponed = found.Count(x => x.Postponed);
+                TestDbConnectionString testDbConnectionString = found.FirstOrDefault(x => x.Postponed);
+                string testTypeInfo = testDbConnectionString == null ? "" : "FullFill DB for ";
+                var testInformation = test.GetTestInformation();
+                var testTitle = test.Name;
+                if (testInformation?.FormattedIndex?.Length > 0) testTitle = $"{testInformation?.FormattedIndex} {testTitle}";
+                PipelineLog.LogTrace($"[DbTestPipeline.OnStart] {testTypeInfo}Test='{testTitle}' TestDbConnectionString Count: {found.Count}, PostponedCount: {countPostponed}{Environment.NewLine}");
                 if (testDbConnectionString != null)
                 {
                     // Move to DI

@@ -13,9 +13,7 @@ namespace ErgoFab.DataAccess.IntegrationTests.Shared
     {
         public static async Task Seed(IDbConnectionString dbConnectionString, int organizationsCount = 1)
         {
-            ErgoFabDbContext db = dbConnectionString.CreateErgoFabDbContext();
 
-            Random random = new Random(1);
 
             List<Country> countries = Enumerable.Range(1, 200).Select(x => new Country()
             {
@@ -24,19 +22,46 @@ namespace ErgoFab.DataAccess.IntegrationTests.Shared
                 Flag = UTF8Encoding.UTF8.GetBytes("Great Britain"),
             }).ToList();
 
-            for (int i = 0; i < organizationsCount; i++)
+            using (ErgoFabDbContext db0 = dbConnectionString.CreateErgoFabDbContext())
             {
-                var title = (char)((i / 26) + 48 + 6) + ((char)((i%26)+65)).ToString();
+                db0.Country.AddRange(countries);
+                await db0.SaveChangesAsync();
+            }
+
+
+
+            while (organizationsCount > 0)
+            {
+                int count = await AddOrganizationChunk(dbConnectionString, countries);
+                organizationsCount -= count;
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+            }
+
+        }
+
+        static async Task<int> AddOrganizationChunk(IDbConnectionString dbConnectionString, List<Country> countries)
+        {
+            Random random = new Random(1);
+            await using ErgoFabDbContext db = dbConnectionString.CreateErgoFabDbContext();
+            db.Country.AttachRange(countries);
+
+            int count = 0;
+            for (int i = 0; i < 1000; i++)
+            {
                 var org = new Organization()
                 {
-                    Title = $"MI-{title}",
+                    Title = $"MI-{Guid.NewGuid()}",
                     TheCountry = countries[random.Next(countries.Count)]
                 };
 
                 db.Organization.Add(org);
+                count++;
             }
-
             await db.SaveChangesAsync();
+
+            return count;
         }
+
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Universe.NUnitPipeline;
 using Universe.NUnitPipeline.SqlServerDatabaseFactory;
 using Universe.SqlInsights.NUnit;
+using Universe.SqlServerJam;
 
 namespace ErgoFab.DataAccess.IntegrationTests;
 
@@ -25,8 +26,9 @@ public class BasicMigrationTests
     {
         ITestDatabaseNameProvider testDatabaseNameProvider = NUnitPipelineConfiguration.GetService<ITestDatabaseNameProvider>();
         var testDbName = await testDatabaseNameProvider.GetNextTestDatabaseName();
-        await _sqlTestDbManager.CreateEmptyDatabase(testDbName);
         var connectionString = _sqlTestDbManager.BuildConnectionString(testDbName, pooling: false);
+        ResilientDbKiller.Kill(connectionString);
+        await _sqlTestDbManager.CreateEmptyDatabase(testDbName);
         TestCleaner.OnDispose(
             $"Drop DB '{testDbName}'",
             () => _sqlTestDbManager.DropDatabase(testDbName).SafeWait()

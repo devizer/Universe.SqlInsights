@@ -35,7 +35,7 @@ $testAction = {
   
   $ENV:NUNIT_PIPELINE_KEEP_TEMP_TEST_DATABASES = If (Is-BuildServer) { "True" } Else { "False" }
   pushd "$TestBinariesFolder"
-  $dataDrive = if (Test-Path "W:") { "W:" } Else { "T:" }
+  $dataDrive = if (Test-Path "P:") { "P:" } Else { "T:" }
   $ENV:ERGOFAB_TESTS_DATA_FOLDER="$dataDrive\Temp\ErgFab-Tests-SQL-Data\$safeInstanceName"
   $ENV:ERGOFAB_TESTS_MASTER_CONNECTIONSTRING="Server=$($instance.Instance);Encrypt=False;Integrated Security=SSPI"
   $ENV:ERGOFAB_TESTS_HISTORY_CONNECTIONSTRING="$ENV:ERGOFAB_TESTS_MASTER_CONNECTIONSTRING; Initial Catalog=Sql Insights Warehouse; Pooling=True"

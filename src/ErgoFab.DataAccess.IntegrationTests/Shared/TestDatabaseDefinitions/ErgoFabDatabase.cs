@@ -14,8 +14,8 @@ public class ErgoFabDatabase : IDatabaseDefinition
         OrganizationsCount = organizationsCount;
     }
 
-    public string Title => $"Ergo Fab DB {(OrganizationsCount == 0 ? "without Organizations" : OrganizationsCount == 1 ? "with 1 TheOrganization" : $"with {OrganizationsCount} organizations")}";
-    public string CacheKey => Title;
+    public string Title => $"Ergo Fab DB {(OrganizationsCount == 0 ? "without rows" : OrganizationsCount == 1 ? "with 1 rows" : $"with {OrganizationsCount.ToString("n0").Replace(",", "_")} rows")}";
+    public string CacheKey => ErgoFabEnvironment.IgnoreCache ? null : Title;
     public void MigrateAndSeed(IDbConnectionString connectionOptions)
     {
         using var dbContext = connectionOptions.CreateErgoFabDbContext();
@@ -24,4 +24,5 @@ public class ErgoFabDatabase : IDatabaseDefinition
     }
 
     public string PlaygroundDatabaseName => Title;
+
 }

@@ -19,7 +19,17 @@ public class ErgoFabTestCaseSource : TestCaseSourceAttribute
         var dbDefinition = new ErgoFabDatabase(organizationsCount);
 
         // TestContext.CurrentContext.Test.GetPropertyOrAdd<IDatabaseDefinition>("DatabaseDefinition", test => dbDefinition);
-        foreach (var kind in new[] { "First", "Next" })
+
+        var humanIndexes = new List<string> { "First", "Next" };
+        for(int i = 0; i < ErgoFabEnvironment.AdditionalTestCount; i++)
+        {
+            int index = i + 3;
+            if (index == 3) humanIndexes.Add("Third");
+            else if (index == 4) humanIndexes.Add("Fourth");
+            else humanIndexes.Add($"{index}th");
+        }
+
+        foreach (var kind in humanIndexes)
         {
             yield return new ErgoFabTestCase()
             {
@@ -28,6 +38,7 @@ public class ErgoFabTestCaseSource : TestCaseSourceAttribute
             };
         }
     }
+
 
 
 }

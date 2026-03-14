@@ -24,11 +24,12 @@ public static class ErgoFabTestCaseExtensions
     }
 
     private static long DbContextCounter = 0;
+
     public static ErgoFabDbContext CreateErgoFabDbContext(this IDbConnectionString dbConnectionString)
     {
         // TODO:
         // NO WAY
-        // 1. Create DB using passed migration and and seeder
+        // 1. Create DB using passed migration and seeder
         // 2. START TRACE HERE 
         CheckConnectionString(dbConnectionString?.ConnectionString);
 
@@ -55,8 +56,13 @@ public static class ErgoFabTestCaseExtensions
             var events = new[] { "QueryCompilationStarting", "QueryExecutionPlanned", "CommandExecuted" };
             return events.Any(e => id.Name.Contains(e, StringComparison.OrdinalIgnoreCase));
         };
-        
-        dbContextOptionsBuilder.LogTo(log, logFilter).EnableDetailedErrors().EnableSensitiveDataLogging();
+
+        if (!ErgoFabEnvironment.NeedMuteEfLogs)
+            dbContextOptionsBuilder
+                .LogTo(log, logFilter)
+                .EnableDetailedErrors()
+                .EnableSensitiveDataLogging();
+
 
         var ergoFabDbContext = new ErgoFabDbContext(dbContextOptionsBuilder.Options);
         return ergoFabDbContext;
@@ -68,5 +74,4 @@ public static class ErgoFabTestCaseExtensions
             throw new InvalidOperationException("ConnectionString is null or empty. DB Test Pipeline is misconfigured");
 
     }
-
 }
