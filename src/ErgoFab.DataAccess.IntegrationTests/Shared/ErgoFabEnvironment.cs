@@ -25,9 +25,7 @@ static class ErgoFabEnvironment
     {
         return BooleanCache.GetOrAdd(name, arg =>
         {
-            var raw = Environment.GetEnvironmentVariable(arg);
-            if (raw == null) return false;
-            raw = raw.ToLower();
+            var raw = Environment.GetEnvironmentVariable(arg)?.ToLower();
             return raw == "1" || raw == "true" || raw == "on";
         });
     }
