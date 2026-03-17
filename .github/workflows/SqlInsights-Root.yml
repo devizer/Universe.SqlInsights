@@ -1,6 +1,9 @@
 name: SqlInsights Test MATRIX
 
 
+env:
+      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: 'true'
+
 on:
   workflow_dispatch:
     inputs:
