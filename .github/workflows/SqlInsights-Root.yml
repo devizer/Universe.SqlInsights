@@ -54,7 +54,7 @@ jobs:
     - name: Bootstrap
       uses: devizer/devops-library@main
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: Variables
       run: 'printenv | sort'
     - name: Install GNU Parallel
@@ -82,7 +82,7 @@ jobs:
       run: ls -laR $SYSTEM_ARTIFACTSDIRECTORY/w3api || true
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       if: always()
       with:
         name: 'Pre-Build'
@@ -110,10 +110,10 @@ jobs:
     timeout-minutes: 45
     steps:
 
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - uses: devizer/devops-library@main
     - name: Download all workflow run artifacts
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
          # name: Pre-Build
          path: ${{ env.SYSTEM_ARTIFACTSDIRECTORY }}/RAW
