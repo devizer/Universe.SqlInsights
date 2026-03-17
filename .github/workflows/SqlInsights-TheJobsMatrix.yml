@@ -18,6 +18,8 @@ jobs:
     name: ${{ matrix.JOB_TITLE }}
     # OS: Windows|Ubuntu, # HOST: 2022, 2025, 22.04, 24.04
     runs-on: "${{ matrix.RUNS_ON }}"
+    env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
     timeout-minutes: 70
     strategy:
       max-parallel: 20

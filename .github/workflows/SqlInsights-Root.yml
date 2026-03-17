@@ -39,6 +39,8 @@ jobs:
   Pre-Build:
     name: Pre-Build for ${{ github.event.inputs.ARG_SQL_SET_SIZE }} Set
     runs-on: ubuntu-latest
+    env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
     outputs:
           matrix: ${{ steps.set-matrix.outputs.matrix }}
           SQL_SET_SIZE: ${{ steps.set-matrix.outputs.SQL_SET_SIZE }}
@@ -101,6 +103,8 @@ jobs:
 
   Combine:
     runs-on: ubuntu-latest
+    env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
     needs: [Pre-Build, SQL]
     if: always()
     timeout-minutes: 45
