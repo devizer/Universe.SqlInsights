@@ -343,7 +343,7 @@ Set-Var "SQL_PASSWORD" 'p@assw0rd!'
 Set-Var "SQLSERVERS_SETUP_FOLDER" "$sqlSetupFolder"
 Set-Var "SQLSERVERS_MEDIA_FOLDER" "$sqlMediaFolder"
 Set-Var "SQLSERVERS_INSTALL_TO" "$sqlInstallTo"
-Set-Var "PS1_REPO_DOWNLOAD_FOLDER" "C:\Temp-DevOps"
+Set-Var "PS1_REPO_DOWNLOAD_FOLDER" "$($root_drive)\Temp-DevOps"
 Set-Var "DOTNET_CLI_TELEMETRY_OPTOUT" "1"
 
 $sql_instance_name=if ("$($ENV:SQL_INSTANCE_NAME)") { $ENV:SQL_INSTANCE_NAME } Else { "(local)" }
