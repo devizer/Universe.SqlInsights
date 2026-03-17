@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Universe.GenericTreeTable;
 using Universe.SqlInsights.Shared.Internals;
 
 namespace Universe.SqlInsights.Shared
@@ -80,7 +81,9 @@ namespace Universe.SqlInsights.Shared
                 });
             }
 
-            var ret = new ConsoleTable(header);
+
+
+            var ret = new ConsoleTable(header.Select(h => (IEnumerable<string>)new[] { h }));
 
             Func<double, long, string> format = (val, count) =>
             {
@@ -127,7 +130,7 @@ namespace Universe.SqlInsights.Shared
                     });
                 }
 
-                ret.AddRow(tableRow);
+                ret.AddRow((object[])tableRow.ToArray());
             }
 
             return ret;
