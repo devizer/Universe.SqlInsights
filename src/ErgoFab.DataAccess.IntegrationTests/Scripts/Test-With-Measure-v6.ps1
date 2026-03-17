@@ -6,6 +6,8 @@ New-Item -Path "$srcFolder" -ItemType Directory -Force -EA SilentlyContinue | Ou
 robocopy ".." $srcFolder /E /XD .vs bin obj node_modules /NFL /NDL
 cd $srcFolder\ErgoFab.DataAccess.IntegrationTests
 
+$OutputEncoding = [Console]::OutputEncoding = [Text.Encoding]::UTF8
+
 
 function Find-Test-Cases ([string]$folder) {
     $result = @()
@@ -34,13 +36,13 @@ $testCasesCache = @(
 )
 
 $testCasesDisk = @(
-  # @{ Name = "SATA HDD"; Drive="P:"; }
-  @{ Name = "NVME SSD"; Drive="C:"; }
+  @{ Name = "SATA HDD"; Drive="P:"; }
+  # @{ Name = "NVME SSD"; Drive="C:"; }
 )
 
 $testCasesCount = @(
   @{ Name = "8"; Count="0"; }
-  @{ Name = "56"; Count="12"; }
+  # @{ Name = "56"; Count="12"; }
 )
 
 
@@ -84,6 +86,8 @@ foreach($testCaseCache in $testCasesCache) {
       $b = $_
       $a = $after | Where-Object { $_.Name -eq $b.Name }
       $idleSec = [math]::Round(($a.PercentIdleTime - $b.PercentIdleTime) / $b.Frequency_PerfTime, 1)
+      $busySec = [math]::Round($elapsedSec - $idleSec, 1)
+      $busySec = [math]::Max(0,$busySec)
       [PSCustomObject]@{
           Drive      = $b.Name
           ReadMB     = [math]::Round(($a.DiskReadBytesPersec  - $b.DiskReadBytesPersec)  / 1MB, 2)
@@ -92,7 +96,7 @@ foreach($testCaseCache in $testCasesCache) {
           WriteSec   = [math]::Round(($a.PercentDiskWriteTime - $b.PercentDiskWriteTime) / $b.Frequency_PerfTime, 1)
           TotalIOSec = [math]::Round(($a.PercentDiskTime      - $b.PercentDiskTime)      / $b.Frequency_PerfTime, 1)
           IdleSec    = $idleSec
-          BusySec    = [math]::Round($elapsedSec - $idleSec, 1)
+          BusySec    = $busySec
       }
   } | ft -AutoSize | Tee-Object "$logFile" -Append | tee-object "$summaryLog" -append
 }}}

@@ -12,7 +12,7 @@ namespace ErgoFab.DataAccess.IntegrationTests
 {
     [NUnitPipelineAction]
     [TempTestAssemblyAction]
-    public class OrganizationTests
+    public partial class OrganizationTests
     {
         private const int OrganizationsCount = 100_000;
 

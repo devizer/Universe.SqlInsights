@@ -76,12 +76,15 @@ public class SqlInsightsExportImport
             streamSession.Write(ArrayEnd, 0, ArrayEnd.Length);
         }
 
+        TimeSpan elapsed = startAt.Elapsed;
         if (EnableDebugLog)
         {
             var p = Process.GetCurrentProcess();
             AppendLog($"Total Actions: {totalActions}. Memory: {p.WorkingSet64 / 1024:n0} Kb");
         }
-        AppendLog($"Duration: {startAt.Elapsed}");
+
+        var speedInfo = elapsed.TotalSeconds > 0 ? $" Performance for Compression={this.CompressionLevel}: {totalActions / elapsed.TotalSeconds:n0} actions/s" : "";
+        AppendLog($"Duration: {startAt.Elapsed}{speedInfo}");
 
         ZipArchiveEntry zipLogEntry = zipArchive.CreateEntry("Log.log", CompressionLevel);
         using (var streamLog = zipLogEntry.Open())
@@ -90,6 +93,7 @@ public class SqlInsightsExportImport
             wr.Write(Log);
         }
     }
+    
     private async Task Export_IncorrectOrder(Stream stream)
     {
         var bufferSize = Math.Max(1024, BufferSize);
