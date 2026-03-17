@@ -261,7 +261,13 @@ Function BroadCast-Variables() {
         # Ref instead of [out]
         $ret = [Win32.NativeMethods]::SendMessageTimeout([IntPtr]0xffff, 0x001A, [UIntPtr]::Zero, "Environment", 0x02, 1000, [ref]$result)
         
-        Write-Line -TextGreen "Broadcast variables success, SendMessageTimeout() --> $ret, [ref] result = $result"
+        if ($ret -eq 0) { 
+          Write-Line -TextRed "Broadcast variables failed, SendMessageTimeout() --> $ret, [ref] result = $result"
+        } Else {
+          if ($result -ne 0) {
+              Write-Line -TextYellow "Broadcast finished, but a window returned unexpected result. SendMessageTimeout() --> $ret, [ref] result = $result"
+          }
+        }
     } 
     catch {
         Write-Line -TextRed "Broadcast variables failed: $($_.Exception.Message)"
