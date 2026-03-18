@@ -2,6 +2,7 @@
         $ErrorActionPreference="Continue"
         echo "SQL: '$($ENV:sql)'"
 
+foreach ($retry in 1..3) { 
         Say "Restarting Host Network Service"
         try { Restart-Service hns } catch {}
         Say "docker network prune"
@@ -53,4 +54,9 @@
         & docker exec sql-server powershell -Command "cd C:\App; Write-Line -TextGreen 'Success: Container is Running and Has C:\App';" |
           tee-object "$ENV:SYSTEM_ARTIFACTSDIRECTORY/OUTPUT from CONTAINER.txt"
 
-        if ($Global:LASTEXITCODE) { Write-Line -TextRed "ERROR! RUN CONTAINER (0B-SETUP-Windows-Container.ps1) failed. Exit Code $($Global:LASTEXITCODE)"; exit 1; }
+        if ($Global:LASTEXITCODE) { 
+          Write-Line -TextRed "ERROR! RUN CONTAINER (0B-SETUP-Windows-Container.ps1) failed. Exit Code $($Global:LASTEXITCODE)"; 
+          if ($retry -eq 3) { exit 1; }
+          Write-Host -TextRed "Retry $retry of 3"
+        } Else { Break; }
+}

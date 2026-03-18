@@ -2,7 +2,7 @@ name: SqlInsights Test MATRIX
 
 
 env:
-      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: 'true'
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: 'true'
 
 on:
   workflow_dispatch:
@@ -127,7 +127,7 @@ jobs:
         # Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Pack-each-Artifact-per-Archive.sh -9 -7z
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       if: always()
       with:
         name: 'Combined SqlInsights Matrix ${{ needs.Pre-Build.outputs.SQL_SET_SIZE }} on ${{ needs.Pre-Build.outputs.HOST_VERSION }}.7z'

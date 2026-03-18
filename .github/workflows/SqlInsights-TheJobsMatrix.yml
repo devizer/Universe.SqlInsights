@@ -1,5 +1,8 @@
 name: SqlInsights Windows Matrix
 
+env:
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: 'true'
+
 on:
   workflow_call:
     inputs:
@@ -19,7 +22,7 @@ jobs:
     # OS: Windows|Ubuntu, # HOST: 2022, 2025, 22.04, 24.04
     runs-on: "${{ matrix.RUNS_ON }}"
     env:
-          ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: 'true'
+      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: 'true'
     timeout-minutes: 70
     strategy:
       max-parallel: 20
@@ -115,14 +118,9 @@ jobs:
         run: . './scripts/CI-Steps/0A-Pull-Docker-Image.sh'
 
       - name: RUN Windows Container
-        uses: nick-fields/retry@v3
+        shell: pwsh
         if: ${{ env.SQL_IMAGE_TAG != '' && matrix.OS == 'Windows' }}
-        with:
-          timeout_minutes: 10
-          max_attempts: 4
-          shell: pwsh
-          retry_wait_seconds: 2
-          command: $ErrorActionPreference="Stop"; . .\scripts\CI-Steps\0B-SETUP-Windows-Container.ps1
+        run: $ErrorActionPreference="Stop"; . .\scripts\CI-Steps\0B-SETUP-Windows-Container.ps1
       
       - name: RUN SQL Server ${{ matrix.JOB_TITLE }} Linux Container
         shell: bash
