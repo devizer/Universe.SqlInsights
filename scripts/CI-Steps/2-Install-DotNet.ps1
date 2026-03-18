@@ -29,7 +29,7 @@ foreach($ver in @("6.0", "8.0", "10.0")) {
 If ((Get-OS-Platform) -eq "Windows") {
    Add-Folder-To-System-Path "$target_for_windows"
    if ((Is-AZURE_PIPELINE)) { Write-Host "##vso[task.prependpath]$target_for_windows" }
-   if ((Is-GITHUB-ACTIONS)) { "$target_for_windows" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append }
+   if ((Is-GITHUB-ACTIONS) -and ("$env:GITHUB_PATH" -ne "")) { "$target_for_windows" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append }
    $tools_folder="$($ENV:USERPROFILE)\.dotnet\tools"
    New-item "$tools_folder" -ItemType Directory -Force -EA SilentlyContinue | Out-Null
    Add-Folder-To-User-Path "$tools_folder"
