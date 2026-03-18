@@ -345,7 +345,7 @@ if (-not (Is-Build-Agent)) {
    Write-Host "Skip Variables"
 } Else {
 
-$temp="$($root_drive):\Temp"
+$temp="$($root_drive)\Temp"
 New-item "$temp" -ItemType Directory -Force -EA SilentlyContinue | Out-Null
 Set-Var "TEMP" "$temp"
 Set-Var "TMP" "$temp"
