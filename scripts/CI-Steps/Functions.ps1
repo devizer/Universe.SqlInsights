@@ -6,6 +6,7 @@ Import-DevOps
 
 function Is-GITHUB-ACTIONS() { $ENV:GITHUB_ACTIONS -eq "true" }
 function Is-AZURE_PIPELINE() { $ENV:TF_BUILD -eq "true" }
+function Is-Build-Agent() { return ((Is-GITHUB-ACTIONS) -or (Is-AZURE_PIPELINE)) }
 
 function Get-FreePort { $listener = [System.Net.Sockets.TcpListener]0; $listener.Start(); $port = $listener.LocalEndpoint.Port; $listener.Stop(); return $port }
 
@@ -340,10 +341,14 @@ if (Test-Path "D:\") {
   $sqlMediaFolder = "C:\SQL-Media"; $sqlSetupFolder = "C:\SQL-Setup"; $sqlInstallTo = "C:\SQL"; $root_drive="C:"
 }
 
-if ($false -and -not (Is-Microsoft-Hosted-Build-Agent)) {
+if (-not (Is-Build-Agent)) {
    Write-Host "Skip Variables"
 } Else {
 
+$temp="$($root_drive):\Temp"
+New-item "$temp" -ItemType Directory -Force -EA SilentlyContinue | Out-Null
+Set-Var "TEMP" "$temp"
+Set-Var "TMP" "$temp"
 Set-Var "SQL_PASSWORD" 'p@assw0rd!'
 
 Set-Var "SQLSERVERS_SETUP_FOLDER" "$sqlSetupFolder"
