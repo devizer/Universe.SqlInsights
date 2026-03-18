@@ -265,7 +265,7 @@ Function BroadCast-Variables() {
         if ($ret -eq 0) { 
           Write-Line -TextRed "Broadcast variables failed, SendMessageTimeout() --> $ret, [ref] result = $result"
         } Else {
-          if ($result -ne 0) {
+          if ("$result" -ne "0") {
               Write-Line -TextYellow "Broadcast finished, but a window returned unexpected result. SendMessageTimeout() --> $ret, [ref] result = $result"
           }
         }
