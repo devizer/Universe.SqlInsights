@@ -341,7 +341,7 @@ if (Test-Path "D:\") {
   $sqlMediaFolder = "C:\SQL-Media"; $sqlSetupFolder = "C:\SQL-Setup"; $sqlInstallTo = "C:\SQL"; $root_drive="C:"
 }
 
-if (-not (Is-Build-Agent)) {
+if (-not (Is-Microsoft-Hosted-Build-Agent)) {
    Write-Host "Skip Variables"
 } Else {
 

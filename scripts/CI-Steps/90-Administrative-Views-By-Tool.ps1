@@ -12,4 +12,4 @@
       Show-Last-Exit-Code "TOOL SqlServer.AdministrativeViews" -Throw
 
       Say "Report Files at [$output_folder]"
-      Get-ChildItem "$output_folder" -EA SilentlyContinue | Format-Table -AutoSize | Out-Host
+      Get-ChildItem "$output_folder" -EA SilentlyContinue | Format-Table -AutoSize | Out-String -Width 1234 | Out-Host
