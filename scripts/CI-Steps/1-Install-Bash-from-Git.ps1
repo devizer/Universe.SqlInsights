@@ -1,4 +1,5 @@
-. "$PSScriptRoot\Functions.ps1"
+# . "$PSScriptRoot\Functions.ps1"
+Import-DevOps
 
 & choco feature enable -n allowGlobalConfirmation
 & choco feature disable -n showDownloadProgress

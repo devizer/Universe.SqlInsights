@@ -1,4 +1,5 @@
-. "$PSScriptRoot\Functions.ps1"
+# . "$PSScriptRoot\Functions.ps1"
+Import-DevOps
 
 Write-Host "Location: $(Get-Location)"
 echo "`$PSNativeCommandArgumentPassing = [$PSNativeCommandArgumentPassing]"
