@@ -329,10 +329,10 @@ steps:
     displayName: '7-SqlJam-Tests.ps1'
 
     # The Step is optional
-  - powershell: scripts/CI-Steps\Run-CI-Script.ps1 8-Install-Chrome.ps1
+  - powershell: scripts/CI-Steps\Run-CI-Script.ps1 8-Install-Chrome-on-Windows.ps1
     # condition: succeededOrFailed()
     condition: false
-    displayName: '8-Install-Chrome.ps1'
+    displayName: '8-Install-Chrome-on-Windows.ps1'
   
   - powershell: powershell -f scripts\CI-Steps\Run-CI-Script.ps1 9-Run-w3app.ps1
     # condition: succeededOrFailed()
@@ -343,7 +343,7 @@ steps:
   - powershell: |
        & choco feature enable -n allowGlobalConfirmation
        & choco feature disable -n showDownloadProgress
-       pwsh scripts\CI-Steps\8-Install-Chrome.ps1
+       pwsh scripts\CI-Steps\8-Install-Chrome-on-Windows.ps1
        pwsh scripts\CI-Steps\9-Run-w3app.ps1
        . scripts\CI-Steps\Functions.ps1
        Say "PROCESSES: chrome"
