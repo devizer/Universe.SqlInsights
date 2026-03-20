@@ -1,5 +1,4 @@
 # . "$PSScriptRoot\Functions.ps1"
-Import-DevOps
 
 Write-Host "Location: $(Get-Location)"
 echo "`$PSNativeCommandArgumentPassing = [$PSNativeCommandArgumentPassing]"
@@ -17,6 +16,7 @@ if ($PSVersionTable.PSEdition -ne "Core") {
 $urlSource = 'https://devizer.github.io/SqlServer-Version-Management/Install-SqlServer-Version-Management.ps1';
 foreach($attempt in 1..3) { try { iex ((New-Object System.Net.WebClient).DownloadString($urlSource)); Write-Host "Success: Install-SqlServer-Version-Management.ps1"; break; } catch {sleep 0.1;} }
 
+Import-DevOps
 Say "Get-PS1-Repo-Downloads-Folder(): $(Get-PS1-Repo-Downloads-Folder)"
 
 
