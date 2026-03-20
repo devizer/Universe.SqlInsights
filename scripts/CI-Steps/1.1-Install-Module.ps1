@@ -1,12 +1,9 @@
-# . "$PSScriptRoot\Functions.ps1"
-
 Write-Host "Location: $(Get-Location)"
 echo "`$PSNativeCommandArgumentPassing = [$PSNativeCommandArgumentPassing]"
 if ((Get-OS-Platform) -eq "Windows") {
     & choco feature enable -n allowGlobalConfirmation
     & choco feature disable -n showDownloadProgress
 }
-
 
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
 if ($PSVersionTable.PSEdition -ne "Core") {
@@ -17,8 +14,9 @@ $urlSource = 'https://devizer.github.io/SqlServer-Version-Management/Install-Sql
 foreach($attempt in 1..3) { try { iex ((New-Object System.Net.WebClient).DownloadString($urlSource)); Write-Host "Success: Install-SqlServer-Version-Management.ps1"; break; } catch {sleep 0.1;} }
 
 Import-DevOps
-Say "Get-PS1-Repo-Downloads-Folder(): $(Get-PS1-Repo-Downloads-Folder)"
+. "$PSScriptRoot\Functions.ps1"
 
+Say "Get-PS1-Repo-Downloads-Folder(): $(Get-PS1-Repo-Downloads-Folder)"
 
 Write-Artifact-Info "OS-NAME.TXT" "$(Get-OS-Name)"
 Write-Artifact-Info "CPU-NAME.TXT" "$(Get-Cpu-Name -includeCoreCount)"
