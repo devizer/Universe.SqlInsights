@@ -1,28 +1,25 @@
 ﻿using ErgoFab.DataAccess.IntegrationTests.Shared;
 using Microsoft.EntityFrameworkCore;
 using Universe.NUnitPipeline.SqlServerDatabaseFactory;
-using Universe.SqlInsights.NUnit;
 
 namespace Shared.TestDatabaseDefinitions;
 
-public class ErgoFabDatabase : IDatabaseDefinition
+public class ErgoFabDatabase(int organizationsCount) : IDatabaseDefinition
 {
-    public int OrganizationsCount { get; }
+	public string Title => organizationsCount switch
+	{
+		0 => "Ergo Fab DB without rows",
+		1 => "Ergo Fab DB with 1 row",
+		_ => $"Ergo Fab DB with {organizationsCount:n0} rows"
+	};
 
-    public ErgoFabDatabase(int organizationsCount)
-    {
-        OrganizationsCount = organizationsCount;
-    }
+	public string CacheKey => ErgoFabEnvironment.IgnoreCache ? null : Title;
+	public async Task MigrateAndSeed(IDbConnectionString connectionOptions)
+	{
+		await using var dbContext = connectionOptions.CreateErgoFabDbContext();
+		await dbContext.Database.MigrateAsync();
+		await ErgoFabDbSeeder.Seed(connectionOptions, organizationsCount);
+	}
 
-    public string Title => $"Ergo Fab DB {(OrganizationsCount == 0 ? "without rows" : OrganizationsCount == 1 ? "with 1 rows" : $"with {OrganizationsCount.ToString("n0").Replace(",", "_")} rows")}";
-    public string CacheKey => ErgoFabEnvironment.IgnoreCache ? null : Title;
-    public void MigrateAndSeed(IDbConnectionString connectionOptions)
-    {
-        using var dbContext = connectionOptions.CreateErgoFabDbContext();
-        dbContext.Database.MigrateAsync().SafeWait();
-        ErgoFabDbSeeder.Seed(connectionOptions, OrganizationsCount).SafeWait();
-    }
-
-    public string PlaygroundDatabaseName => Title;
-
+	public string PlaygroundDatabaseName => Title;
 }

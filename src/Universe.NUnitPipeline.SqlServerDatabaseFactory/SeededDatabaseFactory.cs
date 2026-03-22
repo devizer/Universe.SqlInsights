@@ -24,7 +24,7 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
         }
 
 
-        public async Task<IDbConnectionString> BuildDatabase(string cacheKey, string newDbName, string title, string playgroundDatabaseName, Action<IDbConnectionString> actionMigrateAndSeed)
+        public async Task<IDbConnectionString> BuildDatabase(string cacheKey, string newDbName, string title, string playgroundDatabaseName, Func<IDbConnectionString,Task> actionMigrateAndSeed)
         {
             SqlServerTestDbManager sqlServerTestDbManager = new SqlServerTestDbManager(SqlServerTestsConfiguration);
 
@@ -74,7 +74,7 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
                 // Migrate and Seed
                 PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Populating DB '{newDbName}' by Migrate and Seed");
                 Stopwatch startMigrateAndSeedAt = Stopwatch.StartNew();
-                actionMigrateAndSeed(testDbConnectionString);
+                actionMigrateAndSeed(testDbConnectionString).SafeWait();
                 PipelineLog.LogTrace($"[SeededDatabaseFactory.BuildDatabase] Migrate and Seed for DB '{newDbName}' completed in {startMigrateAndSeedAt.AsString()}");
 
                 if (cacheKey != null)

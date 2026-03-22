@@ -12,8 +12,9 @@ namespace Shared.TestDatabaseDefinitions
         public static EmptyDatabase Instance = new EmptyDatabase();
         public string Title { get; } = "Empty Database";
         public string CacheKey { get; } = null;
-        public void MigrateAndSeed(IDbConnectionString connectionOptions)
+        public Task MigrateAndSeed(IDbConnectionString connectionOptions)
         {
+			return Task.CompletedTask;
         }
 
         public string PlaygroundDatabaseName => null;
