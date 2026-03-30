@@ -42,7 +42,7 @@ jobs:
         shell: bash
         run: 'echo "${{ matrix.JOB_TITLE }}" | tee $SYSTEM_ARTIFACTSDIRECTORY/JOB-NAME.TXT; printenv | sort'
       - name: Download Pre-Build Artifacts
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@v4
         with:
           name: Pre-Build
           path: "${{ github.workspace }}/Goods"

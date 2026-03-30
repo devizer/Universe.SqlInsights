@@ -43,10 +43,10 @@ $jobs_linux=@()
 # Self Hosted
 $run_on=@("self-hosted", "linux", "sse3-only")
 foreach($SQL_IMAGE_TAG in "2025", "2022", "2019", "2017") { 
+     $LINUX_MSSQL_PID = "Developer"
      $sql = "$SQL_IMAGE_TAG"
      $job_title = "$SQL_IMAGE_TAG $LINUX_MSSQL_PID (Linux)"
      $container_tag = "$SQL_IMAGE_TAG"
-     $LINUX_MSSQL_PID = "Developer"
      if ($SqlSetSize -eq "FULL") {
         $jobs_linux += [pscustomobject] @{ JOB_TITLE="$job_title SSE3 Only"; SQL=$sql; OS="Ubuntu"; HOST="24.04"; SQL_CONTAINER_SUFFIX=$container_tag; LINUX_MSSQL_PID="$LINUX_MSSQL_PID"; RUNS_ON=$run_on; }
      }
