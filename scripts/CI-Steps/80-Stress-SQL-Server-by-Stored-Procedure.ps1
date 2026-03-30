@@ -16,7 +16,7 @@ $migrate=@(
  "Use [DB-Stress]; EXEC('Create Procedure [Stress By Select] As Begin Select Top 200 Id, Description From Detail Order By Id Desc; End')",
  "Use [DB-Stress]; EXEC('Create Procedure [Stress By Delete] As Begin Delete From Detail Where Id in (Select Top 2 d2.Id From Detail d2 Order By Id Desc); End')"
 );
-if ("$ENV:SQL" -match "LocalDB") { 
+if ("$ENV:SQL" -match "LocalDB" -or (-not (Is-Microsoft-Hosted-Build-Agent))) { 
     $insert_count="1234 "; $delete_count="123 "
 } Else {
     $insert_count="10000"; $delete_count="1000"
