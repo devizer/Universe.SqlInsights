@@ -44,7 +44,7 @@
 
 
       export SQL_SERVER_CONTAINER_NAME=sqlserver # Add SqlCmd to Path for Linux Container and Wait for
-      export SQL_PING_TIMEOUT=30 SQL_PING_PARAMETERS="-C -S localhost -U sa -P \""$password"\""
+      export SQL_PING_TIMEOUT=60 SQL_PING_PARAMETERS="-C -S localhost -U sa -P \""$password"\""
       Run-Remote-Script https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/Add-SqlCmd-to-Path-for-Linux-Container.sh
 
       set +e
