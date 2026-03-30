@@ -84,7 +84,7 @@ jobs:
         set -eu; set -o pipefail
         cd ${{ env.SYSTEM_ARTIFACTSDIRECTORY }}
         ls -lah
-        7z a -sdel -mx=9 Pre-Built-Artifact.7z
+        7z a -sdel -mx=9 -ms=on -mqs=on Pre-Built-Artifact.7z
         ls -lah
 
     - name: Upload artifacts
