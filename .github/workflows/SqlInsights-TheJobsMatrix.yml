@@ -245,8 +245,8 @@ jobs:
           set +eu
           sudo rm -rf /mnt/ergo-fab-tests/*
           docker rm -f $(docker ps -aq)
-          docker rmi -f $(docker images -aq)
-          docker system prune -f
+          # docker rmi -f $(docker images -aq)
+          # docker system prune -f
           true
 
       - name: Upload artifacts
