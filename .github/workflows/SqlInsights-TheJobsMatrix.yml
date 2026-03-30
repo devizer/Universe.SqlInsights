@@ -239,6 +239,14 @@ jobs:
            bash -e -u Test-via-NuGET.sh
            Say "Success Complete"
 
+      - name: Clean UP
+        shell: bash
+        run: |
+          set +eu
+          sudo rm -rf /mnt/ergo-fab-tests/*
+          docker rm -f $(docker ps -aq)
+          docker rmi -f $(docker images -aq)
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v6
         if: always()
