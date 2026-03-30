@@ -24,6 +24,7 @@
       Say "Pull image [$img] and run container"
       try-and-retry docker pull -q "$img"
       sudo mkdir -p /mnt/ergo-fab-tests
+      sudo rm -rf /mnt/ergo-fab-tests/*
       sudo chmod 777 -R /mnt/ergo-fab-tests
 
       # --privileged --privileged --privileged --privileged --privileged --privileged --privileged --privileged
