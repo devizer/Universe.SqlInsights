@@ -10,7 +10,7 @@ public class ErgoFabDatabase(int organizationsCount) : IDatabaseDefinition
 	{
 		0 => "Ergo Fab DB without rows",
 		1 => "Ergo Fab DB with 1 row",
-		_ => $"Ergo Fab DB with {organizationsCount:n0} rows"
+		var n => $"Ergo Fab DB with {n.ToString("n0").Replace(",","_")} rows"
 	};
 
 	public string CacheKey => ErgoFabEnvironment.IgnoreCache ? null : Title;
