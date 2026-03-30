@@ -79,6 +79,14 @@ jobs:
     - name: Content of w3api
       run: ls -laR $SYSTEM_ARTIFACTSDIRECTORY/w3api || true
 
+    - name: Pack ${{ env.SYSTEM_ARTIFACTSDIRECTORY }}
+      run: |
+        set -eu; set -o pipefail
+        cd ${{ env.SYSTEM_ARTIFACTSDIRECTORY }}
+        ls -lah
+        7z a -sdel -mx=9 Pre-Built-Artifact.7z
+        ls -lah
+
     - name: Upload artifacts
       uses: actions/upload-artifact@v6
       if: always()
