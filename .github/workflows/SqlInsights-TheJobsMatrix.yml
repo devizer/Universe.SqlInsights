@@ -49,7 +49,7 @@ jobs:
 
       - name: 'Extract Downloaded Pre-Build Artifacts'
         shell: bash
-        run: 'set -eu; cd $SYSTEM_ARTIFACTSDIRECTORY; 7z x -y Pre-Built-Artifact.7z; rm -f Pre-Built-Artifact.7z'
+        run: 'set -eu; cd "${{ github.workspace }}/Goods"; ls -la; 7z x -y Pre-Built-Artifact.7z; rm -f Pre-Built-Artifact.7z'
 
       - name: Setup Variables
         shell: pwsh
