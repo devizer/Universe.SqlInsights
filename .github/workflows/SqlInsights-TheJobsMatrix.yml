@@ -246,6 +246,8 @@ jobs:
           sudo rm -rf /mnt/ergo-fab-tests/*
           docker rm -f $(docker ps -aq)
           docker rmi -f $(docker images -aq)
+          docker system prune -f
+          true
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v6
