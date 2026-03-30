@@ -23,7 +23,7 @@ jobs:
     runs-on: "${{ matrix.RUNS_ON }}"
     env:
       ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: 'true'
-    timeout-minutes: 70
+    timeout-minutes: 90
     strategy:
       max-parallel: 20
       fail-fast: false
@@ -239,8 +239,9 @@ jobs:
            bash -e -u Test-via-NuGET.sh
            Say "Success Complete"
 
-      - name: Clean UP
+      - name: Clean UP container and DBs
         shell: bash
+        if: always() && runner.environment == 'self-hosted' && runner.os == 'Linux'
         run: |
           set +eu
           sudo rm -rf /mnt/ergo-fab-tests/*
