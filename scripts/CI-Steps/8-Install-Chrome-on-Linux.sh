@@ -1,9 +1,13 @@
       set -eu; set -o pipefail
-      try-and-retry sudo apt-get install xdg-utils -y -qq
-      try-and-retry sudo apt-get install fonts-liberation -y -qq
-      
-      try-and-retry curl -kfSL -o /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-      sudo dpkg -i /tmp/chrome.deb || sudo apt-get install -f
+      if [[ -z "$(command -v google-chrome)" ]]; then
+          # try-and-retry sudo apt-get install xdg-utils -y -qq || true
+          # try-and-retry sudo apt-get install fonts-liberation -y -qq || true
+          Say "Missing google-chrome, downloading ..."
+          try-and-retry curl -kfSL -o /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo dpkg -i /tmp/chrome.deb || sudo apt-get install -f
+          rm -f /tmp/chrome.deb
+      fi
+
       printf "/usr/bin/env bash\n port=9234; google-chrome --headless --disable-gpu --no-first-run --no-sandbox \"\$@\"\n" | sudo tee /usr/local/bin/www-browser
       sudo chmod +x /usr/local/bin/www-browser
       for c in google-chrome www-browser; do
