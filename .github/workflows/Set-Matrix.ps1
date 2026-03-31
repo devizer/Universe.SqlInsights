@@ -39,6 +39,11 @@ Enumerate-Plain-SQLServer-Downloads |
   TODO: Move logic to Set-Matrix.ps1
 #>
 
+$is_github_actions_pull_request = ($env:GITHUB_ACTIONS -eq 'true') -and ($env:GITHUB_EVENT_NAME -eq 'pull_request')
+$is_azure_pipeline_pull_request = ($env:TF_BUILD -eq 'True') -and ($env:BUILD_REASON -eq 'PullRequest')
+$is_pull_request = ($is_github_actions_pull_request -or $is_azure_pipeline_pull_request)
+Say "Is Pull Request: [$is_pull_request]"
+
 $jobs_linux=@()
 # Self Hosted
 $run_on=@("self-hosted", "linux", "sse3-only")
@@ -47,7 +52,7 @@ foreach($SQL_IMAGE_TAG in "2025", "2022", "2019", "2017") {
      $sql = "$SQL_IMAGE_TAG"
      $job_title = "$SQL_IMAGE_TAG $LINUX_MSSQL_PID (Linux)"
      $container_tag = "$SQL_IMAGE_TAG"
-     if ($SqlSetSize -eq "FULL") {
+     if (($SqlSetSize -eq "FULL") -and (-not $is_pull_request)) {
         $jobs_linux += [pscustomobject] @{ JOB_TITLE="$job_title SSE3 Only"; SQL=$sql; OS="Ubuntu"; HOST="24.04"; SQL_CONTAINER_SUFFIX=$container_tag; LINUX_MSSQL_PID="$LINUX_MSSQL_PID"; RUNS_ON=$run_on; }
      }
 }
