@@ -113,7 +113,7 @@ function Find-Chrome-Program-List() {
 }
 
 function Find-ProgramFiles-Folders() {
-  $candidates = @("${Env:ProgramFiles}", "${Env:ProgramFiles(x86)}", "C:\Program Files", "C:\Program Files (x86)", "$ENV:SystemDrive\Program Files", "$ENV:SystemDrive\Program Files (x86)")
+  $candidates = @("${Env:ProgramFiles}", "${Env:ProgramFiles(x86)}", "${Env:ProgramFiles(Arm)}", "C:\Program Files", "C:\Program Files (x86)", "C:\Program Files (Arm)", "$ENV:SystemDrive\Program Files", "$ENV:SystemDrive\Program Files (x86)", "$ENV:SystemDrive\Program Files (Arm)")
   $candidates = @($candidates | Sort-Object | Get-Unique)
   return $candidates
 }
