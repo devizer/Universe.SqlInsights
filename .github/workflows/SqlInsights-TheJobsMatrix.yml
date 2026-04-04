@@ -254,6 +254,11 @@ jobs:
           # docker system prune -f
           true
 
+      - name: Linux Info
+        shell: bash
+        if: always() && runner.os == 'Linux'
+        run: 'Show-System-Stat || true'
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v6
         if: always()
