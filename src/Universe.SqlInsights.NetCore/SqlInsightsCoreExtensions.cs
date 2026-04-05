@@ -159,11 +159,12 @@ namespace Universe.SqlInsights.NetCore
 
                     stopwatch.Stop();
                     traceReader.Stop();
-                    traceReader.Dispose();
-
+                    traceReader.Dispose(); // it also deletes local file, should be before config.DeleteTraceFile
+                    
                     config.DeleteTraceFile(traceReader.TraceFile);
 
-                    Exception lastError = serviceProvider.GetRequiredService<ExceptionHolder>().Error;
+
+					Exception lastError = serviceProvider.GetRequiredService<ExceptionHolder>().Error;
 
                     double durationMilliseconds = stopwatch.ElapsedTicks / (double) Stopwatch.Frequency * 1000d;
 
