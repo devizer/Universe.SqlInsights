@@ -1,4 +1,4 @@
-param([string] $SqlSetSize = "MINI", [string] $HostVersion = "2022")
+param([string] $SqlSetSize = "MINI", [string] $HostVersion = "2022", [bool] $IncludeLegacyCpu = $false)
 if (-not $SqlSetSize) { $SqlSetSize = "MINI" }
 if (-not $HostVersion) { $HostVersion = "2022" }
 
@@ -45,17 +45,20 @@ $is_pull_request = ($is_github_actions_pull_request -or $is_azure_pipeline_pull_
 Say "Is Pull Request: [$is_pull_request]"
 
 $jobs_linux=@()
-# Self Hosted
-$run_on=@("self-hosted", "linux", "sse3-only")
-foreach($SQL_IMAGE_TAG in "2025", "2022", "2019", "2017") { 
-     $LINUX_MSSQL_PID = "Developer"
-     $sql = "$SQL_IMAGE_TAG"
-     $job_title = "$SQL_IMAGE_TAG $LINUX_MSSQL_PID (Linux)"
-     $container_tag = "$SQL_IMAGE_TAG"
-     if (($SqlSetSize -eq "FULL") -and (-not $is_pull_request)) {
-        $jobs_linux += [pscustomobject] @{ JOB_TITLE="$job_title SSSE3"; SQL=$sql; OS="Ubuntu"; HOST="24.04"; SQL_CONTAINER_SUFFIX=$container_tag; LINUX_MSSQL_PID="$LINUX_MSSQL_PID"; RUNS_ON=$run_on; }
-     }
+if ($IncludeLegacyCpu) {
+  # Self Hosted SSSE3 Build Agent
+  $run_on=@("self-hosted", "linux", "sse3-only")
+  foreach($SQL_IMAGE_TAG in "2025", "2022", "2019", "2017") { 
+       $LINUX_MSSQL_PID = "Developer"
+       $sql = "$SQL_IMAGE_TAG"
+       $job_title = "$SQL_IMAGE_TAG $LINUX_MSSQL_PID (Linux)"
+       $container_tag = "$SQL_IMAGE_TAG"
+       if (($SqlSetSize -eq "FULL") -and (-not $is_pull_request)) {
+          $jobs_linux += [pscustomobject] @{ JOB_TITLE="$job_title SSSE3"; SQL=$sql; OS="Ubuntu"; HOST="24.04"; SQL_CONTAINER_SUFFIX=$container_tag; LINUX_MSSQL_PID="$LINUX_MSSQL_PID"; RUNS_ON=$run_on; }
+       }
+  }
 }
+
 $ubuntu_list=@("24.04", "22.04")
 $ubuntu_list=@("22.04")
 $ubuntu_list=@("24.04")
@@ -135,3 +138,4 @@ Write-Host $matrix_string_mini
 Create-GitHub-Output-Var "matrix" "$matrix_string_mini"
 Create-GitHub-Output-Var "SQL_SET_SIZE" "$SqlSetSize"
 Create-GitHub-Output-Var "HOST_VERSION" "$HostVersion"
+Create-GitHub-Output-Var "INCLUDE_SSSE3" "$IncludeLegacyCpu"
