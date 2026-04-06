@@ -24,7 +24,7 @@ on:
         - '2025'
       ARG_INCLUDE_SSSE3:
         type: boolean
-        description: 'SSSE3'
+        description: 'Include Legacy SSSE3-only CPU'
         default: false
         
 
