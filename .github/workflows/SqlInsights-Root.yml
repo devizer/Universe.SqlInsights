@@ -7,6 +7,10 @@ env:
 on:
   workflow_dispatch:
     inputs:
+      ARG_INCLUDE_SSSE3:
+        type: boolean
+        description: 'Include Legacy SSSE3-only CPU'
+        default: false
       ARG_SQL_SET_SIZE:
         type: choice
         description: 'SQL Set'
@@ -22,10 +26,6 @@ on:
         options:
         - '2022'
         - '2025'
-      ARG_INCLUDE_SSSE3:
-        type: boolean
-        description: 'Include Legacy SSSE3-only CPU'
-        default: false
         
 
   push:
