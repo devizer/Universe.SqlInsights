@@ -138,4 +138,4 @@ Write-Host $matrix_string_mini
 Create-GitHub-Output-Var "matrix" "$matrix_string_mini"
 Create-GitHub-Output-Var "SQL_SET_SIZE" "$SqlSetSize"
 Create-GitHub-Output-Var "HOST_VERSION" "$HostVersion"
-Create-GitHub-Output-Var "INCLUDE_SSSE3" "$IncludeLegacyCpu"
+Create-GitHub-Output-Var "INCLUDE_SSSE3" "$IncludeLegacyCpu".ToLower()
