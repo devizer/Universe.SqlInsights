@@ -47,7 +47,7 @@ jobs:
           matrix:        ${{ steps.set-matrix.outputs.matrix }}
           SQL_SET_SIZE:  ${{ steps.set-matrix.outputs.SQL_SET_SIZE }}
           HOST_VERSION:  ${{ steps.set-matrix.outputs.HOST_VERSION }}
-          INCLUDE_SSSE3: ${{ steps.set-matrix.outputs.INCLUDE_SSSE3 }}
+          # INCLUDE_SSSE3: ${{ steps.set-matrix.outputs.INCLUDE_SSSE3 }}
 
     defaults:
       run:
@@ -108,10 +108,10 @@ jobs:
     needs: Pre-Build
     uses: ./.github/workflows/SqlInsights-TheJobsMatrix.yml
     with:
-      matrix: ${{ needs.Pre-Build.outputs.matrix }}
-      SQL_SET_SIZE: ${{ needs.Pre-Build.outputs.SQL_SET_SIZE }}
-      HOST_VERSION: ${{ needs.Pre-Build.outputs.HOST_VERSION }}
-      INCLUDE_SSSE3: ${{ needs.Pre-Build.outputs.INCLUDE_SSSE3 }}
+      matrix:        ${{ needs.Pre-Build.outputs.matrix }}
+      SQL_SET_SIZE:  ${{ needs.Pre-Build.outputs.SQL_SET_SIZE }}
+      HOST_VERSION:  ${{ needs.Pre-Build.outputs.HOST_VERSION }}
+      # INCLUDE_SSSE3: ${{ needs.Pre-Build.outputs.INCLUDE_SSSE3 }}
 
   Combine:
     runs-on: ubuntu-latest

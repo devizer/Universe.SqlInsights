@@ -15,9 +15,9 @@ on:
       HOST_VERSION:
         required: true
         type: string
-      INCLUDE_SSSE3:
-        required: true
-        type: boolean
+      # INCLUDE_SSSE3:
+      #   required: true
+      #  type: boolean
 
 jobs:
   Test:
