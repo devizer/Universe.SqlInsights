@@ -136,6 +136,7 @@ jobs:
         cd ${{ env.SYSTEM_ARTIFACTSDIRECTORY }}
         cd $SYSTEM_ARTIFACTSDIRECTORY;
         cd RAW
+        rm -f "Combined SqlInsights Matrix FULL on"*".7z" || true
         rm -rf Pre-Build
         time 7z a -md=128m -sdel -mx=8 -ms=on -mqs=on "$SYSTEM_ARTIFACTSDIRECTORY/Combined SqlInsights Matrix ${{ needs.Pre-Build.outputs.SQL_SET_SIZE }} on ${{ needs.Pre-Build.outputs.HOST_VERSION }}.7z"; 
         # Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/Pack-each-Artifact-per-Archive.sh -9 -7z
