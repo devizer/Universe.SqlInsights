@@ -38,7 +38,9 @@ public class ErgoFabTestCaseSource : TestCaseSourceAttribute
             };
         }
     }
+}
 
-
-
+public class ErgoFabLargeTestCaseSource() : ErgoFabTestCaseSource(OrganizationsCount)
+{
+	static int OrganizationsCount => 100_000;
 }

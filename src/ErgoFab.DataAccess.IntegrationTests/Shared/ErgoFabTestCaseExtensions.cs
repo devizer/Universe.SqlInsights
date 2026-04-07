@@ -37,6 +37,8 @@ public static class ErgoFabTestCaseExtensions
         PipelineLog.LogTrace($"[CreateErgoFabDbContext()] Using Connection String for ErgoFabDbContext: '{dbConnectionString.ConnectionString}'");
         dbContextOptionsBuilder.UseSqlServer(dbConnectionString.ConnectionString, b =>
         {
+	        // 90 for Legacy SSSE3 only CPU Tests.
+	        b.CommandTimeout(90);
 #if NET8_0_OR_GREATER
             b.UseCompatibilityLevel(120);
 #endif

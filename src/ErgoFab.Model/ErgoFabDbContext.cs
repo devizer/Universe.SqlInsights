@@ -16,7 +16,7 @@ namespace ErgoFab.Model
         static DbContextOptions GetDesignTimeDbContextOptions()
         {
             return new DbContextOptionsBuilder<ErgoFabDbContext>()
-                .UseSqlServer(DesignTimeSupport.GetDesignTimeConnectionString())
+                .UseSqlServer(DesignTimeSupport.GetDesignTimeConnectionString(), b => b.CommandTimeout(90))
                 .Options;
         }
 
