@@ -2,7 +2,7 @@
 
       & dotnet tool install --global SqlServer.AdministrativeViews
       $output_folder = "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\Administrative Views"
-      $output_file = "$output_folder\{InstanceName} {Version} on {Platform}"
+      $output_file = "$output_folder$([System.IO.Path]::DirectorySeparatorChar){InstanceName} {Version} on {Platform}"
       
       if ((Get-Os-Platform) -eq "Windows") {
          & SqlServer.AdministrativeViews -all -o "$output_file"
