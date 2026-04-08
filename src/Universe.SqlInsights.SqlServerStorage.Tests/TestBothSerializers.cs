@@ -13,8 +13,12 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
             Assert.AreEqual("System", DbJsonConvert.Flawor);
 
             ActionDetailsWithCounters details = Seeder.CreateActionDetailsWithCounters(new SqlInsightsActionKeyPath("Topic", "Kind"));
+            details.AppDuration = Math.PI;
+            details.AppUserUsage = 2d / 3;
+            details.AppKernelUsage = 1d / 3;
 
-            Console.WriteLine($"Original by Newtonsoft {Environment.NewLine}{DbJsonConvertLegacy.Serialize(details)}{Environment.NewLine}");
+
+			Console.WriteLine($"Original by Newtonsoft {Environment.NewLine}{DbJsonConvertLegacy.Serialize(details)}{Environment.NewLine}");
             Console.WriteLine($"Original by System {Environment.NewLine}{DbJsonConvert.Serialize(details)}{Environment.NewLine}");
 
             var detailsCopyLegacy = DbJsonConvertLegacy.Deserialize<ActionDetailsWithCounters>(DbJsonConvertLegacy.Serialize(details));
