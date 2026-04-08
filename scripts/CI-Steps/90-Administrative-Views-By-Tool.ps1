@@ -1,8 +1,11 @@
 . "$PSScriptRoot\Functions.ps1"
 
       & dotnet tool install --global SqlServer.AdministrativeViews
-      $output_folder = "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)\Administrative Views"
-      $output_file = "$output_folder$([System.IO.Path]::DirectorySeparatorChar){InstanceName} {Version} on {Platform}"
+      # $output_folder = "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)$([System.IO.Path]::DirectorySeparatorChar)Administrative Views"
+      # $output_file = "$output_folder$([System.IO.Path]::DirectorySeparatorChar){InstanceName} {Version} on {Platform}"
+      $output_folder = Combine-Path "$($ENV:SYSTEM_ARTIFACTSDIRECTORY)" "Administrative Views"
+      $output_file = Combine-Path "$output_folder" "{InstanceName} {Version} on {Platform}"
+
       
       if ((Get-Os-Platform) -eq "Windows") {
          & SqlServer.AdministrativeViews -all -o "$output_file"
