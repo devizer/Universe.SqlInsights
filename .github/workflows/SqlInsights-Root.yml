@@ -66,7 +66,7 @@ jobs:
     - name: PRODUCE job matrix
       id: set-matrix
       shell: pwsh
-      run: . .\.github\workflows\Set-Matrix.ps1 -SqlSetSize "${{ github.event.inputs.ARG_SQL_SET_SIZE }}" -HostVersion "${{ github.event.inputs.ARG_HOST_VERSION }}" -IncludeLegacyCpu $${{ github.event.inputs.ARG_INCLUDE_SSSE3 }}
+      run: . .\.github\workflows\Set-Matrix.ps1 -SqlSetSize "${{ github.event.inputs.ARG_SQL_SET_SIZE }}" -HostVersion "${{ github.event.inputs.ARG_HOST_VERSION }}" -IncludeLegacyCpu "${{ github.event.inputs.ARG_INCLUDE_SSSE3 }}"
 
     - name: BUILD all in parallel
       run: |

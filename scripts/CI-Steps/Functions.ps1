@@ -355,6 +355,7 @@ Set-Var "SQLSERVERS_SETUP_FOLDER" "$sqlSetupFolder"
 Set-Var "SQLSERVERS_MEDIA_FOLDER" "$sqlMediaFolder"
 Set-Var "SQLSERVERS_INSTALL_TO" "$sqlInstallTo"
 Set-Var "PS1_REPO_DOWNLOAD_FOLDER" "$($root_drive)\Temp-DevOps"
+if ((Get-Os-Platform) -ne "Windows") { Set-Var "PS1_REPO_DOWNLOAD_FOLDER" "$($ENV:HOME)/.cache/PS1 Repo Downloads" }
 Set-Var "DOTNET_CLI_TELEMETRY_OPTOUT" "1"
 
 $sql_instance_name=if ("$($ENV:SQL_INSTANCE_NAME)") { $ENV:SQL_INSTANCE_NAME } Else { "(local)" }

@@ -1,4 +1,5 @@
-param([string] $SqlSetSize = "MINI", [string] $HostVersion = "2022", [bool] $IncludeLegacyCpu = $false)
+param([string] $SqlSetSize = "MINI", [string] $HostVersion = "2022", [string] $IncludeLegacyCpu = "false")
+$IncludeLegacyCpu = If ($IncludeLegacyCpu -eq "True") { $true } Else { $false }
 if (-not $SqlSetSize) { $SqlSetSize = "MINI" }
 if (-not $HostVersion) { $HostVersion = "2022" }
 
