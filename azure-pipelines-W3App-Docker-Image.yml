@@ -162,7 +162,7 @@ jobs:
     # condition: succeededOrFailed()
     pool:
       vmImage: 'windows-2022'
-    timeoutInMinutes: 30
+    timeoutInMinutes: 45
     dependsOn: Build_W3_App_Docker_Image
 
     steps: 
