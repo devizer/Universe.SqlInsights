@@ -345,10 +345,14 @@ if (-not ((Is-Microsoft-Hosted-Build-Agent) -or (Is-Build-Agent))) {
    Write-Host "Skip Variables"
 } Else {
 
-$temp="$($root_drive)\Temp"
-New-item "$temp" -ItemType Directory -Force -EA SilentlyContinue | Out-Null
-Set-Var "TEMP" "$temp"
-Set-Var "TMP" "$temp"
+if ((Get-Os-Platform) -eq "Windows") {
+   # Move Temp Folder to SSD on Windows
+   $temp="$($root_drive)\Temp"
+   New-item "$temp" -ItemType Directory -Force -EA SilentlyContinue | Out-Null
+   Set-Var "TEMP" "$temp"
+   Set-Var "TMP" "$temp"
+}
+
 Set-Var "SQL_PASSWORD" 'p@assw0rd!'
 
 Set-Var "SQLSERVERS_SETUP_FOLDER" "$sqlSetupFolder"
