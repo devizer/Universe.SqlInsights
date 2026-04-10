@@ -43,7 +43,9 @@ function Delete-Docker-Hub-Tag() {
         Write-Host "SUCCESSFUL TOKEN"
       } catch {
         $statusCode = "$($_.Exception.Status)"
-        Write-Host "DOCKER HUB AUTH FAILED"
+        # fail on April 2026, but ok on Jan 2026
+        Write-Host "DOCKER HUB AUTH FAILED. Status is $statusCode"
+        Write-Host "$($_.Exception)"
       }
       if ($statusCode -eq "ProtocolError") { $about="Unauthorized"; }
   }
