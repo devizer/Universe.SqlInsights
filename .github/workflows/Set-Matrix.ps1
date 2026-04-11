@@ -1,5 +1,6 @@
 param([string] $SqlSetSize = "MINI", [string] $HostVersion = "2022", [string] $IncludeLegacyCpu = "false")
 $IncludeLegacyCpu = If ($IncludeLegacyCpu -eq "True") { $true } Else { $false }
+Write-Host "IncludeLegacyCpu = $($IncludeLegacyCpu.GetType()) [$($IncludeLegacyCpu)]"
 if (-not $SqlSetSize) { $SqlSetSize = "MINI" }
 if (-not $HostVersion) { $HostVersion = "2022" }
 
