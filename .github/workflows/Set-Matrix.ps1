@@ -1,6 +1,6 @@
 param([string] $SqlSetSize = "MINI", [string] $HostVersion = "2022", [string] $IncludeLegacyCpu = "false")
-$IncludeLegacyCpu = If ($IncludeLegacyCpu -eq "True") { $true } Else { $false }
-Write-Host "IncludeLegacyCpu = $($IncludeLegacyCpu.GetType()) [$($IncludeLegacyCpu)]"
+$IncludeLegacyCpuValue = If ($IncludeLegacyCpu -eq "True") { $true } Else { $false }
+Write-Host "IncludeLegacyCpuValue = $($IncludeLegacyCpuValue.GetType()) [$($IncludeLegacyCpuValue)]"
 if (-not $SqlSetSize) { $SqlSetSize = "MINI" }
 if (-not $HostVersion) { $HostVersion = "2022" }
 
@@ -47,7 +47,7 @@ $is_pull_request = ($is_github_actions_pull_request -or $is_azure_pipeline_pull_
 Say "Is Pull Request: [$is_pull_request]"
 
 $jobs_linux=@()
-if ($IncludeLegacyCpu) {
+if ($IncludeLegacyCpuValue) {
   # Self Hosted SSSE3 Build Agent
   $run_on=@("self-hosted", "linux", "sse3-only")
   foreach($SQL_IMAGE_TAG in "2025", "2022", "2019", "2017") { 
