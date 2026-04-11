@@ -37,7 +37,7 @@ function Delete-Docker-Hub-Tag() {
       # https://devopscell.com/docker/dockerhub/2018/04/09/delete-docker-image-tag-dockerhub.html
       $login_data=@{ username=$Options.User; password=$Options.Password }
       try {
-        $tokenResponse = Invoke-WebRequest -Uri "https://hub.docker.com/v2/users/login/" -Body "$($login_data | ConvertTo-Json)" -Method POST -ContentType "application/json"
+        $tokenResponse = Invoke-WebRequest -Uri "https://hub.docker.com/v2/users/login/" -Body "$json" -Method POST -ContentType "application/json" -UseBasicParsing
         $token=($tokenResponse | ConvertFrom-Json).token
         $Options | Add-Member -NotePropertyName Token -NotePropertyValue "$token"
         Write-Host "SUCCESSFUL TOKEN"
@@ -46,12 +46,15 @@ function Delete-Docker-Hub-Tag() {
         # fail on April 2026, but ok on Jan 2026
         Write-Host "DOCKER HUB AUTH FAILED. Status is $statusCode"
         Write-Host "$($_.Exception)"
+        Say "ABORT. Delete-Docker-Hub-Tag() Failed"
       }
       if ($statusCode -eq "ProtocolError") { $about="Unauthorized"; }
   }
 
   try {
-    $result = Invoke-WebRequest -Headers @{Authorization="JWT $($Options.Token)"} -Uri "https://hub.docker.com/v2/repositories/$($Options.Org)/$($Options.Repo)/tags/$TAG/" -Method DELETE
+    $urlDelete = "https://hub.docker.com/v2/repositories/$($Options.Org)/$($Options.Repo)/tags/$TAG/"
+    Write-Host "Invoking delete tag url = [$urlDelete]"
+    $result = Invoke-WebRequest -Headers @{Authorization="JWT $($Options.Token)"} -Uri "$urlDelete" -Method DELETE -UseBasicParsing
     Write-Host "SUCCESSFUL DELETED TAG '$Tag'"
     return $true
   } catch {
@@ -142,7 +145,7 @@ foreach($nanoVersion in $nanoVersions) {
   $tag=$nanoVersion.Tag;
   $ver=$nanoVersion.Version
   $imageTag="$($version)-$($tag)"
-  Say "DELETE INTERMEDIATE TAG [$imageTag]"
+  Say "DELETING INTERMEDIATE TAG [$imageTag] ..."
   Delete-Docker-Hub-Tag $options "$imageTag"
 }
 
