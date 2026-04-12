@@ -90,22 +90,22 @@ namespace Universe.SqlInsights.SqlServerStorage
             List<string> sqlConfigureMotList = new List<string>();
             if (supportMOT && !isMotFileGroupExists)
             {
-                string sqlAutoCloseOff = @$"
-ALTER DATABASE [{dbName.Replace("]", "]]")}] 
+	            string sqlAutoCloseOff = @$"
+ALTER DATABASE [{SqlJamExtensions.Escape(dbName)}] 
 SET AUTO_CLOSE OFF;";
                 
                 string sqlAddMotFileGroup = @$"
-ALTER DATABASE [{dbName.Replace("]", "]]")}]
+ALTER DATABASE [{SqlJamExtensions.Escape(dbName)}]
 ADD FILEGROUP MemoryOptimizedTablesFileGroup
 CONTAINS MEMORY_OPTIMIZED_DATA;";
 
                 string sqlAddMotFile = @$"
-ALTER DATABASE [{dbName.Replace("]", "]]")}] ADD FILE (
+ALTER DATABASE [{SqlJamExtensions.Escape(dbName)}] ADD FILE (
     name='SqlInsight MemoryOptimizedTables', filename='{motFileFolder}')
     TO FILEGROUP MemoryOptimizedTablesFileGroup;";
 
                 string sqlEnableTransactions = $@"
-ALTER DATABASE [{dbName.Replace("]", "]]")}]
+ALTER DATABASE [{SqlJamExtensions.Escape(dbName)}]
 SET MEMORY_OPTIMIZED_ELEVATE_TO_SNAPSHOT = ON;
 ";
                 sqlConfigureMotList.AddRange(new[] { sqlAutoCloseOff, sqlAddMotFileGroup, sqlAddMotFile, sqlEnableTransactions});
@@ -382,9 +382,9 @@ End
 Select DB_ID('{dbName}');
 If DB_ID('{dbName}') Is Null 
 Begin 
-    Create Database [{dbName.Replace("]", "]]")}] {sqlCollation}; 
+    Create Database [{SqlJamExtensions.Escape(dbName)}] {sqlCollation}; 
     -- The scenario is for development only
-    Exec('Alter Database [{dbName.Replace("]", "]]")}] Set Recovery Simple'); 
+    Exec('Alter Database [{SqlJamExtensions.Escape(dbName)}] Set Recovery Simple'); 
 End
 ";
 

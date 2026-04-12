@@ -1,5 +1,6 @@
 using Dapper;
 using ErgoFab.DataAccess.IntegrationTests.Shared;
+using System.Xml.Linq;
 using Universe.NUnitPipeline;
 using Universe.NUnitPipeline.SqlServerDatabaseFactory;
 using Universe.SqlServerJam;
@@ -52,7 +53,7 @@ public class BasicSqlConfigurationTests
         await _sqlTestDbManager.CreateEmptyDatabase(testDbName);
         var dbList = await _sqlTestDbManager.GetDatabaseNames();
         bool isContains = dbList.Contains(testDbName);
-        await _sqlTestDbManager.CreateMasterConnection().ExecuteAsync($"Drop Database [{testDbName.Replace("]", "]]")}]"); ;
+        await _sqlTestDbManager.CreateMasterConnection().ExecuteAsync($"Drop Database [{SqlJamExtensions.Escape(testDbName)}]"); ;
 
         // Assert 1
         Assert.True(isContains);

@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Data.SqlClient;
 using System.IO;
-using Dapper;
+using System.Xml.Linq;
 using Universe.SqlServerJam;
 
 namespace Universe.SqlInsights.SqlServerStorage.Tests
@@ -23,7 +24,7 @@ namespace Universe.SqlInsights.SqlServerStorage.Tests
                     var optimizedCollation = migrations.GetOptimizedCollation(con);
                     string sqlCollation = string.IsNullOrEmpty(optimizedCollation) ? "" : $" COLLATE {optimizedCollation}";
                     // sqlCollation = null;
-                    string sql = $@"CREATE DATABASE [{db.Replace("]", "]]")}]";
+                    string sql = $@"CREATE DATABASE [{SqlJamExtensions.Escape(db)}]";
                     if (!string.IsNullOrEmpty(dbDataDir))
                     {
                         CreateDirectory(dbDataDir);
@@ -41,7 +42,7 @@ LOG ON (NAME = [{db}_log], FILENAME = '{logFile}', SIZE = {initialLogSize}MB, FI
  
                     Console.WriteLine($"Creating New Storage Database [{db}]{Environment.NewLine}{sql}{Environment.NewLine}");
                     con.Execute(sql);
-                    con.Execute($"Alter Database [{db.Replace("]", "]]")}] Set Recovery Simple;");
+                    con.Execute($"Alter Database [{SqlJamExtensions.Escape(db)}] Set Recovery Simple;");
                 }
             }
         }
