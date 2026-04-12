@@ -91,21 +91,21 @@ namespace Universe.SqlInsights.SqlServerStorage
             if (supportMOT && !isMotFileGroupExists)
             {
                 string sqlAutoCloseOff = @$"
-ALTER DATABASE [{dbName}] 
+ALTER DATABASE [{dbName.Replace("]", "]]")}] 
 SET AUTO_CLOSE OFF;";
                 
                 string sqlAddMotFileGroup = @$"
-ALTER DATABASE [{dbName}]
+ALTER DATABASE [{dbName.Replace("]", "]]")}]
 ADD FILEGROUP MemoryOptimizedTablesFileGroup
 CONTAINS MEMORY_OPTIMIZED_DATA;";
 
                 string sqlAddMotFile = @$"
-ALTER DATABASE [{dbName}] ADD FILE (
+ALTER DATABASE [{dbName.Replace("]", "]]")}] ADD FILE (
     name='SqlInsight MemoryOptimizedTables', filename='{motFileFolder}')
     TO FILEGROUP MemoryOptimizedTablesFileGroup;";
 
                 string sqlEnableTransactions = $@"
-ALTER DATABASE [{dbName}]
+ALTER DATABASE [{dbName.Replace("]", "]]")}]
 SET MEMORY_OPTIMIZED_ELEVATE_TO_SNAPSHOT = ON;
 ";
                 sqlConfigureMotList.AddRange(new[] { sqlAutoCloseOff, sqlAddMotFileGroup, sqlAddMotFile, sqlEnableTransactions});
@@ -382,9 +382,9 @@ End
 Select DB_ID('{dbName}');
 If DB_ID('{dbName}') Is Null 
 Begin 
-    Create Database [{dbName}] {sqlCollation}; 
+    Create Database [{dbName.Replace("]", "]]")}] {sqlCollation}; 
     -- The scenario is for development only
-    Exec('Alter Database [{dbName}] Set Recovery Simple'); 
+    Exec('Alter Database [{dbName.Replace("]", "]]")}] Set Recovery Simple'); 
 End
 ";
 

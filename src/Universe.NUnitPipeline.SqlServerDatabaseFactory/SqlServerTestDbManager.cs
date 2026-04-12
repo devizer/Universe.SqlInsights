@@ -49,7 +49,7 @@ namespace Universe.NUnitPipeline.SqlServerDatabaseFactory
             var ldf = Path.Combine(this.SqlTestsConfiguration.DatabaseLogFolder, $"{name}.ldf");
 
             // TODO: Check up model size and growth and use it if possible
-            var sql1 = $@"Create Database [{name}] 
+            var sql1 = $@"Create Database [{name.Replace("]", "]]")}] 
 On (NAME = {EscapeSqlString($"{name} mdf")}, FILENAME = {EscapeSqlString(mdf)} /*, SIZE = 8192KB, FILEGROWTH = 8192KB */) 
 LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ldf)} /*, SIZE = 8192KB, FILEGROWTH = 8192KB */)";
 
@@ -86,7 +86,7 @@ LOG On (NAME = {EscapeSqlString($"{name} ldf")}, FILENAME =  {EscapeSqlString(ld
         public virtual async Task DropDatabase_Ugly(string name)
         {
             var sql1 = @$"If Exists (Select 1 From sys.databases where name={EscapeSqlString(name)}) And (SERVERPROPERTY('EngineEdition') <> 5) ALTER DATABASE [{name}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;";
-            var sql2 = @$"If Exists (Select 1 From sys.databases where name={EscapeSqlString(name)}) Drop Database [{name}];";
+            var sql2 = @$"If Exists (Select 1 From sys.databases where name={EscapeSqlString(name)}) Drop Database [{name.Replace("]", "]]")}];";
             using (var masterConnection = this.CreateMasterConnection(true))
             {
                 masterConnection.Execute(sql1);

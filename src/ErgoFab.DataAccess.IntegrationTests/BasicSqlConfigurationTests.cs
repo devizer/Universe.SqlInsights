@@ -52,7 +52,7 @@ public class BasicSqlConfigurationTests
         await _sqlTestDbManager.CreateEmptyDatabase(testDbName);
         var dbList = await _sqlTestDbManager.GetDatabaseNames();
         bool isContains = dbList.Contains(testDbName);
-        await _sqlTestDbManager.CreateMasterConnection().ExecuteAsync($"Drop Database [{testDbName}]"); ;
+        await _sqlTestDbManager.CreateMasterConnection().ExecuteAsync($"Drop Database [{testDbName.Replace("]", "]]")}]"); ;
 
         // Assert 1
         Assert.True(isContains);
