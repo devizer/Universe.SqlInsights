@@ -372,7 +372,7 @@ Set-Var "SQL_PASSWORD" 'p@assw0rd!'
 # Fix missing selfhosted linux HOME
 if (("$($ENV:HOME)" -eq "") -and ((Get-Os-Platform) -ne "Windows")) {
   $h="/root"
-  if ("$($ENV:USER)" -ne "root" ) { $h = "/home/$($ENV:USER)"
+  if ("$($ENV:USER)" -ne "root" ) { $h = "/home/$($ENV:USER)" }
   Set-Var "HOME" "$h"
 }
 
