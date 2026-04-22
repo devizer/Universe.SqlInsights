@@ -1,6 +1,28 @@
       set -eu; set -o pipefail;
       Say "CPU: $(Get-CpuName)"
 
+Show-Mem-Debug-Info() {
+    # local uptime=$(printf "%10s" $(cat /proc/uptime | awk '{print $1}'))
+    # local uptime="$(printf "%14s" $(cat /proc/uptime | cut -f1 -d.))"
+    local uptime="$(printf "%9s" $(cut -f1 -d. /proc/uptime))"
+    printf "%s  " "$uptime"
+    free -m | awk '
+    /^Mem:/ {
+        # $2=Total, $3=Used, $4=Free, $6=Buffers/Cache
+        # Formatting Memory string with labels
+        printf "Memory: Used %s Mb, Free %s, Buff+Cache %s Mb, Total %s Mb. ", $3, $4, $6, $2
+    }
+    /^Swap:/ {
+        # $2=Total, $3=Used
+        # Formatting Swap string with labels
+        printf "Swap: Used %s Mb of Total %s Mb\n", $3, $2
+    }'
+}
+export -f Show-Mem-Debug-Info; 
+nohup bash -c "while true; do Show-Mem-Debug-Info | tee -a $SYSTEM_ARTIFACTSDIRECTORY/MEM-USAGE.DEBUG.LOG; sleep 2; done" &
+
+
+
   Say "Install .net dependencies"
   Run-Remote-Script https://raw.githubusercontent.com/devizer/glist/master/install-dotnet-dependencies.sh --update-repos
   # sudo apt-get update -qq; sudo apt-get install libkrb5-3 zlib1g libunwind8 libuuid1 -y

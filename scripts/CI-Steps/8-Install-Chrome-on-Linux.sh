@@ -1,5 +1,8 @@
       set -eu; set -o pipefail
 
+# 79th:   360 Mb of RAM
+# 147th: 1200 Mb of RAM
+# 109th:  460 Mb of RAM
 Install-Chrome() {
   local ver="${1:-stable}"
   local index
@@ -29,9 +32,6 @@ Install-Chrome() {
   popd >/dev/null
 }
       
-      # 79th: 360 Mb of RAM
-      # 147: 1200 Mb of RAM
-      # 109: ___ Mb of RAM
       Install-Chrome "109"
 
       # https://chromium.googlesource.com/chromium/src/+refs - find full version for 109: 109.0.5414.176 и 109.0.5414.118
