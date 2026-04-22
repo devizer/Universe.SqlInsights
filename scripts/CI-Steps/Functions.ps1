@@ -369,6 +369,13 @@ if ((Get-Os-Platform) -eq "Windows") {
 
 Set-Var "SQL_PASSWORD" 'p@assw0rd!'
 
+# Fix missing selfhosted linux HOME
+if (("$($ENV:HOME)" -eq "") -and ((Get-Os-Platform) -ne "Windows")) {
+  $h="/root"
+  if ("$($ENV:USER)" -ne "root" ) { $h = "/home/$($ENV:USER)"
+  Set-Var "HOME" "$h"
+}
+
 Set-Var "SQLSERVERS_SETUP_FOLDER" "$sqlSetupFolder"
 Set-Var "SQLSERVERS_MEDIA_FOLDER" "$sqlMediaFolder"
 Set-Var "SQLSERVERS_INSTALL_TO" "$sqlInstallTo"
