@@ -1,15 +1,60 @@
       set -eu; set -o pipefail
-      # Chromium 79 for testing
-      mkdir -p $HOME/Browsers
-      pushd $HOME/Browsers
-      if [[ ! -f chromium/linux-706915/chrome-linux/chrome ]]; then
-        Say "Installing 'Chromium 79 for testing' into $(pwd)"
-        npx -y @puppeteer/browsers install chromium@706915
-      else 
-        Say "Chrome/Chromium Already Exists: $(pwd)/chromium/linux-706915/chrome-linux/chrome"
-      fi
-      # TODO 107.0.5304.0: npx -y @puppeteer/browsers install chromium@1047731
-      popd
+
+Install-Chrome() {
+  local ver="${1:-stable}"
+  local index
+  if [[ "$ver" == "79" ]]; then index=706915;
+  elif [[ "$ver" == "109" ]]; then
+    if [[ "$(Get-OS-Platform)" == Windows ]]; then 
+      index="1069273" # 109.0.5412.0
+    else
+      index="1070081" # 109.0.5414.0
+    fi
+  else
+    index="$ver"
+  fi
+  local folder="${PUPPETEER_BROWSERS_ROOT:-}"
+  if [[ "$folder" == "" ]]; then
+    folder="$HOME/Browsers"
+  fi
+  Say "Installing chromium '$ver' build index '$index' into '$folder'"
+  mkdir -p "$folder"
+  pushd "$folder" >/dev/null
+  local exists="$(find . -name 'chrome' | grep "$index" || true)"
+  if [[ -n "$exists" ]]; then
+     echo "CHROME ALREADY EXISTS: [$exists]"
+  else
+     npx -y @puppeteer/browsers install chromium@${index}
+  fi
+  popd >/dev/null
+}
+      
+      # 79th: 360 Mb of RAM
+      # 147: 1200 Mb of RAM
+      # 109: ___ Mb of RAM
+      Install-Chrome "109"
+
+      # https://chromium.googlesource.com/chromium/src/+refs - find full version for 109: 109.0.5414.176 и 109.0.5414.118
+      # https://versionhistory.googleapis.com/v1/chrome/platforms/all/channels/stable/versions
+
+      # https://omahaproxy.appspot.com/revision.json?version=109.0.5414.176
+
+      # 109.0.5414.174
+      # 109 linux x64: 1070081, https://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html?prefix=Linux_x64/1070081/
+      # actual: 107.0.5304.0
+      # npx -y @puppeteer/browsers install chromium@1047731 
+
+      # Linux x64 109.0.5414.0
+      # npx -y @puppeteer/browsers install chromium@1070081
+      # npx -y @puppeteer/browsers install chrome@1070081
+      # Windows x64
+      # Version 109.0.5412.0 (Developer Build) (64-bit)
+      # npx -y @puppeteer/browsers install chromium@1069273
+
+
+
+
+
 
 
       if [[ -z "$(command -v google-chrome)" ]]; then
