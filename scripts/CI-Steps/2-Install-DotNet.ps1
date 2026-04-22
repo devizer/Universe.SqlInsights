@@ -22,7 +22,7 @@ foreach($ver in @("6.0", "8.0", "10.0")) {
      $ENV:DOTNET_VERSIONS="$ver"
      $ENV:SKIP_DOTNET_DEPENDENCIES="True"
      Run-Remote-Script https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh
-     sudo ln -s /usr/share/dotnet/dotnet /usr/local/bin/dotnet
+     & sudo ln -f -s /usr/share/dotnet/dotnet /usr/local/bin/dotnet
      Show-Last-Exit-Code "Create link at /usr/local/bin/dotnet" -Throw
   }
 }
