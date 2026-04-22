@@ -1,9 +1,12 @@
       set -eu; set -o pipefail
       # Chromium 79 for testing
-      if [[ ! -f ~/chromium/linux-706915/chrome-linux/chrome ]]; then
+      if [[ ! -f $HOME/chromium/linux-706915/chrome-linux/chrome ]]; then
         Say "Installing 'Chromium 79 for testing'"
         npx -y @puppeteer/browsers install chromium@706915
+      else 
+        Say "Chrome/Chromium Already Exists: $HOME/chromium/linux-706915/chrome-linux/chrome"
       fi
+      # TODO 107.0.5304.0: npx -y @puppeteer/browsers install chromium@1047731
 
       if [[ -z "$(command -v google-chrome)" ]]; then
           # try-and-retry sudo apt-get install xdg-utils -y -qq || true
