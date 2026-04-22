@@ -79,7 +79,7 @@ function Find-Chrome-Program-List() {
    $ret = @()
    # Any OS, but search in the PATH only
    $cmdCandidates = @("chromium", "google-chrome", "firefox");
-   $cmdCandidates += Find-Puppeteer-Browsers
+   $cmdCandidates += (Find-Puppeteer-Browsers)
    foreach($cmd_name in $cmdCandidates) { 
      $commands = @(Get-Command "$cmd_name" -CommandType Application -EA SilentlyContinue)
      foreach($cmd in $commands) {
