@@ -1,11 +1,12 @@
       set -eu; set -o pipefail
       # Chromium 79 for testing
-      pushd $HOME
-      if [[ ! -f $HOME/chromium/linux-706915/chrome-linux/chrome ]]; then
-        Say "Installing 'Chromium 79 for testing'"
+      mkdir -p $HOME/Browsers
+      pushd $HOME/Browsers
+      if [[ ! -f chromium/linux-706915/chrome-linux/chrome ]]; then
+        Say "Installing 'Chromium 79 for testing' into $(pwd)"
         npx -y @puppeteer/browsers install chromium@706915
       else 
-        Say "Chrome/Chromium Already Exists: $HOME/chromium/linux-706915/chrome-linux/chrome"
+        Say "Chrome/Chromium Already Exists: $(pwd)/chromium/linux-706915/chrome-linux/chrome"
       fi
       # TODO 107.0.5304.0: npx -y @puppeteer/browsers install chromium@1047731
       popd

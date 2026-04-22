@@ -66,7 +66,7 @@ function Smart-Start-Process([string] $exe, [string] $parameters, [int] $guard_t
 # TODO: npx -y @puppeteer/browsers install chromium@706915
 # It installs into ~/chromium/linux-706915/chrome-linux/chrome
 function Find-Puppeteer-Browsers() {
-  $searchFolder = Combine-Path "$($ENV:HOME)" "chromium"
+  $searchFolder = Combine-Path "$($ENV:HOME)" "Browsers"
   if (-not ([System.IO.Directory]::Exists($searchFolder))) { return @(); }
   $nameOfFileOnly = "chrome"
   $results = Get-ChildItem -Path $searchFolder -Include $nameOfFileOnly -Recurse -Depth 4 -File | % { "$($_.FullName)" }
