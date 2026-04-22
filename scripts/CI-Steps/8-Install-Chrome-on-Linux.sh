@@ -1,4 +1,10 @@
       set -eu; set -o pipefail
+      # Chromium 79 for testing
+      if [[ ! -f ~/chromium/linux-706915/chrome-linux/chrome ]]; then
+        Say "Installing 'Chromium 79 for testing'"
+        npx -y @puppeteer/browsers install chromium@706915
+      fi
+
       if [[ -z "$(command -v google-chrome)" ]]; then
           # try-and-retry sudo apt-get install xdg-utils -y -qq || true
           # try-and-retry sudo apt-get install fonts-liberation -y -qq || true
