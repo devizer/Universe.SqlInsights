@@ -122,6 +122,8 @@ jobs:
 
     - uses: actions/checkout@v6
     - uses: devizer/devops-library@main
+    - name: Bootstrap
+      uses: devizer/devops-library@main
     - name: Download all workflow run artifacts
       uses: actions/download-artifact@v8
       with:
@@ -150,3 +152,7 @@ jobs:
         overwrite: true
         compression-level: 1
 
+    - name: Linux Info
+      shell: bash
+      if: always() && runner.os == 'Linux'
+      run: 'Show-System-Stat || true'
