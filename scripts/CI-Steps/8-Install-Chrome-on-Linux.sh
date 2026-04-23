@@ -32,7 +32,7 @@ Install-Chrome() {
   popd >/dev/null
 }
       
-      Install-Chrome "109"
+      Install-Chrome "79"
 
       # https://chromium.googlesource.com/chromium/src/+refs - find full version for 109: 109.0.5414.176 и 109.0.5414.118
       # https://versionhistory.googleapis.com/v1/chrome/platforms/all/channels/stable/versions
