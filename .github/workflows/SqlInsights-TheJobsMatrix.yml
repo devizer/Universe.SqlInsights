@@ -104,7 +104,7 @@ jobs:
           
           foreach($f in ".\Goods", ".\Goods\w3api", ".\Goods\w3api\wwwroot", "$ENV:SYSTEM_ARTIFACTSDIRECTORY") {
              Say "$f content"
-             Get-ChildItem $f | ft -autosize
+             Get-ChildItem $f | ft -autosize | Out-String -Width 1234
           }
 
       - name: 'Tune Windows Docker'

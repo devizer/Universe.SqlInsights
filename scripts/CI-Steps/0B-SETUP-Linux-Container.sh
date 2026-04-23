@@ -19,6 +19,7 @@ Show-Mem-Debug-Info() {
     }'
 }
 export -f Show-Mem-Debug-Info; 
+
 nohup bash -c "while true; do Show-Mem-Debug-Info | tee -a $SYSTEM_ARTIFACTSDIRECTORY/MEM-USAGE.DEBUG.LOG; sleep 2; done" &
 
 
