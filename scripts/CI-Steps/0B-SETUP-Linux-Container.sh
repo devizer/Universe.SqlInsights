@@ -1,6 +1,8 @@
       set -eu; set -o pipefail;
       Say "CPU: $(Get-CpuName)"
 
+echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
 Show-Mem-Debug-Info() {
     # local uptime=$(printf "%10s" $(cat /proc/uptime | awk '{print $1}'))
     # local uptime="$(printf "%14s" $(cat /proc/uptime | cut -f1 -d.))"
