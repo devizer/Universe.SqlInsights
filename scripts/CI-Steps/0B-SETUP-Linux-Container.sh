@@ -1,7 +1,12 @@
       set -eu; set -o pipefail;
       Say "CPU: $(Get-CpuName)"
 
-echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+if [[ -n "${GITHUB_PATH:-}" ]]; then
+  echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+elif [[ -n "${TF_BUILD:-}" ]]; then
+  echo "##vso[task.prependpath]$HOME/.dotnet/tools"
+fi
+
 
 Show-Mem-Debug-Info() {
     # local uptime=$(printf "%10s" $(cat /proc/uptime | awk '{print $1}'))
