@@ -85,7 +85,9 @@ jobs:
           Set-Var "RUNS_ON" "${{ matrix.RUNS_ON }}"
           Set-Var "OS" "${{ matrix.OS }}"
 
-          $docker_image_full = if ($ENV:OS -eq "Windows") { "devizervlad/iis-net4x-net35:$($ENV:SQL_IMAGE_TAG)" } Else { "mcr.microsoft.com/mssql/server:$($ENV:SQL_IMAGE_TAG)" }
+          $linux_image = "mcr.microsoft.com/mssql/server:$($ENV:SQL_IMAGE_TAG)"
+          $linux_image = "devizervlad/mssql-server-tuned:$($ENV:SQL_IMAGE_TAG)".Replace("-latest","")
+          $docker_image_full = if ($ENV:OS -eq "Windows") { "devizervlad/iis-net4x-net35:$($ENV:SQL_IMAGE_TAG)" } Else { "$linux_image" }
           Set-Var "DOCKER_IMAGE_FULL" "$docker_image_full"
 
           Set-Var "LINUX_MSSQL_PID" "${{ matrix.LINUX_MSSQL_PID }}"
