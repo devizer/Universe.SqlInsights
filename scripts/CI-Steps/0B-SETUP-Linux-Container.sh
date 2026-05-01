@@ -76,8 +76,9 @@ nohup bash -c "while true; do Show-Mem-Debug-Info | tee -a $SYSTEM_ARTIFACTSDIRE
       docker exec -t sqlserver ls -la /tmp
       sleep 6
       Say "SQL Server Container Logs"
-      docker logs sqlserver | head -10
+      docker logs sqlserver | head -10 || true
 
+      Say "Wait for SQL Server Connection"
       export SQL_SERVER_CONTAINER_NAME=sqlserver # Add SqlCmd to Path for Linux Container and Wait for
       export SQL_PING_TIMEOUT=60 SQL_PING_PARAMETERS="-C -S localhost -U sa -P \""$password"\""
       Run-Remote-Script https://raw.githubusercontent.com/devizer/Universe.SqlServerJam/master/Add-SqlCmd-to-Path-for-Linux-Container.sh
