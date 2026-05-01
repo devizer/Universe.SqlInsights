@@ -71,6 +71,7 @@ nohup bash -c "while true; do Show-Mem-Debug-Info | tee -a $SYSTEM_ARTIFACTSDIRE
          -e "ACCEPT_EULA=Y" \
          -e "MSSQL_SA_PASSWORD=$password" \
          -e "MSSQL_PID=$edition" \
+         -e IGNORE_SYNC=True \
          -p 1433:1433 -d "$img"
       docker exec -t sqlserver ls -la /tmp
 
