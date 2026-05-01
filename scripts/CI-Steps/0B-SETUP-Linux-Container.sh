@@ -74,7 +74,9 @@ nohup bash -c "while true; do Show-Mem-Debug-Info | tee -a $SYSTEM_ARTIFACTSDIRE
          -e IGNORE_SYNC=True \
          -p 1433:1433 -d "$img"
       docker exec -t sqlserver ls -la /tmp
-
+      sleep 6
+      Say "SQL Server Container Logs"
+      docker logs sqlserver | head -10
 
       export SQL_SERVER_CONTAINER_NAME=sqlserver # Add SqlCmd to Path for Linux Container and Wait for
       export SQL_PING_TIMEOUT=60 SQL_PING_PARAMETERS="-C -S localhost -U sa -P \""$password"\""
