@@ -64,6 +64,7 @@ nohup bash -c "while true; do Show-Mem-Debug-Info | tee -a $SYSTEM_ARTIFACTSDIRE
       docker rm -f sqlserver 2>/dev/null
       password='p@assw0rd!'
       edition="${LINUX_MSSQL_PID:-Express}"
+      & Drop-FS-Cache
       docker run --privileged --pull never --restart on-failure:666 --name sqlserver \
          $v \
          -v /mnt/ergo-fab-tests:/mnt/ergo-fab-tests \
