@@ -32,6 +32,7 @@ Smart-Start-Process "dotnet" "serve -p 6060"
 Start-Sleep -Seconds 2
 
 Open-Url-By-Chrome-On-Windows "http://127.0.0.1:6060"
+Open-Url-By-Chrome-On-Windows "https://devizer.github.io"
 
 Say "PROCESSES: dotnet-serve"
 Get-Process -Name "dotnet-serve" -EA SilentlyContinue | format-table -autosize | out-host
